@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:setup. Arabic strings.
+-->
+<resources>
+
+    <!-- Shared button words -->
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_ok">حسنًا</string>
+    <string name="action_done">تم</string>
+    <string name="action_undo">تراجع</string>
+
+    <!-- Credential prompt (D17) -->
+    <string name="gate_title">تأكيد هويتك</string>
+    <string name="gate_subtitle">قبل أن نغيّر أي شيء على {tv}</string>
+    <string name="gate_negative">إلغاء</string>
+    <string name="gate_failed">تعذّر تأكيد هويتك، لذلك لم يتغير شيء.</string>
+
+    <!-- Notifications (D18, D16) -->
+    <string name="notify_channel_name">إعداد تلفاز</string>
+    <string name="notify_channel_description">يعرض التقدم أثناء إجراء الهاتف للتغييرات على التلفاز، ويخبرك متى تنظر إلى شاشة التلفاز.</string>
+    <string name="notify_progress" formatted="false">جارٍ إعداد {tv}، {percent}%</string>
+    <string name="notify_look">انظر إلى التلفاز. اضغط للإجابة.</string>
+    <string name="notify_rationale">سننبّهك عندما يحين وقت النظر إلى التلفاز. اسمح بالإشعارات ليعمل التنبيه حتى والهاتف في جيبك.</string>
+    <string name="notify_rationale_allow">السماح بالإشعارات</string>
+    <string name="notify_rationale_skip">ليس الآن</string>
+
+    <!-- S2d to S3: probing -->
+    <string name="probing_line">جارٍ قراءة محتويات التلفاز...</string>
+    <string name="probing_progress_cd">قراءة محتويات التلفاز</string>
+
+    <!-- Stop: probe failure -->
+    <string name="stop_probe_failed_title">تعذّرت قراءة محتويات التلفاز</string>
+    <string name="stop_probe_failed_body">توقف التلفاز عن الاستجابة أثناء قراءته. لم يتغير أي شيء. تأكد من أنه ما زال قيد التشغيل، ثم حاول مرة أخرى.</string>
+    <string name="stop_probe_failed_primary">حاول مرة أخرى</string>
+    <string name="stop_probe_failed_secondary">رجوع</string>
+    <string name="stop_probe_failed_tertiary">عرض التفاصيل</string>
+
+    <!-- S3 What we found -->
+    <string name="found_title">{count, plural, =0 {لا يوجد شيء لإيقافه. هل تريد الشاشة الرئيسية الجديدة؟} one {وجدنا عنصرًا واحدًا لإيقافه} two {وجدنا عنصرين لإيقافهما} few {وجدنا # عناصر لإيقافها} many {وجدنا # عنصرًا لإيقافه} other {وجدنا # عنصر لإيقافه}}</string>
+    <string name="found_headline">{count, plural, =0 {لا يوجد شيء لإيقافه. هل تريد الشاشة الرئيسية الجديدة؟} one {عنصر لإيقافه} two {عنصران لإيقافهما} few {عناصر لإيقافها} many {عنصرًا لإيقافه} other {عنصر لإيقافه}}</string>
+    <string name="found_overline">وجدنا</string>
+    <string name="found_zero_body">هذا التلفاز مرتّب بالفعل.</string>
+    <string name="found_group_ads">الإعلانات والصفوف الممولة</string>
+    <string name="found_group_tracking">التتبع والتحليلات</string>
+    <string name="found_group_nobody">تطبيقات لم يطلبها أحد</string>
+    <string name="found_group_brand">إضافات {brand}</string>
+    <string name="found_group_shop">وضع المتجر والعرض التوضيحي</string>
+    <string name="found_group_needed">مطلوب للشاشة الرئيسية الجديدة</string>
+    <string name="found_group_count_cd">{group}: {count, plural, one {عنصر واحد (#)} two {عنصران (#)} few {# عناصر} many {# عنصرًا} other {# عنصر}}</string>
+    <string name="found_see_list">عرض القائمة</string>
+    <string name="found_keep_intro">نحتفظ بكل ما تستخدمه:</string>
+    <string name="found_keep_paragraph">نحتفظ بكل ما تستخدمه: {apps}، و{fixed}.</string>
+    <string name="found_keep_paragraph_no_apps">نحتفظ بكل ما تستخدمه: {fixed}.</string>
+    <string name="found_keep_fixed">البث المباشر ومداخل HDMI، وجهاز التحكم، ولوحة المفاتيح، وChromecast، والمساعد الصوتي، وتحديثات النظام</string>
+    <string name="found_home_row">الشاشة الرئيسية: {dock}</string>
+    <string name="found_home_row_rows">الشاشة الرئيسية: {dock}، بالإضافة إلى {count, plural, one {تطبيق واحد (#)} two {تطبيقين (#)} few {# تطبيقات} many {# تطبيقًا} other {# تطبيق}} بالأسفل</string>
+    <string name="found_home_row_cd">شريط تطبيقات الشاشة الرئيسية: {dock}</string>
+    <string name="found_home_change">تغيير</string>
+    <string name="found_home_row_empty">شاشتك الرئيسية الجديدة</string>
+    <string name="found_safety">تُحفظ نقطة استعادة أولًا، بحيث يمكن إعادة كل شيء كما كان.</string>
+    <string name="found_make_clean">ابدأ التنظيف</string>
+    <string name="found_customise">تخصيص</string>
+    <string name="found_replaces_launcher">يستبدل تطبيق الشاشة الرئيسية الموجود حاليًا على هذا التلفاز. سيبدأ المظهر وترتيب التطبيقات والإعدادات واختيارات البطاقات من جديد.</string>
+    <string name="found_no_lock">لا يوجد قفل شاشة على هذا الهاتف، لذلك لا يمكننا التحقق الإضافي من هويتك.</string>
+    <!-- Unknown model (no profile) -->
+    <string name="found_unknown_title">{count, plural, =0 {لم نجد شيئًا متأكدين منه} one {وجدنا عنصرًا واحدًا متأكدين منه} two {وجدنا عنصرين متأكدين منهما} few {وجدنا # عناصر متأكدين منها} many {وجدنا # عنصرًا متأكدين منه} other {وجدنا # عنصر متأكدين منه}}</string>
+    <string name="found_unknown_headline">{count, plural, =0 {لم نجد شيئًا متأكدين منه} one {عنصر متأكدون منه} two {عنصران متأكدون منهما} few {عناصر متأكدون منها} many {عنصرًا متأكدون منه} other {عنصر متأكدون منه}}</string>
+    <string name="found_unknown_body">لم نتعامل مع هذا الطراز بالتحديد من قبل، لذلك نتوخى الحذر. يمكنك إيقاف المزيد من العناصر من قسم التخصيص بعد تجربة التلفاز.</string>
+    <string name="found_help_add_tv">المساعدة في إضافة هذا التلفاز</string>
+    <!-- TV refuses other home screens (UX 4.6) -->
+    <string name="stop_tv_refuses_home_title">الشاشة الرئيسية الجديدة غير متاحة على هذا التلفاز</string>
+    <string name="stop_tv_refuses_home_body">لا تسمح {brand} إلا بشاشتها الأصلية. سنوقف الإعلانات والتتبع، وهو الجزء الأهم من التنظيف.</string>
+    <string name="found_home_old_android">تتطلب الشاشة الرئيسية الجديدة نظام Android 8 أو أحدث، لذلك سيحتفظ هذا التلفاز بشاشته الأصلية. سنوقف الإعلانات والتتبع، وهو الجزء الأهم من التنظيف.</string>
+    <string name="found_home_changed">تم تغيير الشاشة الرئيسية على هذا التلفاز مسبقًا بواسطة تطبيق آخر أو تعديل سابق، لذلك نتركها كما هي. وسنوقف الإعلانات والتتبع.</string>
+    <string name="found_home_unknown_stock">لا نعرف الشاشة الرئيسية الأصلية لهذا التلفاز بما يكفي لاستبدالها بأمان، لذلك ستبقى كما هي. وسنوقف الإعلانات والتتبع.</string>
+    <!-- RF-SAFETY-250: home screen switches skipped up front for safety -->
+    <string name="found_home_wizard_wifi">حُفظت شبكة Wi-Fi في هذا التلفاز بواسطة معالج الإعداد الخاص به. تتطلب الشاشة الرئيسية الجديدة إيقاف المعالج، مما سيؤدي إلى نسيان شبكة Wi-Fi، كما أن بقاء المعالج مفعّلًا قد يسبب تعطل التلفاز. لذلك سيحتفظ بشاشته الرئيسية الأصلية، وسنوقف الإعلانات والتتبع. لاستبدالها لاحقًا، انسَ الشبكة وأضفها من جديد في الإعدادات أو استخدم كابل شبكة، ثم شغّل الإعداد مرة أخرى.</string>
+    <string name="found_home_wizard_wifi_unlisted">حُفظت شبكة Wi-Fi في هذا التلفاز بواسطة معالج الإعداد الخاص به، ولا نعرف هذا الطراز بما يكفي بعد لإيقاف المعالج بأمان. مع بقاء المعالج مفعّلًا قد تؤدي الشاشة الرئيسية الجديدة إلى تعطل التلفاز، لذلك سيحتفظ بشاشته الرئيسية الأصلية، وسنوقف الإعلانات والتتبع.</string>
+    <string name="found_home_wizard_wifi_unknown">تعذّر التحقق من الجهة التي حفظت شبكة Wi-Fi في هذا التلفاز. تتطلب الشاشة الرئيسية الجديدة إيقاف معالج الإعداد، مما قد يؤدي إلى نسيان شبكة Wi-Fi، ومع بقاء المعالج مفعّلًا قد يتعطل التلفاز. لذلك سيحتفظ بشاشته الرئيسية الأصلية، وسنوقف الإعلانات والتتبع.</string>
+    <string name="found_home_casting">على جهاز Google هذا تتطلب الشاشة الرئيسية الجديدة إيقاف معالج الإعداد، وبدونه يتوقف البث (Cast) من الهواتف بعد كل إعادة تشغيل. لذلك سيحتفظ بشاشته الرئيسية الأصلية، وسنوقف الإعلانات والتتبع.</string>
+    <string name="found_home_boot_loop">في هذه الفئة من أجهزة التلفاز يعود معالج الإعداد مع كل إعادة تشغيل، ومع إيقاف الشاشة الرئيسية الأصلية قد يمنع ذلك بدء تشغيل التلفاز. لذلك سيحتفظ بشاشته الرئيسية الأصلية، وسنوقف الإعلانات والتتبع.</string>
+    <string name="found_home_wizard_stays_on">لا نعرف هذا التلفاز بما يكفي لإيقاف معالج الإعداد الخاص به، ومع بقاء المعالج مفعّلًا وإيقاف الشاشة الرئيسية الأصلية قد يتعطل التلفاز. لذلك سيحتفظ بشاشته الرئيسية الأصلية، وسنوقف الإعلانات والتتبع.</string>
+
+    <!-- S3a Customise sheet -->
+    <string name="customise_title">تخصيص</string>
+    <string name="customise_live">{total, plural, other {تم إيقاف {off} من #}}</string>
+    <string name="customise_nothing_deleted">لا يُحذف أي شيء؛ «متوقف» يعني في وضع سكون.</string>
+    <string name="customise_show_fewer">عرض أقل</string>
+    <string name="customise_group_voice">المساعد الصوتي</string>
+    <string name="customise_group_cast">Chromecast</string>
+    <string name="customise_group_updates">تحديثات النظام</string>
+    <string name="customise_group_streaming">تطبيقات بث لا تستخدمها</string>
+    <string name="customise_group_brand_features">ميزات {brand}</string>
+    <string name="customise_updates_note">مفعّلة حتى يستمر التلفاز في تلقي التحديثات الأمنية. إيقافها يمنع إشعارات التحديث المتكررة أيضًا.</string>
+    <string name="customise_wizard_name">معالج الإعداد</string>
+    <string name="customise_wizard_line">إيقاف معالج التشغيل الأول حتى تتمكن الشاشة الرئيسية الجديدة من تولي المهمة</string>
+    <string name="customise_wizard_note">نعيد تشغيله تلقائيًا إذا تراجعت عن التغييرات أو أعدت ضبط التلفاز.</string>
+    <string name="customise_protected_title">نحتفظ بهذه العناصر</string>
+    <string name="customise_protected_pill">محمي</string>
+    <string name="customise_protected_why_title">لماذا نحتفظ بهذا العنصر</string>
+    <string name="customise_group_home">الشاشة الرئيسية</string>
+    <string name="customise_dock_row">شريط التطبيقات: {names}</string>
+    <string name="customise_dock_row_rows">شريط التطبيقات: {names}، بالإضافة إلى {count, plural, one {تطبيق واحد (#)} two {تطبيقين (#)} few {# تطبيقات} many {# تطبيقًا} other {# تطبيق}} في {rows, plural, one {الصف} two {الصفين} other {الصفوف}} بالأسفل</string>
+    <string name="customise_dock_row_empty">شريط التطبيقات</string>
+    <string name="customise_look_row">المظهر: {theme}</string>
+    <!-- RFC-CURTAIN-1: Custom only -->
+    <string name="customise_group_tv">على التلفاز</string>
+    <string name="customise_show_on_tv">عرض التقدم على شاشة التلفاز</string>
+    <string name="customise_show_on_tv_note">يعرض التلفاز كل خطوة، ثم الشاشة الرئيسية الجديدة</string>
+    <string name="customise_group_afterwards">بعد الانتهاء</string>
+    <string name="customise_keep_debugging">إبقاء تصحيح الأخطاء مفعّلًا</string>
+    <string name="customise_keep_debugging_warning">قد يتمكن آخرون على شبكة Wi-Fi نفسها من طلب الاتصال</string>
+    <string name="customise_group_commands">عرض الأوامر</string>
+    <string name="customise_commands_intro">كل أمر سنشغّله، بالترتيب.</string>
+    <string name="customise_copy_commands">نسخ كأوامر</string>
+    <string name="customise_commands_copied">تم النسخ</string>
+    <string name="customise_snackbar_kept">سيتم الاحتفاظ بـ {name}.</string>
+    <string name="customise_snackbar_off">سيتم إيقاف {name}.</string>
+
+    <!-- Themes (S3a theme picker) -->
+    <string name="theme_title">المظهر</string>
+    <string name="theme_default">الافتراضي</string>
+    <string name="theme_default_desc">خلفية سوداء مع أربعة تطبيقات في الأسفل.</string>
+    <string name="theme_aurora">شفق (Aurora)</string>
+    <string name="theme_aurora_desc">خلفية زرقاء داكنة مع توهج هادئ خلف التطبيقات.</string>
+    <string name="theme_six_columns">ستة أعمدة</string>
+    <string name="theme_six_columns_desc">ستة تطبيقات في الصف ليتسع المزيد على الشاشة.</string>
+    <string name="theme_card_cd">{name}. {description}</string>
+    <string name="theme_card_selected_cd">{name}، محدّد. {description}</string>
+
+    <!-- S3b Your dock (sheet) -->
+    <string name="dock_title">شريط تطبيقاتك</string>
+    <string name="dock_body">حتى {count, spellout} في الأسفل. اسحب أي تطبيق من نقاطه لتغيير ترتيبه.</string>
+
+    <!-- S4a Making it clean -->
+    <string name="working_title">جارٍ التنظيف</string>
+    <string name="working_step_restore_active">جارٍ حفظ نقطة استعادة...</string>
+    <string name="working_step_restore_done">تم حفظ نقطة الاستعادة</string>
+    <string name="working_group_ads">الإعلانات</string>
+    <string name="working_group_tracking">التتبع</string>
+    <string name="working_group_nobody">تطبيقات لم يطلبها أحد</string>
+    <string name="working_group_brand">إضافات {brand}</string>
+    <string name="working_group_shop">وضع المتجر والعرض التوضيحي</string>
+    <string name="working_step_group_active">{total, plural, other {{group}: {done} من #...}}</string>
+    <string name="working_step_group_done">{count, plural, other {تم إيقاف {group} (#)}}</string>
+    <string name="working_step_install_active">جارٍ تثبيت الشاشة الرئيسية الجديدة</string>
+    <string name="working_step_install_done">تم تثبيت الشاشة الرئيسية الجديدة</string>
+    <string name="working_step_replace_active">جارٍ استبدال تطبيق الشاشة الرئيسية</string>
+    <string name="working_step_replace_done">تم استبدال تطبيق الشاشة الرئيسية</string>
+    <string name="working_step_home_active">جارٍ تحويل الشاشة الرئيسية</string>
+    <string name="working_step_home_done">تم تحويل الشاشة الرئيسية</string>
+    <string name="working_step_done_cd">{step}، تم</string>
+    <string name="working_thumbnail_caption">مباشر من التلفاز</string>
+    <string name="working_thumbnail_cd">مباشر من التلفاز</string>
+    <string name="working_keep_on">اترك التلفاز قيد التشغيل. يمكنك وضع الهاتف جانبًا؛ سننبّهك عندما يحين وقت النظر إلى التلفاز.</string>
+    <string name="working_stop">إيقاف والتراجع</string>
+    <string name="working_putting_back">جارٍ استعادة الشاشة الرئيسية القديمة...</string>
+    <string name="working_stopping">جارٍ الإيقاف والتراجع عمّا أجريناه...</string>
+
+    <!-- S4b Can you see it? -->
+    <string name="check_overline">انظر إلى التلفاز</string>
+    <string name="check_title">هل تراها على الشاشة؟</string>
+    <string name="check_thumbnail_cd">{count, plural, =0 {يعرض التلفاز الشاشة الرئيسية الجديدة مع شريط تطبيقات فارغ} one {يعرض التلفاز الشاشة الرئيسية الجديدة مع تطبيق واحد في الشريط} two {يعرض التلفاز الشاشة الرئيسية الجديدة مع تطبيقين في الشريط} few {يعرض التلفاز الشاشة الرئيسية الجديدة مع # تطبيقات في الشريط} many {يعرض التلفاز الشاشة الرئيسية الجديدة مع # تطبيقًا في الشريط} other {يعرض التلفاز الشاشة الرئيسية الجديدة مع # تطبيق في الشريط}}</string>
+    <string name="check_dock_sentence">الشاشة الرئيسية الجديدة، مع {dock} في الأسفل.</string>
+    <string name="check_dock_sentence_empty">الشاشة الرئيسية الجديدة.</string>
+    <string name="check_press_home">اضغط زر الشاشة الرئيسية (Home) في جهاز التحكم مرة واحدة.</string>
+    <string name="check_live_ok">زر الشاشة الرئيسية يفتح الشاشة الجديدة</string>
+    <string name="check_live_pending_cd">لم يتم التحقق بعد</string>
+    <string name="check_live_done_cd">تم التحقق</string>
+    <string name="check_countdown_text">إذا لم نتلقَّ ردًا منك، فسنعيد الشاشة الرئيسية القديمة تلقائيًا. لا داعي للقلق.</string>
+    <string name="check_thumbnail_note">إذا لم تكن ترى التلفاز أمامك، فالصورة أعلاه تعرض ما يظهر على شاشته الآن.</string>
+    <string name="check_no_thumbnail_note">تعذّر جلب صورة للشاشة؛ يُرجى النظر إلى التلفاز مباشرة.</string>
+    <string name="check_yes">نعم، أراها</string>
+    <string name="check_no">لا، أعد القديمة</string>
+
+    <!-- S4c Stopped: the old home screen is back (UX 4.7) -->
+    <string name="stop_show_details">عرض التفاصيل</string>
+    <string name="stop_report">الإبلاغ عن مشكلة</string>
+    <string name="stop_home_wait_hint">انتظر بضع ثوانٍ.</string>
+    <string name="stop_home_setupwraith_title">عادت الشاشة الرئيسية القديمة</string>
+    <string name="stop_home_setupwraith_body">يتمسك معالج الإعداد الأولي لهذا التلفاز بزر الشاشة الرئيسية (Home). في هذا الطراز لا تعمل الشاشة الرئيسية الجديدة إلا إذا أُوقف المعالج أيضًا. وهذا آمن للاستخدام اليومي، ونعيد تفعيله عند التراجع أو قبل إعادة ضبط المصنع.</string>
+    <string name="stop_home_setupwraith_primary">التجربة مع إيقاف المعالج</string>
+    <string name="stop_home_setupwraith_secondary">الإبقاء على الشاشة الرئيسية القديمة</string>
+    <string name="stop_home_setupwraith_wifi_body">حُفظت شبكة Wi-Fi في تلفازك بواسطة معالج الإعداد، لذلك سيؤدي إيقاف المعالج إلى نسيانها. استخدم كابل شبكة، أو انسَ الشبكة وأضفها من جديد في الإعدادات، ثم حاول مرة أخرى.</string>
+    <string name="stop_home_setupwraith_wifi_primary">حاول مرة أخرى</string>
+    <string name="stop_home_setupwraith_wifi_unknown_body">تعذّر التحقق من الجهة التي حفظت شبكة Wi-Fi في هذا التلفاز، لذلك أبقينا معالج الإعداد مفعّلًا للحفاظ على اتصال Wi-Fi.</string>
+    <string name="stop_home_other_launcher_title">عادت الشاشة الرئيسية القديمة</string>
+    <string name="stop_home_other_launcher_body">يتولى تطبيق شاشة رئيسية آخر ({launcher}) إدارة زر الشاشة الرئيسية. نحن لا نوقف تطبيقات لا نعرفها. اختر أي الشاشتين تفضّل.</string>
+    <string name="stop_home_other_launcher_primary">استخدام الشاشة الرئيسية الجديدة</string>
+    <string name="stop_home_other_launcher_secondary">الإبقاء على {launcher}</string>
+    <string name="stop_home_unknown_title">عادت الشاشة الرئيسية القديمة</string>
+    <string name="stop_home_unknown_body">تعذّر جعل الشاشة الرئيسية الجديدة تتولى المهمة على هذا التلفاز، لذلك أعدنا الوضع كما كان، مع الاحتفاظ بباقي التنظيف الذي أجريناه. يمكنك المحاولة مجددًا من قسم الإدارة، أو إرسال تقرير إلينا لفحص هذا الطراز.</string>
+    <string name="stop_home_unknown_primary">الإبلاغ عن مشكلة</string>
+    <string name="stop_home_unknown_secondary">حسنًا</string>
+    <string name="stop_home_user_said_no_title">عادت الشاشة الرئيسية القديمة</string>
+    <string name="stop_home_user_said_no_body">تمت إعادتها. هل كانت هناك مشكلة، أم أردت إلقاء نظرة أولًا؟</string>
+    <string name="stop_home_user_said_no_primary">حاول مرة أخرى</string>
+    <string name="stop_home_user_said_no_secondary">بدا أن هناك مشكلة</string>
+    <string name="stop_home_timed_out_title">عادت الشاشة الرئيسية القديمة</string>
+    <string name="stop_home_timed_out_body">جارٍ استعادة الشاشة الرئيسية القديمة... تم. عاد تلفازك كما كان. يمكنك المحاولة مرة أخرى من قسم الإدارة.</string>
+    <string name="stop_home_timed_out_primary">حسنًا</string>
+    <string name="stop_home_timed_out_secondary">حاول مرة أخرى</string>
+
+    <!-- Stop: undone -->
+    <string name="stop_step_failed_title">توقفنا</string>
+    <string name="stop_step_failed_body">{total, plural, other {لم تنجح إحدى الخطوات، فتوقفنا بعد إيقاف {done} من #. لم يتغير أي شيء آخر.}}</string>
+    <string name="stop_undone_title">تراجعنا عمّا أجريناه</string>
+    <string name="stop_undone_body">عاد تلفازك كما كان. يمكنك المحاولة مرة أخرى من قسم الإدارة.</string>
+    <string name="stop_undone_primary">حسنًا</string>
+    <string name="stop_undone_secondary">عرض التفاصيل</string>
+
+    <!-- S4d Stopped: connection lost mid-plan (UX 4.14) -->
+    <string name="stop_connection_lost_title">توقف التلفاز عن الاستجابة</string>
+    <string name="stop_connection_lost_body">{total, plural, one {توقف التلفاز عن الاستجابة بعد إيقاف {done} من # عنصر. يعود الاتصال عادةً خلال بضع ثوانٍ.} two {توقف التلفاز عن الاستجابة بعد إيقاف {done} من # عنصرين. يعود الاتصال عادةً خلال بضع ثوانٍ.} few {توقف التلفاز عن الاستجابة بعد إيقاف {done} من # عناصر. يعود الاتصال عادةً خلال بضع ثوانٍ.} many {توقف التلفاز عن الاستجابة بعد إيقاف {done} من # عنصرًا. يعود الاتصال عادةً خلال بضع ثوانٍ.} other {توقف التلفاز عن الاستجابة بعد إيقاف {done} من # عنصر. يعود الاتصال عادةً خلال بضع ثوانٍ.}}</string>
+    <string name="stop_connection_lost_reconnecting">جارٍ إعادة الاتصال...</string>
+    <string name="stop_connection_lost_back">عاد الاتصال. هل نتابع؟</string>
+    <string name="stop_connection_lost_primary">متابعة الباقي</string>
+    <string name="stop_connection_lost_secondary">التوقف هنا</string>
+    <string name="stop_connection_lost_tertiary">التراجع عمّا أجريناه</string>
+    <string name="stop_connection_lost_suspect">أعدنا تشغيل «{name}» لأنه يبدو مسؤولًا عن اتصال Wi-Fi في هذا التلفاز. سنتابع بدونه.</string>
+    <string name="stop_connection_lost_gone_body">ما زال التلفاز لا يستجيب. تأكد من أنه قيد التشغيل وعلى شبكة Wi-Fi نفسها المتصل بها هذا الهاتف.</string>
+    <string name="stop_connection_lost_keep_trying">مواصلة المحاولة</string>
+
+    <!-- S4e Resume after process death (UX 4.9, 4.14) -->
+    <string name="stop_resume_title">كنا في منتصف إعداد {tv}</string>
+    <string name="stop_resume_body">{total, plural, one {تم إيقاف {done} من # عنصر، ولم تتغير الشاشة الرئيسية بعد. هل نتابع؟} two {تم إيقاف {done} من # عنصرين، ولم تتغير الشاشة الرئيسية بعد. هل نتابع؟} few {تم إيقاف {done} من # عناصر، ولم تتغير الشاشة الرئيسية بعد. هل نتابع؟} many {تم إيقاف {done} من # عنصرًا، ولم تتغير الشاشة الرئيسية بعد. هل نتابع؟} other {تم إيقاف {done} من # عنصر، ولم تتغير الشاشة الرئيسية بعد. هل نتابع؟}}</string>
+    <string name="stop_resume_primary">متابعة</string>
+    <string name="stop_resume_secondary">التراجع عمّا أجريناه</string>
+    <string name="stop_resume_tertiary">تركه كما هو</string>
+    <string name="stop_resume_home_title">أعدنا الشاشة الرئيسية القديمة</string>
+    <string name="stop_resume_home_body">أعدنا الشاشة الرئيسية القديمة ضمانًا للأمان. هل تريد تجربة التبديل مرة أخرى؟</string>
+    <string name="stop_resume_home_primary">تجربة التبديل مرة أخرى</string>
+    <string name="stop_resume_home_secondary">تركه كما هو</string>
+    <string name="stop_resume_change_title">كنا في منتصف إجراء تغيير على {tv}</string>
+    <string name="stop_resume_change_body">توقفت العملية قبل اكتمالها. هل تريد متابعة الباقي أم التراجع عمّا أجريناه؟</string>
+    <string name="stop_reconnect_home_body">أعد الاتصال بالتلفاز لاستعادة الشاشة الرئيسية القديمة. سنقوم بذلك فور استجابة {tv}.</string>
+
+    <!-- Stop: install failure (UX 4.14) -->
+    <string name="stop_install_failed_title">تعذّر تثبيت الشاشة الرئيسية الجديدة</string>
+    <string name="stop_install_failed_body">لا توجد مساحة كافية على التلفاز: المتاح {free, plural, other {# م.ب}}، والمطلوب {needed, plural, other {# م.ب}}. مسحنا الذاكرة المؤقتة وحاولنا مجددًا دون جدوى. اكتمل التنظيف؛ يمكنك تجربة تثبيت الشاشة الرئيسية لاحقًا من قسم الإدارة بعد تفريغ مساحة من الإعدادات &gt; التخزين.</string>
+    <string name="stop_install_failed_generic_body">لم يقبل التلفاز تثبيت الشاشة الرئيسية الجديدة. اكتمل التنظيف؛ ويمكنك تجربة الشاشة الرئيسية لاحقًا من قسم الإدارة.</string>
+    <string name="stop_install_failed_primary">حسنًا</string>
+    <string name="stop_install_failed_secondary">عرض التفاصيل</string>
+
+    <!-- Stop: the TV has not come back (UX 4.8) -->
+    <string name="stop_not_back_title">لم يعد التلفاز للعمل بعد</string>
+    <string name="stop_not_back_body">إذا كان التلفاز عالقًا على شعاره: اضغط مطولًا على زر التشغيل في التلفاز نفسه (وليس جهاز التحكم) لمدة 10 ثوانٍ، ثم شغّله من جديد. وإذا ظهرت شاشة تقول "Can't load Android system"، فاختر المحاولة مرة أخرى (Try again). لا تختر إعادة ضبط المصنع؛ فلا حاجة إليها.</string>
+    <string name="stop_not_back_auto">بمجرد عودة التلفاز إلى شبكة Wi-Fi سنعيد الاتصال به ونستعيد الشاشة الرئيسية القديمة تلقائيًا، لتقرر ما تريد فعله بهدوء.</string>
+    <string name="stop_not_back_primary">عاد للعمل</string>
+    <string name="stop_not_back_secondary">ساعدني</string>
+
+    <!-- S5 Done -->
+    <string name="done_title">تلفازك جاهز</string>
+    <string name="done_title_nothing">لم يتغير شيء</string>
+    <string name="done_body_nothing">لم يكن هناك شيء متبقٍّ لإيقافه، لذلك بقي تلفازك كما كان تمامًا.</string>
+    <string name="done_body_nothing_kept">بقي كل ما حاولنا إيقافه قيد التشغيل، لذلك بقي تلفازك كما كان تمامًا.</string>
+    <string name="done_body_nothing_stopped">توقف الإعداد قبل تغيير أي شيء، لذلك بقي تلفازك كما كان تمامًا.</string>
+    <string name="done_body_nothing_unknown">لم نكن متأكدين من أي عنصر على هذا التلفاز، لذلك بقي كما كان تمامًا. ساعدنا في إضافة هذا التلفاز من قسم الإدارة ليتمكن إصدار قادم من تقديم المزيد.</string>
+    <string name="done_hero_cd">شاشة رئيسية نظيفة مع علامة صح زجاجية</string>
+    <string name="done_body">{count, plural, =0 {الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.} one {تم إيقاف عنصر واحد (#). الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.} two {تم إيقاف عنصرين (#). الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.} few {تم إيقاف # عناصر. الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.} many {تم إيقاف # عنصرًا. الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.} other {تم إيقاف # عنصر. الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.}}</string>
+    <string name="done_body_no_home">{count, plural, one {تم إيقاف عنصر واحد (#). يمكن إعادة كل شيء كما كان.} two {تم إيقاف عنصرين (#). يمكن إعادة كل شيء كما كان.} few {تم إيقاف # عناصر. يمكن إعادة كل شيء كما كان.} many {تم إيقاف # عنصرًا. يمكن إعادة كل شيء كما كان.} other {تم إيقاف # عنصر. يمكن إعادة كل شيء كما كان.}}</string>
+    <string name="done_body_partial">{total, plural, other {تم إيقاف {done} من #؛ ولم تتغير الشاشة الرئيسية. يمكن إعادة كل شيء كما كان.}}</string>
+    <string name="done_body_partial_home_on">{total, plural, other {تم إيقاف {done} من #. الشاشة الرئيسية الجديدة مفعّلة. يمكن إعادة كل شيء كما كان.}}</string>
+    <string name="done_restore_saved">حُفظت نقطة الاستعادة على هذا الهاتف ({date})</string>
+    <string name="done_debug_note">يتم إيقاف تصحيح الأخطاء على التلفاز عند الضغط على إنهاء</string>
+    <string name="done_skipped">رفض {name} الإيقاف؛ وهو غير ضار.</string>
+    <string name="kept_tv_input">{name}. تم الإبقاء عليه لأنه يشغّل مداخل HDMI والموالف في التلفاز.</string>
+    <string name="done_skipped_many">{count, plural, one {رفض عنصر واحد (#) الإيقاف؛ وهو غير ضار.} two {رفض عنصران (#) الإيقاف؛ وهما غير ضارين.} few {رفضت # عناصر الإيقاف؛ وهي غير ضارة.} many {رفض # عنصرًا الإيقاف؛ وهي غير ضارة.} other {رفض # عنصر الإيقاف؛ وهي غير ضارة.}}</string>
+    <string name="done_mibox_usb">عاد منفذ USB للعمل من جديد.</string>
+    <string name="done_add_card_title">إضافة بطاقة إلى الشاشة الرئيسية</string>
+    <string name="done_add_card_body">اختياري. يمكنك إضافة البطاقات لاحقًا من قسم الإدارة.</string>
+    <string name="done_note_title">حفظ ملاحظة استعادة للعائلة</string>
+    <string name="done_finish">إنهاء</string>
+    <string name="done_finishing">جارٍ إيقاف تصحيح الأخطاء...</string>
+    <string name="done_finished">جارٍ إيقاف تصحيح الأخطاء... تم.</string>
+
+    <!-- S5 restart card and flow (D24, UX 4.8) -->
+    <string name="restart_card_title">أعد تشغيل التلفاز للتأكد من ثبات كل التغييرات</string>
+    <string name="restart_card_recommended">دقيقتان، مستحسن</string>
+    <string name="restart_card_optional">اختياري</string>
+    <string name="restart_button">إعادة التشغيل</string>
+    <string name="restart_getting_ready">{seconds, plural, other {جارٍ التجهيز... # ث}}</string>
+    <string name="restart_intro">جارٍ إعادة تشغيل التلفاز. يستغرق ذلك دقيقة تقريبًا، ونحن نراقب عودته.</string>
+    <string name="restart_progress_off">انطفأ التلفاز...</string>
+    <string name="restart_progress_starting">جارٍ بدء التشغيل...</string>
+    <string name="restart_progress_found">تم العثور عليه في {time}...</string>
+    <string name="restart_progress_home">الشاشة الرئيسية هي الشاشة الجديدة.</string>
+    <string name="restart_progress_good">كل شيء على ما يرام.</string>
+    <string name="restart_came_back">{count, plural, one {عاد عنصر واحد (#) للعمل بعد إعادة التشغيل؛ وتم إيقافه مجددًا.} two {عاد عنصران (#) للعمل بعد إعادة التشغيل؛ وتم إيقافهما مجددًا.} few {عادت # عناصر للعمل بعد إعادة التشغيل؛ وتم إيقافها مجددًا.} many {عاد # عنصرًا للعمل بعد إعادة التشغيل؛ وتم إيقافها مجددًا.} other {عاد # عنصر للعمل بعد إعادة التشغيل؛ وتم إيقافها مجددًا.}}</string>
+    <string name="restart_slow">يستغرق الأمر وقتًا أطول من المعتاد. بعض أجهزة التلفاز بطيئة في إعادة الاتصال بشبكة Wi-Fi. إذا كان التلفاز يعرض شعاره فقط، فانتظر دقيقتين إضافيتين.</string>
+    <string name="restart_back_safe">عاد التلفاز للعمل. استعدنا الشاشة الرئيسية القديمة ضمانًا للأمان. هل تريد تجربة الشاشة الجديدة مرة أخرى مع إيقاف معالج الإعداد؟</string>
+    <string name="restart_back_try">التجربة مع إيقاف المعالج</string>
+    <string name="restart_back_leave">تركه كما هو</string>
+
+    <!-- Stop and undo ask first (Confirmations) -->
+    <string name="confirm_stop_title">هل تريد التوقف الآن؟</string>
+    <string name="confirm_stop_body">سنتوقف هنا ونعيد كل ما غيّرناه حتى الآن. سيبقى تلفازك آمنًا.</string>
+    <string name="confirm_stop_button">إيقاف والتراجع</string>
+    <string name="confirm_keep_going">مواصلة</string>
+    <string name="confirm_stop_here_title">هل تريد التوقف هنا؟</string>
+    <string name="confirm_stop_here_body">سنحتفظ بما تم إنجازه بالفعل ولن نغيّر أي شيء آخر. سيبقى تلفازك آمنًا.</string>
+    <string name="confirm_stop_here_button">التوقف هنا</string>
+    <string name="confirm_undo_title">هل تريد التراجع عن التغييرات على التلفاز؟</string>
+    <string name="confirm_undo_body">سنعيد كل ما أجراه هذا التغيير ليعود التلفاز كما كان من قبل. لا يُحذف أي شيء.</string>
+    <string name="confirm_undo_button">التراجع عن التغييرات</string>
+</resources>

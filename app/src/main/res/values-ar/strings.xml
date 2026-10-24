@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :app. Arabic strings.
+-->
+<resources>
+    <string name="app_channel_setup_name">إعداد تلفاز</string>
+    <string name="app_channel_setup_description">يعرض التقدم أثناء إجراء الهاتف للتغييرات على التلفاز، ويخبرك متى تنظر إلى شاشة التلفاز.</string>
+    <string name="app_restore_read_failed">حدث خطأ أثناء قراءة نقطة الاستعادة</string>
+</resources>

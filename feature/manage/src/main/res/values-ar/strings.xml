@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:manage. Arabic strings.
+-->
+<resources>
+
+    <!-- Shared button words -->
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_ok">حسنًا</string>
+    <string name="action_done">تم</string>
+    <string name="action_undo">تراجع</string>
+
+    <!-- Credential prompt (D17) -->
+    <string name="gate_title">تأكيد هويتك</string>
+    <string name="gate_subtitle">قبل أن نغيّر أي شيء على {tv}</string>
+    <string name="gate_subtitle_reset_key">قبل إعادة ضبط مفتاح هذا الهاتف</string>
+    <string name="gate_subtitle_delete_all">قبل حذف كل شيء</string>
+    <string name="gate_negative">إلغاء</string>
+    <string name="gate_failed">تعذّر تأكيد هويتك، لذلك لم يتغير شيء.</string>
+
+    <!-- M1 Manage -->
+    <string name="manage_settings_cd">إعدادات التطبيق</string>
+    <string name="manage_tv_title">{tv}، {room}</string>
+    <string name="manage_tv_title_noroom">{tv}</string>
+    <string name="manage_state_clean">نظيف</string>
+    <string name="manage_state_original">الأصلي</string>
+    <string name="manage_checked">تم الفحص في {date}</string>
+    <string name="manage_tv_card_cd">{tv}. {state}. {checked}</string>
+    <string name="manage_thumbnail_cd">آخر صورة من {tv}. اضغط للتحديث.</string>
+    <string name="manage_clean_again">تنظيفه مرة أخرى</string>
+    <string name="manage_level_simple">بسيط</string>
+    <string name="manage_level_custom">مخصص</string>
+    <string name="manage_level_simple_note">يوقف الفوضى المعتادة ويحتفظ بكل شيء آخر.</string>
+    <string name="manage_level_custom_note">يتيح لك اختيار كل عنصر، وشريط التطبيقات، والمظهر.</string>
+    <string name="manage_row_home">الشاشة الرئيسية</string>
+    <string name="manage_row_home_own">يحتفظ التلفاز بشاشته الأصلية. اعرف السبب</string>
+    <string name="manage_row_cards">البطاقات والوحدات</string>
+    <string name="manage_row_cards_none">لا توجد بطاقات بعد</string>
+    <string name="manage_row_switched_off">{count, plural, other {العناصر المتوقفة (#)}}</string>
+    <string name="manage_row_switched_off_sub">إعادة تشغيل أيٍّ منها</string>
+    <string name="manage_row_leftovers">فحص ما عاد بعد التحديث</string>
+    <string name="manage_row_leftovers_sub">بعد تحديث نظام التلفاز</string>
+    <string name="manage_row_restore">نقطة الاستعادة</string>
+    <string name="manage_row_restore_sub">{date}. يمكنك التراجع عن كل شيء من هنا.</string>
+    <string name="manage_row_tvsettings">إعدادات التلفاز</string>
+    <string name="manage_add_tv">+ إعداد تلفاز آخر</string>
+    <string name="manage_offline_banner">انقطع الاتصال بالتلفاز. هل ما زال قيد التشغيل؟</string>
+    <string name="manage_reconnect">إعادة الاتصال</string>
+    <string name="manage_reconnecting">جارٍ إعادة الاتصال...</string>
+
+    <!-- M1a Debugging step for a returning write (UX 4.3, returning) -->
+    <string name="debugstep_title">لإجراء تغييرات على التلفاز، يجب تفعيل تصحيح الأخطاء للحظات.</string>
+    <string name="debugstep_body">على التلفاز: الإعدادات (Settings) &gt; تفضيلات الجهاز (Device Preferences) &gt; خيارات المطور (Developer options) &gt; تصحيح أخطاء USB (USB debugging). سنتولى الباقي ونعيد إيقافه عند الانتهاء.</string>
+    <string name="debugstep_note">لن تحتاج إلى الضغط على «رقم الإصدار» (Build) مرة أخرى؛ خيارات المطور تبقى مفعّلة.</string>
+    <string name="debugstep_waiting">في انتظار التلفاز...</string>
+    <string name="debugstep_connecting">جارٍ الاتصال...</string>
+
+    <!-- A Manage write that paused and left its run open (R5-W8 O2) -->
+    <string name="openwrite_title">لم يكتمل تغيير على {tv}</string>
+    <string name="openwrite_body_lost">توقف التلفاز عن الاستجابة في منتصف العملية. يمكنك متابعة الباقي أو التراجع عمّا أجريناه. وحتى ذلك الحين لا يمكن إجراء أي تغيير آخر على هذا التلفاز.</string>
+    <string name="openwrite_body">توقفنا في منتصف العملية. يمكنك متابعة الباقي أو التراجع عمّا أجريناه. وحتى ذلك الحين لا يمكن إجراء أي تغيير آخر على هذا التلفاز.</string>
+    <string name="openwrite_body_setup">لم يكتمل إعداد {tv}. افتحه للمتابعة أو للتراجع عمّا أجريناه.</string>
+    <string name="openwrite_not_taken">لم يستجب التلفاز. تأكد من أنه قيد التشغيل وعلى شبكة Wi-Fi نفسها المتصل بها هذا الهاتف، ثم حاول مرة أخرى.</string>
+    <string name="openwrite_busy">جارٍ التنفيذ...</string>
+    <string name="openwrite_carry_on">متابعة</string>
+    <string name="openwrite_undo">التراجع عمّا أجريناه</string>
+    <string name="openwrite_stop">التوقف هنا</string>
+    <string name="openwrite_open_setup">فتح الإعداد</string>
+    <string name="openwrite_later">ليس الآن</string>
+    <string name="openwrite_report">الإبلاغ عن مشكلة</string>
+
+    <!-- M4 Switched off -->
+    <string name="switchedoff_title">{count, plural, other {العناصر المتوقفة (#)}}</string>
+    <string name="switchedoff_intro">يمكن إعادة تشغيل أي عنصر منها. لا يُحذف أي شيء؛ «متوقف» يعني في وضع سكون.</string>
+    <string name="switchedoff_group_ads">الإعلانات والصفوف الممولة</string>
+    <string name="switchedoff_group_tracking">التتبع والتحليلات</string>
+    <string name="switchedoff_group_nobody">تطبيقات لم يطلبها أحد</string>
+    <string name="switchedoff_group_brand">إضافات {brand}</string>
+    <string name="switchedoff_group_shop">وضع المتجر والعرض التوضيحي</string>
+    <string name="switchedoff_group_needed">مطلوب للشاشة الرئيسية الجديدة</string>
+    <string name="switchedoff_group_other">تم اختياره ضمن التخصيص</string>
+    <string name="switchedoff_put_back">إعادة تشغيل</string>
+    <string name="switchedoff_put_back_cd">إعادة تشغيل {name}</string>
+    <string name="switchedoff_snackbar">تمت إعادة تشغيل {name}.</string>
+    <string name="switchedoff_empty">لا يوجد أي عنصر متوقف حاليًا.</string>
+    <string name="switchedoff_empty_sub">كل شيء على التلفاز قيد التشغيل.</string>
+
+    <!-- M5 Check for leftovers -->
+    <string name="leftovers_title">فحص ما عاد بعد التحديث</string>
+    <string name="leftovers_checking">جارٍ الفحص...</string>
+    <string name="leftovers_found">{count, plural, one {عاد عنصر واحد (#) بعد التحديث. هل تريد إيقافه مجددًا؟} two {عاد عنصران (#) بعد التحديث. هل تريد إيقافهما مجددًا؟} few {عادت # عناصر بعد التحديث. هل تريد إيقافها مجددًا؟} many {عاد # عنصرًا بعد التحديث. هل تريد إيقافها مجددًا؟} other {عاد # عنصر بعد التحديث. هل تريد إيقافها مجددًا؟}}</string>
+    <string name="leftovers_switch_off">إيقاف</string>
+    <string name="leftovers_not_now">ليس الآن</string>
+    <string name="leftovers_none">لم يعد أي شيء. كل شيء كما تركته تمامًا.</string>
+    <string name="leftovers_done">تم إيقافها مجددًا.</string>
+    <string name="leftovers_error">تعذّر الفحص الآن. هل ما زال التلفاز قيد التشغيل؟</string>
+    <string name="leftovers_notice">{count, plural, one {عاد عنصر واحد (#) للعمل على التلفاز.} two {عاد عنصران (#) للعمل على التلفاز.} few {عادت # عناصر للعمل على التلفاز.} many {عاد # عنصرًا للعمل على التلفاز.} other {عاد # عنصر للعمل على التلفاز.}}</string>
+    <string name="leftovers_notice_action">فحص</string>
+
+    <!-- M7 TV settings -->
+    <string name="tvsettings_title">إعدادات التلفاز</string>
+    <string name="tvsettings_name_room">الاسم والغرفة</string>
+    <string name="tvsettings_name_label">الاسم</string>
+    <string name="tvsettings_room_label">الغرفة</string>
+    <string name="tvsettings_level_label">المستوى</string>
+    <string name="tvsettings_level_simple">بسيط</string>
+    <string name="tvsettings_level_custom">مخصص</string>
+    <string name="tvsettings_level_note">العودة إلى الوضع البسيط تخفي الخيارات الإضافية، ويبقى تلفازك كما هو.</string>
+    <string name="tvsettings_address">العنوان</string>
+    <string name="tvsettings_last_seen">آخر ظهور في {date}</string>
+    <string name="tvsettings_forget">نسيان هذا التلفاز</string>
+    <string name="tvsettings_forget_explain">يحذف هذا سجل التلفاز وسجلات العمليات ونقاط الاستعادة الخاصة به من هذا الهاتف. لا يتغير شيء على التلفاز نفسه، لكنك لن تتمكن من التراجع من هذا الهاتف بعد ذلك.</string>
+    <string name="tvsettings_forget_title">هل تريد نسيان {tv}؟</string>
+    <string name="tvsettings_forget_confirm">نسيان هذا التلفاز</string>
+    <string name="tvsettings_forget_busy">ما زال الإعداد يعمل على هذا التلفاز. انتظر حتى ينتهي أو أوقفه أولًا.</string>
+
+    <!-- M8 App settings -->
+    <string name="appsettings_title">إعدادات التطبيق</string>
+    <string name="appsettings_large_text">النص الكبير يتبع النظام</string>
+    <string name="appsettings_large_text_note">يتبع حجم النص الحجم المحدد في إعدادات هاتفك.</string>
+    <string name="appsettings_haptics">الاهتزاز اللمسي</string>
+    <string name="appsettings_haptics_note">اهتزازات خفيفة عند انتهاء خطوة أو عندما يحتاج التطبيق إلى انتباهك.</string>
+    <string name="appsettings_about">حول التطبيق</string>
+    <string name="appsettings_version">الإصدار {version}</string>
+    <string name="appsettings_launcher_pin_label">تطبيق الشاشة الرئيسية المدمج</string>
+    <string name="appsettings_key_label">مفتاح الهاتف</string>
+    <string name="appsettings_key_strongbox">محفوظ في شريحة أمان مخصصة (StrongBox).</string>
+    <string name="appsettings_key_tee">محفوظ في العتاد الآمن للهاتف (TEE).</string>
+    <string name="appsettings_key_wrapped">محفوظ برمجيًا ومشفّر بمفتاح من التخزين الآمن للهاتف، لأن هذا الهاتف لا يدعم حفظه في العتاد.</string>
+    <string name="appsettings_check_updates">التحقق من التحديثات</string>
+    <string name="appsettings_checking">جارٍ التحقق...</string>
+    <string name="appsettings_update_available">الإصدار {version} متاح</string>
+    <string name="appsettings_update_open">فتح صفحة الإصدار</string>
+    <string name="appsettings_up_to_date">لديك أحدث إصدار</string>
+    <string name="appsettings_update_error">تعذّر التحقق من التحديثات</string>
+    <string name="appsettings_licences">التراخيص</string>
+    <string name="appsettings_licence_app">Clean Your TV: ترخيص GPL-3.0-or-later</string>
+    <string name="appsettings_licence_font">خط Outfit: ترخيص SIL Open Font Licence 1.1</string>
+    <string name="appsettings_licence_apache">شيفرة dadb وShizuku المعدّلة: إشعارات Apache-2.0</string>
+    <string name="appsettings_licence_bouncycastle">مكتبة التشفير Bouncy Castle: ترخيص Bouncy Castle</string>
+    <string name="appsettings_privacy">الخصوصية</string>
+    <string name="appsettings_privacy_text">لا يغادر أي شيء شبكتك باستثناء التنزيلات من github.com. يرى GitHub عنوان هاتفك ومعرّف متصفح عامًا فقط. ولا يغادر أي تقرير هاتفك إلا عندما تنسخه أو تشاركه أو تنشره بنفسك.</string>
+    <string name="appsettings_privacy_text_offline">لا يغادر أي شيء شبكتك. يتحدث التطبيق فقط مع التلفاز الذي تختاره ولا يجري أي اتصالات بالإنترنت من تلقاء نفسه. ولا يغادر أي تقرير هاتفك إلا عندما تنسخه أو تشاركه أو تنشره بنفسك.</string>
+    <string name="appsettings_report">الإبلاغ عن مشكلة</string>
+    <string name="appsettings_report_note">اطّلع على التقرير أولًا، ثم شاركه أو انشره على GitHub</string>
+    <string name="appsettings_reset_key">إعادة ضبط مفتاحي</string>
+    <string name="appsettings_reset_key_note">سيطلب كل تلفاز الوثوق بهذا الهاتف من جديد.</string>
+    <string name="appsettings_reset_key_title">هل تريد إعادة ضبط المفتاح على هذا الهاتف؟</string>
+    <string name="appsettings_reset_key_confirm">إعادة ضبط مفتاحي</string>
+    <string name="appsettings_delete_all">حذف كل شيء</string>
+    <string name="appsettings_delete_all_note">يحذف جميع سجلات التلفاز وسجلات العمليات ونقاط الاستعادة وسجل التشخيص والمفتاح من هذا الهاتف. لا تتغير أجهزة التلفاز نفسها، ولن تتمكن من التراجع من هذا الهاتف بعد ذلك.</string>
+    <string name="appsettings_delete_all_title">هل تريد حذف كل شيء من هذا الهاتف؟</string>
+    <string name="appsettings_delete_all_confirm">حذف كل شيء</string>
+    <string name="appsettings_delete_all_busy">ما زال الإعداد يعمل على {tv}. انتظر حتى ينتهي أو أوقفه أولًا.</string>
+
+    <!-- Stop and undo ask first (Confirmations) -->
+    <string name="confirm_stop_title">هل تريد التوقف الآن؟</string>
+    <string name="confirm_stop_body">سنتوقف هنا ونعيد كل ما غيّرناه حتى الآن. سيبقى تلفازك آمنًا.</string>
+    <string name="confirm_stop_button">إيقاف والتراجع</string>
+    <string name="confirm_keep_going">مواصلة</string>
+    <string name="confirm_stop_here_title">هل تريد التوقف هنا؟</string>
+    <string name="confirm_stop_here_body">سنحتفظ بما تم إنجازه بالفعل ولن نغيّر أي شيء آخر. سيبقى تلفازك آمنًا.</string>
+    <string name="confirm_stop_here_button">التوقف هنا</string>
+    <string name="confirm_undo_title">هل تريد التراجع عن التغييرات على التلفاز؟</string>
+    <string name="confirm_undo_body">سنعيد كل ما أجراه هذا التغيير ليعود التلفاز كما كان من قبل. لا يُحذف أي شيء.</string>
+    <string name="confirm_undo_button">التراجع عن التغييرات</string>
+
+    <!-- 0.3.2 B1: an unlisted TV on Manage -->
+    <string name="manage_help_add_tv_banner">لم نتعامل مع هذا الطراز بالتحديد من قبل، لذلك كنا حذرين معه. إرسال تقرير قصير منك يساعدنا على إضافته.</string>
+    <string name="manage_help_add_tv">المساعدة في إضافة هذا التلفاز</string>
+
+    <!-- 0.3.2 B1 and B2: the report preview -->
+    <string name="report_tv_title">المساعدة في إضافة هذا التلفاز</string>
+    <string name="report_tv_body">يوضح هذا التقرير طراز التلفاز والتطبيقات التي جاءت معه، لنتمكن من إعداد قائمة مخصصة له. أما التطبيقات التي ثبّتها بنفسك فيُحصى عددها فقط ولا تُذكر أسماؤها أبدًا.</string>
+    <string name="report_problem_title">الإبلاغ عن مشكلة</string>
+    <string name="report_problem_body">يحتوي هذا التقرير على الخطوات التي نفّذناها وملخص قصير عن التلفاز كنص عادي، بعد إزالة العناوين والأرقام التسلسلية والمفاتيح والرموز أولًا. قد تذكر الخطوات أسماء التطبيقات التي أوقفناها أو حاولنا إيقافها.</string>
+    <string name="report_public">سيكون هذا التقرير عامًا إذا نشرته على GitHub. لا يرسل التطبيق أي شيء من تلقاء نفسه، بل أنت من يختار وجهة إرساله.</string>
+    <string name="report_preview_label">التقرير</string>
+    <string name="report_paste_hint">ننسخ التقرير ثم نفتح النموذج على GitHub. الصقه في المربع المخصص له.</string>
+    <string name="report_copy_open">نسخ وفتح GitHub</string>
+    <string name="report_open">فتح GitHub</string>
+    <string name="report_in_link_hint">سيُفتح النموذج على GitHub وهذا التقرير مكتوب فيه مسبقًا. أضف بضع كلمات إن أردت ثم انشره. كما ننسخ التقرير احتياطيًا في حال فُتح النموذج بدونه.</string>
+    <string name="report_too_long">هذا التقرير أطول من أن يُمرَّر داخل الرابط تلقائيًا، لذلك ننسخه لك. في GitHub، اضغط مطولًا داخل مربع التقرير واختر لصق، ثم انشره.</string>
+    <string name="report_share">مشاركة</string>
+    <string name="report_loading">جارٍ إعداد التقرير</string>
+    <string name="report_unavailable">نحتاج إلى قراءة بيانات هذا التلفاز مرة واحدة قبل إنشاء تقريره. أعدّه أو اتصل به أولًا ثم حاول مرة أخرى.</string>
+</resources>
