@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="cyt_back">رجوع</string>
+    <string name="cyt_close">إغلاق</string>
+    <string name="cyt_help">مساعدة</string>
+    <string name="cyt_step_counter">%1$d من %2$d</string>
+    <string name="cyt_step_counter_extra">%1$d من %2$d · %3$s</string>
+
+    <string name="cyt_status_connected">متصل</string>
+    <string name="cyt_status_waiting">في الانتظار</string>
+    <string name="cyt_status_working">قيد التنفيذ</string>
+    <string name="cyt_status_debugging_off">تصحيح الأخطاء متوقف</string>
+    <string name="cyt_status_offline">غير متصل</string>
+
+    <string name="cyt_pill_off">متوقف</string>
+    <string name="cyt_pill_kept">محفوظ</string>
+    <string name="cyt_action_keep">الاحتفاظ به</string>
+    <string name="cyt_action_switch_off">إيقافه</string>
+    <string name="cyt_why">لماذا؟</string>
+    <string name="cyt_close_group">إغلاق المجموعة</string>
+    <plurals name="cyt_show_more">
+        <item quantity="zero">عرض %d إضافية</item>
+        <item quantity="one">عرض %d إضافي</item>
+        <item quantity="two">عرض %d إضافيين</item>
+        <item quantity="few">عرض %d إضافية</item>
+        <item quantity="many">عرض %d إضافيًا</item>
+        <item quantity="other">عرض %d إضافي</item>
+    </plurals>
+    <string name="cyt_group_count">%1$s · %2$d من %3$d</string>
+    <string name="cyt_count_of">%1$d من %2$d</string>
+
+    <string name="cyt_undo">تراجع</string>
+    <string name="cyt_obscured_hint">هناك تطبيق آخر يغطي الشاشة، لذلك لم تُحتسب هذه الضغطة. أوقفه مؤقتًا أو أغلقه، ثم اضغط مرة أخرى.</string>
+
+    <string name="cyt_countdown_60">بقيت دقيقة واحدة. اختر نعم أو ارجع للخلف.</string>
+    <string name="cyt_countdown_30">بقيت 30 ثانية.</string>
+    <string name="cyt_countdown_10">بقيت 10 ثوانٍ.</string>
+    <string name="cyt_countdown_left">المتبقي %1$s</string>
+
+    <plurals name="cyt_earlier_steps">
+        <item quantity="zero">%d خطوات سابقة</item>
+        <item quantity="one">%d خطوة سابقة</item>
+        <item quantity="two">%d خطوتان سابقتان</item>
+        <item quantity="few">%d خطوات سابقة</item>
+        <item quantity="many">%d خطوة سابقة</item>
+        <item quantity="other">%d خطوة سابقة</item>
+    </plurals>
+    <string name="cyt_state_done">تم</string>
+    <string name="cyt_state_doing">قيد التنفيذ</string>
+    <string name="cyt_state_upcoming">التالي</string>
+    <string name="cyt_state_skipped">تم تخطيه</string>
+    <string name="cyt_percent">%1$d%%</string>
+
+    <string name="cyt_live_from_tv">مباشر من التلفاز</string>
+    <string name="cyt_copy_as_commands">نسخ كأوامر</string>
+
+    <string name="cyt_mirror_allow_title">هل تسمح بتصحيح أخطاء USB؟</string>
+    <string name="cyt_mirror_allow_body">بصمة مفتاح RSA لهذا الحاسوب هي:</string>
+    <string name="cyt_mirror_allow_always">السماح دائمًا من هذا الحاسوب</string>
+    <string name="cyt_mirror_cancel" tools:ignore="ButtonCase">إلغاء</string>
+    <string name="cyt_mirror_ok">موافق</string>
+    <string name="cyt_mirror_card_title">بطاقة جديدة من %1$s</string>
+    <string name="cyt_mirror_card_body">يمكن لتطبيق %1$s عرض بطاقة على شاشتك الرئيسية. إبقاؤها مخفية يترك مربّع التطبيق العادي كما هو.</string>
+    <string name="cyt_mirror_card_later">يمكنك تغيير هذا لاحقًا: اضغط مطولًا على OK فوق الإعدادات.</string>
+    <string name="cyt_mirror_card_key">%1$s، المفتاح %2$s</string>
+    <string name="cyt_mirror_keep_hidden">إبقاؤها مخفية</string>
+    <string name="cyt_mirror_show_card">عرض البطاقة</string>
+
+    <!-- The dock editor (S3b) -->
+    <string name="cyt_dock_row_dock">شريط التطبيقات</string>
+    <string name="cyt_dock_row_n">الصف %1$d</string>
+    <string name="cyt_dock_item_dock_cd">%1$s، في شريط التطبيقات، الموضع %2$d</string>
+    <string name="cyt_dock_item_row_cd">%1$s، في الصف %2$d، الموضع %3$d</string>
+    <string name="cyt_dock_remove_cd">إخراج %1$s</string>
+    <string name="cyt_dock_add_dock_cd">إضافة %1$s إلى شريط التطبيقات</string>
+    <string name="cyt_dock_add_row_cd">إضافة %1$s إلى الصف %2$d</string>
+    <string name="cyt_dock_item_out_cd">%1$s، خارج شريط التطبيقات وصفوفه</string>
+    <string name="cyt_dock_action_up">تحريك لأعلى</string>
+    <string name="cyt_dock_action_down">تحريك لأسفل</string>
+    <string name="cyt_dock_action_to_dock">نقل إلى شريط التطبيقات</string>
+    <string name="cyt_dock_action_to_row">نقل إلى الصف %1$d</string>
+    <string name="cyt_dock_action_remove">إخراج</string>
+    <string name="cyt_dock_add_row">إضافة صف أسفل شريط التطبيقات</string>
+    <string name="cyt_dock_remove_row">إزالة الصف</string>
+    <string name="cyt_dock_remove_row_cd">إزالة الصف %1$d</string>
+    <string name="cyt_dock_row_removed">تمت إزالة الصف %1$d، وعادت تطبيقاته ضمن التطبيقات الأخرى.</string>
+    <string name="cyt_dock_row_empty">اضغط على تطبيق بالأسفل لوضعه في هذا الصف.</string>
+    <string name="cyt_dock_full">يتسع شريط التطبيقات لـ %1$d. أخرج تطبيقًا منه أو أضف صفًا أسفله.</string>
+    <string name="cyt_dock_row_full">هذه الصفوف ممتلئة. أخرج تطبيقًا أو أضف صفًا آخر.</string>
+    <string name="cyt_dock_all_full">امتلأ شريط التطبيقات والصفان أسفله. أخرج تطبيقًا لإضافة آخر.</string>
+    <string name="cyt_dock_gaps">تعرض المواضع الفارغة على التلفاز تطبيقاتك الأخرى بالاسم.</string>
+    <string name="cyt_dock_others">تطبيقات أخرى على التلفاز</string>
+</resources>

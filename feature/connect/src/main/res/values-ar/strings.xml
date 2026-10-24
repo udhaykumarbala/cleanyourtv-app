@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:connect. Arabic strings.
+-->
+<resources>
+
+    <!-- Shared button words -->
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_ok">حسنًا</string>
+
+    <!-- S1 Welcome -->
+    <string name="welcome_title">تلفازك، مرتّب وهادئ.</string>
+    <string name="welcome_body">أوقف الفوضى والإعلانات، واحتفظ بالتطبيقات التي تستخدمها، واحصل على شاشة رئيسية هادئة في خمس دقائق. ويمكنك التراجع عن كل شيء متى شئت.</string>
+    <string name="welcome_hero_cd">شاشة رئيسية للتلفاز مليئة بالصفوف الممولة تتحول إلى شاشة نظيفة تضم أربعة تطبيقات في الأسفل</string>
+    <string name="welcome_looking">جارٍ البحث عن أجهزة تلفاز على شبكة Wi-Fi...</string>
+    <string name="welcome_found_one">تم العثور على {name} ({room})</string>
+    <string name="welcome_found_one_noroom">تم العثور على {name}</string>
+    <string name="welcome_found_many">{count, plural, one {تم العثور على تلفاز واحد (#)} two {تم العثور على تلفازين (#)} few {تم العثور على # أجهزة تلفاز} many {تم العثور على # جهاز تلفاز} other {تم العثور على # جهاز تلفاز}}</string>
+    <string name="welcome_none_yet">لم يظهر أي تلفاز بعد. تابع وسنواصل البحث.</string>
+    <string name="welcome_start">البدء</string>
+    <string name="welcome_returning">سبَق لي إعداد تلفاز من قبل</string>
+
+    <!-- S1b Which TV? -->
+    <string name="picker_title">أي تلفاز؟</string>
+    <string name="picker_body">لست متأكدًا؟ التلفاز الذي تختاره سيعرض رسالة على شاشته بعد لحظات.</string>
+    <string name="picker_row">{name}، {room} · {platform}</string>
+    <string name="picker_row_noroom">{name} · {platform}</string>
+    <string name="picker_name_with_suffix">{name} ...{suffix}</string>
+    <string name="picker_platform_android_tv">Android TV {version}</string>
+    <string name="picker_platform_google_tv">Google TV {version}</string>
+    <string name="picker_platform_fire_tv">Fire TV</string>
+    <string name="picker_footer">يجب أن يكون الهاتف والتلفاز على شبكة Wi-Fi نفسها.</string>
+    <string name="picker_primary">استخدام {name}</string>
+    <string name="picker_tertiary">إدخال عنوان التلفاز يدويًا</string>
+
+    <!-- S1c Enter the TV's address (sheet) -->
+    <string name="address_title">اكتب عنوان التلفاز</string>
+    <string name="address_body">على التلفاز: الإعدادات (Settings) &gt; الشبكة (Network) &gt; اسم شبكة Wi-Fi يعرض عنوانًا مثل 192.168.1.50.</string>
+    <string name="address_field_label">عنوان التلفاز</string>
+    <string name="address_error">هذا ليس عنوانًا صالحًا على شبكتك المنزلية</string>
+    <string name="address_connect">اتصال</string>
+
+    <!-- S2a Let the phone in (steps) -->
+    <string name="door_title">السماح للهاتف بالاتصال</string>
+    <string name="door_body">أمسك جهاز التحكم بالتلفاز. تستغرق هذه الخطوة دقيقة تقريبًا وهي الجزء الوحيد الذي يحتاج إلى إعداد يدوي.</string>
+    <string name="door_step_cd">الخطوة {current} من {total}</string>
+    <string name="door_next">التالي</string>
+    <string name="door_menu_names_vary">قد تختلف أسماء القوائم قليلًا على تلفازك.</string>
+    <string name="door_same_wifi">يجب أن يكون الهاتف والتلفاز على شبكة Wi-Fi نفسها.</string>
+    <string name="door_waiting">في انتظار التلفاز...</string>
+    <string name="door_connecting">جارٍ الاتصال...</string>
+    <string name="door_still_waiting">ما زلنا ننتظر. هل فعّلت تصحيح أخطاء USB؟ تحتاج بعض أجهزة التلفاز إلى تفعيل تصحيح أخطاء الشبكة أيضًا.</string>
+    <string name="door_still_waiting_show_me">أرني الطريقة</string>
+    <string name="door_change_model">أليس {model}؟ تغيير الطراز</string>
+    <string name="door_change_model_generic">أليس هذا التلفاز؟ تغيير الطراز</string>
+    <string name="door_not_this_tv">أليس هذا التلفاز؟ أدخل عنوان التلفاز</string>
+    <string name="door_brand_prompt">ما العلامة التجارية؟</string>
+    <string name="door_brand_xiaomi">Xiaomi</string>
+    <string name="door_brand_tcl">TCL</string>
+    <string name="door_brand_sony">Sony</string>
+    <string name="door_brand_hisense">Hisense</string>
+    <string name="door_brand_philips">Philips</string>
+    <string name="door_brand_google">Google</string>
+    <string name="door_brand_amazon">Amazon</string>
+    <string name="door_brand_other">أخرى</string>
+    <string name="door_unknown_note">لم نتعرف على هذا الطراز بالتحديد من قبل، لكن الخطوات تكون هي نفسها عادةً.</string>
+
+    <!-- S2a step cards by platform family (UX 2 table). -->
+    <!-- Android TV 9 to 11 -->
+    <string name="family_atv_step1">على التلفاز، افتح الإعدادات (أيقونة الترس في الأعلى)، ثم تفضيلات الجهاز (Device Preferences) &gt; حول (About). اضغط زر الإدخال (OK) على «رقم الإصدار» (Build) سبع مرات حتى تظهر رسالة تفيد بأنك أصبحت مطورًا.</string>
+    <string name="family_atv_step2">ارجع شاشة واحدة للخلف. افتح خيارات المطور (Developer options) وفعّل «تصحيح أخطاء USB» (USB debugging). وإذا ظهر خيار «تصحيح أخطاء الشبكة» (Network debugging) أو «تصحيح أخطاء ADB»، ففعّله أيضًا.</string>
+    <string name="family_atv_step3">اترك التلفاز على هذه الشاشة، وسيتصل هاتفك تلقائيًا.</string>
+    <string name="family_atv_extra_shield">على جهاز Shield، الخيار المهم هو «تصحيح أخطاء الشبكة» (Network debugging).</string>
+    <!-- Google TV 12 to 14 -->
+    <string name="family_gtv_step1">على التلفاز، افتح الإعدادات (Settings)، ثم النظام (System) &gt; حول (About). اضغط زر الإدخال (OK) على «إصدار نظام التشغيل Android TV» (Android TV OS build) سبع مرات حتى تظهر رسالة تفيد بأنك أصبحت مطورًا.</string>
+    <string name="family_gtv_step2">ارجع شاشة واحدة للخلف. افتح النظام (System) &gt; خيارات المطور (Developer options) وفعّل «تصحيح أخطاء USB» (USB debugging)، ثم فعّل «تصحيح الأخطاء اللاسلكي» (Wireless debugging) أيضًا.</string>
+    <string name="family_gtv_step3">اترك التلفاز على هذه الشاشة، وسيتصل هاتفك تلقائيًا.</string>
+    <!-- Fire TV (Fire OS 7) -->
+    <string name="family_fire_step1">على التلفاز، افتح الإعدادات (Settings) &gt; جهازي Fire TV (My Fire TV) &gt; حول (About). اختر اسم الجهاز سبع مرات حتى تظهر رسالة تفيد بأنك أصبحت مطورًا.</string>
+    <string name="family_fire_step2">ارجع شاشة واحدة للخلف. افتح خيارات المطور (Developer options) وفعّل «تصحيح أخطاء ADB» (ADB debugging).</string>
+    <string name="family_fire_step3">اترك التلفاز على هذه الشاشة، وسيتصل هاتفك تلقائيًا.</string>
+    <!-- TCL China (Android 9) -->
+    <string name="family_tcl_step1">على التلفاز، افتح الإعدادات (Settings) &gt; حول (About) &gt; 本机信息، ثم اضغط في جهاز التحكم: أعلى، أسفل، يسار، يمين.</string>
+    <string name="family_tcl_step2">ستظهر نافذة صغيرة باسم "ADB" تحتوي على عنوان. اتركها مفتوحة.</string>
+    <string name="family_tcl_step3">اترك التلفاز على هذه الشاشة، وسيتصل هاتفك تلقائيًا.</string>
+    <!-- Unknown brand: the generic Android TV path -->
+    <string name="family_unknown_step1">على التلفاز، افتح الإعدادات (أيقونة الترس في الأعلى)، ثم تفضيلات الجهاز (Device Preferences) &gt; حول (About). اضغط زر الإدخال (OK) على «رقم الإصدار» (Build) سبع مرات حتى تظهر رسالة تفيد بأنك أصبحت مطورًا.</string>
+    <string name="family_unknown_step2">ارجع شاشة واحدة للخلف. افتح خيارات المطور (Developer options) وفعّل «تصحيح أخطاء USB» (USB debugging). وإذا ظهر خيار «تصحيح أخطاء الشبكة» (Network debugging) أو «تصحيح أخطاء ADB»، ففعّله أيضًا.</string>
+    <string name="family_unknown_step3">اترك التلفاز على هذه الشاشة، وسيتصل هاتفك تلقائيًا.</string>
+
+    <!-- S2a profile banners (UX 2 and 4.15) -->
+    <string name="banner_fire">يتيح لنا Fire TV إيقاف الإعلانات والتتبع، لكنه يحتفظ بشاشته الرئيسية الخاصة. مع ذلك ستحصل على التنظيف الكامل.</string>
+    <string name="banner_tcl">يحتفظ هذا التلفاز بشاشته الرئيسية الخاصة (لا تسمح TCL بغيرها). مع ذلك ستحصل على التنظيف الكامل.</string>
+    <string name="banner_mibox_usb">أثناء تفعيل تصحيح الأخطاء، يوقف هذا الجهاز منفذ USB الخاص به. سيتوقف أي مكبر صوت أو قرص USB مؤقتًا حتى ننتهي (سنعيد إيقاف تصحيح الأخطاء في النهاية).</string>
+
+    <!-- S2c Look at the TV (Allow) -->
+    <string name="allow_title">انظر إلى التلفاز</string>
+    <string name="allow_body">يسألك التلفاز عمّا إذا كان يثق بهذا الهاتف. حدّد "Always allow"، ثم اختر OK.</string>
+    <!-- The two parts of allow_body shown in text.primary; each must appear in allow_body exactly. -->
+    <string name="allow_body_emphasis_always">"Always allow"</string>
+    <string name="allow_body_emphasis_ok">OK.</string>
+    <string name="allow_code_label">ينتهي الرمز المعروض على التلفاز بـ</string>
+    <string name="allow_code_caption">هذا هو هاتفك.</string>
+    <string name="allow_waiting">في انتظار موافقتك على التلفاز...</string>
+    <string name="allow_still_waiting">ما زلنا في انتظار الضغط على OK في التلفاز.</string>
+    <string name="allow_trusted">تم الوثوق</string>
+    <string name="allow_dont_see">لا أرى الرسالة على التلفاز</string>
+    <string name="allow_art_cd">نافذة السماح بتصحيح أخطاء USB على التلفاز. تنتهي البصمة بـ {tail}.</string>
+
+    <!-- S2c sheet: I don't see it on the TV (UX 4.4) -->
+    <string name="notseen_title">لا أرى الرسالة على التلفاز</string>
+    <string name="notseen_hidden">قد تختبئ النافذة خلف شاشة أخرى. اضغط زر الشاشة الرئيسية (Home) في جهاز التحكم، ثم زر الرجوع مرة واحدة. إذا لم تظهر، فسنعيد إرسال الطلب إلى التلفاز.</string>
+    <string name="notseen_cancelled">إذا ضغط أحدهم على إلغاء (Cancel): أوقف «تصحيح أخطاء USB» ثم أعد تشغيله على التلفاز، وبعدها اضغط «الطلب من التلفاز مرة أخرى».</string>
+    <string name="notseen_greyed">إذا كان خيار "Always allow" غير مفعّل على التلفاز، فالضغط على OK وحده يكفي؛ وسنسألك مرة أخرى في المرة القادمة.</string>
+    <string name="notseen_ask_again">الطلب من التلفاز مرة أخرى</string>
+    <string name="notseen_asking">جارٍ الطلب من التلفاز مرة أخرى...</string>
+    <string name="notseen_restart">لا يقبل التلفاز الاتصال بالهاتف. يحدث هذا في بعض الطرازات عند تفعيل تصحيح الأخطاء قبل اكتمال بدء تشغيل التلفاز. أعد تشغيل التلفاز، ثم أعد تفعيل تصحيح الأخطاء وارجع إلى هنا.</string>
+    <string name="notseen_restarted">أعدت تشغيله</string>
+
+    <!-- S2d Connected, and the identity check "Is this your TV?" (D38) -->
+    <string name="connected_title">متصل بـ {tv}</string>
+    <string name="connected_cd">متصل</string>
+    <string name="identity_question">هل هذا هو تلفازك؟</string>
+    <string name="identity_detail">{name}، الرقم التسلسلي المنتهي بـ {serial}</string>
+    <string name="identity_body">تأكد من أن الصورة المعروضة تطابق ما يظهر على شاشة تلفازك الآن.</string>
+    <string name="identity_screenshot_cd">ما يعرضه التلفاز الآن</string>
+    <string name="identity_yes">نعم، هذا تلفازي</string>
+    <string name="identity_no">لا</string>
+
+    <!-- S2x Pairing needed (D9). -->
+    <string name="pairing_title">يحتاج هذا التلفاز إلى رمز إقران</string>
+    <string name="pairing_body">لا يدعم هذا الإصدار إدخال رموز الإقران بعد، وسيدعمها الإصدار القادم. إذا كان لديك حاسوب، قم بالإقران مرة واحدة عبر adb وشغّل الأمر adb tcpip 5555، ثم ارجع إلى هنا وسيتولى الهاتف الباقي.</string>
+    <string name="pairing_show_steps">اعرض خطوات الحاسوب</string>
+    <string name="pairing_steps_title">الإقران مرة واحدة من الحاسوب</string>
+    <string name="pairing_steps_intro">على التلفاز، افتح خيارات المطور (Developer options) &gt; تصحيح الأخطاء اللاسلكي (Wireless debugging) &gt; إقران جهاز برمز الإقران (Pair device with pairing code). ثم نفّذ هذه الأوامر الثلاثة على الحاسوب واحدًا تلو الآخر.</string>
+    <string name="pairing_steps_note">استخدم العنوان والمنافذ والرمز المكوّن من ستة أرقام كما يظهر على التلفاز. وبعد تشغيل الأمر الأخير، ارجع إلى هذا التطبيق.</string>
+
+    <!-- Stop: TV not found (UX 4.1, no Wi-Fi name, D19) -->
+    <string name="stop_tv_not_found_title">لم يُعثر على تلفاز بعد</string>
+    <string name="stop_tv_not_found_body">تأكد من أن التلفاز قيد التشغيل ومتصل بشبكة Wi-Fi نفسها المتصل بها هذا الهاتف. قد تستغرق أجهزة التلفاز دقيقة للظهور بعد تشغيلها.</string>
+    <string name="stop_tv_not_found_primary">مواصلة البحث</string>
+    <string name="stop_tv_not_found_secondary">إدخال عنوان التلفاز يدويًا</string>
+    <string name="stop_tv_not_found_tertiary">مساعدة</string>
+    <string name="stop_tv_not_found_help_title">لماذا قد لا يظهر التلفاز</string>
+    <string name="stop_tv_not_found_help_isolation">شبكة Wi-Fi للضيوف، أو جهاز توجيه (راوتر) يعزل الأجهزة عن بعضها. ابحث في إعدادات الراوتر عن "AP isolation" أو "client isolation" وأوقف تفعيله.</string>
+    <string name="stop_tv_not_found_help_ethernet">التلفاز متصل بسلك إيثرنت بينما الهاتف على شبكة Wi-Fi. يعمل هذا بشكل طبيعي في معظم أجهزة الراوتر، لكن بعضها يفصل بين الشبكتين. كتابة عنوان التلفاز يدويًا يتجاوز هذه المشكلة.</string>
+    <string name="stop_tv_not_found_help_mesh">نظام شبكي (Mesh) بشبكة ضيوف منفصلة. صِل الهاتف بالشبكة الرئيسية.</string>
+
+    <!-- Stop: wrong network (UX 4.2 with D19 copy) -->
+    <string name="stop_wrong_network_title">الهاتف والتلفاز على شبكتين مختلفتين</string>
+    <string name="stop_wrong_network_body">شوهد التلفاز آخر مرة على شبكة أخرى. اتصل بشبكة Wi-Fi نفسها المتصل بها التلفاز وسنواصل العمل.</string>
+    <string name="stop_wrong_network_primary">فتح إعدادات Wi-Fi</string>
+    <string name="stop_wrong_network_secondary">أنا على الشبكة الصحيحة، ابحث مجددًا</string>
+    <string name="stop_wrong_network_off_title">هذا الهاتف غير متصل بـ Wi-Fi</string>
+    <string name="stop_wrong_network_off_body">شبكة Wi-Fi متوقفة. لا يمكن الوصول إلى التلفاز إلا عبر شبكة Wi-Fi نفسها.</string>
+
+    <!-- Stop: identity changed (D37) -->
+    <string name="stop_identity_changed_title">ردّ تلفاز مختلف على هذا العنوان</string>
+    <string name="stop_identity_changed_body">التلفاز الموجود على هذا العنوان ليس الجهاز الذي أعددناه باسم {name}. ربما تغيّر عنوانه أو أخذ تلفاز آخر هذا العنوان. توقفنا قبل تغيير أي شيء.</string>
+    <string name="stop_identity_changed_primary">البحث عنه مجددًا</string>
+    <string name="stop_identity_changed_secondary">رجوع</string>
+
+    <!-- Stop: shell v2 missing (F1) -->
+    <string name="stop_tv_not_supported_title">لا يمكن إعداد هذا التلفاز من الهاتف بعد</string>
+    <string name="stop_tv_not_supported_body">اتصال تصحيح الأخطاء في هذا التلفاز بدائي جدًا ولا يتيح للهاتف إجراء التغييرات بأمان، لذلك توقفنا قبل لمس أي شيء. لم يتغير أي شيء على التلفاز.</string>
+    <string name="stop_tv_not_supported_primary">رجوع</string>
+
+</resources>
