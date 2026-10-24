@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">إعداد التلفزيون</string>
+    <string name="app_channel_setup_description">يعرض التقدم أثناء قيام الهاتف بتغيير الأشياء على التلفزيون، ويخبرك متى تنظر إلى التلفزيون.</string>
+    <string name="app_restore_read_failed">حدث خطأ ما في قراءة نقطة الاستعادة</string>
+</resources>

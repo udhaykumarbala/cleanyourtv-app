@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">设置电视</string>
+    <string name="app_channel_setup_description">当手机更改电视上的内容时显示进度，并告诉您何时看电视。</string>
+    <string name="app_restore_read_failed">读取还原点时出错</string>
+</resources>

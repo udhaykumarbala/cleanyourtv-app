@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">Configuration d\'un téléviseur</string>
+    <string name="app_channel_setup_description">affiche la progression pendant que le téléphone modifie les éléments sur votre téléviseur et vous indique quand regarder le téléviseur.</string>
+    <string name="app_restore_read_failed">Une erreur s\'est produite lors de la lecture du point de restauration</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">Einrichten eines Fernsehers</string>
+    <string name="app_channel_setup_description">Zeigt den Fortschritt an, während das Telefon Änderungen an Ihrem Fernseher vornimmt, und teilt Ihnen mit, wann Sie auf den Fernseher schauen müssen.</string>
+    <string name="app_restore_read_failed">Beim Lesen des Wiederherstellungspunkts ist ein Fehler aufgetreten</string>
+</resources>

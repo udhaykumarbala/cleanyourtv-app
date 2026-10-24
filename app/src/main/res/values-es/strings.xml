@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">Configurar un televisor</string>
+    <string name="app_channel_setup_description">muestra el progreso mientras el teléfono cambia cosas en su televisor y le indica cuándo mirar el televisor.</string>
+    <string name="app_restore_read_failed">Algo salió mal al leer el punto de restauración</string>
+</resources>

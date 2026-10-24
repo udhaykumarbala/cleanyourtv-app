@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">Thiết lập Tivi</string>
+    <string name="app_channel_setup_description">Hiển thị tiến trình trong khi điện thoại thay đổi mọi thứ trên TV của bạn và cho bạn biết khi nào nên xem TV.</string>
+    <string name="app_restore_read_failed">Đã xảy ra lỗi khi đọc điểm khôi phục</string>
+</resources>
