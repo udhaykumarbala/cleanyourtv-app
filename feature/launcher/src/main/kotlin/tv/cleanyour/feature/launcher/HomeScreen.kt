@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import tv.cleanyour.core.flows.AppChoice
 import tv.cleanyour.core.flows.Busy
+import tv.cleanyour.core.flows.ButtonCapture
 import tv.cleanyour.core.flows.HomeScreenIntent
 import tv.cleanyour.core.flows.HomeScreenState
 import tv.cleanyour.core.flows.HomeBlock
@@ -68,6 +69,7 @@ fun HomeScreen(state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onB
     if (notOnTv != null) { NotOnTvScreen(state.tvName, notOnTv, onIntent, onBack, modifier); return }
     var dockOpen by rememberSaveable { mutableStateOf(false) }
     var lookOpen by rememberSaveable { mutableStateOf(false) }
+    var buttonsOpen by rememberSaveable { mutableStateOf(false) }
     val busy = state.busy
     ScreenScaffold(Glow.Tv, modifier, topBar = { CytTopBar(onBack = onBack) }) {
         ScreenTitle(stringResource(R.string.home_title), Modifier.padding(top = 20.dp))
@@ -96,6 +98,14 @@ fun HomeScreen(state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onB
         // a new look and a new dock do to it.
         // Only for a launcher that has those settings (2.4 and later; RF-LAUNCHER-240 F16).
         if (state.tvSideSettings) Body(stringResource(R.string.home_tv_changes_note), Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp))
+        // Remote buttons: only where the TV's launcher reads "scan:" app_keys (2.6 and later).
+        if (state.buttonsSupported) {
+            ListGroup(Modifier.padding(top = 12.dp)) {
+                val line = if (state.buttons.isEmpty()) stringResource(R.string.home_row_buttons_none)
+                    else msg(R.string.home_row_buttons_count, "count" to state.buttons.size)
+                ListRow(stringResource(R.string.home_row_buttons), subtitle = line, onClick = if (busy == null) ({ buttonsOpen = true }) else null)
+            }
+        }
         state.updateTo?.let { version ->
             ListGroup(Modifier.padding(top = 12.dp)) {
                 ListRow(stringResource(R.string.home_row_update), subtitle = msg(R.string.home_row_update_note, "version" to version),
@@ -110,6 +120,9 @@ fun HomeScreen(state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onB
         }
     }
     if (dockOpen) DockSheet(state.dock, state.apps, state.columns, onDone = { onIntent(HomeScreenIntent.SetDock(it)); dockOpen = false }, onDismiss = { dockOpen = false })
+    if (buttonsOpen) CytBottomSheet({ onIntent(HomeScreenIntent.CancelCapture); buttonsOpen = false }) {
+        Column(Modifier.verticalScroll(rememberScrollState())) { RemoteButtonsContent(state, onIntent) }
+    }
     if (lookOpen) CytBottomSheet({ lookOpen = false }) {
         LookContent(state) { onIntent(HomeScreenIntent.SetTheme(it)); lookOpen = false }
     }
@@ -209,6 +222,59 @@ internal fun ColumnScope.UpdatePreviewContent(plan: Plan, version: String, onInt
     ActionColumn(Modifier.padding(top = 20.dp)) {
         PrimaryButton(stringResource(R.string.home_update_confirm), { onIntent(HomeScreenIntent.UpdateHomeScreen) })
         TertiaryButton(stringResource(R.string.action_cancel), { onIntent(HomeScreenIntent.CancelPreview) }, quiet = true)
+    }
+}
+
+// Remote buttons: the buttons mapped for this TV, each with Remove, then "Add a button": the TV listens for
+// one press, and a button that can open an app is offered the TV's apps. Choosing one sends the look with the
+// button (an ApplyTheme plan, with its own preview and gate), so nothing reaches the TV before that.
+@Composable
+internal fun ColumnScope.RemoteButtonsContent(state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit) {
+    SheetHeader(stringResource(R.string.buttons_title))
+    Body(stringResource(R.string.buttons_body), Modifier.padding(top = 8.dp))
+    val idle = state.busy == null
+    if (state.buttons.isNotEmpty()) {
+        ListGroup(Modifier.padding(top = 16.dp)) {
+            state.buttons.forEachIndexed { i, b ->
+                if (i > 0) ListDivider()
+                ListRow(msg(R.string.buttons_name, "code" to b.scancode.toString()), subtitle = b.app.name, trailing = {
+                    TertiaryButton(stringResource(R.string.buttons_remove), { onIntent(HomeScreenIntent.UnmapButton(b.scancode)) }, enabled = idle)
+                })
+            }
+        }
+    }
+    when (val capture = state.capture) {
+        null -> {
+            Body(stringResource(R.string.buttons_helper_note), Modifier.padding(top = 16.dp))
+            PrimaryButton(stringResource(R.string.buttons_add), { onIntent(HomeScreenIntent.CaptureButton) }, Modifier.padding(top = 20.dp), enabled = idle)
+        }
+        ButtonCapture.Waiting -> {
+            LiveLine(stringResource(R.string.buttons_waiting))
+            TertiaryButton(stringResource(R.string.action_cancel), { onIntent(HomeScreenIntent.CancelCapture) }, Modifier.padding(top = 12.dp), quiet = true)
+        }
+        is ButtonCapture.Pressed -> {
+            Body(msg(R.string.buttons_choose, "code" to capture.scancode.toString()), Modifier.padding(top = 16.dp), color = tv.cleanyour.ui.design.theme.CytTheme.colors.textPrimary)
+            ListGroup(Modifier.padding(top = 12.dp)) {
+                state.apps.forEachIndexed { i, app ->
+                    if (i > 0) ListDivider()
+                    ListRow(app.name, onClick = if (idle) ({ onIntent(HomeScreenIntent.MapButton(capture.scancode, app.pkg)) }) else null)
+                }
+            }
+            TertiaryButton(stringResource(R.string.action_cancel), { onIntent(HomeScreenIntent.CancelCapture) }, Modifier.padding(top = 12.dp), quiet = true)
+        }
+        else -> {
+            val why = when (capture) {
+                ButtonCapture.Shared -> R.string.buttons_shared
+                ButtonCapture.Needed -> R.string.buttons_needed
+                ButtonCapture.NothingPressed -> R.string.buttons_nothing
+                else -> R.string.buttons_failed
+            }
+            Banner(stringResource(why), BannerTone.WARNING, Modifier.padding(top = 16.dp))
+            ActionColumn(Modifier.padding(top = 20.dp)) {
+                PrimaryButton(stringResource(R.string.buttons_try_again), { onIntent(HomeScreenIntent.CaptureButton) }, enabled = idle)
+                TertiaryButton(stringResource(R.string.action_cancel), { onIntent(HomeScreenIntent.CancelCapture) }, quiet = true)
+            }
+        }
     }
 }
 

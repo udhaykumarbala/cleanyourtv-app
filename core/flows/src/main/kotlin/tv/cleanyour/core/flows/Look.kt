@@ -17,11 +17,14 @@ import tv.cleanyour.core.store.BlobStore
 // under the dock that hold an app (DockLayers), encoded and stored in the BlobStore. Setup's plan
 // (RFC-DOCK-1), Manage's ApplyTheme and the Modules add (RFC-CARDS-1) all push what this makes, so
 // one choice is the same bytes wherever it is sent from. The wallpaper is the theme's own, when it
-// has one. module_cards is always written: `cards` is this TV's cards choice (Cards).
+// has one. module_cards is always written: `cards` is this TV's cards choice (Cards). `keys` are the
+// remote buttons mapped for this TV (HomeChoice.keys), after the theme's own app_keys so a mapping wins;
+// without any the doc is left as it was, so older pushes keep their bytes.
 internal class Look(val doc: LauncherConfigDoc, val digest: Sha256, val config: BlobRef, val wallpaper: BlobRef?) {
     companion object {
-        suspend fun encode(encoder: ConfigEncoder, blobs: BlobStore, theme: Theme?, dock: List<PackageName>, cards: Boolean): Look {
-            val doc = DockLayers.applyTo(theme?.doc ?: LauncherConfigDoc(), dock).copy(moduleCards = cards)
+        suspend fun encode(encoder: ConfigEncoder, blobs: BlobStore, theme: Theme?, dock: List<PackageName>, cards: Boolean, keys: List<String> = emptyList()): Look {
+            val base = DockLayers.applyTo(theme?.doc ?: LauncherConfigDoc(), dock).copy(moduleCards = cards)
+            val doc = if (keys.isEmpty()) base else base.copy(appKeys = base.appKeys.orEmpty() + keys)
             val bytes = encoder.encode(doc)
             return Look(doc, sha256Of(bytes), blobs.putBytes(bytes), theme?.wallpaper)
         }

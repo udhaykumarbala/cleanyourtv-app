@@ -44,12 +44,13 @@ class AdbProber(
     private val clock: Clock,
     private val signed: Set<PackageName> = SIGNED_PACKAGES,
     private val known: Map<Sha256, Sha256> = emptyMap(),
-) : Prober, LaunchableApps, SavedWifiOwners {
+) : Prober, LaunchableApps, SavedWifiOwners, RemoteKeyCapture {
 
     private suspend fun run(
         session: TvSession, line: ShellLine, stage: ProbeStage, cap: Int, timeoutMs: Long = 30_000, retry: RetryClass = RetryClass.IDEMPOTENT_READ,
+        idleTimeoutMs: Long = ExecSpec.Default.idleTimeoutMs,
     ): ExecResult {
-        val r = session.exec(line, ExecSpec(timeoutMs = timeoutMs, stdoutCap = cap, retry = retry))
+        val r = session.exec(line, ExecSpec(timeoutMs = timeoutMs, idleTimeoutMs = idleTimeoutMs, stdoutCap = cap, retry = retry))
         if (r.truncated) throw ProbeException(stage, "output over $cap bytes")
         return r
     }
@@ -187,6 +188,14 @@ class AdbProber(
     override suspend fun savedWifi(session: TvSession): SavedWifi {
         val r = run(session, ProbeScripts.WIFI_OWNERS, ProbeStage.LAUNCHER, 256 * 1024)
         return WifiOwnersParser.parse(lines(r.stdout))
+    }
+
+    // Waits for a button: silent until it is pressed, so the idle timeout must outlast the wait, and a retry
+    // would only wait again.
+    override suspend fun nextKey(session: TvSession): PressedKey? {
+        val waitMs = ProbeScripts.KEY_WAIT_S * 1000L
+        val r = run(session, ProbeScripts.NEXT_KEY, ProbeStage.LAUNCHER, 1024, timeoutMs = waitMs + 10_000, retry = RetryClass.NEVER, idleTimeoutMs = waitMs + 5_000)
+        return PressedKeyParser.parse(r.stdout)
     }
 
     // The installed APK's signer, or null when it cannot be read (a transport error included: the

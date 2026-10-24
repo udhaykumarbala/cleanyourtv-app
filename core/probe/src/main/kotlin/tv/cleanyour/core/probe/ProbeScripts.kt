@@ -76,6 +76,13 @@ object ProbeScripts {
     // saved network, the match ending before the network's name.
     val WIFI_OWNERS = ShellLine("dumpsys wifi | grep -o -E -e 'cname=[^ ]*' -e 'Configured networks (Begin|End)' -e 'ID: -?[0-9]+ SSID'")
 
+    // Remote buttons: the first key press on any of the TV's input devices within 20 seconds, as getevent
+    // prints it without labels ("/dev/input/event4: 0001 01a9 00000001": EV_KEY, the Linux key code in hex,
+    // 1 for down). grep stops at that line, and getevent ends at its next write (the key's release); nothing
+    // is printed when no button is pressed in time. Only the key code leaves the TV.
+    const val KEY_WAIT_S = 20
+    val NEXT_KEY = ShellLine("timeout $KEY_WAIT_S getevent -q | grep -m 1 -o -E ' 0001 [0-9a-f]{4} 00000001'")
+
     val screenPath = RemotePath(RemoteDir.TMP, listOf(SCREEN_FILE))
     val noopPath = RemotePath(RemoteDir.TMP, listOf(NOOP_FILE))
     // A per-copy name (RF-LAUNCHER-240 F11): two snapshots on one session never touch each other's copy.
@@ -110,6 +117,6 @@ object ProbeScripts {
         "HOME_RESOLVED" to HOME_RESOLVED, "LAUNCHABLE" to LAUNCHABLE, "INPUTS" to INPUTS, "SETTINGS" to SETTINGS, "HOME_FOCUS" to HOME_FOCUS, "BOOT_ID" to BOOT_ID,
         "FREE_DATA" to FREE_DATA, "SCREENSHOT" to SCREENSHOT, "SCREENSHOT_CLEANUP" to SCREENSHOT_CLEANUP, "MKDIR_TMP" to MKDIR_TMP,
         "NOOP_INSTALL" to NOOP_INSTALL, "NOOP_UNINSTALL" to NOOP_UNINSTALL, "NOOP_CLEANUP" to NOOP_CLEANUP, "PS_ARGS" to PS_ARGS,
-        "WIFI_OWNERS" to WIFI_OWNERS,
+        "WIFI_OWNERS" to WIFI_OWNERS, "NEXT_KEY" to NEXT_KEY,
     )
 }

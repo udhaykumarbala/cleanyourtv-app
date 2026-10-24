@@ -1,6 +1,7 @@
 package tv.cleanyour.core.flows
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import tv.cleanyour.core.engine.RunStatus
 import tv.cleanyour.core.model.Component
@@ -10,6 +11,7 @@ import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.planner.FireOs
 import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.core.planner.PlanRequest
+import tv.cleanyour.core.probe.PressedKey
 import tv.cleanyour.core.spec.DockLayers
 
 // M2 Home screen: the dock (S3b sheet), the look (theme picker), "Use the TV's own home screen"
@@ -52,6 +54,9 @@ data class HomeScreenState(
     val updateTo: String? = null,                       // D4: the bundled launcher's version, when the TV has an older build of ours
     val updatePreview: Plan? = null,
     val tvSideSettings: Boolean = false,                // the TV's launcher has Launcher settings of its own (2.4, versionCode 5, and later)
+    val buttons: List<RemoteButton> = emptyList(),      // Remote buttons mapped for this TV, in the order they were mapped
+    val buttonsSupported: Boolean = false,              // the new home screen is the TV's and reads "scan:" app_keys (2.6, versionCode 7, and later)
+    val capture: ButtonCapture? = null,                 // the press being waited for or just read; null with no Remote buttons sheet step open
     val notOnTv: NotOnTv? = null,                       // 0.3.3 D2: the new home screen is not on this TV; no dock or look rows
 )
 
@@ -64,6 +69,10 @@ sealed interface HomeScreenIntent {
     data object CancelPreview : HomeScreenIntent
     data object PreviewUpdate : HomeScreenIntent       // D4
     data object UpdateHomeScreen : HomeScreenIntent    // D4
+    data object CaptureButton : HomeScreenIntent                                        // Remote buttons: wait for a press
+    data object CancelCapture : HomeScreenIntent
+    data class MapButton(val scancode: Int, val pkg: PackageName) : HomeScreenIntent    // the pressed button opens this app
+    data class UnmapButton(val scancode: Int) : HomeScreenIntent
     data object RunSetupAgain : HomeScreenIntent       // 0.3.3 D2, NotOnTv.setupAgain
     data object HelpAddTv : HomeScreenIntent           // 0.3.3 D2, NotOnTv.helpAddTv
 }
@@ -80,36 +89,50 @@ class HomeScreenMachine(
     private data class Preview(val plan: Plan?)
     private data class Drift(val drift: Boolean)
     private data class UpdatePreview(val plan: Plan?)
+    private data class Captured(val capture: ButtonCapture?)
+    private var capturing: Job? = null
     private var updated = false   // D4: this screen updated the launcher; the stored snapshot does not know yet
 
     init { scope.launch { load(); checkDrift() } }
 
     override fun reduce(state: HomeScreenState, event: Any): HomeScreenState = when (event) {
-        is Loaded -> event.s.copy(busy = state.busy, stockPreview = state.stockPreview, drift = state.drift, updatePreview = state.updatePreview)
+        is Loaded -> event.s.copy(busy = state.busy, stockPreview = state.stockPreview, drift = state.drift, updatePreview = state.updatePreview, capture = state.capture)
+        is Captured -> state.copy(capture = event.capture)
         is UpdatePreview -> state.copy(updatePreview = event.plan)
         is BusyNow -> state.copy(busy = event.busy)
         is Preview -> state.copy(stockPreview = event.plan)
         is Drift -> state.copy(drift = event.drift)
         HomeScreenIntent.CancelPreview -> state.copy(stockPreview = null, updatePreview = null)
+        HomeScreenIntent.CaptureButton -> if (state.busy == null && state.buttonsSupported) state.copy(capture = ButtonCapture.Waiting) else state
+        HomeScreenIntent.CancelCapture, is HomeScreenIntent.MapButton -> state.copy(capture = null)
         else -> state
     }
 
     override fun handle(event: Any, before: HomeScreenState, after: HomeScreenState) {
         if (before.busy != null && event is HomeScreenIntent) return
         // 0.3.3 D2: nothing to send the dock or the look to.
-        if (after.notOnTv != null && (event is HomeScreenIntent.SetDock || event is HomeScreenIntent.SetTheme || event == HomeScreenIntent.RestoreMine)) return
+        if (after.notOnTv != null && (event is HomeScreenIntent.SetDock || event is HomeScreenIntent.SetTheme || event == HomeScreenIntent.RestoreMine ||
+                event is HomeScreenIntent.MapButton || event is HomeScreenIntent.UnmapButton)) return
         when (event) {
-            is HomeScreenIntent.SetDock -> scope.launch { apply(event.dock, after.themeId) }
+            is HomeScreenIntent.SetDock -> scope.launch { apply(event.dock, after.themeId, savedKeys()) }
             // RF-LAUNCHER-250 F4: a new look and "Restore mine" push the dock as it was saved, as
             // ModulesMachine does, not the list as the TV shows it now (an app since gone or switched
             // off would drop out and change dock_apps, and the TV's own dock edit would stop applying,
             // upstream #340). Only SetDock changes the list.
-            is HomeScreenIntent.SetTheme -> scope.launch { apply(savedDock() ?: after.dock.map { it.pkg }, event.id) }
-            HomeScreenIntent.RestoreMine -> scope.launch { apply(savedDock() ?: after.dock.map { it.pkg }, after.themeId) }
+            is HomeScreenIntent.SetTheme -> scope.launch { apply(savedDock() ?: after.dock.map { it.pkg }, event.id, savedKeys()) }
+            HomeScreenIntent.RestoreMine -> scope.launch { apply(savedDock() ?: after.dock.map { it.pkg }, after.themeId, savedKeys()) }
             HomeScreenIntent.PreviewStock -> after.stock?.let { stock -> scope.launch { send(Preview(writer.preview(tvId, PlanRequest.UseStockHome(stock)))) } }
             HomeScreenIntent.UseStock -> after.stock?.let { stock -> scope.launch { useStock(stock) } }
             HomeScreenIntent.PreviewUpdate -> scope.launch { previewUpdate() }
             HomeScreenIntent.UpdateHomeScreen -> scope.launch { update() }
+            HomeScreenIntent.CaptureButton -> if (after.capture == ButtonCapture.Waiting) { capturing?.cancel(); capturing = scope.launch { capture() } }
+            HomeScreenIntent.CancelCapture -> { capturing?.cancel(); capturing = null }
+            is HomeScreenIntent.MapButton -> if (after.buttonsSupported) scope.launch {
+                apply(savedDock() ?: after.dock.map { it.pkg }, after.themeId, RemoteButtons.mapped(savedKeys(), event.scancode, event.pkg), keyService = true)
+            }
+            is HomeScreenIntent.UnmapButton -> scope.launch {
+                apply(savedDock() ?: after.dock.map { it.pkg }, after.themeId, RemoteButtons.unmapped(savedKeys(), event.scancode))
+            }
             HomeScreenIntent.RunSetupAgain -> if (after.notOnTv?.setupAgain == true) effect(ManageEffect.Navigate("setup/${tvId.value}"))
             HomeScreenIntent.HelpAddTv -> if (after.notOnTv?.helpAddTv == true) effect(ManageEffect.Navigate("report/tv/${tvId.value}"))
             else -> {}
@@ -131,9 +154,13 @@ class HomeScreenMachine(
         val columns = DockLayers.columnsOf(theme(choice?.themeId)?.doc)
         val shown = { p: PackageName -> snap == null || packages[p]?.enabled.let { it != null && it != EnabledState.DISABLED && it != EnabledState.DISABLED_USER } }
         val dock = DockLayers.decode(choice?.dock.orEmpty(), shown, columns).map { AppChoice(it, d.nameOf(it, packages[it]?.label)) }
+        val buttons = choice?.keys.orEmpty().mapNotNull { RemoteButtons.entry(it) }
+            .map { (code, pkg) -> RemoteButton(code, AppChoice(pkg, d.nameOf(pkg, packages[pkg]?.label))) }
+        val launcherVersion = packages[Launcher.pkg]?.versionCode ?: 0
         send(Loaded(HomeScreenState(tv.nickname, dock, apps, choice?.themeId, state.value.themes, stock = profile?.stockLaunchers?.firstOrNull(),
             homeScreenOurs = tv.launcher != null, columns = columns, updateTo = updateTo(tv, packages),
-            tvSideSettings = (packages[Launcher.pkg]?.versionCode ?: 0) >= FIRST_WITH_TV_SETTINGS,
+            tvSideSettings = launcherVersion >= FIRST_WITH_TV_SETTINGS,
+            buttons = buttons, buttonsSupported = tv.launcher != null && launcherVersion >= RemoteButtons.FIRST_WITH_SCANCODES,
             notOnTv = notOnTv(tv, snap))))
     }
 
@@ -212,6 +239,20 @@ class HomeScreenMachine(
         load()
     }
 
+    // Remote buttons: one press on the TV's remote, read on the TV (ProbeScripts.NEXT_KEY). Read only; nothing
+    // is written until the person chooses an app, and then through an ApplyTheme plan like any look change.
+    private suspend fun capture() {
+        val keys = d.remoteKeys ?: return send(Captured(ButtonCapture.Failed))
+        val session = d.access.live(tvId) ?: return send(Captured(ButtonCapture.Failed))
+        val key = attempt { keys.nextKey(session) }.getOrElse { return send(Captured(ButtonCapture.Failed)) }
+        send(Captured(when (key?.verdict) {
+            null -> ButtonCapture.NothingPressed
+            PressedKey.Verdict.SHARED -> ButtonCapture.Shared
+            PressedKey.Verdict.NEEDED -> ButtonCapture.Needed
+            PressedKey.Verdict.MAPPABLE -> ButtonCapture.Pressed(key.scancode)
+        }))
+    }
+
     private suspend fun checkDrift() {
         val tv = d.tv(tvId) ?: return
         val ours = tv.launcher?.ourOverlayDigest ?: return
@@ -229,20 +270,25 @@ class HomeScreenMachine(
 
     private suspend fun savedDock(): List<PackageName>? = d.homePrefs.load(tvId)?.dock
 
+    private suspend fun savedKeys(): List<String> = d.homePrefs.load(tvId)?.keys.orEmpty()
+
     // Dock and look go to the TV as one config.json (LauncherConfigCodec), pushed by an ApplyTheme
     // plan; the digest we wrote is remembered so the next connect can warn on drift. dock_apps is
     // the dock and the rows under it in order, rows_below_dock the rows under the dock that hold an
     // app (DockLayers), so the TV shows the rows the sheet showed. module_cards keeps this TV's cards
     // choice (RFC-CARDS-1): a new dock or theme never turns cards on or off.
-    private suspend fun apply(dock: List<PackageName>, themeId: String?) {
+    // `keys`: the remote buttons the look carries (HomeChoice.keys). `keyService`: a button was just mapped, so
+    // the plan also switches on the launcher's HomeKeyService when the TV has it off (the planner says so in
+    // Show commands, and refuses when that would also start another app's accessibility service).
+    private suspend fun apply(dock: List<PackageName>, themeId: String?, keys: List<String>, keyService: Boolean = false) {
         val cards = Cards.current(d, tvId, d.homePrefs.load(tvId))
-        val look = attempt { Look.encode(d.encoder, d.blobs, theme(themeId), dock, cards) }.getOrNull()
+        val look = attempt { Look.encode(d.encoder, d.blobs, theme(themeId), dock, cards, keys) }.getOrNull()
             ?: return effect(ManageEffect.Snackbar(SnackKind.FAILED, "", false))
         val kept = look.doc.dockApps.orEmpty()
-        val r = writer.write(tvId, PlanRequest.ApplyTheme(look.doc, look.config, look.wallpaper)) { send(BusyNow(it)) }
+        val r = writer.write(tvId, PlanRequest.ApplyTheme(look.doc, look.config, look.wallpaper, keyService)) { send(BusyNow(it)) }
         send(BusyNow(null))
         if (r is WriteResult.Done) {
-            d.homePrefs.save(tvId, HomeChoice(kept, themeId, cards))
+            d.homePrefs.save(tvId, HomeChoice(kept, themeId, cards, keys))
             rememberPushedLook(d, tvId, look.digest)
             send(Drift(false))
             effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, "", false))

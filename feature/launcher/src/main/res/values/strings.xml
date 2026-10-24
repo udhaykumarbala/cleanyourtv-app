@@ -63,6 +63,22 @@
     <string name="home_tv_changes_note">Changes made on the TV itself, such as tiles per row or motion, last until you change the home screen here. A dock changed on the TV is not shown above: a new look keeps it, a different dock saved here replaces it. Apps taken off Home on the TV stay off.</string>
 
     <!-- M2 Update the home screen (D4): a newer build of our home screen, installed over the old one -->
+    <string name="home_row_buttons">Remote buttons</string>
+    <string name="home_row_buttons_none">Make a button on the TV\'s remote open an app.</string>
+    <string name="home_row_buttons_count">{count, plural, one {# button opens an app} other {# buttons open apps}}</string>
+    <string name="buttons_title">Remote buttons</string>
+    <string name="buttons_body">A button on the TV\'s remote can open an app you choose, on the home screen and in every app.</string>
+    <string name="buttons_helper_note">The first time, we\'ll also switch on the home screen\'s button helper on the TV. It is an accessibility service, so the TV lists it in its accessibility settings.</string>
+    <string name="buttons_name">Button {code}</string>
+    <string name="buttons_remove">Remove</string>
+    <string name="buttons_add">Add a button</string>
+    <string name="buttons_waiting">Press the button on the TV\'s remote now...</string>
+    <string name="buttons_choose">Button {code} is ready. Which app should it open?</string>
+    <string name="buttons_shared">The TV can\'t tell this button apart from other buttons on this remote, so it can\'t open an app. Try another button.</string>
+    <string name="buttons_needed">The TV needs this button to move around, go back or change the volume, so it stays as it is. Try another button.</string>
+    <string name="buttons_nothing">No button was pressed. Try again.</string>
+    <string name="buttons_failed">The TV didn\'t answer. Check that it is on and try again.</string>
+    <string name="buttons_try_again">Try again</string>
     <string name="home_row_update">Update the home screen</string>
     <string name="home_row_update_note">Version {version} is ready. Your dock and look stay as they are.</string>
     <string name="home_update_preview_title">Update the home screen?</string>

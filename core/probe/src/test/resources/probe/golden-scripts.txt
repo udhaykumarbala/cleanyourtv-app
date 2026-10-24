@@ -23,3 +23,4 @@ installedSha256(com.gathin.tvhome)	p=$(pm path 'com.gathin.tvhome' | grep base.a
 watchdogAlive(0123456789abcdef)	pgrep -f '[c]leanyourtv-rollback-0123456789abcdef'
 copyApk(com.gathin.tvhome, signer-0123456789abcdef.apk, 16777216)	mkdir -p /data/local/tmp/cleanyourtv && p=$(pm path 'com.gathin.tvhome' | grep base.apk | head -n 1) && [ -n "$p" ] && [ "$(stat -c %s "${p#package:}")" -le 16777216 ] && cp "${p#package:}" '/data/local/tmp/cleanyourtv/signer-0123456789abcdef.apk'
 signerCleanup(signer-0123456789abcdef.apk)	rm -f '/data/local/tmp/cleanyourtv/signer-0123456789abcdef.apk'
+NEXT_KEY	timeout 20 getevent -q | grep -m 1 -o -E ' 0001 [0-9a-f]{4} 00000001'

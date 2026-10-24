@@ -30,7 +30,8 @@ sealed interface PlanRequest {
     data class PutBack(val pkg: PackageName) : PlanRequest
     data class SwitchOff(val pkgs: Set<PackageName>) : PlanRequest
     data class Leftovers(val expectedDisabled: Set<PackageName>) : PlanRequest
-    data class ApplyTheme(val doc: LauncherConfigDoc, val config: BlobRef, val wallpaper: BlobRef?) : PlanRequest   // R0: 14 renamed from Theme; config = encode(doc) in the BlobStore
+    data class ApplyTheme(val doc: LauncherConfigDoc, val config: BlobRef, val wallpaper: BlobRef?,   // R0: 14 renamed from Theme; config = encode(doc) in the BlobStore
+        val keyService: Boolean = false) : PlanRequest   // Remote buttons: also switch on the launcher's HomeKeyService, which reads app_keys
     data class AddModule(val module: Module, val version: ModuleVersion, val apk: BlobRef,
         val config: BlobRef? = null, val wallpaper: BlobRef? = null) : PlanRequest   // R0: 14 renamed from Module; RFC-CARDS-1: config = the look with module_cards on
     data class RemoveModule(val pkg: PackageName) : PlanRequest

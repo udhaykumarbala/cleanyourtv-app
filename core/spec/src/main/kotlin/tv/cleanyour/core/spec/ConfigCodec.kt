@@ -171,8 +171,13 @@ internal object ConfigCodecImpl {
         }
         val navigationApps = ArrayList<Int>()
         fun appKey(i: Int, t: String) {
+            val scan = appScanEntry(t)
             when (val k = appKeyEntry(t)) {
-                null -> w += "app_keys[$i] is not keycode:package (190:com.google.android.youtube.tv); the launcher skips it"
+                null -> w += if (scan != null) {
+                    "app_keys[$i] maps button scancode ${scan.first}, which launcher 2.6 and later read; launcher 2.5 skips it"
+                } else {
+                    "app_keys[$i] is not keycode:package (190:com.google.android.youtube.tv); the launcher skips it"
+                }
                 else -> {
                     if (!isPackageName(k.second)) w += "app_keys[$i] names ${k.second}, which is not a package name; that button would do nothing"
                     if (k.first in NAVIGATION_KEYCODES) navigationApps += k.first
@@ -308,6 +313,17 @@ internal object ConfigCodecImpl {
         }
         return code to parts[1].javaTrim()
     }
+    // RemoteKeys.parseAppScancodes (launcher 2.6) for one entry: "scan:<code>:<package>", the button by its
+    // Linux key code, for remotes whose buttons share a keycode or have none Android names. Launcher 2.5
+    // has no such entries and skips them (appKeyEntry gives null). Null when 2.6 would skip it too.
+    fun appScanEntry(entry: String): Pair<Int, String>? {
+        val parts = entry.split(":", limit = 3)
+        if (parts.size != 3 || parts[0].javaTrim() != "scan" || parts[2].javaTrim().isEmpty()) return null
+        val code = parts[1].javaTrim()
+        if (!DIGITS.matches(code)) return null
+        return code.toInt().takeIf { it > 0 }?.let { it to parts[2].javaTrim() }
+    }
+
     private val DIGITS = Regex("[0-9]{1,6}")
     private val KEY_NAME = Regex("KEYCODE_[A-Z0-9_]+")
 
