@@ -133,6 +133,20 @@ class LauncherConfigCodecTest {
         assertEquals(emptyList(), ok("{\"input_key_keycodes\": [192], \"app_keys\": [\"KEYCODE_BUTTON_3:a.b\"]}").warnings)
     }
 
+    // Remote buttons: "scan:<code>:<package>" (launcher 2.6, RemoteKeys.parseAppScancodes) is kept as written
+    // and named for what it is, a button launcher 2.5 skips; a malformed one keeps the old warning.
+    @Test fun scancodeAppKeysAreKeptAndNamed() {
+        val r = ok("{\"app_keys\": [\"scan:425:com.google.android.youtube.tv\", \"190:a.b\", \"scan:0:a.b\", \"scan:x:a.b\", \"scan:425:\"]}")
+        assertEquals(listOf("scan:425:com.google.android.youtube.tv", "190:a.b", "scan:0:a.b", "scan:x:a.b", "scan:425:"), r.doc.appKeys)
+        assertEquals(4, r.warnings.size, r.warnings.toString())
+        assertTrue("scancode 425" in r.warnings[0] && "2.6" in r.warnings[0], r.warnings[0])
+        assertTrue(r.warnings.drop(1).all { "is not keycode:package" in it }, r.warnings.toString())
+        assertEquals(425 to "a.b", ConfigCodecImpl.appScanEntry(" scan : 425 : a.b "))
+        assertEquals(null, ConfigCodecImpl.appScanEntry("hold:scan:425:a.b"))
+        val doc = LauncherConfigDoc(appKeys = listOf("scan:425:a.b"))
+        assertEquals(doc.appKeys, ok(LauncherConfigCodec.encode(doc).decodeToString()).doc.appKeys)
+    }
+
     @Test fun festivalLikeFestivalJava() {
         fun e(json: String) = LauncherConfigCodec.effective(ok(json).doc, LauncherConfigCodec.builtInDefaults)
         assertEquals("", e("{\"festival\": \"x\", \"festival_until\": \"2026-02-30\"}").festival)

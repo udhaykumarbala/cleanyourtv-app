@@ -17,6 +17,7 @@ import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.Tv
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.ops.ConfigTransport
+import tv.cleanyour.core.probe.RemoteKeyCapture
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.registry.ArtifactFetcher
 import tv.cleanyour.core.registry.Registry
@@ -100,6 +101,8 @@ class ManageDeps(
     // switch decision for each TV (SetupMachine keeps it).
     val about: AppAbout = AppAbout(appVersion, "full", "", ""),
     val homeDecisions: HomeDecisions = HomeDecisions(documents),
+    // Remote buttons: the next press on the TV's remote. Not part of the frozen Prober, like LaunchableApps.
+    val remoteKeys: RemoteKeyCapture? = prober as? RemoteKeyCapture,
 ) {
     fun tv(id: TvId): Tv? = tvs.tvs.value.firstOrNull { it.id == id }
 
@@ -111,8 +114,10 @@ class ManageDeps(
 // The dock and theme this phone last pushed to a TV. Tv has no field for them once the wizard
 // draft is gone, so they live beside the TV record: tvs/<id>/home.txt, "dock=a,b" and "theme=id".
 // `cards` is the module_cards value the look carries (RFC-CARDS-1, "cards=true"): null when this
-// phone has not kept one for the TV yet (Cards.of decides then).
-data class HomeChoice(val dock: List<PackageName>, val themeId: String?, val cards: Boolean? = null)
+// phone has not kept one for the TV yet (Cards.of decides then). `keys` are the remote buttons mapped on
+// Home screen, Remote buttons ("keys=scan:425:a.b,scan:150:c.d"): the app_keys entries every look pushed to
+// this TV carries, so a new dock, look or card never drops them.
+data class HomeChoice(val dock: List<PackageName>, val themeId: String?, val cards: Boolean? = null, val keys: List<String> = emptyList())
 
 class HomePrefs(private val store: DocumentStore) {
     private fun path(id: TvId) = "tvs/${id.value}/home.txt"
@@ -120,12 +125,14 @@ class HomePrefs(private val store: DocumentStore) {
     suspend fun load(id: TvId): HomeChoice? = store.read(path(id)) { bytes ->
         val map = bytes.decodeToString().lines().filter { '=' in it }.associate { it.substringBefore('=') to it.substringAfter('=') }
         HomeChoice(map["dock"].orEmpty().split(',').filter { it.isNotBlank() }.mapNotNull { runCatching { PackageName(it) }.getOrNull() },
-            map["theme"]?.takeIf { it.isNotBlank() }, map["cards"]?.toBooleanStrictOrNull())
+            map["theme"]?.takeIf { it.isNotBlank() }, map["cards"]?.toBooleanStrictOrNull(),
+            map["keys"].orEmpty().split(',').filter { RemoteButtons.entry(it) != null })
     }
 
     suspend fun save(id: TvId, choice: HomeChoice) {
         val text = "dock=${choice.dock.joinToString(",") { it.value }}\ntheme=${choice.themeId.orEmpty()}\n" +
-            (choice.cards?.let { "cards=$it\n" } ?: "")
+            (choice.cards?.let { "cards=$it\n" } ?: "") +
+            (if (choice.keys.isNotEmpty()) "keys=${choice.keys.joinToString(",")}\n" else "")
         store.write(path(id), text.encodeToByteArray())
     }
 }

@@ -88,7 +88,7 @@ class DefaultPlanner(
             is PlanRequest.PutBack -> { d.putBack(request.pkg); PlanKind.PUT_BACK }
             is PlanRequest.SwitchOff -> { d.switchOff(request.pkgs); PlanKind.SWITCH_OFF }
             is PlanRequest.Leftovers -> { d.leftovers(request.expectedDisabled); PlanKind.LEFTOVERS }
-            is PlanRequest.ApplyTheme -> { d.applyTheme(request.config, request.wallpaper); PlanKind.THEME }
+            is PlanRequest.ApplyTheme -> { d.applyTheme(request.config, request.wallpaper, request.keyService); PlanKind.THEME }
             is PlanRequest.AddModule -> { d.addModule(request); PlanKind.ADD_MODULE }
             is PlanRequest.RemoveModule -> { d.removeModule(request.pkg); PlanKind.REMOVE_MODULE }
             is PlanRequest.UseStockHome -> { d.useStockHome(request.stock, null); PlanKind.USE_STOCK_HOME }
@@ -544,9 +544,44 @@ class DefaultPlanner(
             }
         }
 
-        fun applyTheme(config: BlobRef, wallpaper: BlobRef?) {
+        fun applyTheme(config: BlobRef, wallpaper: BlobRef?, keyService: Boolean) {
             if (!installed(launcher.pkg)) { refuse("the new home screen is not installed"); return }
+            if (keyService && !canTurnOnKeyService()) return
             look(config, wallpaper, overlayGone = false, pushPolicy = FailurePolicy.STOP_AND_ROLLBACK)
+            if (keyService) turnOnKeyService(GROUP_THEME)
+        }
+
+        // Remote buttons: the launcher maps a remote button (app_keys) only while one of its key services runs,
+        // and those are accessibility services, which the app otherwise never switches on (RF-LAUNCHER-240 F7).
+        // The person asked for a button here, so the plan switches on HomeKeyService, the one that leaves
+        // every other key alone, and says so in Show commands. Refused when switching accessibility on would
+        // also start another app's service the TV has listed but switched off, since an accessibility service
+        // reads the screen. Undo puts both settings back as they were.
+        fun canTurnOnKeyService(): Boolean {
+            val list = snapshot.settings[SettingKey.ENABLED_ACCESSIBILITY].orEmpty()
+            if (list.isNotEmpty() && !SettingKey.ENABLED_ACCESSIBILITY.valueShape.matches(list)) {
+                refuse("the TV's list of accessibility services cannot be read safely"); return false
+            }
+            val others = list.split(':').filter { it.isNotEmpty() && !it.startsWith(launcher.pkg.value + "/") }
+            if (others.isNotEmpty() && snapshot.settings[SettingKey.ACCESSIBILITY_ENABLED] != "1") {
+                refuse("switching on the remote buttons would also switch on another app's accessibility service"); return false
+            }
+            return true
+        }
+
+        fun turnOnKeyService(group: String) {
+            val list = snapshot.settings[SettingKey.ENABLED_ACCESSIBILITY].orEmpty()
+            val enabled = snapshot.settings[SettingKey.ACCESSIBILITY_ENABLED]
+            val service = "${launcher.pkg.value}/.$HOME_KEY_SERVICE"
+            val listed = list.split(':').any { it == service || it == "${launcher.pkg.value}/${launcher.pkg.value}.$HOME_KEY_SERVICE" }
+            // Already listed with accessibility on: restoreAccessibility (after the restart) brings it back.
+            if (listed && enabled == "1") return
+            val wanted = if (listed) list else listOf(list, service).filter { it.isNotEmpty() }.joinToString(":")
+            if (!SettingKey.ENABLED_ACCESSIBILITY.valueShape.matches(wanted)) { refuse("the TV lists too many accessibility services to add one"); return }
+            val narration = "Switching on the home screen's remote buttons"
+            step(Op.Settle(1), null, group, narration, FailurePolicy.CONTINUE)
+            step(Op.SettingsPut(SettingKey.ENABLED_ACCESSIBILITY, wanted), Prior(settingValue = list.ifEmpty { null }), group, narration, FailurePolicy.CONTINUE)
+            step(Op.SettingsPut(SettingKey.ACCESSIBILITY_ENABLED, "1"), Prior(settingValue = enabled), group, narration, FailurePolicy.CONTINUE)
         }
 
         // The transport's config.json steps (D15) with their priors and narration, shared by ApplyTheme
@@ -776,6 +811,7 @@ class DefaultPlanner(
         const val GROUP_SWITCH_OFF = "switch_off"
         const val GROUP_LEFTOVERS = "leftovers"
         const val GROUP_THEME = "theme"
+        const val HOME_KEY_SERVICE = "HomeKeyService"
         const val GROUP_MODULE = "module"
         const val GROUP_UNDO = "undo"
         const val GROUP_SESSION_END = "session_end"

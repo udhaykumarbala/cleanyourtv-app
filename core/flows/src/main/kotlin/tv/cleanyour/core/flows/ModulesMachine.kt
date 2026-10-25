@@ -184,8 +184,9 @@ class ModulesMachine(
         val choice = d.homePrefs.load(tvId)
         if (Cards.current(d, tvId, choice, overlay)) return null
         val theme = choice?.themeId?.let { id -> d.themes.bundled().firstOrNull { it.id == id } }
-        val look = Look.encode(d.encoder, d.blobs, theme, choice?.dock.orEmpty(), cards = true)
-        return look to HomeChoice(look.doc.dockApps.orEmpty(), theme?.id, cards = true)
+        val keys = choice?.keys.orEmpty()
+        val look = Look.encode(d.encoder, d.blobs, theme, choice?.dock.orEmpty(), cards = true, keys = keys)
+        return look to HomeChoice(look.doc.dockApps.orEmpty(), theme?.id, cards = true, keys = keys)
     }
 
     private suspend fun keepCardsOn(pushed: Pair<Look, HomeChoice>) {

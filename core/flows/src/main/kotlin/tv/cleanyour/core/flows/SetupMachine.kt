@@ -788,10 +788,14 @@ class SetupMachine(
         // RFC-CARDS-1: module_cards off, so the new home screen never asks about cards the person did
         // not ask for; on only when they turned cards on for this TV in an earlier session (kept, or
         // said outright by the TV's overlay).
-        val cards = Cards.of(deps.homePrefs?.let { attempt { it.load(record.id) }.getOrNull() }?.cards, snap.launcherOverlay, Cards.SETUP_DEFAULT)
-        val look = if (!possible) null else attempt { Look.encode(deps.encoder, deps.blobs, theme, dock, cards) }
+        // Remote buttons mapped for this TV in an earlier session stay in the look, so running Setup again on
+        // a TV that was already cleaned keeps them.
+        val kept = deps.homePrefs?.let { attempt { it.load(record.id) }.getOrNull() }
+        val cards = Cards.of(kept?.cards, snap.launcherOverlay, Cards.SETUP_DEFAULT)
+        val keys = kept?.keys.orEmpty()
+        val look = if (!possible) null else attempt { Look.encode(deps.encoder, deps.blobs, theme, dock, cards, keys) }
             .onFailure { deps.log.line("setup: the look could not be encoded, planned without it") }.getOrNull()
-        setupHome = look?.let { it.digest to HomeChoice(it.doc.dockApps.orEmpty(), draft.themeId, cards) }
+        setupHome = look?.let { it.digest to HomeChoice(it.doc.dockApps.orEmpty(), draft.themeId, cards, keys) }
         // RFC-CURTAIN-1: the TV shows the progress unless Custom switched it off (Simple never shows
         // the switch). An asset that does not match its pin is never offered; the plan goes without it.
         val showOnTv = draft.level == Level.SIMPLE || draft.curtain
