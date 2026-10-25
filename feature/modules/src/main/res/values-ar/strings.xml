@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:modules. Arabic strings.
+-->
+<resources>
+
+    <!-- Shared button words -->
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_ok">حسنًا</string>
+    <string name="action_done">تم</string>
+    <string name="action_undo">تراجع</string>
+
+    <!-- Credential prompt (D17), raised by "Add to {tv}" -->
+    <string name="gate_title">تأكيد هويتك</string>
+    <string name="gate_subtitle">قبل أن نغيّر أي شيء على {tv}</string>
+    <string name="gate_negative">إلغاء</string>
+    <string name="gate_failed">تعذّر تأكيد هويتك، لذلك لم يتغير شيء.</string>
+
+    <!-- M3 Cards and modules -->
+    <string name="modules_title">البطاقات والوحدات</string>
+    <string name="modules_state_shown">معروضة</string>
+    <string name="modules_state_hidden">مخفية</string>
+    <string name="modules_state_over_limit">فوق الحد الأقصى</string>
+    <string name="modules_over_limit_note">تعرض الشاشة الرئيسية ما يصل إلى ثماني بطاقات.</string>
+    <string name="modules_remove">إزالة من التلفاز</string>
+    <string name="modules_show_card">عرض بطاقتها</string>
+    <string name="modules_cards_off_note">البطاقات متوقفة على الشاشة الرئيسية لهذا التلفاز. اعرض واحدة وسيطلب منك التلفاز التأكيد.</string>
+    <string name="modules_update">تحديث</string>
+    <string name="modules_add">إضافة</string>
+    <string name="modules_update_available">الإصدار {version} متاح</string>
+    <string name="modules_empty">لا توجد بطاقات بعد. أضف واحدة لوضعها على الشاشة الرئيسية.</string>
+    <string name="modules_normal_app_note">تظهر على هذا التلفاز كتطبيق عادي</string>
+    <string name="modules_remove_title">هل تريد إزالة {name} من {tv}؟</string>
+    <string name="modules_remove_body">سيؤدي هذا إلى إزالة التطبيق من التلفاز، بينما تبقى شاشتك الرئيسية وبطاقاتك الأخرى كما هي.</string>
+    <string name="modules_remove_confirm">إزالة</string>
+    <string name="modules_removed">تمت إزالة {name}.</string>
+    <string name="modules_state_cd">{name}: {state}</string>
+
+    <!-- Update re-consent (UX 5.4) -->
+    <string name="modules_update_consent">يطلب {name} {version} الآن أيضًا: {permissions}. هل تسمح بهذا الإصدار؟</string>
+    <string name="modules_update_skip">تخطّي هذا الإصدار</string>
+
+    <!-- M3a Add to {tv} -->
+    <string name="addmodule_title">إضافة إلى {tv}</string>
+    <string name="addmodule_search_hint">بحث</string>
+    <string name="addmodule_search_cd">البحث في الوحدات</string>
+    <string name="addmodule_open_source">مفتوح المصدر</string>
+    <string name="addmodule_size">{size, plural, other {# م.ب}}</string>
+    <string name="addmodule_tier_community">مجتمعي</string>
+    <string name="addmodule_tier_verified">موثّق</string>
+    <string name="addmodule_tier_paused">متوقف مؤقتًا</string>
+    <string name="addmodule_loading">جارٍ تحميل القائمة...</string>
+    <string name="addmodule_empty">لا توجد وحدات تطابق بحثك.</string>
+    <string name="addmodule_refresh">تحديث</string>
+    <string name="addmodule_footer">جميع الوحدات مطوّرة من قِبل أفراد في المجتمع ومفحوصة تلقائيًا.</string>
+    <string name="addmodule_footer_link">مَن طوّر كل وحدة</string>
+    <string name="addmodule_tiers_title">مَن طوّر كل وحدة</string>
+    <string name="addmodule_tiers_community">مجتمعي: طوّره شخص من خارج هذا التطبيق، وتم فحصه تلقائيًا لمطابقته مع ما نشره المطوّر.</string>
+    <string name="addmodule_tiers_verified">موثّق: راجع شخص معلن الهوية هذا الإصدار.</string>
+    <string name="addmodule_tiers_paused">متوقف مؤقتًا: أوقف المشرفون توفيره في الوقت الحالي.</string>
+
+    <!-- M3b Module detail -->
+    <string name="module_what_title">ما الذي يمكنها فعله على التلفاز</string>
+    <string name="module_who_title">مَن طوّرها</string>
+    <string name="module_runs_background">تعمل في الخلفية: {reason}</string>
+    <string name="module_no_background">بدون خدمة في الخلفية</string>
+    <string name="module_perm_can_cd">{statement}. يمكنها القيام بذلك.</string>
+    <string name="module_perm_cannot_cd">{statement}. لا تقوم بذلك.</string>
+    <string name="module_maker">{handle} على GitHub</string>
+    <string name="module_version_line">الإصدار {version}، صدر في {date}</string>
+    <string name="module_checks">{count, plural, =0 {تم الفحص تلقائيًا: يطابق الملف ما نشره المطوّر، ولا يطلب أي أذونات.} one {تم الفحص تلقائيًا: يطابق الملف ما نشره المطوّر، ويطلب الإذن الواحد (#) المذكور أعلاه فقط ولا شيء غيره.} two {تم الفحص تلقائيًا: يطابق الملف ما نشره المطوّر، ويطلب الإذنين (#) المذكورين أعلاه فقط ولا شيء غيرهما.} few {تم الفحص تلقائيًا: يطابق الملف ما نشره المطوّر، ويطلب الـ # أذونات المذكورة أعلاه فقط ولا شيء غيرها.} many {تم الفحص تلقائيًا: يطابق الملف ما نشره المطوّر، ويطلب الـ # إذنًا المذكورة أعلاه فقط ولا شيء غيرها.} other {تم الفحص تلقائيًا: يطابق الملف ما نشره المطوّر، ويطلب الـ # إذن المذكورة أعلاه فقط ولا شيء غيرها.}}</string>
+    <string name="module_not_reviewed">تم الفحص تلقائيًا. لم يراجعه شخص بعد.</string>
+    <string name="module_key_line">المفتاح {key}، وهو نفس المعروض على التلفاز</string>
+    <string name="module_source">الشيفرة المصدرية</string>
+    <string name="module_report">الإبلاغ عن مشكلة</string>
+    <string name="module_hero_badge">بطاقتها على تلفازك</string>
+    <string name="module_add">إضافة إلى {tv}</string>
+    <string name="module_outside_store">تُنزَّل الإضافات من إصدارات مطوّريها على GitHub خارج أي متجر تطبيقات، ولا تُبنى أو تُفحص بواسطة F-Droid.</string>
+    <string name="module_add_turns_cards_on">تؤدي إضافتها إلى تفعيل البطاقات على الشاشة الرئيسية لهذا التلفاز، ويسألك التلفاز قبل إظهار البطاقة.</string>
+    <string name="module_paused_reason">أوقفها المشرفون مؤقتًا: {reason}</string>
+    <string name="module_install_adding">جارٍ إضافة {name}...</string>
+    <string name="module_install_downloading">{size, plural, other {جارٍ التنزيل (# م.ب)...}}</string>
+    <string name="module_install_checking">جارٍ التحقق من مطابقتها لنسخة المطوّر...</string>
+    <string name="module_install_installing">جارٍ التثبيت على التلفاز...</string>
+    <string name="module_install_asking">جارٍ طلب عرض سؤال التأكيد على التلفاز...</string>
+    <string name="module_install_failed">تعذّر تثبيت {name} على التلفاز. لم يتغير أي شيء آخر.</string>
+
+    <!-- M3c Look at the TV (card prompt, D1 and D45) -->
+    <string name="cardprompt_title">انظر إلى التلفاز</string>
+    <string name="cardprompt_art_keep">إبقاؤها مخفية</string>
+    <string name="cardprompt_art_cd">يسألك التلفاز: يريد {name} عرض بطاقة على شاشتك الرئيسية. المفتاح {key}. الخياران هما إبقاؤها مخفية وعرض البطاقة.</string>
+    <string name="cardprompt_body">يتحقق التلفاز معك مرة أخرى حتى لا يتمكن أي تطبيق من وضع نفسه على الشاشة الرئيسية دون إذنك.</string>
+    <string name="cardprompt_instruction">اختر "Show card" بجهاز التحكم. يجب أن يظهر المفتاح على التلفاز {key}، مطابقًا لما هنا.</string>
+    <string name="cardprompt_waiting">في انتظار إجابتك على التلفاز...</string>
+    <string name="cardprompt_later">لتنفيذ ذلك لاحقًا: اضغط مطولًا على زر OK فوق زر الإعدادات في التلفاز للوصول إلى بطاقات الوحدات.</string>
+    <string name="cardprompt_shown">{name} معروض الآن على الشاشة الرئيسية.</string>
+    <string name="cardprompt_hidden">تم تثبيت {name} مع إبقاء بطاقته مخفية. سيظهر كتطبيق عادي، ويمكنك إظهار البطاقة في أي وقت من قسم البطاقات والوحدات.</string>
+    <string name="cardprompt_signer_changed">تم توقيع الإصدار الجديد من {name} بمفتاح مختلف عن السابق. هذا أمر غير معتاد، ولذلك يسألك التلفاز مجددًا عن قصد. إذا لم تكن تتوقع تحديثًا، فاختر «إبقاؤها مخفية».</string>
+
+    <!-- Module list (index) failures. -->
+    <string name="index_failure_bad_signature">تعذّر التأكد من سلامة قائمة الوحدات، لذلك لم نستخدمها. لم يُلمس أي شيء على التلفاز.</string>
+    <string name="index_failure_unknown_key">قائمة الوحدات موقّعة بمفتاح لا نتعرف عليه، لذلك لم نستخدمها. لم يُلمس أي شيء على التلفاز.</string>
+    <string name="index_failure_revoked_key">قائمة الوحدات موقّعة بمفتاح تم سحبه، لذلك لم نستخدمها. لم يُلمس أي شيء على التلفاز.</string>
+    <string name="index_failure_bad_keys_file">لم تجتز قائمة المفاتيح الموثوقة فحوصاتنا، لذلك لم نستخدم قائمة الوحدات. لم يُلمس أي شيء على التلفاز.</string>
+    <string name="index_failure_expired">قائمة الوحدات قديمة. اتصل بالإنترنت وحدّثها.</string>
+    <string name="index_failure_rollback">قائمة الوحدات المستلمة أقدم من القائمة الموجودة لدينا، لذلك احتفظنا بالأحدث.</string>
+    <string name="index_failure_malformed">تعذّرت قراءة قائمة الوحدات. حاول مرة أخرى بعد قليل.</string>
+    <string name="index_stale_warning">قد تكون قائمة الوحدات قديمة؛ حدّثها عند اتصالك بالإنترنت</string>
+
+    <!-- Download (fetch) failures -->
+    <string name="fetch_failure_offline">لا يوجد اتصال بالإنترنت على هذا الهاتف حاليًا. اتصل بالإنترنت وحاول مرة أخرى.</string>
+    <string name="fetch_failure_host_not_allowed">هذا التنزيل ليس من مصدر نعتمد عليه، لذلك توقفنا ولم نثبّت أي شيء.</string>
+    <string name="fetch_failure_http_error">ردّ موقع التنزيل بخطأ ({code}). حاول مرة أخرى بعد قليل.</string>
+    <string name="fetch_failure_too_large">حجم هذا التنزيل أكبر من المتوقع، لذلك توقفنا ولم نثبّت أي شيء.</string>
+    <string name="fetch_failure_hash_mismatch">لا يطابق الملف المنزّل نسخة المطوّر، لذلك لم نثبّته.</string>
+    <string name="fetch_failure_size_mismatch">لا يطابق حجم التنزيل الحجم المذكور في القائمة، لذلك توقفنا ولم نثبّت أي شيء.</string>
+    <string name="fetch_failure_signer_mismatch">التطبيق موقّع من جهة أخرى غير المطوّر المذكور في القائمة، لذلك لم نثبّته.</string>
+    <string name="fetch_failure_try_again">حاول مرة أخرى</string>
+
+</resources>

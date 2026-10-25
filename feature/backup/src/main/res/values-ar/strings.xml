@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:backup. Arabic strings.
+-->
+<resources>
+
+    <!-- Shared button words -->
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_ok">حسنًا</string>
+    <string name="action_done">تم</string>
+
+    <!-- Credential prompt (D17), raised by "Put everything back" -->
+    <string name="gate_title">تأكيد هويتك</string>
+    <string name="gate_subtitle">قبل أن نغيّر أي شيء على {tv}</string>
+    <string name="gate_negative">إلغاء</string>
+    <string name="gate_failed">تعذّر تأكيد هويتك، لذلك لم يتغير شيء.</string>
+
+    <!-- M6 Restore point -->
+    <string name="restore_title">نقطة الاستعادة</string>
+    <string name="restore_current">حُفظت في {date}</string>
+    <string name="restore_none">لا توجد نقطة استعادة بعد. تُحفظ واحدة تلقائيًا قبل أول تغيير.</string>
+    <string name="restore_read_failed">حدث خطأ أثناء قراءة نقطة الاستعادة</string>
+    <string name="restore_row_undo">التراجع عن كل شيء</string>
+    <string name="restore_row_undo_sub">إعادة التلفاز إلى حالته في {date}</string>
+    <string name="restore_row_save">حفظ نسخة</string>
+    <string name="restore_row_save_sub">يحفظ ملف zip في المكان الذي تختاره.</string>
+    <string name="restore_row_factory">قبل إعادة ضبط المصنع</string>
+    <string name="restore_row_factory_sub">يعيد تشغيل معالج الإعداد حتى يبدأ التلفاز بشكل سليم بعد إعادة الضبط.</string>
+
+    <!-- Undo everything: preview (UX 4.13) -->
+    <string name="restore_preview_title">سيعيد هذا التلفاز إلى حالته في {date}:</string>
+    <string name="restore_preview_things">{count, plural, one {إعادة تشغيل عنصر واحد (#)} two {إعادة تشغيل عنصرين (#)} few {إعادة تشغيل # عناصر} many {إعادة تشغيل # عنصرًا} other {إعادة تشغيل # عنصر}}</string>
+    <string name="restore_preview_home">إعادة الشاشة الرئيسية القديمة ({name}) لتكون الافتراضية</string>
+    <string name="restore_preview_wizard">إعادة تشغيل معالج الإعداد</string>
+    <string name="restore_preview_screensaver">إعادة شاشة توقف الساعة إلى شاشة التلفاز الأصلية</string>
+    <string name="restore_preview_keyboard">إعادة لوحة المفاتيح إلى لوحة التلفاز الأصلية</string>
+    <string name="restore_launcher_title">الشاشة الرئيسية الجديدة</string>
+    <string name="restore_launcher_keep">إبقاؤها مثبّتة كتطبيق عادي</string>
+    <string name="restore_launcher_remove">إزالتها من التلفاز</string>
+    <string name="restore_launcher_remove_note">تؤدي إزالتها أيضًا إلى مسح اختيارات بطاقات الوحدات المحفوظة على التلفاز.</string>
+    <string name="restore_preview_button">إعادة كل شيء</string>
+
+    <!-- Undo everything: confirmation sheet -->
+    <string name="restore_confirm_title">هل تريد إعادة كل شيء كما كان؟</string>
+    <string name="restore_confirm_body">ستعود الإعلانات والتتبع أيضًا. يمكنك دائمًا تشغيل التنظيف مرة أخرى متى شئت.</string>
+    <string name="restore_confirm_button">إعادة كل شيء</string>
+
+    <!-- Undo everything: narration and end -->
+    <string name="restore_working_title">جارٍ إعادة كل شيء كما كان</string>
+    <string name="restore_working_things">{total, plural, other {جارٍ إعادة تشغيل العناصر: {done} من #...}}</string>
+    <string name="restore_working_home">جارٍ استعادة الشاشة الرئيسية القديمة...</string>
+    <string name="restore_working_wizard">جارٍ إعادة تشغيل معالج الإعداد...</string>
+    <string name="restore_done_title">عاد كل شيء كما كان</string>
+    <string name="restore_done_body">عاد تلفازك إلى حالته في {date}. تبقى نقطة الاستعادة محفوظة في حال غيّرت رأيك.</string>
+    <string name="restore_clean_again">تنظيفه مرة أخرى</string>
+
+    <!-- Before a factory reset -->
+    <string name="restore_factory_title">قبل إعادة ضبط المصنع</string>
+    <string name="restore_factory_body">تعيد إعادة ضبط المصنع تشغيل معالج الإعداد الخاص بالتلفاز، لذلك نعيد تفعيله الآن حتى يبدأ التلفاز بشكل سليم بعدها.</string>
+    <string name="restore_factory_button">إعادة تشغيل المعالج</string>
+    <string name="restore_factory_working">جارٍ إعادة تشغيل معالج الإعداد...</string>
+    <string name="restore_factory_done">تمت إعادة تشغيل معالج الإعداد. يمكنك إعادة ضبط التلفاز الآن.</string>
+
+    <!-- Save a copy (export) -->
+    <string name="restore_export_saved">تم حفظ نسخة من نقطة الاستعادة.</string>
+    <string name="restore_export_failed">تعذّر حفظ النسخة. جرّب مكانًا آخر.</string>
+
+</resources>

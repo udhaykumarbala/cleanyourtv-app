@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:launcher. Arabic strings.
+-->
+<resources>
+
+    <!-- Shared button words -->
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_done">تم</string>
+    <string name="action_undo">تراجع</string>
+
+    <!-- Credential prompt (D17) -->
+    <string name="gate_title">تأكيد هويتك</string>
+    <string name="gate_subtitle">قبل أن نغيّر أي شيء على {tv}</string>
+    <string name="gate_negative">إلغاء</string>
+    <string name="gate_failed">تعذّر تأكيد هويتك، لذلك لم يتغير شيء.</string>
+
+    <!-- M2 Home screen -->
+    <string name="home_title">الشاشة الرئيسية</string>
+    <string name="home_row_dock">شريط التطبيقات</string>
+    <string name="home_row_dock_rows">{names}، بالإضافة إلى {count, plural, one {تطبيق واحد (#)} two {تطبيقين (#)} few {# تطبيقات} many {# تطبيقًا} other {# تطبيق}} بالأسفل</string>
+    <string name="home_row_look">المظهر</string>
+    <string name="home_row_stock">استخدام الشاشة الرئيسية الأصلية للتلفاز</string>
+    <string name="home_row_stock_note">يعيد الشاشة الرئيسية الأصلية للتلفاز، مع بقاء شاشتنا مثبّتة لتتمكن من التبديل إليها مجددًا.</string>
+    <string name="home_drift_banner">تغيرت إعدادات الشاشة الرئيسية على التلفاز منذ أن ضبطتها.</string>
+    <string name="home_drift_restore">استعادة إعداداتي</string>
+    <string name="home_applying">جارٍ تحديث الشاشة الرئيسية على التلفاز...</string>
+    <string name="home_snackbar_done">تم.</string>
+
+    <!-- 0.3.3 D2 (issue #3): the new home screen isn't on this TV -->
+    <string name="home_not_on_tv_lead">يحتفظ {tv} بشاشته الرئيسية الأصلية. شريط التطبيقات والمظهر يخصّان الشاشة الرئيسية الجديدة، وهي غير مفعّلة على هذا التلفاز.</string>
+    <string name="home_not_on_tv_refuses">لا تسمح {brand} إلا بشاشتها الرئيسية الخاصة، لذلك لم يضف الإعداد شاشتنا. يعمل التنظيف بدونها.</string>
+    <string name="home_not_on_tv_old_android">تتطلب الشاشة الرئيسية الجديدة نظام Android 8 أو أحدث، لذلك لم يضفها الإعداد. يعمل التنظيف بدونها.</string>
+    <string name="home_not_on_tv_unknown_home">لا نعرف الشاشة الرئيسية الأصلية لهذا التلفاز بما يكفي لاستبدالها بأمان، لذلك تركها الإعداد كما هي.</string>
+    <string name="home_not_on_tv_wizard_wifi">حُفظت شبكة Wi-Fi في هذا التلفاز بواسطة معالج الإعداد الخاص به. تتطلب الشاشة الرئيسية الجديدة إيقاف المعالج، مما سيؤدي إلى نسيان شبكة Wi-Fi، كما أن بقاء المعالج مفعّلًا قد يسبب تعطل التلفاز. لذلك ترك الإعداد الشاشة الرئيسية كما هي.</string>
+    <string name="home_not_on_tv_wizard_wifi_unlisted">حُفظت شبكة Wi-Fi في هذا التلفاز بواسطة معالج الإعداد الخاص به، ولا نعرف هذا الطراز بما يكفي بعد لإيقاف المعالج بأمان. مع بقاء المعالج مفعّلًا قد تؤدي الشاشة الرئيسية الجديدة إلى تعطل التلفاز، لذلك تركها الإعداد كما هي.</string>
+    <string name="home_not_on_tv_wizard_wifi_unknown">تعذّر التحقق من الجهة التي حفظت شبكة Wi-Fi في هذا التلفاز. تتطلب الشاشة الرئيسية الجديدة إيقاف معالج الإعداد، وهو ما قد يؤدي إلى نسيان شبكة Wi-Fi، لذلك ترك الإعداد الشاشة الرئيسية كما هي.</string>
+    <string name="home_not_on_tv_casting">على جهاز Google هذا تتطلب الشاشة الرئيسية الجديدة إيقاف معالج الإعداد، وعندها يتوقف البث (Cast) من الهواتف بعد كل إعادة تشغيل. لذلك ترك الإعداد الشاشة الرئيسية كما هي.</string>
+    <string name="home_not_on_tv_boot_loop">في هذه الفئة من أجهزة التلفاز يعود معالج الإعداد مع كل إعادة تشغيل، ومع إيقاف الشاشة الرئيسية الأصلية قد يفشل التلفاز في بدء التشغيل. لذلك ترك الإعداد الشاشة الرئيسية كما هي.</string>
+    <string name="home_not_on_tv_wizard_stays_on">لا نعرف هذا التلفاز بما يكفي لإيقاف معالج الإعداد الخاص به، ومع بقاء المعالج مفعّلًا وإيقاف الشاشة الرئيسية الأصلية قد يتعطل التلفاز. لذلك ترك الإعداد الشاشة الرئيسية كما هي.</string>
+    <string name="home_not_on_tv_home_changed">تم تغيير الشاشة الرئيسية لهذا التلفاز مسبقًا بواسطة تطبيق آخر أو تعديل سابق، لذلك تركها الإعداد كما هي ولم يضف شاشتنا. يعمل التنظيف بدونها.</string>
+    <string name="home_not_on_tv_none">الشاشة الرئيسية الجديدة غير مثبّتة على هذا التلفاز حاليًا.</string>
+    <string name="home_not_on_tv_next_wifi">لتغيير ذلك، انسَ شبكة Wi-Fi من إعدادات التلفاز وأضفها من جديد، أو استخدم كابل شبكة، ثم شغّل الإعداد مرة أخرى.</string>
+    <string name="home_not_on_tv_next_check">إعادة تشغيل الإعداد تتحقق من الأمر مرة أخرى.</string>
+    <string name="home_not_on_tv_next_home_changed">إذا كنت ترغب في الشاشة الرئيسية الجديدة، فاضبط الشاشة الرئيسية الأصلية للتلفاز كشاشة افتراضية من إعدادات التلفاز، ثم شغّل الإعداد مرة أخرى.</string>
+    <string name="home_not_on_tv_next_setup">شغّل الإعداد مرة أخرى لإضافتها.</string>
+    <string name="home_not_on_tv_next_list">ما قد يتيح ذلك هو إعداد قائمة مخصصة لهذا التلفاز. أرسل إلينا تقرير الجهاز وسنعمل على إضافتها، ليتمكن إصدار قادم من توفير الشاشة الرئيسية الجديدة.</string>
+    <string name="home_run_setup_again">تشغيل الإعداد مرة أخرى</string>
+    <string name="home_help_add_tv">المساعدة في إضافة هذا التلفاز</string>
+    <string name="home_tv_changes_note">التغييرات التي تجريها على التلفاز نفسه، مثل عدد المربعات في الصف أو التأثيرات الحركية، تستمر حتى تغيّر الشاشة الرئيسية من هنا. لا يظهر أعلاه شريط التطبيقات المعدّل من التلفاز: اختيار مظهر جديد يحتفظ به، أما حفظ شريط مختلف هنا فيستبدله. وتبقى التطبيقات المزالة من الشاشة الرئيسية على التلفاز مخفية.</string>
+
+    <!-- M2 Update the home screen (D4) -->
+    <string name="home_row_update">تحديث الشاشة الرئيسية</string>
+    <string name="home_row_update_note">الإصدار {version} جاهز. سيبقى شريط التطبيقات والمظهر كما هما.</string>
+    <string name="home_update_preview_title">هل تريد تحديث الشاشة الرئيسية؟</string>
+    <string name="home_update_preview_body">سنثبّت الإصدار {version} فوق الإصدار الموجود على التلفاز. سيبقى شريط التطبيقات والمظهر واختيارات البطاقات كما هي. وإذا كانت هي الشاشة الرئيسية الحالية للتلفاز، فستتم إعادة تشغيلها مرة واحدة.</string>
+    <string name="home_update_confirm">تحديث</string>
+    <string name="home_update_done">الشاشة الرئيسية محدّثة إلى الإصدار {version}.</string>
+
+    <!-- M2 Use the TV's own home screen -->
+    <string name="home_stock_preview_title">هل تريد استخدام الشاشة الرئيسية الأصلية للتلفاز؟</string>
+    <string name="home_stock_preview_body">سنعيد تفعيل الشاشة الرئيسية الأصلية للتلفاز ونضبطها كشاشة رئيسية. وستبقى الشاشة الرئيسية الجديدة مثبّتة.</string>
+    <string name="home_stock_confirm">استخدام شاشة التلفاز الأصلية</string>
+    <string name="home_stock_working">جارٍ استعادة الشاشة الرئيسية الأصلية للتلفاز...</string>
+    <string name="home_stock_done">عادت الشاشة الرئيسية الأصلية للتلفاز، وما زالت شاشتنا مثبّتة.</string>
+
+    <!-- M2 Look (theme picker) -->
+    <string name="theme_title">المظهر</string>
+    <string name="theme_default">الافتراضي</string>
+    <string name="theme_default_desc">خلفية سوداء مع أربعة تطبيقات في الأسفل.</string>
+    <string name="theme_aurora">شفق (Aurora)</string>
+    <string name="theme_aurora_desc">خلفية زرقاء داكنة مع توهج هادئ خلف التطبيقات.</string>
+    <string name="theme_six_columns">ستة أعمدة</string>
+    <string name="theme_six_columns_desc">ستة تطبيقات في الصف ليتسع المزيد على الشاشة.</string>
+    <string name="theme_card_cd">{name}. {description}</string>
+    <string name="theme_card_selected_cd">{name}، محدّد. {description}</string>
+
+    <!-- S3b Your dock (sheet) -->
+    <string name="dock_title">شريط تطبيقاتك</string>
+    <string name="dock_body">حتى {count, spellout} في الأسفل. اسحب أي تطبيق من نقاطه لتغيير ترتيبه.</string>
+
+</resources>
