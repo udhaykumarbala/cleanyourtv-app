@@ -99,7 +99,8 @@ enum class SettingKey(val ns: SettingsNs, val key: String, val valueShape: Regex
 enum class GroupDefault { DISABLE, ASK, KEEP }
 enum class Platform { ANDROID_TV, GOOGLE_TV, FIRE_OS, TCL_CN }
 enum class Quirk { HDMI_SWITCH, HOME_TAKEOVER_SETUPWRAITH, EXTRA_HOME_CLAIMERS, REENABLED_AT_BOOT, REBOOT_COMMAND,
-    WIRELESS_DEBUG_PAIRING_REQUIRED, USB_POWER_CUT_WHILE_DEBUGGING, SETTLE_BEFORE_REBOOT, STOCK_LAUNCHER_KEEP_ENABLED }
+    WIRELESS_DEBUG_PAIRING_REQUIRED, USB_POWER_CUT_WHILE_DEBUGGING, SETTLE_BEFORE_REBOOT, STOCK_LAUNCHER_KEEP_ENABLED,
+    EXACT_PROFILE_MATCH }
 data class PackageEntry(val name: PackageName, val note: String?)
 data class PackageGroup(val id: String, val title: String, val default: GroupDefault, val packages: List<PackageEntry>)
 data class ProfileMatch(val models: List<String>, val devices: List<String>, val brand: String?, val sdkMin: Int?, val sdkMax: Int?, val fingerprintPrefix: String?)

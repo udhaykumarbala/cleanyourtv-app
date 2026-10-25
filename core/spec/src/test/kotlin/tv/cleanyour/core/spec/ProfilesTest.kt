@@ -277,7 +277,8 @@ class ProfilesTest {
         // one, asked with its own keys, resolves to itself (no tested list matches those keys).
         for (c in BundledProfileSource.bundled.profiles.filter { it.isCandidate }) {
             val m = c.match
-            val own = facts(m.models.firstOrNull() ?: "unknown", m.devices.first(), m.brand!!, m.sdkMin!!, (m.fingerprintPrefix ?: "") + "x")
+            val fingerprint = m.fingerprintPrefix?.let { if (Quirk.EXACT_PROFILE_MATCH in c.quirks) it else it + "x" } ?: "x"
+            val own = facts(m.models.firstOrNull() ?: "unknown", m.devices.first(), m.brand!!, m.sdkMin!!, fingerprint)
             assertEquals(null, winner(own), c.id)
             assertEquals(c.id, source.candidateFor(own)?.id, c.id)
             assertEquals(c.id, (source.resolveNow(own, tryCandidate = true) as? ProfileResolution.Exact)?.profile?.id, c.id)

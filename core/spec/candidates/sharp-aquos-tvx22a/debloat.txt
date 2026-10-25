@@ -1,0 +1,61 @@
+# DRAFT, NOT TESTED. SHARP AQUOS-TVX22A (ro.product.model AQUOS-TVX22A, device namba,
+# product tcokrfx), Google TV 11 (SDK 30), firmware RTMA.250416.213, fingerprint
+# SHARP/tcokrfx/namba:11/RTMA.250416.213/14107134:user/release-keys
+# Drafted for cleanyourtv-app issue #703 from its TV report and sibling SHARP/MediaTek profiles.
+# Only com.google.android.feedback is default-off, and it was already off in this TV's report.
+# Every other package is an explicit owner choice. Nothing has been tried on a namba set yet.
+#
+# Use through a candidate build of the app. Everything is disabled, not uninstalled, and reversible.
+#
+# Cleanup-only candidate: Home takeover is unavailable. Home on the report is
+# com.google.android.apps.tv.launcherx/.home.HomeActivity and it is not in this list.
+# setupwraith owns the saved Wi-Fi and claims Home (WIZARD_WIFI). It and launcherx must stay on:
+# switching either off can lose Wi-Fi, the phone remote and ADB, or make RecoveryActivity take Home.
+# rcota.android.av.sharp.co.jp.rcota also claims Home and stays on as the SHARP updater/helper.
+#
+# KEEP: com.google.android.tv.remote.service (phone remote), com.android.bluetooth,
+# com.mediatek.autopair and jp.co.sharp.av.android.asia.tvbtremoteapp (remote pairing),
+# com.google.android.gms, com.google.android.apps.mediashell (casting), com.google.android.katniss
+# (voice), com.google.android.inputmethod.latin, com.mediatek.tvinput, com.mediatek.tv.service,
+# com.mediatek.wwtv.tvcenter, com.mediatek.wwtv.setupwizard, com.mediatek.wwtv.mediaplayer,
+# com.mediatek.network, every TV/input overlay, the factory packages (never launch them),
+# fusion.android.tv.demo (it can also handle Input and pairing on MediaTek), and both Home claimants.
+#
+# Already off on the report: com.google.android.feedback, com.google.android.marvin.talkback,
+# jp.co.sharp.av.android.tw.sharpcocorovision.
+#
+# To check before this goes upstream: Wi-Fi and the Google TV phone remote after two restarts;
+# every phone-remote key, Input and Settings; every HDMI input; Live TV; casting; Play Store;
+# voice search. Put everything back immediately if any of those changes.
+
+# Adverts, sponsored rows and partner auto-installs
+# Owner choice in the app.
+android.autoinstalls.config.google.gtvpai             # Google TV partner auto-installs
+com.mediatek.android.leanbacklauncher.partnercustomizer # SHARP partner rows on stock Home
+
+# Tracking, analytics and feedback
+com.google.android.feedback                           # Google feedback uploader; already off
+com.google.android.partnersetup                       # partner attribution/customisation; owner choice
+
+# Other background services
+# Owner choice in the app.
+com.google.android.syncadapters.calendar              # calendar sync on a TV
+jp.co.sharp.av.android.sharpcocoroalbum.renderasia    # COCORO Album renderer; album is optional
+
+# Preloaded apps (owner choice in the app)
+com.amazon.amazonvideo.livingroom                     # Prime Video
+com.google.android.play.games                         # Play Games
+com.google.android.youtube.tvmusic                    # YouTube Music
+com.google.android.apps.tv.dreamx                     # Google ambient screensaver
+
+# SHARP extras (owner choice in the app)
+azan.android.av.sharp.co.jp                           # SHARP prayer-time app
+jp.co.sharp.av.android.asia.sharpselect               # SHARP Select content/promotions
+jp.co.sharp.av.android.asia.cocorovisionlauncher      # COCORO Vision launcher surface
+jp.co.sharp.av.android.asia.sharpcocorovision         # COCORO Vision service
+jp.co.sharp.av.android.emanual                        # on-screen manual
+jp.co.sharp.av.android.sharpcocoroalbumasia           # COCORO Album
+
+# Shop and demo mode (owner choice in the app)
+jp.co.sharp.av.android.epopdemo                       # SHARP electronic point-of-purchase demo
+jp.co.sharp.av.android.storedemoapplication           # SHARP store demo

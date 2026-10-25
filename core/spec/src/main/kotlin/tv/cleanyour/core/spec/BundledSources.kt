@@ -61,14 +61,17 @@ class BundledProfileSource(private val bundle: ProfileBundle = bundled, private 
             val model = m.models.any { it.equals(f.model, ignoreCase = true) }
             val device = m.devices.any { it.equals(f.device, ignoreCase = true) }
             if (!model && !device) return null
+            val exact = tv.cleanyour.core.model.Quirk.EXACT_PROFILE_MATCH in p.quirks
+            if (exact && (!model || !device)) return null
             val brand = m.brand
-            if (brand != null && !brand.equals(f.brand, ignoreCase = true) && !brand.equals(f.manufacturer, ignoreCase = true)) return null
+            if (brand != null && if (exact) !brand.equals(f.brand, ignoreCase = true)
+                else !brand.equals(f.brand, ignoreCase = true) && !brand.equals(f.manufacturer, ignoreCase = true)) return null
             val min = m.sdkMin
             val max = m.sdkMax
             val prefix = m.fingerprintPrefix
             if (min != null && f.sdk < min) return null
             if (max != null && f.sdk > max) return null
-            if (prefix != null && !f.fingerprint.startsWith(prefix)) return null
+            if (prefix != null && if (exact) !f.fingerprint.equals(prefix, ignoreCase = true) else !f.fingerprint.startsWith(prefix)) return null
             return (if (model) 2 else 0) + (if (device) 1 else 0)
         }
     }

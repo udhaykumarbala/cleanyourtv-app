@@ -951,6 +951,107 @@
         }
       }
     },
+    "sharp-aquos-tvx22a": {
+      "match": {
+        "models": [
+          "AQUOS-TVX22A"
+        ],
+        "devices": [
+          "namba"
+        ],
+        "brand": "SHARP",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "SHARP/tcokrfx/namba:11/RTMA.250416.213/14107134:user/release-keys"
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [
+        "EXACT_PROFILE_MATCH"
+      ],
+      "neverDisable": [
+        "com.google.android.apps.tv.launcherx",
+        "com.google.android.tungsten.setupwraith",
+        "rcota.android.av.sharp.co.jp.rcota",
+        "com.google.android.tv.remote.service",
+        "com.google.android.gms",
+        "com.google.android.gsf",
+        "com.android.vending",
+        "com.android.bluetooth",
+        "com.mediatek.autopair",
+        "jp.co.sharp.av.android.asia.tvbtremoteapp",
+        "com.google.android.apps.mediashell",
+        "com.google.android.katniss",
+        "com.google.android.inputmethod.latin",
+        "com.mediatek.tvinput",
+        "com.mediatek.tv.service",
+        "com.mediatek.wwtv.tvcenter",
+        "com.mediatek.wwtv.setupwizard",
+        "com.mediatek.wwtv.mediaplayer",
+        "com.mediatek.network",
+        "fusion.android.tv.demo",
+        "com.mediatek.tv.factory",
+        "mediatek.factorymenu.ui"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #703",
+        "firmware": "RTMA.250416.213/14107134",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        },
+        "Preloaded apps (owner choice in the app)": {
+          "category": "preloads",
+          "ask": true
+        },
+        "SHARP extras (owner choice in the app)": {
+          "category": "brand",
+          "ask": true
+        },
+        "Shop and demo mode (owner choice in the app)": {
+          "category": "demo",
+          "ask": true
+        }
+      },
+      "packages": {
+        "android.autoinstalls.config.google.gtvpai": {
+          "category": "ads",
+          "ask": true
+        },
+        "com.mediatek.android.leanbacklauncher.partnercustomizer": {
+          "category": "ads",
+          "ask": true
+        },
+        "com.google.android.partnersetup": {
+          "category": "tracking",
+          "ask": true
+        },
+        "com.google.android.syncadapters.calendar": {
+          "category": "other",
+          "ask": true
+        },
+        "jp.co.sharp.av.android.sharpcocoroalbum.renderasia": {
+          "category": "brand",
+          "ask": true
+        }
+      }
+    },
     "skyworth-4k-google-tv-box-yda": {
       "match": {
         "models": [],

@@ -22,7 +22,7 @@ class CandidatesTest {
     private val unconverted = ProfileConverter.readUnconverted(File(Fixtures.repoRoot, "core/spec/upstream-feedback/unconverted.txt"))
     private val candidateDir = File(Fixtures.repoRoot, "core/spec/candidates")
     private val candidateMeta = File(candidateDir, "candidate-meta.json")
-    // In folder order: five of 0.3.5-test1, eleven of 0.3.6-beta1 and twenty-seven drafted from the TV
+    // In folder order: five of 0.3.5-test1, eleven of 0.3.6-beta1 and twenty-eight drafted from the TV
     // reports since (each for one reported TV, by device, brand or maker and one Android version, with
     // the fingerprint prefix where the model name is a family name). The others became tested lists in
     // 0.3.7 (upstream v2.7.0) or match the same TV as one.
@@ -31,7 +31,7 @@ class CandidatesTest {
         "changhong-ai-pont-samseong", "formovie-c025rgn-tianshan", "haier-android-tv-nippori", "kivi-4k-android-tv-bangbae",
         "kogan-ai-pont-samseong", "nokia-android-tv-shandao", "oneplus-tv-c00-cebu", "oneplus-tv-dubai-android11",
         "panasonic-tv-r2-scbc", "philips-google-tv-ph1m-9972", "realme-ai-pont-ikebukuro", "sharp-2k-smart-tv-a-beomil",
-        "sharp-aquos-tve19a", "skyworth-4k-google-tv-box-yda", "skyworth-globe-sa-android8", "skyworth-sw-22ae-nf",
+        "sharp-aquos-tve19a", "sharp-aquos-tvx22a", "skyworth-4k-google-tv-box-yda", "skyworth-globe-sa-android8", "skyworth-sw-22ae-nf",
         "skyworth-swtv-20sa-sw4h", "skyworth-swtv-21ae-android11", "skyworth-swtv-22ae-fhd-android11",
         "skyworth-swtv-24ae-fhd-beomil", "skyworth-swtv-shibuya", "smarttech-apollo-premium4k", "sony-bravia-4k-ur1",
         "sony-bravia-vu3-4k", "tcl-beyondtv-c02-4k", "tcl-g06-google-tv",
@@ -39,10 +39,9 @@ class CandidatesTest {
         "xiaomi-mitv-aesp0-android10", "xiaomi-mitv-afzp0", "xiaomi-mitv-axfu0", "xiaomi-mitv-axso2-android11",
         "xiaomi-mitv-mftr0-android14", "xiaomi-mitv-mosr1", "xiaomi-mitv-mtsu0", "xiaomi-mitv-nsop0", "xiaomi-mitv4i-magnolia",
     )
-    // The candidates whose TV's own home is not a known Google or Amazon launcher (PatchWall on these
-    // Xiaomi sets): they name no stock home, so the home screen switch is refused and the list is
-    // clean-up only.
-    private val cleanUpOnly = setOf("xiaomi-mitv-afzp0", "xiaomi-mitv-mftr0-android14", "xiaomi-mitv-mtsu0", "xiaomi-mitv-nsop0")
+    // Candidates whose reported Home cannot be safely handed over: they name no stock home, so the
+    // Home switch is refused and the list is clean-up only.
+    private val cleanUpOnly = setOf("sharp-aquos-tvx22a", "xiaomi-mitv-afzp0", "xiaomi-mitv-mftr0-android14", "xiaomi-mitv-mtsu0", "xiaomi-mitv-nsop0")
 
     private fun without() = ProfileConverter.convert(examples, meta, "3e34f40", unconverted)
     private fun with() = ProfileConverter.convert(examples, meta, "3e34f40", unconverted, candidateDir, candidateMeta)
@@ -153,6 +152,26 @@ class CandidatesTest {
         // A Redmi-branded set of a Xiaomi list, by its maker; the Android 10 Mi TV 4A keeps its tested list.
         assertEquals("xiaomi-mi-tv-4a-android11", source.candidateFor(facts("Redmi", "MiTV-MOOQ3", "tarzan", 30).copy(manufacturer = "Xiaomi"))?.id)
         assertNull(source.candidateFor(facts("Xiaomi", "MiTV-MOOQ1", "tarzan", 29)))
+        // The SHARP namba report gets only its exact Android 11 candidate. It must not fall through
+        // to another SHARP profile or match the same model after a firmware platform upgrade.
+        val sharpNamba = facts("SHARP", "AQUOS-TVX22A", "namba", 30)
+            .copy(fingerprint = "SHARP/tcokrfx/namba:11/RTMA.250416.213/14107134:user/release-keys")
+        val sharpCandidate = source.candidateFor(sharpNamba)
+        assertEquals("sharp-aquos-tvx22a", sharpCandidate?.id)
+        assertEquals(
+            setOf("com.google.android.feedback"),
+            sharpCandidate!!.groups.filter { it.default == GroupDefault.DISABLE }
+                .flatMap { it.packages }.map { it.name.value }.toSet(),
+        )
+        assertTrue(PackageName("com.google.android.apps.tv.launcherx") in sharpCandidate.neverDisable)
+        assertTrue(PackageName("com.google.android.tv.remote.service") in sharpCandidate.neverDisable)
+        assertNull(source.candidateFor(sharpNamba.copy(model = "AQUOS-OTHER")))
+        assertNull(source.candidateFor(sharpNamba.copy(device = "other")))
+        assertNull(source.candidateFor(sharpNamba.copy(brand = "Other")))
+        assertNull(source.candidateFor(sharpNamba.copy(brand = "Other", manufacturer = "Other")))
+        assertNull(source.candidateFor(sharpNamba.copy(fingerprint = "SHARP/tcokrfx/namba:11/RTMA.250416.213/14107135:user/release-keys")))
+        assertNull(source.candidateFor(sharpNamba.copy(fingerprint = sharpNamba.fingerprint + ".unexpected")))
+        assertNull(source.candidateFor(sharpNamba.copy(sdk = 34)))
         // The AI PONT family name: one Changhong board under several brands, each its own list by the
         // brand and the fingerprint prefix; another brand of the same board gets none.
         fun aiPont(brand: String, product: String, device: String, sdk: Int, release: String) =
