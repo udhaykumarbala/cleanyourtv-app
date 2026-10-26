@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:manage. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+  Schermate: M1, M1a, M4, M5, M7, M8 e la richiesta delle credenziali per le azioni che partono da esse.
+-->
+<resources>
+
+    <!-- Parole dei pulsanti -->
+    <string name="action_back">Indietro</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Fatto</string>
+    <string name="action_undo">Annulla</string>
+
+    <!-- Richiesta delle credenziali (D17) -->
+    <string name="gate_title">Conferma che sei tu</string>
+    <string name="gate_subtitle">Prima di cambiare qualcosa su {tv}</string>
+    <string name="gate_subtitle_reset_key">Prima di reimpostare la chiave di questo telefono</string>
+    <string name="gate_subtitle_delete_all">Prima di cancellare tutto</string>
+    <string name="gate_negative">Annulla</string>
+    <string name="gate_failed">Non siamo riusciti a confermare che sei tu, quindi non è stato cambiato nulla.</string>
+
+    <!-- M1 Gestione -->
+    <string name="manage_settings_cd">Impostazioni dell\'app</string>
+    <string name="manage_tv_title">{tv}, {room}</string>
+    <string name="manage_tv_title_noroom">{tv}</string>
+    <string name="manage_state_clean">Pulita</string>
+    <string name="manage_state_original">Originale</string>
+    <string name="manage_checked">Controllata {date}</string>
+    <string name="manage_tv_card_cd">{tv}. {state}. {checked}</string>
+    <string name="manage_thumbnail_cd">L\'ultima immagine da {tv}. Tocca per aggiornare.</string>
+    <string name="manage_clean_again">Ripulisci di nuovo</string>
+    <string name="manage_level_simple">Semplice</string>
+    <string name="manage_level_custom">Personalizzato</string>
+    <string name="manage_level_simple_note">Disattiva il superfluo di solito e tiene tutto il resto.</string>
+    <string name="manage_level_custom_note">Ti lascia scegliere ogni voce, il dock e l\'aspetto.</string>
+    <string name="manage_row_home">Schermata Home</string>
+    <string name="manage_row_home_own">La TV tiene la sua. Scopri perché</string>
+    <string name="manage_row_cards">Schede e moduli</string>
+    <string name="manage_row_cards_none">Ancora nessuna scheda</string>
+    <string name="manage_row_switched_off">{count, plural, other {Disattivati (#)}}</string>
+    <string name="manage_row_switched_off_sub">Riattiva quello che vuoi</string>
+    <string name="manage_row_leftovers">Cerca i residui</string>
+    <string name="manage_row_leftovers_sub">Dopo un aggiornamento del software della TV</string>
+    <string name="manage_row_restore">Punto di ripristino</string>
+    <string name="manage_row_restore_sub">{date}. Da qui puoi annullare tutto.</string>
+    <string name="manage_row_tvsettings">Impostazioni della TV</string>
+    <string name="manage_add_tv">+ Configura un\'altra TV</string>
+    <string name="manage_offline_banner">TV non raggiungibile. È ancora accesa?</string>
+    <string name="manage_reconnect">Ricollega</string>
+    <string name="manage_reconnecting">Ricollegamento in corso...</string>
+
+    <!-- M1a Passaggio di debug per una scrittura successiva (UX 4.3, ritorno) -->
+    <string name="debugstep_title">Per cambiare qualcosa sulla TV, il debug deve restare acceso per un momento.</string>
+    <string name="debugstep_body">Sulla TV: Impostazioni > Preferenze dispositivo > Opzioni sviluppatore > Debug USB. Poi pensiamo noi al resto e lo spegniamo di nuovo alla fine.</string>
+    <string name="debugstep_note">Non serve premere di nuovo su Build. Le Opzioni sviluppatore restano sbloccate.</string>
+    <string name="debugstep_waiting">In attesa della TV...</string>
+    <string name="debugstep_connecting">Collegamento in corso...</string>
+
+    <!-- Una scrittura di Gestione che si è fermata e ha lasciato aperta la sua esecuzione (R5-W8 O2) -->
+    <string name="openwrite_title">Una modifica su {tv} non è finita</string>
+    <string name="openwrite_body_lost">La TV ha smesso di rispondere a metà. Continua con il resto, oppure annulla quello che abbiamo fatto. Fino ad allora non si può cambiare altro su questa TV.</string>
+    <string name="openwrite_body">Ci siamo fermati a metà. Continua con il resto, oppure annulla quello che abbiamo fatto. Fino ad allora non si può cambiare altro su questa TV.</string>
+    <string name="openwrite_body_setup">La configurazione di {tv} non è finita. Aprila per continuare o per annullare quello che abbiamo fatto.</string>
+    <string name="openwrite_not_taken">La TV non ha risposto. Controlla che sia accesa e sullo stesso Wi-Fi di questo telefono, poi riprova.</string>
+    <string name="openwrite_busy">Ci sto lavorando...</string>
+    <string name="openwrite_carry_on">Continua</string>
+    <string name="openwrite_undo">Annulla quello che abbiamo fatto</string>
+    <string name="openwrite_stop">Fermati qui</string>
+    <string name="openwrite_open_setup">Apri la configurazione</string>
+    <string name="openwrite_later">Non ora</string>
+    <string name="openwrite_report">Segnala un problema</string>
+
+    <!-- M4 Disattivati -->
+    <string name="switchedoff_title">{count, plural, other {Disattivati (#)}}</string>
+    <string name="switchedoff_intro">Ognuno può essere riattivato. Non viene cancellato nulla; \"disattivato\" vuol dire addormentato.</string>
+    <string name="switchedoff_group_ads">Pubblicità e righe sponsorizzate</string>
+    <string name="switchedoff_group_tracking">Tracciamento e analisi</string>
+    <string name="switchedoff_group_nobody">App che nessuno ha chiesto</string>
+    <string name="switchedoff_group_brand">Extra di {brand}</string>
+    <string name="switchedoff_group_shop">Negozio e modalità demo</string>
+    <string name="switchedoff_group_needed">Necessari per la nuova schermata Home</string>
+    <string name="switchedoff_group_other">Scelti in Personalizza</string>
+    <string name="switchedoff_put_back">Riattiva</string>
+    <string name="switchedoff_put_back_cd">Riattiva {name}</string>
+    <string name="switchedoff_snackbar">{name} è di nuovo attivo.</string>
+    <string name="switchedoff_empty">Al momento non è disattivato nulla.</string>
+    <string name="switchedoff_empty_sub">Tutto sulla TV è acceso.</string>
+
+    <!-- M5 Cerca i residui -->
+    <string name="leftovers_title">Cerca i residui</string>
+    <string name="leftovers_checking">Controllo in corso...</string>
+    <string name="leftovers_found">{count, plural, one {# elemento è tornato dopo un aggiornamento. Disattivarlo di nuovo?} other {# elementi sono tornati dopo un aggiornamento. Disattivarli di nuovo?}}</string>
+    <string name="leftovers_switch_off">Disattiva</string>
+    <string name="leftovers_not_now">Non ora</string>
+    <string name="leftovers_none">Non è tornato niente. Tutto come l\'avevi lasciato.</string>
+    <string name="leftovers_done">Disattivati di nuovo.</string>
+    <string name="leftovers_error">Per ora non siamo riusciti a controllare. La TV è ancora accesa?</string>
+    <string name="leftovers_notice">{count, plural, one {# elemento è tornato sulla TV.} other {# elementi sono tornati sulla TV.}}</string>
+    <string name="leftovers_notice_action">Controlla</string>
+
+    <!-- M7 Impostazioni della TV -->
+    <string name="tvsettings_title">Impostazioni della TV</string>
+    <string name="tvsettings_name_room">Nome e stanza</string>
+    <string name="tvsettings_name_label">Nome</string>
+    <string name="tvsettings_room_label">Stanza</string>
+    <string name="tvsettings_level_label">Livello</string>
+    <string name="tvsettings_level_simple">Semplice</string>
+    <string name="tvsettings_level_custom">Personalizzato</string>
+    <string name="tvsettings_level_note">Tornare a Semplice nasconde le opzioni in più. La TV resta com\'è.</string>
+    <string name="tvsettings_address">Indirizzo</string>
+    <string name="tvsettings_last_seen">Vista l\'ultima volta {date}</string>
+    <string name="tvsettings_forget">Dimentica questa TV</string>
+    <string name="tvsettings_forget_explain">Questo cancella da questo telefono la scheda di questa TV, i suoi registri e i suoi punti di ripristino. La TV in sé non cambia, ma dopo non potrai più annullare da questo telefono.</string>
+    <string name="tvsettings_forget_title">Dimenticare {tv}?</string>
+    <string name="tvsettings_forget_confirm">Dimentica questa TV</string>
+    <string name="tvsettings_forget_busy">La configurazione sta ancora lavorando su questa TV. Aspetta che finisca oppure fermala prima.</string>
+
+    <!-- M8 Impostazioni dell'app -->
+    <string name="appsettings_title">Impostazioni dell\'app</string>
+    <string name="appsettings_large_text">Testo grande come il sistema</string>
+    <string name="appsettings_large_text_note">La dimensione del testo segue quella impostata nelle Impostazioni del telefono.</string>
+    <string name="appsettings_haptics">Feedback tattile</string>
+    <string name="appsettings_haptics_note">Piccole vibrazioni quando qualcosa finisce o ha bisogno di te.</string>
+    <string name="appsettings_about">Informazioni</string>
+    <string name="appsettings_version">Versione {version}</string>
+    <string name="appsettings_launcher_pin_label">App della schermata Home inclusa</string>
+    <string name="appsettings_key_label">Chiave del telefono</string>
+    <string name="appsettings_key_strongbox">Conservata in un chip di sicurezza dedicato (StrongBox).</string>
+    <string name="appsettings_key_tee">Conservata nell\'hardware sicuro del telefono (TEE).</string>
+    <string name="appsettings_key_wrapped">Conservata nel software, avvolta da una chiave dell\'archivio sicuro del telefono. Questo telefono non può tenerla nell\'hardware.</string>
+    <string name="appsettings_check_updates">Cerca aggiornamenti</string>
+    <string name="appsettings_checking">Controllo in corso...</string>
+    <string name="appsettings_update_available">La versione {version} è disponibile</string>
+    <string name="appsettings_update_open">Apri la pagina della release</string>
+    <string name="appsettings_up_to_date">Hai l\'ultima versione</string>
+    <string name="appsettings_update_error">Non è stato possibile cercare aggiornamenti</string>
+    <string name="appsettings_licences">Licenze</string>
+    <string name="appsettings_licence_app">Clean Your TV: GPL-3.0-or-later</string>
+    <string name="appsettings_licence_font">Carattere Outfit: SIL Open Font Licence 1.1</string>
+    <string name="appsettings_licence_apache">Codice di dadb e Shizuku che abbiamo adattato: avvisi Apache-2.0</string>
+    <string name="appsettings_licence_pictures">Immagini dell\'aspetto: lavoro nostro, CC0 1.0 (pubblico dominio); Aurora, Glass e Autumn lake (Ruska) dal launcher di Clean Your TV, MIT</string>
+    <string name="appsettings_licence_bouncycastle">Libreria crittografica Bouncy Castle: licenza Bouncy Castle</string>
+    <string name="appsettings_privacy">Privacy</string>
+    <string name="appsettings_privacy_text">Niente esce dalla tua rete tranne i download da github.com. GitHub vede l\'indirizzo del tuo telefono e uno user agent generico. Una segnalazione lascia il telefono solo quando la copi, la condividi o la pubblichi tu.</string>
+    <string name="appsettings_privacy_text_offline">Niente esce dalla tua rete. L\'app parla solo con la TV che scegli e non fa richieste a internet per conto suo. Una segnalazione lascia il telefono solo quando la copi, la condividi o la pubblichi tu.</string>
+    <string name="appsettings_report">Segnala un problema</string>
+    <string name="appsettings_report_note">Prima guarda la segnalazione, poi condividila o pubblicala su GitHub</string>
+    <string name="appsettings_reset_key">Reimposta la mia chiave</string>
+    <string name="appsettings_reset_key_note">Ogni TV chiederà di nuovo di fidarsi di questo telefono.</string>
+    <string name="appsettings_reset_key_title">Reimpostare la chiave di questo telefono?</string>
+    <string name="appsettings_reset_key_confirm">Reimposta la mia chiave</string>
+    <string name="appsettings_delete_all">Cancella tutto</string>
+    <string name="appsettings_delete_all_note">Cancella da questo telefono le schede di tutte le TV, i registri, i punti di ripristino, il registro diagnostico dell\'app e la chiave. Le TV in sé non cambiano, e dopo non potrai più annullare da questo telefono.</string>
+    <string name="appsettings_delete_all_title">Cancellare tutto su questo telefono?</string>
+    <string name="appsettings_delete_all_confirm">Cancella tutto</string>
+    <string name="appsettings_delete_all_busy">La configurazione sta ancora lavorando su {tv}. Aspetta che finisca oppure fermala prima.</string>
+
+
+    <!-- Fermarsi e annullare chiedono prima (Confirmations): una domanda, una frase calma, il verbo e una via d'uscita -->
+    <string name="confirm_stop_title">Fermarsi adesso?</string>
+    <string name="confirm_stop_body">Ci fermiamo qui e rimettiamo a posto ciò che abbiamo cambiato finora. La TV resta al sicuro.</string>
+    <string name="confirm_stop_button">Ferma e annulla</string>
+    <string name="confirm_keep_going">Continua</string>
+    <string name="confirm_stop_here_title">Fermarsi qui?</string>
+    <string name="confirm_stop_here_body">Teniamo quello che è già fatto e non cambiamo altro. La TV resta al sicuro.</string>
+    <string name="confirm_stop_here_button">Fermati qui</string>
+    <string name="confirm_undo_title">Annullare le modifiche sulla TV?</string>
+    <string name="confirm_undo_body">Rimettiamo a posto tutto quello che ha fatto questa modifica, così la TV torna com\'era prima. Non viene cancellato nulla.</string>
+    <string name="confirm_undo_button">Annulla le modifiche</string>
+
+    <!-- 0.3.2 B1: una TV non in elenco in Gestione -->
+    <string name="manage_help_add_tv_banner">Non conosciamo ancora questa TV esatta, quindi siamo stati prudenti. Un breve rapporto da parte tua ci aiuta ad aggiungerla.</string>
+    <string name="manage_help_add_tv">Aiutaci ad aggiungere questa TV</string>
+
+    <!-- 0.3.2 B1 e B2: l'anteprima del rapporto -->
+    <string name="report_tv_title">Aiutaci ad aggiungere questa TV</string>
+    <string name="report_tv_body">Questo rapporto dice cos\'è questa TV e con quali app è arrivata, così possiamo preparare un elenco per lei. Le app che hai installato tu vengono solo contate, mai nominate.</string>
+    <string name="report_problem_title">Segnala un problema</string>
+    <string name="report_problem_body">Questo rapporto contiene i passaggi che abbiamo eseguito e un breve riassunto della TV, in testo semplice. Indirizzi, numeri di serie, chiavi e codici vengono tolti prima. I passaggi possono nominare app che abbiamo disattivato o provato a disattivare.</string>
+    <string name="report_public">Se lo pubblichi su GitHub, diventa pubblico. L\'app non invia nulla da sola: scegli tu dove va.</string>
+    <string name="report_preview_label">Il rapporto</string>
+    <string name="report_paste_hint">Copiamo il rapporto, poi apriamo il modulo su GitHub. Incollalo nella casella che lo richiede.</string>
+    <string name="report_copy_open">Copia e apri GitHub</string>
+    <!-- 0.3.3 D1: il rapporto sta nel link, quindi il modulo si apre già compilato -->
+    <string name="report_open">Apri GitHub</string>
+    <string name="report_in_link_hint">Il modulo su GitHub si apre con questo rapporto già dentro. Aggiungi qualche parola se vuoi, poi pubblicalo. Copiamo anche il rapporto, nel caso il modulo si apra senza.</string>
+    <string name="report_too_long">Questo rapporto è troppo lungo per entrare da solo nel modulo, quindi lo copiamo per te. Su GitHub, tieni premuta la casella del rapporto, scegli Incolla, poi pubblica.</string>
+    <string name="report_share">Condividi</string>
+    <string name="report_loading">Preparazione del rapporto</string>
+    <string name="report_unavailable">Dobbiamo leggere questa TV una volta prima di poterne fare il rapporto. Configurala o collegati, poi riprova.</string>
+</resources>

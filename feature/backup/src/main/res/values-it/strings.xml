@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:backup. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+-->
+<resources>
+
+    <!-- Parole dei pulsanti -->
+    <string name="action_back">Indietro</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Fatto</string>
+
+    <!-- Richiesta delle credenziali (D17), usata da "Rimetti tutto a posto" -->
+    <string name="gate_title">Conferma che sei tu</string>
+    <string name="gate_subtitle">Prima di cambiare qualcosa su {tv}</string>
+    <string name="gate_negative">Annulla</string>
+    <string name="gate_failed">Non siamo riusciti a confermare che sei tu, quindi non è stato cambiato nulla.</string>
+
+    <!-- M6 Punto di ripristino -->
+    <string name="restore_title">Punto di ripristino</string>
+    <string name="restore_current">Salvato {date}</string>
+    <string name="restore_none">Nessun punto di ripristino per ora. Ne viene salvato uno prima della prima modifica.</string>
+    <string name="restore_read_failed">Qualcosa è andato storto nella lettura del punto di ripristino</string>
+    <string name="restore_row_undo">Annulla tutto</string>
+    <string name="restore_row_undo_sub">Riporta la TV a com\'era il {date}</string>
+    <string name="restore_row_save">Salva una copia</string>
+    <string name="restore_row_save_sub">Salva un file zip in un posto a tua scelta.</string>
+    <string name="restore_row_factory">Prima di un ripristino di fabbrica</string>
+    <string name="restore_row_factory_sub">Riattiva la procedura guidata di configurazione, così la TV può avviarsi correttamente dopo il ripristino.</string>
+
+    <!-- Annulla tutto: anteprima (UX 4.13) -->
+    <string name="restore_preview_title">Questo riporta la TV a com\'era il {date}:</string>
+    <string name="restore_preview_things">{count, plural, one {Riattiva # elemento} other {Riattiva # elementi}}</string>
+    <string name="restore_preview_home">La vecchia schermata Home ({name}) torna al comando</string>
+    <string name="restore_preview_wizard">Procedura guidata di configurazione di nuovo attiva</string>
+    <string name="restore_preview_screensaver">Salvaschermo orologio sostituito da quello della TV</string>
+    <string name="restore_preview_keyboard">Tastiera sostituita da quella della TV</string>
+    <string name="restore_launcher_title">Nuova schermata Home</string>
+    <string name="restore_launcher_keep">Tienila installata come una normale app</string>
+    <string name="restore_launcher_remove">Rimuovila dalla TV</string>
+    <string name="restore_launcher_remove_note">Rimuovendola si cancellano anche le risposte che le schede dei moduli hanno dato sulla TV.</string>
+    <string name="restore_preview_button">Rimetti tutto a posto</string>
+
+    <!-- Annulla tutto: foglio di conferma -->
+    <string name="restore_confirm_title">Rimettere tutto a posto?</string>
+    <string name="restore_confirm_body">Tornano anche la pubblicità e il tracciamento. Puoi sempre eseguire di nuovo la pulizia.</string>
+    <string name="restore_confirm_button">Rimetti tutto a posto</string>
+
+    <!-- Annulla tutto: avanzamento e fine -->
+    <string name="restore_working_title">Sto rimettendo tutto a posto</string>
+    <string name="restore_working_things">{total, plural, other {Riattivazione in corso: {done} di #...}}</string>
+    <string name="restore_working_home">Rimetto la vecchia schermata Home...</string>
+    <string name="restore_working_wizard">Riattivo la procedura guidata di configurazione...</string>
+    <string name="restore_done_title">È tutto come prima</string>
+    <string name="restore_done_body">La TV è com\'era il {date}. Il punto di ripristino resta salvato, nel caso cambiassi idea.</string>
+    <string name="restore_clean_again">Ripulisci di nuovo</string>
+
+    <!-- Prima di un ripristino di fabbrica -->
+    <string name="restore_factory_title">Prima di un ripristino di fabbrica</string>
+    <string name="restore_factory_body">Un ripristino di fabbrica riporta la procedura guidata di configurazione della TV, quindi la riattiviamo adesso, così dopo la TV può avviarsi correttamente.</string>
+    <string name="restore_factory_button">Riattiva la procedura guidata</string>
+    <string name="restore_factory_working">Riattivo la procedura guidata di configurazione...</string>
+    <string name="restore_factory_done">La procedura guidata è di nuovo attiva. Ora puoi ripristinare la TV.</string>
+
+    <!-- Salva una copia (esportazione) -->
+    <string name="restore_export_saved">Copia del punto di ripristino salvata.</string>
+    <string name="restore_export_failed">Non siamo riusciti a salvare la copia. Prova un altro posto.</string>
+
+</resources>

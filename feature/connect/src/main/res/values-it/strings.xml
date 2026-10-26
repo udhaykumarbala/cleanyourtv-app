@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:connect. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+  Schermate: S1, S1b, S1c, S2a a S2d, S2x, il foglio "Non lo vedo", le schede di arresto per trovare
+  e raggiungere la TV. Il nome del Wi-Fi non viene mai mostrato (D19).
+-->
+<resources>
+
+    <!-- Parole dei pulsanti -->
+    <string name="action_back">Indietro</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_ok">OK</string>
+
+    <!-- S1 Benvenuto -->
+    <string name="welcome_title">La tua TV, in ordine.</string>
+    <string name="welcome_body">Disattiva il superfluo, tieni le app che usi e ottieni una schermata Home tranquilla. Cinque minuti. Si può rimettere tutto a posto.</string>
+    <string name="welcome_hero_cd">La schermata Home di una TV piena di righe sponsorizzate diventa una schermata pulita con quattro app in basso</string>
+    <string name="welcome_looking">Cerco TV sul tuo Wi-Fi...</string>
+    <string name="welcome_found_one">Trovata {name} ({room})</string>
+    <string name="welcome_found_one_noroom">Trovata {name}</string>
+    <string name="welcome_found_many">{count, plural, one {Trovata # TV} other {Trovate # TV}}</string>
+    <string name="welcome_none_yet">Ancora nessuna TV. Vai avanti, continuiamo a cercare.</string>
+    <string name="welcome_start">Inizia</string>
+    <string name="welcome_returning">Ho già configurato una TV</string>
+
+    <!-- S1b Quale TV? -->
+    <string name="picker_title">Quale TV?</string>
+    <string name="picker_body">Non sei sicuro? La TV che scegli mostrerà tra poco un messaggio sul suo schermo.</string>
+    <string name="picker_row">{name}, {room} · {platform}</string>
+    <string name="picker_row_noroom">{name} · {platform}</string>
+    <string name="picker_name_with_suffix">{name} ...{suffix}</string>
+    <string name="picker_platform_android_tv">Android TV {version}</string>
+    <string name="picker_platform_google_tv">Google TV {version}</string>
+    <string name="picker_platform_fire_tv">Fire TV</string>
+    <string name="picker_footer">Telefono e TV devono essere sullo stesso Wi-Fi.</string>
+    <string name="picker_primary">Usa {name}</string>
+    <string name="picker_tertiary">Inserisci l\'indirizzo della TV</string>
+
+    <!-- S1c Inserisci l'indirizzo della TV (foglio) -->
+    <string name="address_title">Scrivi l\'indirizzo della TV</string>
+    <string name="address_body">Sulla TV: Impostazioni > Rete > il nome del tuo Wi-Fi mostra un indirizzo come 192.168.1.50.</string>
+    <string name="address_field_label">Indirizzo della TV</string>
+    <string name="address_error">Non è un indirizzo della tua rete domestica</string>
+    <string name="address_connect">Collega</string>
+
+    <!-- S2a Fai entrare il telefono (passaggi) -->
+    <string name="door_title">Fai entrare il telefono</string>
+    <string name="door_body">Prendi il telecomando della TV. Ci vuole circa un minuto ed è l\'unica parte un po\' laboriosa.</string>
+    <string name="door_step_cd">Passaggio {current} di {total}</string>
+    <string name="door_next">Avanti</string>
+    <string name="door_menu_names_vary">I nomi dei menu possono essere un po\' diversi sulla tua TV.</string>
+    <string name="door_same_wifi">Telefono e TV devono essere sullo stesso Wi-Fi.</string>
+    <string name="door_waiting">In attesa della TV...</string>
+    <string name="door_connecting">Collegamento in corso...</string>
+    <string name="door_still_waiting">Ancora in attesa. Il debug USB si è attivato? Alcune TV richiedono anche il debug di rete.</string>
+    <string name="door_still_waiting_show_me">Mostrami come</string>
+    <string name="door_change_model">Non è una {model}? Cambia modello</string>
+    <string name="door_change_model_generic">Non è questa TV? Cambia modello</string>
+    <!-- Round 3: le parole del terzo pulsante di S1b, per un passaggio aperto da Inizia sull'unico dispositivo trovato -->
+    <string name="door_not_this_tv">Non è questa TV? Inserisci l\'indirizzo della TV</string>
+    <string name="door_brand_prompt">Quale marca?</string>
+    <string name="door_brand_xiaomi">Xiaomi</string>
+    <string name="door_brand_tcl">TCL</string>
+    <string name="door_brand_sony">Sony</string>
+    <string name="door_brand_hisense">Hisense</string>
+    <string name="door_brand_philips">Philips</string>
+    <string name="door_brand_google">Google</string>
+    <string name="door_brand_amazon">Amazon</string>
+    <string name="door_brand_other">Altra</string>
+    <!-- Dopo la scelta TCL: il firmware TCL per il mercato cinese e Android TV o Google TV di TCL richiedono passaggi diversi. -->
+    <string name="door_tcl_menus_prompt">In che lingua sono i menu della TV?</string>
+    <string name="door_tcl_menus_global">Menu in inglese o nella mia lingua</string>
+    <string name="door_tcl_menus_chinese">Menu in cinese</string>
+    <!-- 0.3.6: la porta della TV ha risposto ma il collegamento è fallito; {kind} è un codice breve come unreachable -->
+    <string name="door_connect_failed_title">La TV ha risposto, ma questo telefono non è riuscito a collegarsi</string>
+    <string name="door_connect_failed_body">Il collegamento non è riuscito ({kind}). Continuiamo a provare finché questa schermata è aperta.</string>
+    <string name="door_connect_failed_hint">Se ADB da un computer funziona ma questa app non raggiunge la TV, potrebbe esserci qualcosa sul telefono che disturba: un limite di rete per app (MIUI, Samsung), una VPN, il DNS privato o i dati mobili. Spegnilo per un momento e riprova.</string>
+    <string name="door_copy_error">Copia l\'errore</string>
+    <string name="door_error_copied">Copiato. Incollalo nella tua segnalazione.</string>
+    <string name="door_unknown_note">Non conosciamo ancora questa TV esatta. I passaggi di solito sono gli stessi.</string>
+
+    <!-- Schede dei passaggi S2a per famiglia di piattaforma (tabella UX 2). Nota per chi traduce: usare i nomi dei menu della TV. -->
+    <!-- Android TV da 9 a 11 -->
+    <string name="family_atv_step1">Sulla TV apri Impostazioni (l\'ingranaggio, in alto a destra), poi Preferenze dispositivo > Informazioni. Premi OK su \"Build\" sette volte finché la TV dice \"Ora sei uno sviluppatore\".</string>
+    <string name="family_atv_step2">Torna indietro di una schermata. Apri Opzioni sviluppatore e attiva Debug USB. Se la TV mostra anche \"Debug di rete\" o \"Debug ADB\", attiva anche quello.</string>
+    <string name="family_atv_step3">Lascia la TV su questa schermata. Il telefono si collegherà da solo.</string>
+    <string name="family_atv_extra_shield">Su una Shield, quello che conta è \"Debug di rete\".</string>
+    <!-- Google TV da 12 a 14 -->
+    <string name="family_gtv_step1">Sulla TV apri Impostazioni, poi Sistema > Informazioni. Premi OK su \"Build del sistema operativo Android TV\" sette volte finché la TV dice \"Ora sei uno sviluppatore\".</string>
+    <string name="family_gtv_step2">Torna indietro di una schermata. Apri Sistema > Opzioni sviluppatore e attiva Debug USB, poi anche Debug wireless.</string>
+    <string name="family_gtv_step3">Lascia la TV su questa schermata. Il telefono si collegherà da solo.</string>
+    <!-- Fire TV (Fire OS 7) -->
+    <string name="family_fire_step1">Sulla TV apri Impostazioni > My Fire TV > Informazioni. Seleziona il nome del dispositivo sette volte finché la TV dice \"Ora sei uno sviluppatore\".</string>
+    <string name="family_fire_step2">Torna indietro di una schermata. Apri Opzioni sviluppatore e attiva Debug ADB.</string>
+    <string name="family_fire_step3">Lascia la TV su questa schermata. Il telefono si collegherà da solo.</string>
+    <!-- TCL Cina (Android 9) -->
+    <string name="family_tcl_step1">Sulla TV apri Impostazioni > Informazioni > 本机信息, poi premi Su, Giù, Sinistra, Destra sul telecomando.</string>
+    <string name="family_tcl_step2">Compare una piccola finestra \"ADB\" con un indirizzo. Lasciala aperta.</string>
+    <string name="family_tcl_step3">Lascia la TV su questa schermata. Il telefono si collegherà da solo.</string>
+    <!-- TCL fuori dalla Cina (menu in inglese o nella lingua della persona): i passaggi di Android TV più queste righe ai passaggi 1 e 2 -->
+    <string name="family_tcl_extra_gtv_step1">Su Google TV: Sistema > Informazioni, poi premi OK su \"Build del sistema operativo Android TV\" sette volte.</string>
+    <string name="family_tcl_extra_gtv">Su Google TV attiva anche Debug wireless.</string>
+    <!-- Marca sconosciuta: il percorso generico di Android TV -->
+    <string name="family_unknown_step1">Sulla TV apri Impostazioni (l\'ingranaggio, in alto a destra), poi Preferenze dispositivo > Informazioni. Premi OK su \"Build\" sette volte finché la TV dice \"Ora sei uno sviluppatore\".</string>
+    <string name="family_unknown_step2">Torna indietro di una schermata. Apri Opzioni sviluppatore e attiva Debug USB. Se la TV mostra anche \"Debug di rete\" o \"Debug ADB\", attiva anche quello.</string>
+    <string name="family_unknown_step3">Lascia la TV su questa schermata. Il telefono si collegherà da solo.</string>
+
+    <!-- Banner di profilo S2a (UX 2 e 4.15) -->
+    <string name="banner_fire">Fire TV ci permette di disattivare pubblicità e tracciamento ma mantiene la propria schermata Home. La pulizia la ottieni comunque.</string>
+    <string name="banner_tcl">Questa TV mantiene la propria schermata Home (TCL non ne consente altre). La pulizia la ottieni comunque.</string>
+    <string name="banner_mibox_usb">Finché il debug è attivo, questo box spegne la sua porta USB. Un altoparlante o un disco USB si fermeranno fino alla fine (alla fine disattiviamo di nuovo il debug).</string>
+
+    <!-- S2c Guarda la TV (Consenti) -->
+    <string name="allow_title">Guarda la TV</string>
+    <string name="allow_body">La TV chiede se fidarsi di questo telefono. Spunta \"Consenti sempre\", poi scegli OK.</string>
+    <!-- Le due parti di allow_body mostrate in text.primary; ognuna deve comparire in allow_body esattamente. -->
+    <string name="allow_body_emphasis_always">\"Consenti sempre\"</string>
+    <string name="allow_body_emphasis_ok">OK.</string>
+    <string name="allow_code_label">Il codice sulla TV finisce con</string>
+    <string name="allow_code_caption">Identifica questo telefono.</string>
+    <string name="allow_waiting">In attesa del tuo tocco sulla TV...</string>
+    <string name="allow_still_waiting">Ancora in attesa di OK sulla TV.</string>
+    <string name="allow_trusted">Attendibile</string>
+    <string name="allow_dont_see">Non lo vedo sulla TV</string>
+    <string name="allow_art_cd">La finestra della TV Consenti debug USB. L\'impronta digitale finisce con {tail}.</string>
+
+    <!-- Foglio S2c: Non lo vedo sulla TV (UX 4.4) -->
+    <string name="notseen_title">Non lo vedo sulla TV</string>
+    <string name="notseen_hidden">La finestra può nascondersi dietro un\'altra schermata. Premi Home sul telecomando, poi Indietro una volta. Se ancora non c\'è, chiediamo di nuovo alla TV.</string>
+    <string name="notseen_cancelled">Se qualcuno ha scelto Annulla: spegni e riaccendi il debug USB sulla TV, poi tocca \"Chiedi di nuovo alla TV\".</string>
+    <string name="notseen_greyed">Se \"Consenti sempre\" è grigio sulla TV, va bene anche solo OK; chiederemo di nuovo la prossima volta.</string>
+    <string name="notseen_ask_again">Chiedi di nuovo alla TV</string>
+    <string name="notseen_asking">Chiedo di nuovo alla TV...</string>
+    <string name="notseen_restart">La TV non accetta il telefono. Succede su alcuni modelli quando il debug è stato attivato prima che la TV finisse di avviarsi. Riavvia la TV, riattiva il debug e torna qui.</string>
+    <string name="notseen_restarted">L\'ho riavviata</string>
+
+    <!-- S2d Collegata, e il controllo d'identità "È la tua TV?" (D38) -->
+    <string name="connected_title">Collegato a {tv}</string>
+    <string name="connected_cd">Collegato</string>
+    <string name="identity_question">È la tua TV?</string>
+    <string name="identity_detail">{name}, numero di serie che finisce con {serial}</string>
+    <string name="identity_body">Controlla che l\'immagine sia quella che la tua TV sta mostrando adesso.</string>
+    <string name="identity_screenshot_cd">Cosa sta mostrando la TV adesso</string>
+    <string name="identity_yes">Sì, è la mia</string>
+    <string name="identity_no">No</string>
+
+    <!-- S2x Serve il codice di abbinamento (D9). I tre comandi sono codice e non si traducono. -->
+    <string name="pairing_title">Questa TV richiede un codice di abbinamento</string>
+    <string name="pairing_body">Questa versione non sa ancora digitare i codici di abbinamento; la prossima sì. Se hai un computer, abbina una volta con adb ed esegui adb tcpip 5555, poi torna qui; da lì in poi se la cava il telefono.</string>
+    <string name="pairing_show_steps">Mostrami i passaggi sul computer</string>
+    <string name="pairing_steps_title">Abbina una volta da un computer</string>
+    <string name="pairing_steps_intro">Sulla TV apri Opzioni sviluppatore > Debug wireless > Abbina dispositivo con codice di abbinamento. Poi esegui questi tre comandi sul computer, uno alla volta.</string>
+    <string name="pairing_steps_note">Usa l\'indirizzo, le porte e il codice di sei cifre che mostra la TV. Quando l\'ultimo comando è stato eseguito, torna a questa app.</string>
+
+    <!-- Arresto: TV non trovata (UX 4.1, senza nome del Wi-Fi, D19) -->
+    <string name="stop_tv_not_found_title">Nessuna TV trovata per ora</string>
+    <string name="stop_tv_not_found_body">Controlla che la TV sia accesa e sullo stesso Wi-Fi di questo telefono. Le TV possono impiegare un minuto a comparire dopo che si svegliano.</string>
+    <string name="stop_tv_not_found_primary">Continua a cercare</string>
+    <string name="stop_tv_not_found_secondary">Inserisci l\'indirizzo della TV</string>
+    <string name="stop_tv_not_found_tertiary">Aiuto</string>
+    <string name="stop_tv_not_found_help_title">Perché una TV potrebbe non comparire</string>
+    <string name="stop_tv_not_found_help_isolation">Wi-Fi per gli ospiti, oppure un router che tiene i dispositivi separati. Cerca nel router \"isolamento AP\" o \"isolamento client\" e disattivalo.</string>
+    <string name="stop_tv_not_found_help_ethernet">La TV è collegata via Ethernet mentre il telefono è sul Wi-Fi. Con la maggior parte dei router va bene, ma alcuni tengono separate le due reti. Scrivere l\'indirizzo della TV risolve il problema.</string>
+    <string name="stop_tv_not_found_help_mesh">Un sistema mesh con una rete ospiti separata. Collega il telefono alla rete principale.</string>
+
+    <!-- Arresto: rete sbagliata (UX 4.2 con testo D19) -->
+    <string name="stop_wrong_network_title">Telefono e TV sono su reti diverse</string>
+    <string name="stop_wrong_network_body">La TV è stata vista per ultima su una rete diversa. Collegati allo stesso Wi-Fi della TV e andiamo avanti.</string>
+    <string name="stop_wrong_network_primary">Apri le impostazioni Wi-Fi</string>
+    <string name="stop_wrong_network_secondary">Sono sulla rete giusta, cerca di nuovo</string>
+    <string name="stop_wrong_network_off_title">Questo telefono non è sul Wi-Fi</string>
+    <string name="stop_wrong_network_off_body">Il Wi-Fi è spento. La TV si può raggiungere solo con lo stesso Wi-Fi.</string>
+
+    <!-- Arresto: identità cambiata (D37) -->
+    <string name="stop_identity_changed_title">A questo indirizzo ha risposto una TV diversa</string>
+    <string name="stop_identity_changed_body">La TV a questo indirizzo non è quella che avevamo configurato come {name}. Il suo indirizzo potrebbe essere cambiato, oppure lo ha preso un\'altra TV. Ci siamo fermati prima di cambiare qualsiasi cosa.</string>
+    <string name="stop_identity_changed_primary">Cercala di nuovo</string>
+    <string name="stop_identity_changed_secondary">Indietro</string>
+
+    <!-- Arresto: manca shell v2 (F1) -->
+    <string name="stop_tv_not_supported_title">Questa TV non si può ancora configurare da un telefono</string>
+    <string name="stop_tv_not_supported_body">La connessione di debug di questa TV è troppo elementare perché il telefono faccia modifiche in sicurezza, quindi ci siamo fermati prima di toccare qualsiasi cosa. Sulla TV non è stato cambiato nulla.</string>
+    <string name="stop_tv_not_supported_primary">Indietro</string>
+
+</resources>

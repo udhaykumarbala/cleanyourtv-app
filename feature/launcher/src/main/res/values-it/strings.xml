@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:launcher. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+-->
+<resources>
+
+    <!-- Parole dei pulsanti -->
+    <string name="action_back">Indietro</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_done">Fatto</string>
+    <string name="action_undo">Annulla</string>
+
+    <!-- Richiesta delle credenziali (D17) -->
+    <string name="gate_title">Conferma che sei tu</string>
+    <string name="gate_subtitle">Prima di cambiare qualcosa su {tv}</string>
+    <string name="gate_negative">Annulla</string>
+    <string name="gate_failed">Non siamo riusciti a confermare che sei tu, quindi non è stato cambiato nulla.</string>
+
+    <!-- M2 Schermata Home -->
+    <string name="home_title">Schermata Home</string>
+    <string name="home_row_dock">Dock</string>
+    <string name="home_row_dock_rows">{names}, più {count, plural, one {# app} other {# app}} sotto</string>
+    <string name="home_row_look">Aspetto</string>
+    <string name="home_tcl_remote_keys">Sulle TCL con Google TV, i tasti Impostazioni (ingranaggio), Netflix e YouTube del telecomando non funzionano con la nuova schermata Home. Per riaverli, scegli Usa la schermata Home della TV.</string>
+    <string name="home_row_stock">Usa la schermata Home della TV</string>
+    <string name="home_row_stock_note">Riporta la schermata Home della TV. La nostra resta installata, così puoi cambiare di nuovo.</string>
+    <string name="home_drift_banner">Le impostazioni della schermata Home sulla TV sono cambiate dopo che le avevi scelte.</string>
+    <string name="home_drift_restore">Invia di nuovo le mie</string>
+    <string name="home_applying">Aggiornamento della schermata Home sulla TV...</string>
+    <string name="home_snackbar_done">Fatto.</string>
+
+    <!-- 0.3.3 D2 (issue #3): la nuova Home non è su questa TV, quindi non c'è un dock o un aspetto da cambiare. -->
+    <string name="home_not_on_tv_lead">{tv} mantiene la propria schermata Home. Il dock e l\'aspetto appartengono alla nuova schermata Home, che non è su questa TV.</string>
+    <string name="home_not_on_tv_refuses">{brand} consente solo la propria schermata Home, quindi la configurazione non ha aggiunto la nostra. La pulizia funziona anche senza.</string>
+    <string name="home_not_on_tv_old_android">La nuova schermata Home richiede Android 8 o successivo, quindi la configurazione non l\'ha aggiunta. La pulizia funziona anche senza.</string>
+    <string name="home_not_on_tv_unknown_home">Non conosciamo abbastanza bene la schermata Home di questa TV per sostituirla in sicurezza, quindi la configurazione l\'ha lasciata com\'era.</string>
+    <string name="home_not_on_tv_wizard_wifi">Il Wi-Fi di questa TV è stato salvato dalla sua procedura guidata di configurazione. La nuova schermata Home richiede che la procedura sia disattivata, e questo farebbe dimenticare il Wi-Fi; con la procedura lasciata attiva la TV può andare in crash. Per questo la configurazione ha lasciato la Home com\'era.</string>
+    <string name="home_not_on_tv_wizard_wifi_unlisted">Il Wi-Fi di questa TV è stato salvato dalla sua procedura guidata di configurazione, e non conosciamo ancora abbastanza bene questa TV per disattivarla in sicurezza. Con la procedura lasciata attiva, una nuova schermata Home può mandare in crash la TV, quindi la configurazione l\'ha lasciata com\'era.</string>
+    <string name="home_not_on_tv_wizard_wifi_unknown">Non siamo riusciti a controllare chi ha salvato il Wi-Fi di questa TV. La nuova schermata Home richiede che la procedura guidata sia disattivata, e questo potrebbe far dimenticare il Wi-Fi, quindi la configurazione ha lasciato la Home com\'era.</string>
+    <string name="home_not_on_tv_casting">Su questo dispositivo Google la nuova schermata Home richiede che la procedura guidata sia disattivata, e allora la trasmissione dai telefoni smette di funzionare a ogni riavvio. Per questo la configurazione ha lasciato la Home com\'era.</string>
+    <string name="home_not_on_tv_boot_loop">Su questa famiglia di TV la procedura guidata torna attiva a ogni riavvio, e con la schermata Home della TV disattivata la TV può non avviarsi. Per questo la configurazione ha lasciato la Home com\'era.</string>
+    <string name="home_not_on_tv_wizard_stays_on">Non conosciamo abbastanza bene questa TV per disattivarne la procedura guidata, e con la procedura attiva e la Home della TV disattivata la TV può andare in crash. Per questo la configurazione ha lasciato la Home com\'era.</string>
+    <string name="home_not_on_tv_home_changed">La schermata Home di questa TV era già stata cambiata, da un\'altra app o da una modifica precedente, quindi la configurazione l\'ha lasciata com\'è e non ha aggiunto la nostra. La pulizia funziona anche senza.</string>
+    <string name="home_not_on_tv_none">La nuova schermata Home non è installata su questa TV al momento.</string>
+    <string name="home_not_on_tv_next_wifi">Per cambiare questa situazione, dimentica la rete Wi-Fi nelle Impostazioni della TV e aggiungila di nuovo, oppure usa un cavo di rete. Poi esegui di nuovo la configurazione.</string>
+    <string name="home_not_on_tv_next_check">Eseguendo di nuovo la configurazione si controlla ancora una volta.</string>
+    <string name="home_not_on_tv_next_home_changed">Se vuoi la nuova schermata Home, rimetti come Home quella della TV nelle impostazioni della TV, poi esegui di nuovo la configurazione.</string>
+    <string name="home_not_on_tv_next_setup">Esegui di nuovo la configurazione per aggiungerla.</string>
+    <string name="home_not_on_tv_next_list">Servirebbe un elenco fatto per questa TV. Mandaci il suo rapporto e ne prepareremo uno; una versione successiva potrà poi offrire la nuova schermata Home.</string>
+    <string name="home_run_setup_again">Esegui di nuovo la configurazione</string>
+    <string name="home_help_add_tv">Aiutaci ad aggiungere questa TV</string>
+    <!-- Sotto le righe Dock e Aspetto: un invio dal telefono sostituisce ciò che è stato cambiato con le impostazioni del Launcher della TV (launcher 2.4 e successivi). -->
+    <string name="home_tv_changes_note">Le impostazioni cambiate sulla TV stessa vengono sostituite quando invii da qui.</string>
+    <!-- Riga Aspetto: cosa è stato inviato per ultimo, poi quante app per riga -->
+    <string name="home_row_look_summary_picture">{style} con {picture}</string>
+    <string name="home_row_look_summary_photo">{style} con la tua foto</string>
+    <string name="home_row_look_summary_none">{style}, senza immagine</string>
+    <string name="home_row_look_columns">{count, plural, one {# app per riga} other {# app per riga}}</string>
+    <string name="home_row_look_sending">Invio in corso...</string>
+    <string name="home_look_failed">L\'aspetto non è arrivato alla TV.</string>
+    <string name="home_look_failed_open">Apri Aspetto</string>
+
+    <!-- M2 Aggiorna la schermata Home (D4) -->
+    <string name="home_row_update">Aggiorna la schermata Home</string>
+    <string name="home_row_update_note">La versione {version} è pronta. Dock e aspetto restano come sono.</string>
+    <string name="home_update_preview_title">Aggiornare la schermata Home?</string>
+    <string name="home_update_preview_body">Installeremo la versione {version} sopra quella presente sulla TV. Dock, aspetto e risposte delle schede restano. Se ora è la Home della TV, si riavvia una volta.</string>
+    <string name="home_update_confirm">Aggiorna</string>
+    <string name="home_update_done">La schermata Home è aggiornata: versione {version}.</string>
+
+    <!-- M2 Usa la schermata Home della TV: anteprima e avanzamento -->
+    <string name="home_stock_preview_title">Usare la schermata Home della TV?</string>
+    <string name="home_stock_preview_body">Riattiveremo la schermata Home della TV e la imposteremo come Home. La nuova schermata Home resta installata.</string>
+    <string name="home_stock_confirm">Usa quella della TV</string>
+    <string name="home_stock_working">Rimetto la schermata Home della TV...</string>
+    <string name="home_stock_done">La schermata Home della TV è tornata. La nostra è ancora installata.</string>
+
+    <!-- M2 Aspetto (selettore del tema) -->
+    <string name="theme_default">Predefinito</string>
+    <string name="home_look_ended_banner">{picture} è terminata. Rimettere sulla TV la tua immagine precedente?</string>
+    <string name="home_look_ended_restore">Rimettila</string>
+
+    <!-- S3b Il tuo dock (foglio) -->
+    <string name="dock_title">Il tuo dock</string>
+    <string name="dock_body">Fino a {count, spellout} lungo il bordo inferiore. Trascina un\'app dai puntini per cambiare l\'ordine.</string>
+    <string name="dock_waiting">{count, plural, one {# app aspetta} other {# app aspettano}} nella griglia finché non scegli più app per riga in Aspetto.</string>
+
+</resources>

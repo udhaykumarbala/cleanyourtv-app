@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :app. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+-->
+<resources>
+    <string name="app_channel_setup_name">Configurazione di una TV</string>
+    <string name="app_channel_setup_description">Mostra l\'avanzamento mentre il telefono modifica la TV e ti avvisa quando è il momento di guardare lo schermo.</string>
+    <string name="app_restore_read_failed">Qualcosa è andato storto nella lettura del punto di ripristino</string>
+</resources>
