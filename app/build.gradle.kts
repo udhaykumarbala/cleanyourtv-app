@@ -11,8 +11,8 @@ android {
         // ^v[0-9.]+$ never matches and the update check never offers): code 18 installs over 0.4.5 (17),
         // 0.4.0 (15) and every earlier beta with the same key, and its own update check offers 0.4.6
         // and later, so volunteers keep the test lists until then; the next release takes code 19.
-        versionCode = 19
-        versionName = "0.4.6-beta2"
+        versionCode = 20
+        versionName = "0.4.6-beta3"
     }
     // STORES-PLAN 1: one codebase, two store builds, the same applicationId and signing certificate.
     // `full` (GitHub and F-Droid) checks GitHub for a newer release and offers the optional add-ons;
