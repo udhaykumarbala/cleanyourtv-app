@@ -184,6 +184,26 @@ class StoreFlavours(unittest.TestCase):
                 z.writestr("base/assets/extra.bin", b"x")
             self.assertEqual((["base/manifest/AndroidManifest.xml"], ["base/dex/classes.dex"], ["base/assets/extra.bin"]), ca.bundle_differences(bad, u))
 
+    def test_a_test_build_switch_only_in_a_pre_release(self):
+        # 0.4.6: -Pcyt.wizardStaysAnyBrand=true bundles a marker; a release never may.
+        marker = "tv/cleanyour/core/planner/wizard-stays-any-brand"
+        with tempfile.TemporaryDirectory() as d:
+            apk, aab, clean = (os.path.join(d, n) for n in ("a.apk", "a.aab", "c.apk"))
+            with zipfile.ZipFile(apk, "w") as z:
+                z.writestr(marker, "true\n")
+            with zipfile.ZipFile(aab, "w") as z:
+                z.writestr("base/root/" + marker, "true\n")
+            with zipfile.ZipFile(clean, "w") as z:
+                z.writestr("classes.dex", b"dex")
+            self.assertEqual([marker], ca.test_build_markers(apk, False))
+            self.assertEqual([marker], ca.test_build_markers(aab, True))
+            self.assertEqual([], ca.test_build_markers(clean, False))
+            self.assertFalse(ca.test_build_check([marker], "0.4.6")[0])
+            self.assertFalse(ca.test_build_check([marker], None)[0])
+            for pre in ("0.4.6-beta1", "0.4.6-beta.1", "0.4.6-alpha", "0.4.6-rc2"):
+                self.assertTrue(ca.test_build_check([marker], pre)[0], pre)
+            self.assertTrue(ca.test_build_check([], "0.4.6")[0])
+
     def test_keytool_fingerprints(self):
         out = "Signer #1:\n\nCertificate #1:\nOwner: CN=x\nCertificate fingerprints:\n\t SHA1: 00:11\n\t SHA256: " + ":".join(["AB"] * 32) + "\n"
         self.assertEqual(["ab" * 32], ca.jar_certs(out))

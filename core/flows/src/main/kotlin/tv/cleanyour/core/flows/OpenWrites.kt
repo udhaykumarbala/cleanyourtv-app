@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tv.cleanyour.core.engine.PauseReason
 import tv.cleanyour.core.engine.RunState
+import tv.cleanyour.core.model.AdbError
+import tv.cleanyour.core.model.Op
+import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.PlanId
 import tv.cleanyour.core.model.Tv
 import tv.cleanyour.core.model.TvId
@@ -26,6 +29,10 @@ data class OpenWrite(
     val busy: Boolean = false,       // carry on, undo or stop is running
     val notTaken: Boolean = false,   // the engine did not take the last action (the TV went away again)
     val nothingDone: Boolean = false,   // QA of 0.4.5: no step of the run was done (a STALE pause before step 0)
+    // 0.4.6: a put back paused at its Home check because the app it switched back on took the Home
+    // button from the new home screen (DefaultPlanner.putBack); the app's name. The card says so,
+    // and its undo (the run's own) switches the app off again.
+    val tookHome: String? = null,
 )
 
 enum class OpenWriteAction { CARRY_ON, UNDO, STOP_HERE }
@@ -34,8 +41,23 @@ class OpenWrites {
     private val state = MutableStateFlow<OpenWrite?>(null)
     val current: StateFlow<OpenWrite?> = state.asStateFlow()
 
-    fun show(tv: Tv, paused: RunState.Paused, nothingDone: Boolean = false) {
-        state.value = OpenWrite(tv.id, tv.nickname, paused.plan.id, paused.plan.kind, paused.reason, nothingDone = nothingDone)
+    fun show(tv: Tv, paused: RunState.Paused, nothingDone: Boolean = false, tookHome: String? = null) {
+        state.value = OpenWrite(tv.id, tv.nickname, paused.plan.id, paused.plan.kind, paused.reason, nothingDone = nothingDone, tookHome = tookHome)
+    }
+
+    companion object {
+        // 0.4.6: the package a put back switched on, when the run paused at the Home check after it
+        // (the SetHome or VerifyHome of the new home screen failed: that app answers Home now).
+        fun tookHome(paused: RunState.Paused): PackageName? {
+            val plan = paused.plan
+            // Only Home's answer not matching (the verify's GuardFailed): a refused set-home-activity
+            // or a read that failed is the ordinary card.
+            if (plan.kind != PlanKind.PUT_BACK || paused.reason != PauseReason.STEP_FAILED || paused.error !is AdbError.Policy.GuardFailed) return null
+            val at = plan.steps.getOrNull(paused.at)?.op
+            val ours = (at as? Op.SetHome)?.component ?: (at as? Op.VerifyHome)?.expected ?: return null
+            if (ours.pkg != Launcher.pkg) return null
+            return plan.steps.firstNotNullOfOrNull { (it.op as? Op.Enable)?.pkg ?: (it.op as? Op.DefaultState)?.pkg }
+        }
     }
 
     // QA of 0.4.5: what each Manage write asked for, by its plan, so "Check again" on a run paused

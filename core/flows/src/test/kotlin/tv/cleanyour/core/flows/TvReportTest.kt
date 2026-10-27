@@ -236,7 +236,8 @@ class TvReportTest {
         assertEquals("0.3.2 (full)", q["version"])
         assertEquals("Samsung SM-S921B, Android 16", q["phone"])
         assertEquals("Hisense 55A6H, Android 11, RTM6.230109.155 (Google TV)", q["tv"])
-        assertEquals("Problem: Hisense 55A6H", q["title"])
+        // 0.4.6: the title carries the TV's key, the device codename and Android in brackets.
+        assertEquals("Problem: Hisense 55A6H (HiTV-MT9602, Android 11)", q["title"])
         assertNull(query(IssueLinks.bugReport(about, null).url)["tv"])
         assertEquals("Problem report", query(IssueLinks.bugReport(about, null).url)["title"])
     }

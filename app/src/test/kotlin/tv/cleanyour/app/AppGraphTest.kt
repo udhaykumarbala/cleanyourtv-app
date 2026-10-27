@@ -78,6 +78,8 @@ class AppGraphTest {
         // The fetcher is the flavour's (FullStoreTest, PlayStoreTest); the graph uses this build's Store.
         assertSame(Store, g.store)
         assertIs<MaterializedThemeSource>(g.seams.themes)
+        // 0.4.6: what a card puts into a problem report goes through the app's redactor.
+        assertEquals("at x.x.x.20 code [code]", g.manageDeps.redact("at 192.168.1.20 code 482913"))
         assertSame(AppClock, g.clock)
         // One OpenWrites per graph, in the one ManageDeps.
         assertSame(g.openWrites, g.manageDeps.openWrites)

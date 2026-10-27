@@ -73,6 +73,7 @@ class ScriptedTv(initial: Snapshot = Samples.miTvSnapshot()) : TvSession {
     var startFails = false
     var requestedPermissions: Map<PackageName, List<String>> = emptyMap()   // printed under "requested permissions:" in the package's dump
     var answer: ((String) -> ExecResult?)? = null              // a scripted answer for a line (normalized), before the model's own
+    var onHomeKey: () -> Unit = {}                             // 0.4.6: what a Home key press does to the TV (focus)
 
     override val tvId: TvId = initial.tvId
     override val identity: TvIdentity = TvIdentity(tvId, facts.serialLast4, facts.device, facts.model, facts.sdk, facts.adbSecure, facts.adbFeatures, 1024 * 1024)
@@ -152,7 +153,7 @@ class ScriptedTv(initial: Snapshot = Samples.miTvSnapshot()) : TvSession {
             }
             line.startsWith("am start ") || line.startsWith("am force-stop ") -> ok("Starting: Intent\n")
             line.startsWith("am broadcast ") -> ok("Broadcasting: Intent { act=${tokens[4]} }\nBroadcast completed: result=0\n")
-            line == "input keyevent 3" -> ok()
+            line == "input keyevent 3" -> { onHomeKey(); ok() }
             line.startsWith("settings put ") -> { val key = SettingKey.entries.first { it.key == tokens[3] }; settings[key] = tokens.drop(4).joinToString(" "); ok() }
             line.startsWith("settings delete ") -> { val key = SettingKey.entries.first { it.key == tokens[3] }; settings.remove(key); ok() }
             line.startsWith("settings list ") -> ok(settings.filter { it.key.ns.name.lowercase() == tokens[2] }.entries.joinToString("") { "${it.key.key}=${it.value}\n" })
@@ -250,7 +251,7 @@ class ScriptedProber(private val tv: ScriptedTv) : Prober {
         calls += "snapshot $reason"; tv.exec(ShellLine0.props, ExecSpec.Default)   // one command, so a lost connection surfaces here too
         return tv.snapshot(reason)
     }
-    override suspend fun homeNow(session: TvSession): HomeResolution = tv.snapshot().home
+    override suspend fun homeNow(session: TvSession): HomeResolution { calls += "homeNow"; return tv.snapshot().home }
     override suspend fun homeFocus(session: TvSession): Component? { calls += "homeFocus"; tv.exec(ShellLine0.focus, ExecSpec.Default); return tv.focus }
     override suspend fun screenshot(session: TvSession): ByteArray? { calls += "screenshot"; screenshots++; return if (screenshotFails || screenshots > screenshotOkCount) null else tv.screenshot }
     override suspend fun fileSha256(session: TvSession, path: RemotePath): Sha256? = tv.files[path.absolute]?.let { sha256Of(it) }

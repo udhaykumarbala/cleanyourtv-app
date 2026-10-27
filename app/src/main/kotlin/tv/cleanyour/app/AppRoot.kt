@@ -48,9 +48,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import tv.cleanyour.core.flows.AppConfirm
 import tv.cleanyour.core.flows.DoorPhase
+import tv.cleanyour.core.flows.IssueRoute
 import tv.cleanyour.core.flows.ManageEffect
+import tv.cleanyour.core.flows.ProblemReports
 import tv.cleanyour.core.flows.ReportKind
 import tv.cleanyour.core.flows.Reach
+import tv.cleanyour.core.flows.ReportContext
 import tv.cleanyour.core.flows.SetupEffect
 import tv.cleanyour.core.flows.SetupStart
 import tv.cleanyour.core.flows.SetupState
@@ -167,7 +170,34 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
     val view = LocalView.current
     val scope = rememberCoroutineScope()
 
-    fun go(route: String) { if (!applyRoute(backStack, route, noTvs = graph.tvs.tvs.value.isEmpty(), addOns = graph.store.rules.addOns)) onExit() }
+    // 0.4.6 (REPORTING-PROPOSAL 2.2): a card's "Report a problem" (IssueRoute) opens the GitHub form
+    // at once, with the report in the link and the card filled in. The whole report is copied too, as
+    // the preview's "Open GitHub" does, in case a sign-in on the way drops the link's fields. The app
+    // sends nothing: the browser opens the link, and nothing is public until the person posts.
+    // A second tap while the report is made does nothing, so one tap gives one tab. With no browser
+    // to open the link, the report preview opens instead: its Share reaches any app that can post it.
+    val openingIssue = remember { java.util.concurrent.atomic.AtomicBoolean(false) }
+    fun openIssue(tvId: TvId?, report: ReportContext, preview: () -> Unit) {
+        if (!openingIssue.compareAndSet(false, true)) return
+        scope.launch {
+            try {
+                val r = withContext(Dispatchers.IO) { ProblemReports.build(graph.manageDeps, tvId, report) }
+                copyText(context, r.full, label = "report")
+                val opened = runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(r.link.url))) }.isSuccess
+                if (!opened) preview()
+            } finally {
+                openingIssue.set(false)
+            }
+        }
+    }
+
+    fun go(route: String) {
+        IssueRoute.parse(route)?.let { (tvId, report) ->
+            openIssue(tvId, report) { go(tvId?.let { "report/problem/${it.value}" } ?: "report/problem") }
+            return
+        }
+        if (!applyRoute(backStack, route, noTvs = graph.tvs.tvs.value.isEmpty(), addOns = graph.store.rules.addOns)) onExit()
+    }
 
     fun haptic(kind: Int) { view.performHapticFeedback(kind) }
     fun share(text: String) {
@@ -262,7 +292,9 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
                     val m = rememberMachine("home:${key.tvId}") { graph.homeScreen(it, TvId(key.tvId)) }
                     val state by m.state.collectAsStateWithLifecycle()
                     LaunchedEffect(m) { m.effects.collect { onManageEffect(it) } }
-                    HomeScreen(state, m::dispatch, onBack = { go("back") }, photos = photoPicker)
+                    HomeScreen(state, m::dispatch, onBack = { go("back") }, photos = photoPicker, onReport = { lead ->
+                        go(IssueRoute.of(TvId(key.tvId), ReportContext("Home screen", ReportContext.named(lead, state.tvName), "HOME_BLOCKED_${state.notOnTv?.reason ?: "NONE"}")))
+                    })
                 }
                 entry<Dest.Modules> { key ->
                     val m = rememberMachine("modules:${key.tvId}") { graph.modules(it, TvId(key.tvId)) }
@@ -313,7 +345,10 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
                 onAction = { a -> graph.scope.launch { TvWriter(graph.manageDeps).resolveOpen(w.tvId, a) } },
                 onOpenSetup = { graph.manageDeps.openWrites.dismiss(); go("resume/${w.tvId.value}/${w.planId.value}") },
                 onDismiss = { graph.manageDeps.openWrites.dismiss() },
-                onReport = { graph.manageDeps.openWrites.dismiss(); go("report/problem/${w.tvId.value}") })
+                onReport = { title ->
+                    graph.manageDeps.openWrites.dismiss()
+                    go(IssueRoute.of(w.tvId, ReportContext("Manage", ReportContext.named(title, w.tvName), "${w.kind}_PAUSED_${w.reason}")))
+                })
         }
         // M1a: any returning write that finds port 5555 closed shows the debugging step here.
         val reach by graph.access.reach.collectAsStateWithLifecycle()

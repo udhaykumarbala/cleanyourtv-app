@@ -24,7 +24,8 @@ import kotlin.test.assertTrue
 // BOOMAIR, #11 Haier nippori, #13 Philips PH0M_EA_T32 and #15 Smarttech marina, 113 to 126 system
 // packages), as 0.3.2 made them. Each fixture is rebuilt into the input the app had, and text() gives
 // it back line for line, so the sizes measured here are the real ones. The compact report of each
-// rides in the tv_support link, the whole link at or under IssueLinks.MAX_URL.
+// rode in the tv_support link under 0.3.3's cap of 7,000; under 0.4.6's 4,000 (GitHub's HTTP 500 with
+// a signed-in phone's cookies, IssueLinks.MAX_URL) each one is copied for the paste instead.
 class RealReportsTest {
     private val issues = listOf(9, 11, 13, 15)
 
@@ -35,17 +36,19 @@ class RealReportsTest {
         for (n in issues) assertEquals(fixture(n), TvReport.text(parse(fixture(n))), "issue #$n")
     }
 
-    @Test fun theCompactReportOfEachRealTvRidesInTheLink() {
+    @Test fun theCompactReportOfEachRealTvIsCopiedForThePaste() {
         for (n in issues) {
             val input = parse(fixture(n))
             val compact = TvReport.compact(input)
             val link = IssueLinks.tvSupport(input)
-            assertTrue(link.reportInLink, "issue #$n: ${link.url.length}")
+            // 0.4.6: about 5,600 to 6,000 characters with the report, over the 4,000 cap; the link
+            // keeps the short fields and the preview copies the report for the paste.
+            val withReport = IssueLinks.tvSupport(input, null).url + "&report=" + java.net.URLEncoder.encode(compact.trimEnd(), "UTF-8").replace("+", "%20")
+            assertTrue(withReport.length in 5_000..6_500, "issue #$n: ${withReport.length}")
+            assertFalse(link.reportInLink, "issue #$n: ${link.url.length}")
             assertTrue(link.url.length <= IssueLinks.MAX_URL, "issue #$n: ${link.url.length}")
-            // Well under the cap, not just under it: about 5,600 to 6,000 characters for these.
-            assertTrue(link.url.length < 6_500, "issue #$n: ${link.url.length}")
-            assertEquals(compact.trimEnd(), query(link.url)["report"], "issue #$n")
-            // The other fields are there too.
+            assertEquals(4000, IssueLinks.MAX_URL)
+            // The other fields are there.
             for (k in listOf("template", "title", "model", "android", "platform")) assertTrue(query(link.url)[k]?.isNotEmpty() == true, "issue #$n: $k")
             // The same facts as the full report: every system package, in its state, once.
             val full = fixture(n).lines().dropWhile { !it.startsWith("System apps (") }.drop(1).takeWhile { it.isNotBlank() }

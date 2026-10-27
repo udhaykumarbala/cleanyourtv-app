@@ -535,6 +535,8 @@ object SetupShots {
         Shot("stopped_connection_lost_reconnecting") { Stopped(connectionLost(), offline.copy(reconnect = Reconnect.TRYING)) },
         Shot("stopped_connection_lost_back") { Stopped(connectionLost(), connected.copy(reconnect = Reconnect.BACK)) },
         Shot("stopped_connection_lost_gave_up") { Stopped(connectionLost(), offline.copy(reconnect = Reconnect.GAVE_UP)) },
+        // 0.4.6: a stopped run's card with "Report a problem" under it, the way out the person did not choose.
+        Shot("stopped_connection_lost_report", height = 900.dp) { Stopped(connectionLost(), offline) },
         Shot("stopped_reconnect_to_put_home_back") {
             Stopped(connectionLost().copy(body = msg(R.string.stop_reconnect_home_body, "tv" to "Mi TV 4A")), offline.copy(reconnect = Reconnect.TRYING))
         },

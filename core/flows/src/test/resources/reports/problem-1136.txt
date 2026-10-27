@@ -1,0 +1,294 @@
+Clean Your TV: problem report
+App: 0.4.0 (full)
+Phone: motorola edge 50 neo, Android 16
+
+TV
+Brand: WALTON
+Manufacturer: Expressluck
+Model: WALTON Android TV
+Device: tamachi
+Android: 11 (SDK 30)
+Build: WALTON/WALTON_2K_ATV/tamachi:11/RTO3.231013.002/10953118:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-10-26
+
+Matching
+Profile: brand set Expressluck
+Home switch: blocked WIZARD_WIFI
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+Apps: 113 system, 7 other
+
+Diagnostics log (addresses, serial numbers, keys and codes removed)
+Clean Your TV 0.4.0, Android 36
+1793025667496 I setup: connect start (new TV, google_cast+adb_mdns+android_tv_remote)
+1793025679874 I setup: connect failed lost
+1793025682088 I setup: connect start (new TV, google_cast+adb_mdns+android_tv_remote)
+1793025682228 I setup: connected (allow dialog not shown, identity check needed)
+1793025687317 I setup: probe start
+1793025689488 I setup: probe done in 2166 ms, 121 packages, 14 launchable, profile brand set Expressluck, tv WALTON WALTON Android TV (tamachi) sdk 30
+1793025690090 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793025690141 I setup: plan ready, 10 steps, 1 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793025690142 I setup: home switch blocked WIZARD_WIFI
+1793025731478 I session: socket connect failed: SocketTimeoutException
+1793025737258 I session: socket connect failed: ConnectException, ECONNABORTED (Software caused connection abort)
+1793025770535 I setup: plan ready, 10 steps, 1 to switch off, level CUSTOM, dock 3, 13 dock candidates
+1793025780692 I setup: run running
+1793025796015 I setup: run finished COMPLETED, 0 skipped
+1793025830739 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793025831075 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793025832407 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793025835170 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793025841328 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793026139015 I setup: connect start (new TV, google_cast+adb_mdns+android_tv_remote)
+1793026139206 I setup: connected (allow dialog not shown, identity check needed)
+1793026149144 I setup: probe start
+1793026151509 I setup: probe done in 2361 ms, 121 packages, 14 launchable, profile brand set Expressluck, tv WALTON WALTON Android TV (tamachi) sdk 30
+1793026152022 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793026152058 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793026152059 I setup: home switch blocked WIZARD_WIFI
+1793026171628 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793026198601 I session: socket connect failed: SocketTimeoutException
+1793026201941 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793026202661 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793026213371 I setup: connect start (known TV, manual)
+1793026213389 I setup: connected (allow dialog not shown, identity check not needed)
+1793026213991 I setup: probe start
+1793026216332 I setup: probe done in 2339 ms, 121 packages, 14 launchable, profile brand set Expressluck, tv WALTON WALTON Android TV (tamachi) sdk 30
+1793026216788 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793026216815 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793026216815 I setup: home switch blocked WIZARD_WIFI
+1793026317604 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026325545 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026327516 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026328834 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026329340 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026330753 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026331983 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026333382 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026333681 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026334970 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026335954 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026337075 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026339626 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026340047 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026340983 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026342404 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026343088 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026343668 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026345046 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026347592 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026348606 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026349468 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026352918 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026355109 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026356863 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026358155 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026358571 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026360740 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026361392 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026362229 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026366892 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026368899 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026369610 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026370454 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026371354 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026373505 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026378660 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026385466 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026388931 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026389675 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026391281 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026391938 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026395135 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026397181 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026397836 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026399385 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026415818 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026419514 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026420090 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026426363 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026427433 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026428165 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026429514 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026430032 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026432322 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026432923 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026435642 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026436180 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026436723 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026437756 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026438234 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026438760 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026442131 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026442903 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026444212 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026447205 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026448054 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026452448 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026452514 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026452628 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026452762 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026452976 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453110 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453526 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453571 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453602 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453654 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453711 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026453735 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026456500 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026457684 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026458955 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026460157 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026460716 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026477510 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026477757 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026478138 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026481438 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026486926 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026486999 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026487687 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026489427 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026490500 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026495932 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026635254 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 13 dock candidates
+1793026636375 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026637136 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026637294 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026638053 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026644711 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026664830 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026664970 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026666364 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026666603 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026667682 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026688395 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026688493 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026691496 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026692550 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026740703 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026989441 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793026990220 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027099580 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027100204 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027283013 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027303371 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027303527 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027303826 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027304755 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027305630 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793027307371 I session: socket connect failed: ConnectException, ENETUNREACH (Network is unreachable)
+1793028849052 I setup: connect start (known TV, manual)
+1793028849265 I setup: connected (allow dialog not shown, identity check not needed)
+1793028849867 I setup: probe start
+1793028852606 I setup: probe done in 2735 ms, 122 packages, 15 launchable, profile brand set Expressluck, tv WALTON WALTON Android TV (tamachi) sdk 30
+1793028853444 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793028853497 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 14 dock candidates
+1793028853498 I setup: home switch blocked WIZARD_WIFI
+1793028977616 I session: socket connect failed: SocketTimeoutException
+1793028981298 I session: socket connect failed: SocketTimeoutException
+1793028984607 I session: socket connect failed: SocketTimeoutException
+1793028985801 I session: socket connect failed: ConnectException, ECONNABORTED (Software caused connection abort)
+1793028992075 I session: socket connect failed: SocketTimeoutException
+1793029001808 I session: socket connect failed: SocketTimeoutException
+1793029005373 I session: socket connect failed: SocketTimeoutException
+1793029008582 I session: socket connect failed: SocketTimeoutException
+1793029014540 I session: socket connect failed: SocketTimeoutException
+1793029025496 I session: socket connect failed: SocketTimeoutException
+1793029061091 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 1, 14 dock candidates
+1793029122748 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029132555 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029133886 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029134833 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029138085 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029139700 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029140218 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029142983 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029144125 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029145770 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029150589 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029151977 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029168517 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029171742 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029173531 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029181282 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029193281 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029195551 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029210392 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029212798 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029213704 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029217413 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029218361 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029218996 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029219697 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029220525 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029221806 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029224041 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029224763 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029226904 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029227686 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029228225 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029231450 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029232982 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029233707 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029234613 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029237783 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029238416 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029241347 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029241374 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029241565 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029241797 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029241947 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029242482 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029242523 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029242563 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029242582 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029242617 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029242690 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029244521 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029245447 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 4, 14 dock candidates
+1793029270672 I setup: run running
+1793029272607 I setup: run finished COMPLETED, 0 skipped
+1793029356687 I setup: connect start (known TV, manual)
+1793029356735 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793029356737 I setup: connect failed refused
+1793029490472 I setup: connect start (known TV, google_cast+android_tv_remote+adb_mdns)
+1793029502713 I setup: connected (allow dialog shown, identity check not needed)
+1793029503316 I setup: probe start
+1793029505597 I setup: probe done in 2278 ms, 120 packages, 13 launchable, profile brand set Expressluck, tv WALTON WALTON Android TV (tamachi) sdk 30
+1793029506142 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029506184 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793029506185 I setup: home switch blocked WIZARD_WIFI
+1793030254486 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030278867 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030286332 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030293710 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030295398 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030298022 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030298634 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030301098 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030301957 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030303025 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030310035 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030310642 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030312634 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030314118 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030316048 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030325481 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030325761 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030329738 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030333746 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030334208 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030336610 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030338898 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030341781 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030342460 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030349420 I setup: plan ready, 0 steps, 0 to switch off, level SIMPLE, dock 3, 13 dock candidates
+1793030356950 I setup: run running
+1793030358974 I setup: run finished COMPLETED, 0 skipped

@@ -46,6 +46,7 @@ import tv.cleanyour.core.flows.SetupIntent
 import tv.cleanyour.core.flows.SetupState
 import tv.cleanyour.core.flows.Sheet
 import tv.cleanyour.core.flows.StopAction
+import tv.cleanyour.core.flows.StopCase
 import tv.cleanyour.core.flows.fingerprintTail
 import tv.cleanyour.ui.design.component.ActionColumn
 import tv.cleanyour.ui.design.component.AdbAllowMirror
@@ -101,6 +102,10 @@ fun ConnectFlow(state: SetupState, extras: SetupExtras, actions: SetupActions, o
     if (extras.sheet == Sheet.ADDRESS) AddressSheet(extras.addressError, actions)
 }
 
+// The inline stops a report helps with (0.4.6): the TV's debugging connection is too basic. The
+// others are the person's next step (no TV yet, Wi-Fi off, a different TV at the address).
+private val REPORT_CASES = setOf(StopCase.TV_NOT_SUPPORTED)
+
 // An inline stop (TV not found, wrong network, identity changed, not supported) under the screen.
 @Composable
 private fun InlineCard(extras: SetupExtras, actions: SetupActions) {
@@ -115,6 +120,7 @@ private fun InlineCard(extras: SetupExtras, actions: SetupActions) {
         c.title, c.body, Modifier.padding(top = 20.dp).bringIntoViewRequester(bring).onGloballyPositioned { placed = true },
         primaryLabel = c.primary, onPrimary = { actions.intent(SetupIntent.StopAction(StopAction.PRIMARY)) },
         secondaryLabel = c.secondary, onSecondary = { actions.intent(SetupIntent.StopAction(StopAction.SECONDARY)) },
+        detailsLabel = if (c.case in REPORT_CASES) stringResource(R.string.connect_report) else null, onDetails = { actions.report(c.title) },
         primaryGuarded = c.case.primaryActs(),
     )
 }
@@ -245,7 +251,7 @@ fun DoorScreen(state: SetupState.OpenDoor, extras: SetupExtras, actions: SetupAc
             }
             DoorPhase.STEPS, DoorPhase.CONNECTING -> {
                 StepsContent(state, actions, name, brandsOpen, onBrands = { brandsOpen = !brandsOpen })
-                extras.connectError?.let { ConnectErrorCard(it, onCopyError) }
+                extras.connectError?.let { ConnectErrorCard(it, onCopyError, onReport = { title -> actions.report(title) }) }
                 NotThisTv(state, actions)
             }
         }
@@ -261,15 +267,18 @@ fun DoorScreen(state: SetupState.OpenDoor, extras: SetupExtras, actions: SetupAc
 
 // 0.3.6 (issues #98, #270, #325, #468): the TV's port answered but the connection failed. What may be
 // in the way on the phone's side, and "Copy error" with a short redacted summary for an issue.
+// 0.4.6: "Report a problem" under it opens the GitHub form with that side filled in, no paste.
 @Composable
-private fun ConnectErrorCard(error: ConnectError, onCopy: (String) -> Unit) {
+internal fun ConnectErrorCard(error: ConnectError, onCopy: (String) -> Unit, modifier: Modifier = Modifier, onReport: (String) -> Unit = {}) {
     var copied by remember(error) { mutableStateOf(false) }
+    val title = stringResource(R.string.door_connect_failed_title)
     StopCard(
-        stringResource(R.string.door_connect_failed_title),
+        title,
         msg(R.string.door_connect_failed_body, "kind" to error.kind) + "\n\n" + stringResource(R.string.door_connect_failed_hint),
-        Modifier.padding(top = 20.dp),
+        modifier.padding(top = 20.dp),
         primaryLabel = stringResource(if (copied) R.string.door_error_copied else R.string.door_copy_error),
         onPrimary = { onCopy(error.summary); copied = true },
+        detailsLabel = stringResource(R.string.connect_report), onDetails = { onReport(title) },
         primaryGuarded = false,
     )
 }
@@ -429,10 +438,13 @@ fun PairingScreen(state: SetupState.PairingNeeded, extras: SetupExtras, actions:
     var steps by rememberSaveable { mutableStateOf(false) }
     ScreenScaffold(Glow.Tv, modifier, topBar = { CytTopBar(onBack = { actions.back() }) }) {
         // "Show me" opens a sheet, "Back" goes back: neither acts on the TV, so neither is guarded.
+        // 0.4.6: "Report a problem" opens the GitHub form with how the TV was found (no TV read yet).
+        val title = stringResource(R.string.pairing_title)
         StopCard(
-            stringResource(R.string.pairing_title), stringResource(R.string.pairing_body), Modifier.padding(top = 20.dp),
+            title, stringResource(R.string.pairing_body), Modifier.padding(top = 20.dp),
             primaryLabel = stringResource(R.string.pairing_show_steps), onPrimary = { steps = true },
             secondaryLabel = stringResource(R.string.action_back), onSecondary = { actions.back() },
+            detailsLabel = stringResource(R.string.connect_report), onDetails = { actions.report(title) },
             primaryGuarded = false,
         )
     }

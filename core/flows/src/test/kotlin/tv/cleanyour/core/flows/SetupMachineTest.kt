@@ -1227,7 +1227,7 @@ class SetupMachineTest {
     // line. The Google TV sets whose wizard the switch would switch off, when the TV says the wizard
     // saved the Wi-Fi (and only then); Google's own hardware (casting); the MOKA family (the boot
     // loop), also when no profile matches; and an unknown TV whose wizard saved the Wi-Fi.
-    @Test fun theSwitchIsSkippedUpFrontWhereItIsUnsafe() = runTest(timeout = 60.seconds) {
+    @Test fun theSwitchIsSkippedUpFrontWhereItIsUnsafe() = runTest(timeout = 60.seconds) { releaseRule {
         val wizard = PackageName("com.google.android.tungsten.setupwraith")
         val shipped = tv.cleanyour.core.spec.BundledProfileSource.bundled.profiles.associateBy { it.id }
         val owns = SavedWifi(true, 1, setOf("${wizard.value}:10031"))
@@ -1249,12 +1249,19 @@ class SetupMachineTest {
             add(Case("R10G on Android 15, no profile", null, facts("R10G", "PRISMPLUS", "MOKA", sdk = 35), others, HomeBlock.BOOT_LOOP))
             // 0.4.5: the remote's app buttons need launcherx on the BRAVIA VU3.
             add(Case("sony-bravia-vu3", "sony-bravia-vu3", facts("BRAVIA_VU3_4K", "Sony"), others, HomeBlock.REMOTE_BUTTONS))
-            add(Case("unknown TV, wizard owns the Wi-Fi", null, base, owns, HomeBlock.WIZARD_WIFI))
+            // 0.4.6: the unknown TV under another maker; the reference Xiaomi itself meets R0 (below).
+            val acme = base.copy(brand = "Acme", manufacturer = "Acme")
+            add(Case("unknown TV, wizard owns the Wi-Fi", null, acme, owns, HomeBlock.WIZARD_WIFI))
             // RF-SAFETY-250: with no profile the switch never switches the wizard off, so a wizard
             // that is on means no switch, whatever the Wi-Fi answer; without one the switch goes ahead.
-            add(Case("unknown TV, Wi-Fi saved by others", null, base, others, HomeBlock.WIZARD_STAYS_ON))
-            add(Case("unknown TV, the Wi-Fi read failed", null, base, SavedWifi(false, 0, emptySet()), HomeBlock.WIZARD_STAYS_ON))
-            add(Case("unknown TV without a setup wizard", null, base, others, HomeBlock.NONE, wizardOn = false))
+            add(Case("unknown TV, Wi-Fi saved by others", null, acme, others, HomeBlock.WIZARD_STAYS_ON))
+            add(Case("unknown TV, the Wi-Fi read failed", null, acme, SavedWifi(false, 0, emptySet()), HomeBlock.WIZARD_STAYS_ON))
+            add(Case("unknown TV without a setup wizard", null, acme, others, HomeBlock.NONE, wizardOn = false))
+            // 0.4.6 (R0): an unknown Xiaomi whose only Home claimant is Google's Android TV home: the
+            // wizard is on but claims no Home, so the switch goes ahead whatever the Wi-Fi answer.
+            add(Case("unknown Xiaomi, wizard owns the Wi-Fi", null, base, owns, HomeBlock.NONE))
+            add(Case("unknown Xiaomi, Wi-Fi saved by others", null, base, others, HomeBlock.NONE))
+            add(Case("unknown Xiaomi, the Wi-Fi read failed", null, base, SavedWifi(false, 0, emptySet()), HomeBlock.NONE))
             add(Case("Philips R8G, made by MOKA but not this family", null, facts("whitefield", "Philips", "MOKA"), others, HomeBlock.NONE, wizardOn = false))
         }
         for (c in cases) {
@@ -1281,6 +1288,37 @@ class SetupMachineTest {
             assertEquals(c.block == HomeBlock.NONE, setup.choices.takeover, c.name)
             assertEquals(c.block == HomeBlock.NONE, setup.choices.installLauncher, c.name)
             if (c.block != HomeBlock.NONE) assertNull(setup.config, "${c.name}: no look without the new home screen")
+        }
+    }
+    }
+
+    // 0.4.6 (R0): a reported global Xiaomi (MiTV-AXSO1) resolves to the Xiaomi brand set, whose stock
+    // launchers hold Google's Android TV home, so its Home is known (never UNKNOWN_HOME), and with the
+    // wizard on and no Home claimant Setup offers the switch: HomeBlock.NONE, for each Wi-Fi answer.
+    @Test fun aReportedXiaomiOnItsBrandSetGetsTheSwitchWithTheWizardOn() = runTest(timeout = 60.seconds) {
+        val wizard = PackageName("com.google.android.tungsten.setupwraith")
+        val tvlauncher = Samples.stockLauncher
+        val fallback = tv.cleanyour.core.model.Component(PackageName("com.android.tv.settings"), ".system.FallbackHome")
+        val facts = Samples.miTvFacts().copy(model = "MiTV-AXSO1", device = "dangalFHD", fingerprint = "Xiaomi/dangalFHD/dangalFHD:9/PI/6157:user/release-keys")
+        val bundled = tv.cleanyour.core.spec.BundledProfileSource()
+        val res = bundled.resolveNow(facts)
+        assertTrue(res is tv.cleanyour.core.spec.ProfileResolution.BrandSureSet && tvlauncher in res.stockLaunchers, res.toString())
+        for (wifi in listOf(SavedWifi(true, 1, setOf("${wizard.value}:10031")), SavedWifi(true, 1, setOf("android.uid.system:1000")), SavedWifi(false, 0, emptySet()))) {
+            val h = Harness()
+            h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+            h.prober.facts = facts
+            h.prober.snapshotFor = { r ->
+                Samples.miTvSnapshot(reason = r).let { s ->
+                    s.copy(facts = facts, home = tv.cleanyour.core.model.HomeResolution(tvlauncher,
+                        listOf(tv.cleanyour.core.model.HomeClaimant(tvlauncher, 2), tv.cleanyour.core.model.HomeClaimant(fallback, -1000))))
+                }.let { it.copy(contentHash = tv.cleanyour.core.store.SnapshotCodec.hash(it)) }
+            }
+            h.profiles.resolver = { _, _ -> res }
+            val m = SetupMachine(h.setupDeps(savedWifi = { wifi }), backgroundScope, SetupStart.Fresh)
+            toFound(h, m)
+            val setup = h.planner.requests.filterIsInstance<PlanRequest.Setup>().last()
+            assertEquals(HomeBlock.NONE, m.extras.value.homeBlock, "$wifi")
+            assertTrue(setup.choices.takeover && setup.choices.installLauncher, "$wifi")
         }
     }
 

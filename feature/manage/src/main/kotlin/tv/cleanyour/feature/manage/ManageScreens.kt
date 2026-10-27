@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +22,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -131,6 +137,20 @@ fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier:
                 Banner(stringResource(R.string.manage_help_add_tv_banner), BannerTone.INFO, Modifier.padding(top = 16.dp),
                     actionLabel = stringResource(R.string.manage_help_add_tv), onAction = { onIntent(ManageIntent.HelpAddTv) })
             }
+            // 0.4.6: on this connect a setup wizard claims Home while the TV's own home screen is off
+            // (WizardHome). The way back sits above the rows, like the drift banner's "Restore mine";
+            // its button writes to the TV, so it is guarded.
+            if (tv.wizardHome) {
+                val title = stringResource(R.string.manage_wizard_home_title)
+                val body = stringResource(R.string.manage_wizard_home_body)
+                Banner(
+                    buildAnnotatedString { withStyle(SpanStyle(fontWeight = FontWeight.Medium)) { append(title) }; append("\n"); append(body) },
+                    BannerTone.WARNING, Modifier.padding(top = 16.dp),
+                    actionLabel = if (state.switchingHome) null else stringResource(R.string.manage_wizard_home_button),
+                    onAction = { onIntent(ManageIntent.SwitchStockHomeOn) }, guardAction = true,
+                )
+                if (state.switchingHome) LiveLine(stringResource(R.string.manage_wizard_home_working))
+            }
             ListGroup(Modifier.padding(top = 16.dp)) {
                 // 0.3.3 D2: without the new home screen there is no dock to name; the row opens the reason.
                 ListRow(stringResource(R.string.manage_row_home),
@@ -197,14 +217,18 @@ internal fun ColumnScope.DebugStepContent(tvName: String, connecting: Boolean, o
 // refused, so the app lays this card over whatever screen asked. A setup run opens the wizard's
 // resume card instead, which owns the home screen check.
 @Composable
-fun OpenWriteSheet(open: OpenWrite, onAction: (OpenWriteAction) -> Unit, onOpenSetup: () -> Unit, onDismiss: () -> Unit, onReport: () -> Unit = {}) {
-    CytBottomSheet(onDismiss) { OpenWriteContent(open, onAction, onOpenSetup, onDismiss, onReport = onReport) }
+// 0.4.6: `onReport` gets the card's title, for the prefilled GitHub form (ReportContext).
+fun OpenWriteSheet(open: OpenWrite, onAction: (OpenWriteAction) -> Unit, onOpenSetup: () -> Unit, onDismiss: () -> Unit, onReport: (String) -> Unit = {}) {
+    // 0.4.6: scrolls, so "Report a problem" under the card stays reachable at 200% font.
+    CytBottomSheet(onDismiss) {
+        Column(Modifier.verticalScroll(rememberScrollState())) { OpenWriteContent(open, onAction, onOpenSetup, onDismiss, onReport = onReport) }
+    }
 }
 
 @Composable
 internal fun ColumnScope.OpenWriteContent(
     open: OpenWrite, onAction: (OpenWriteAction) -> Unit, onOpenSetup: () -> Unit, onDismiss: () -> Unit,
-    initiallyAsking: OpenWriteAction? = null, onReport: () -> Unit = {},
+    initiallyAsking: OpenWriteAction? = null, onReport: (String) -> Unit = {},
 ) {
     val setup = open.kind == PlanKind.SETUP
     // QA of 0.4.5: a run paused STALE (the TV changed after we read it) is checked again, never
@@ -225,8 +249,17 @@ internal fun ColumnScope.OpenWriteContent(
             primaryLabel = stringResource(R.string.openwrite_open_setup), onPrimary = onOpenSetup,
             tertiaryLabel = stringResource(R.string.openwrite_later), onTertiary = onDismiss,
             // 0.3.2 B2: a setup that would not finish is worth a report (issue #2).
-            detailsLabel = stringResource(R.string.openwrite_report), onDetails = onReport,
+            detailsLabel = stringResource(R.string.openwrite_report), onDetails = { onReport(title) },
             primaryGuarded = false)   // navigation: it only opens the wizard's resume card
+    } else if (open.tookHome != null) {
+        // 0.4.6: the app this put back switched on took the Home button. The buttons say exactly what
+        // they do, so neither asks first: switch it off again (the run's undo) or keep it (stop here).
+        val app = open.tookHome.orEmpty()
+        StopCard(msg(R.string.openwrite_title_took_home, "app" to app),
+            if (open.notTaken) stringResource(R.string.openwrite_not_taken) else msg(R.string.openwrite_body_took_home, "app" to app),
+            primaryLabel = if (open.busy) null else stringResource(R.string.openwrite_switch_off_again), onPrimary = { onAction(OpenWriteAction.UNDO) },
+            tertiaryLabel = if (open.busy) null else stringResource(R.string.openwrite_keep_it), onTertiary = { onAction(OpenWriteAction.STOP_HERE) },
+            busyText = if (open.busy) stringResource(R.string.openwrite_busy) else null)
     } else {
         // "Undo what we did" and "Stop here" ask first, in this same sheet; the action is sent on yes.
         var asking by rememberSaveable(open.planId.value) { mutableStateOf(initiallyAsking) }
@@ -241,6 +274,8 @@ internal fun ColumnScope.OpenWriteContent(
             primaryLabel = if (open.busy) null else stringResource(if (stale) R.string.openwrite_check_again else R.string.openwrite_carry_on), onPrimary = { act(OpenWriteAction.CARRY_ON) },
             secondaryLabel = if (open.busy || (stale && open.nothingDone)) null else stringResource(R.string.openwrite_undo), onSecondary = { act(OpenWriteAction.UNDO) },
             tertiaryLabel = if (open.busy) null else stringResource(R.string.openwrite_stop), onTertiary = { act(OpenWriteAction.STOP_HERE) },
+            // 0.4.6: a paused change is worth a report too, with the card and the step it paused at.
+            detailsLabel = if (open.busy) null else stringResource(R.string.openwrite_report), onDetails = { onReport(title) },
             busyText = if (open.busy) stringResource(R.string.openwrite_busy) else null)
     }
 }

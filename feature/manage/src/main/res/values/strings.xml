@@ -79,6 +79,10 @@
     <string name="openwrite_open_setup">Open the setup</string>
     <string name="openwrite_later">Not now</string>
     <string name="openwrite_report">Report a problem</string>
+    <string name="openwrite_title_took_home">{app} took the Home button</string>
+    <string name="openwrite_body_took_home">Once {app} was back on, the TV gave it the Home button, so Home no longer opens the new home screen. Switch {app} off again to get the new one back, or keep it.</string>
+    <string name="openwrite_switch_off_again">Switch it off again</string>
+    <string name="openwrite_keep_it">Keep it</string>
 
     <!-- M4 Switched off -->
     <string name="switchedoff_title">{count, plural, other {Switched off (#)}}</string>
@@ -186,6 +190,10 @@
     <!-- 0.3.2 B1: an unlisted TV on Manage -->
     <string name="manage_help_add_tv_banner">We haven\'t met this exact TV before, so we were careful with it. A short report from you helps us add it.</string>
     <string name="manage_help_add_tv">Help add this TV</string>
+    <string name="manage_wizard_home_title">The setup wizard can take the Home button</string>
+    <string name="manage_wizard_home_body">Switch the TV\'s own home screen back on so the TV keeps starting normally.</string>
+    <string name="manage_wizard_home_button">Switch it back on</string>
+    <string name="manage_wizard_home_working">Switching the TV\'s own home screen back on...</string>
 
     <!-- 0.3.2 B1 and B2: the report preview -->
     <string name="report_tv_title">Help add this TV</string>
@@ -199,6 +207,8 @@
     <!-- 0.3.3 D1: the report fits in the link, so the form opens with it filled in -->
     <string name="report_open">Open GitHub</string>
     <string name="report_in_link_hint">The form on GitHub opens with this report already in it. Add a few words if you like, then post it. We copy the report too, in case the form opens without it.</string>
+    <!-- 0.4.6: the problem report is too long for the link, so the form gets its newest log lines -->
+    <string name="report_in_link_short_hint">The form on GitHub opens with this report in it, with only the newest lines of the log so that it fits. Add a few words if you like, then post it. We copy the whole report too, in case we ask for the rest.</string>
     <string name="report_too_long">This report is too long to go into the form by itself, so we copy it for you. On GitHub, long-press the report box, choose Paste, then post it.</string>
     <string name="report_share">Share</string>
     <string name="report_loading">Making the report</string>

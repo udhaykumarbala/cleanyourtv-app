@@ -209,3 +209,11 @@ val stockComponent: Component get() = Samples.stockLauncher
 // loops in the background scope, so a waiting awaitItem would spin the test scheduler.
 suspend fun <T> app.cash.turbine.ReceiveTurbine<T>.drain(): List<T> =
     cancelAndConsumeRemainingEvents().filterIsInstance<app.cash.turbine.Event.Item<T>>().map { it.value }
+
+// 0.4.6: a test written for the release rule (R0 on Xiaomi only) runs with it in a test build too
+// (-Pcyt.wizardStaysAnyBrand=true, which widens R0 to every brand); PlannerFixtures.releaseRule.
+inline fun releaseRule(block: () -> Unit) {
+    val before = tv.cleanyour.core.planner.HomeSwitchRisk.anyBrandForTests
+    tv.cleanyour.core.planner.HomeSwitchRisk.anyBrandForTests = false
+    try { block() } finally { tv.cleanyour.core.planner.HomeSwitchRisk.anyBrandForTests = before }
+}

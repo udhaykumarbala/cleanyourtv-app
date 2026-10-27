@@ -219,6 +219,7 @@ class AppGraph(context: Context, val appVersion: String = versionOf(context), va
         openWrites = openWrites,
         store = store.rules,       // STORES-PLAN 1
         about = about, homeDecisions = homeDecisions,   // 0.3.2 B1, B2
+        redact = Redactor::redact,                      // 0.4.6: what a card puts into a problem report
     )
 
     init {

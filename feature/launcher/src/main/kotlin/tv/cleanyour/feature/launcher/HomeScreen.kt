@@ -70,9 +70,13 @@ import tv.cleanyour.ui.design.component.toTvLook
 // and the drift banner with "Send mine again" (D15). Each sheet keeps its body in an internal *Content
 // composable, so the screenshot tests can draw it on SheetSurface.
 @Composable
-fun HomeScreen(state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onBack: () -> Unit, modifier: Modifier = Modifier, photos: PhotoPicker? = null) {
+// 0.4.6: `onReport` opens the prefilled GitHub form from the not-on-this-TV screen, with its lead.
+fun HomeScreen(
+    state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onBack: () -> Unit, modifier: Modifier = Modifier, photos: PhotoPicker? = null,
+    onReport: (String) -> Unit = {},
+) {
     val notOnTv = state.notOnTv
-    if (notOnTv != null) { NotOnTvScreen(state.tvName, notOnTv, onIntent, onBack, modifier); return }
+    if (notOnTv != null) { NotOnTvScreen(state.tvName, notOnTv, onIntent, onBack, modifier, onReport); return }
     var dockOpen by rememberSaveable { mutableStateOf(false) }
     val busy = state.busy
     ScreenScaffold(Glow.Tv, modifier, topBar = { CytTopBar(onBack = onBack) }) {
@@ -147,8 +151,10 @@ fun HomeScreen(state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onB
 // was refused and said "We stopped"). Why, from what Setup recorded, and the next step when there
 // is one: Setup again (the reason can change) or Help add this TV (a list is what is missing).
 // Both buttons only navigate; nothing here writes to the TV.
+// 0.4.6: without "Help add this TV" (a list is not what is missing), "Report a problem" opens the
+// GitHub form with why, so a block that should not be there reaches us with the TV's report.
 @Composable
-private fun NotOnTvScreen(tvName: String, n: NotOnTv, onIntent: (HomeScreenIntent) -> Unit, onBack: () -> Unit, modifier: Modifier) {
+internal fun NotOnTvScreen(tvName: String, n: NotOnTv, onIntent: (HomeScreenIntent) -> Unit, onBack: () -> Unit, modifier: Modifier = Modifier, onReport: (String) -> Unit = {}) {
     val action = when {
         n.setupAgain -> R.string.home_run_setup_again to HomeScreenIntent.RunSetupAgain
         n.helpAddTv -> R.string.home_help_add_tv to HomeScreenIntent.HelpAddTv
@@ -162,7 +168,8 @@ private fun NotOnTvScreen(tvName: String, n: NotOnTv, onIntent: (HomeScreenInten
         }),
     ) {
         ScreenTitle(stringResource(R.string.home_title), Modifier.padding(top = 20.dp))
-        Lead(msg(R.string.home_not_on_tv_lead, "tv" to tvName), Modifier.padding(top = 12.dp))
+        val lead = msg(R.string.home_not_on_tv_lead, "tv" to tvName)
+        Lead(lead, Modifier.padding(top = 12.dp))
         val why = when (n.reason) {
             HomeBlock.TV_REFUSES -> msg(R.string.home_not_on_tv_refuses, "brand" to (if (n.fireTv) stringResource(R.string.home_fire_tv_name) else n.brand))
             HomeBlock.OLD_ANDROID -> stringResource(R.string.home_not_on_tv_old_android)
@@ -186,6 +193,7 @@ private fun NotOnTvScreen(tvName: String, n: NotOnTv, onIntent: (HomeScreenInten
             else -> R.string.home_not_on_tv_next_setup
         }
         next?.let { Body(stringResource(it), Modifier.padding(top = 16.dp, start = 4.dp, end = 4.dp)) }
+        if (!n.helpAddTv) TertiaryButton(stringResource(R.string.home_report), { onReport(lead) }, Modifier.padding(top = 8.dp))
     }
 }
 

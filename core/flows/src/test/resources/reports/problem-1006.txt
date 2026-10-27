@@ -1,0 +1,309 @@
+Clean Your TV: problem report
+App: 0.3.7 (full)
+Phone: Realme RMX1921, Android 11
+
+TV: none read yet
+
+Diagnostics log (addresses, serial numbers, keys and codes removed)
+Clean Your TV 0.3.7, Android 30
+(212 older lines left out)
+1793003357919 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003359063 I setup: connect failed unreachable
+1793003361225 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003362573 I setup: connect failed unreachable
+1793003364681 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003366388 I setup: connect failed unreachable
+1793003368440 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003369408 I setup: connect failed unreachable
+1793003413246 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003414408 I setup: connect failed unreachable
+1793003416517 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003417701 I setup: connect failed unreachable
+1793003419726 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003420605 I setup: connect failed unreachable
+1793003422651 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003424249 I setup: connect failed unreachable
+1793003426272 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003427374 I setup: connect failed unreachable
+1793003429392 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003430804 I setup: connect failed unreachable
+1793003432834 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003434133 I setup: connect failed unreachable
+1793003436274 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003437062 I setup: connect failed unreachable
+1793003439104 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003440737 I setup: connect failed unreachable
+1793003443020 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003444495 I setup: connect failed unreachable
+1793003446532 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793003447772 I setup: connect failed unreachable
+1793003449973 I setup: connect start (new TV, manual)
+1793003451990 I setup: connect failed unreachable
+1793003454039 I setup: connect start (new TV, manual)
+1793003457241 I setup: connect failed unreachable
+1793003459304 I setup: connect start (new TV, manual)
+1793003460609 I setup: connect failed unreachable
+1793003462874 I setup: connect start (new TV, manual)
+1793003464510 I setup: connect failed unreachable
+1793003466555 I setup: connect start (new TV, manual)
+1793003467154 I setup: connect failed unreachable
+1793003469187 I setup: connect start (new TV, manual)
+1793003470124 I setup: connect failed unreachable
+1793005974623 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005976092 I setup: connect failed unreachable
+1793005978192 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005979093 I setup: connect failed unreachable
+1793005981253 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005982595 I setup: connect failed unreachable
+1793005984703 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005985785 I setup: connect failed unreachable
+1793005987819 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005989825 I setup: connect failed unreachable
+1793005992007 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005993151 I setup: connect failed unreachable
+1793005995188 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005996236 I setup: connect failed unreachable
+1793005998281 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793005999012 I setup: connect failed unreachable
+1793006001054 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006001772 I setup: connect failed unreachable
+1793006003809 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006004779 I setup: connect failed unreachable
+1793006066945 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006067984 I setup: connect failed unreachable
+1793006089427 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006099015 I setup: connect failed unreachable
+1793006101155 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006113783 I setup: connect failed unreachable
+1793006116025 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006117023 I setup: connect failed unreachable
+1793006119053 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006119851 I setup: connect failed unreachable
+1793006121933 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006123340 I setup: connect failed unreachable
+1793006125386 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006126814 I setup: connect failed unreachable
+1793006129110 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006130749 I setup: connect failed unreachable
+1793006132877 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006134398 I setup: connect failed unreachable
+1793006136497 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006137231 I setup: connect failed unreachable
+1793006139373 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006141718 I setup: connect failed unreachable
+1793006143818 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006144876 I setup: connect failed unreachable
+1793006146940 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006148458 I setup: connect failed unreachable
+1793006150527 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006152466 I setup: connect failed unreachable
+1793006154512 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006156595 I setup: connect failed unreachable
+1793006158831 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006160133 I setup: connect failed unreachable
+1793006162179 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006162931 I setup: connect failed unreachable
+1793006165045 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006166540 I setup: connect failed unreachable
+1793006168665 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006170224 I setup: connect failed unreachable
+1793006172302 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006173164 I setup: connect failed unreachable
+1793006175225 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006176481 I setup: connect failed unreachable
+1793006178538 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006179854 I setup: connect failed unreachable
+1793006181904 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006183698 I setup: connect failed unreachable
+1793006185750 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006186740 I setup: connect failed unreachable
+1793006188791 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006190718 I setup: connect failed unreachable
+1793006192797 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006194193 I setup: connect failed unreachable
+1793006196241 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006197479 I setup: connect failed unreachable
+1793006199535 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006200846 I setup: connect failed unreachable
+1793006202906 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006204988 I setup: connect failed unreachable
+1793006207063 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006210293 I setup: connect failed unreachable
+1793006212574 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006236755 I setup: connect failed unreachable
+1793006240620 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006244900 I setup: connect failed unreachable
+1793006274579 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006275800 I setup: connect failed unreachable
+1793006299563 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006300254 I setup: connect failed unreachable
+1793006302338 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006303937 I setup: connect failed unreachable
+1793006306521 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006320875 I setup: connect failed unreachable
+1793006366001 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006367671 I setup: connect failed unreachable
+1793006442499 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006443838 I setup: connect failed unreachable
+1793006445981 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006448446 I setup: connect failed unreachable
+1793006450653 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006451660 I setup: connect failed unreachable
+1793006453734 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006454679 I setup: connect failed unreachable
+1793006456726 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006458001 I setup: connect failed unreachable
+1793006460077 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006461675 I setup: connect failed unreachable
+1793006463855 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006465786 I setup: connect failed unreachable
+1793006467863 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006469033 I setup: connect failed unreachable
+1793006471123 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006472088 I setup: connect failed unreachable
+1793006474158 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006523537 I setup: connect failed unreachable
+1793006525848 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006526696 I setup: connect failed unreachable
+1793006528735 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793006529846 I setup: connect failed unreachable
+1793006531897 I setup: connect start (new TV, android_tv_remote+google_cast)
+1793009061136 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009062192 I setup: connect failed unreachable
+1793009064225 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009065107 I setup: connect failed unreachable
+1793009067174 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009068161 I setup: connect failed unreachable
+1793009070244 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009071023 I setup: connect failed unreachable
+1793009073061 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009074146 I setup: connect failed unreachable
+1793009076258 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009077672 I setup: connect failed unreachable
+1793009079792 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009080898 I setup: connect failed unreachable
+1793009082932 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009084758 I setup: connect failed unreachable
+1793009086869 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009087872 I setup: connect failed unreachable
+1793009089904 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009090777 I setup: connect failed unreachable
+1793009092813 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793009094070 I setup: connect failed unreachable
+1793010630049 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010631192 I setup: connect failed unreachable
+1793010633237 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010634505 I setup: connect failed unreachable
+1793010636529 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010637643 I setup: connect failed unreachable
+1793010639756 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010642144 I setup: connect failed unreachable
+1793010644223 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010645278 I setup: connect failed unreachable
+1793010647307 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010648353 I setup: connect failed unreachable
+1793010650394 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010651937 I setup: connect failed unreachable
+1793010654158 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010655428 I setup: connect failed unreachable
+1793010657623 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010659087 I setup: connect failed unreachable
+1793010661181 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010662387 I setup: connect failed unreachable
+1793010664412 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010666154 I setup: connect failed unreachable
+1793010668195 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010669287 I setup: connect failed unreachable
+1793010671358 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010672658 I setup: connect failed unreachable
+1793010674726 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010676845 I setup: connect failed unreachable
+1793010678875 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010680163 I setup: connect failed unreachable
+1793010682219 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010683096 I setup: connect failed unreachable
+1793010685132 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010685909 I setup: connect failed unreachable
+1793010687974 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010688612 I setup: connect failed unreachable
+1793010690656 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010691945 I setup: connect failed unreachable
+1793010693974 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010694958 I setup: connect failed unreachable
+1793010696991 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010698362 I setup: connect failed unreachable
+1793010700487 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010701566 I setup: connect failed unreachable
+1793010703621 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010705120 I setup: connect failed unreachable
+1793010707238 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010708212 I setup: connect failed unreachable
+1793010710279 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010712048 I setup: connect failed unreachable
+1793010714155 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010715825 I setup: connect failed unreachable
+1793010717887 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010719492 I setup: connect failed unreachable
+1793010721558 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010743955 I setup: connect failed unreachable
+1793010758401 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010759921 I setup: connect failed unreachable
+1793010764586 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010769827 I setup: connect failed unreachable
+1793010782813 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010784703 I setup: connect failed unreachable
+1793010786891 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010787643 I setup: connect failed unreachable
+1793010789695 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010790790 I setup: connect failed unreachable
+1793010792826 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010793938 I setup: connect failed unreachable
+1793010795962 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010796763 I setup: connect failed unreachable
+1793010798791 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010799602 I setup: connect failed unreachable
+1793010801628 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010802277 I setup: connect failed unreachable
+1793010804323 I setup: connect start (new TV, android_tv_remote+adb_mdns+google_cast)
+1793010805938 I setup: connect failed unreachable
+1793010977693 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010979038 I setup: connect failed unreachable
+1793010981221 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010981782 I setup: connect failed unreachable
+1793010983822 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010985457 I setup: connect failed unreachable
+1793010987623 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010989650 I setup: connect failed unreachable
+1793010991959 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010992475 I setup: connect failed unreachable
+1793010994521 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010995671 I setup: connect failed unreachable
+1793010997813 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793010999863 I setup: connect failed unreachable
+1793011002325 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011003455 I setup: connect failed unreachable
+1793011005626 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011007728 I setup: connect failed unreachable
+1793011009820 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011011387 I setup: connect failed unreachable
+1793011013512 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011014317 I setup: connect failed unreachable
+1793011016741 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011257646 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011258914 I setup: connect failed unreachable
+1793011261199 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011262225 I setup: connect failed unreachable
+1793011264390 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011265309 I setup: connect failed unreachable
+1793011267358 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011268148 I setup: connect failed unreachable
+1793011270324 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011271693 I setup: connect failed unreachable
+1793011274020 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011275388 I setup: connect failed unreachable
+1793011412230 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011412868 I setup: connect failed unreachable
+1793011415170 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011416845 I setup: connect failed unreachable
+1793011419203 I setup: connect start (new TV, android_tv_remote+google_cast+adb_mdns)
+1793011420225 I setup: connect failed unreachable

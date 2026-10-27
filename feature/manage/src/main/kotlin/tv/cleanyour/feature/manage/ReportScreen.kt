@@ -28,7 +28,7 @@ import tv.cleanyour.ui.design.theme.Glow
 // browser opens the link; the app makes no request), or the share sheet. The same in both builds.
 // 0.3.3 D1: when the report fits in the link the form opens with it filled in and the button says
 // "Open GitHub"; when it does not, a line above the report says so before GitHub opens, and the
-// person pastes it as in 0.3.2.
+// person pastes it as in 0.3.2. 0.4.6: a problem report always fits (ProblemReports.fit).
 @Composable
 fun ReportScreen(state: ReportState, onIntent: (ReportIntent) -> Unit, onBack: () -> Unit, modifier: Modifier = Modifier) {
     val tvReport = state.kind == ReportKind.TV
@@ -57,7 +57,13 @@ fun ReportScreen(state: ReportState, onIntent: (ReportIntent) -> Unit, onBack: (
                 // Wrapped and one text node: no sideways scrolling on a phone, and TalkBack reads it as one block.
                 MonospaceBlock(state.text.trimEnd().lines(), wrap = true)
                 // In the scrolling content, not the bottom bar, so at large font sizes the report keeps the room.
-                Body(stringResource(if (state.inLink) R.string.report_in_link_hint else R.string.report_paste_hint), Modifier.padding(top = 16.dp, start = 4.dp, end = 4.dp))
+                // 0.4.6: a long problem report goes into the form shorter (its newest log lines), so it says so.
+                val hint = when {
+                    !state.inLink -> R.string.report_paste_hint
+                    state.shortened -> R.string.report_in_link_short_hint
+                    else -> R.string.report_in_link_hint
+                }
+                Body(stringResource(hint), Modifier.padding(top = 16.dp, start = 4.dp, end = 4.dp))
                 Gap(16.dp)
             }
         }

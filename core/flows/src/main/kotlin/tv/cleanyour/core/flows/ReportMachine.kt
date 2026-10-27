@@ -3,7 +3,6 @@ package tv.cleanyour.core.flows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import tv.cleanyour.core.model.TvId
-import tv.cleanyour.core.spec.resolveFor
 
 // 0.3.2 B1 and B2: the report preview. "Help add this TV" (TV) is the TV report for a TV with no exact
 // profile; "Report a problem" (PROBLEM) is the redacted diagnostics log with a short TV summary. Both
@@ -30,6 +29,9 @@ data class ReportState(
     // What Share sends: the TV report with one package per line (TvReport.text); the problem report
     // as shown. Empty means the shown text.
     val shareText: String = "",
+    // 0.4.6: the link holds a shorter problem report (ProblemReports.fit: fewer log lines); the
+    // whole one is shown, copied and shared.
+    val shortened: Boolean = false,
 )
 
 sealed interface ReportIntent {
@@ -44,12 +46,13 @@ class ReportMachine(
     private val tvId: TvId?,
 ) : Machine<ReportState, ReportIntent, ManageEffect>(ReportState(kind), scope) {
 
-    private data class Loaded(val text: String, val url: String, val available: Boolean, val inLink: Boolean = false, val share: String = "")
+    private data class Loaded(val text: String, val url: String, val available: Boolean, val inLink: Boolean = false, val share: String = "", val shortened: Boolean = false)
 
     init { scope.launch { send(build(kind)) } }
 
     override fun reduce(state: ReportState, event: Any): ReportState = when (event) {
-        is Loaded -> state.copy(loading = false, text = event.text, url = event.url, available = event.available, inLink = event.inLink, shareText = event.share)
+        is Loaded -> state.copy(loading = false, text = event.text, url = event.url, available = event.available, inLink = event.inLink, shareText = event.share,
+            shortened = event.shortened)
         else -> state
     }
 
@@ -64,31 +67,20 @@ class ReportMachine(
         }
     }
 
-    private suspend fun build(kind: ReportKind): Loaded {
-        // Settings asks without a TV: the TV used last, when there is one.
-        val tv = tvId?.let { d.tv(it) } ?: if (kind == ReportKind.PROBLEM && tvId == null) d.tvs.tvs.value.maxByOrNull { it.lastSeenAt } else null
-        val input = tv?.let { t ->
-            attempt { d.snapshots.latest(t.id) }.getOrNull()?.let { snap ->
-                TvReportInput(
-                    about = d.about, snapshot = snap,
-                    profile = attempt { d.profiles.resolveFor(snap) }.getOrNull(),
-                    home = attempt { d.homeDecisions.load(t.id) }.getOrNull(),
-                    switchedOffByApp = attempt { d.ledger.switchedOffByUs(t.id).toSet() }.getOrDefault(emptySet()),
-                )
-            }
-        }
-        return when (kind) {
-            ReportKind.TV -> if (input == null) Loaded("", "", available = false) else {
+    private suspend fun build(kind: ReportKind): Loaded = when (kind) {
+        ReportKind.TV -> when (val input = ProblemReports.input(d, tvId)) {
+            null -> Loaded("", "", available = false)
+            else -> {
                 val compact = TvReport.compact(input)
                 val link = IssueLinks.tvSupport(input, compact)
                 Loaded(compact, link.url, true, link.reportInLink, share = TvReport.text(input))
             }
-            ReportKind.PROBLEM -> {
-                val log = attempt { d.diagnostics.redactedText() }.getOrDefault("")
-                val text = TvReport.problem(d.about, input, tail(log))
-                val link = IssueLinks.bugReport(d.about, input, text)
-                Loaded(text, link.url, true, link.reportInLink, share = text)
-            }
+        }
+        // Settings asks without a TV: the TV used last, when there is one (ProblemReports.build).
+        // 0.4.6: the link always holds the report, shortened to fit when it must.
+        ReportKind.PROBLEM -> {
+            val r = ProblemReports.build(d, tvId, null)
+            Loaded(r.full, r.link.url, true, r.link.reportInLink, share = r.full, shortened = r.shortened)
         }
     }
 

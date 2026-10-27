@@ -371,6 +371,8 @@ class DefaultEngine(
         val deadlineMono = now + window
         val deadlineWall = clock.nowMs() + window
         var homeCheck: Boolean? = null
+        var presses = 0
+        var lastPress = Long.MIN_VALUE / 2
         while (true) {
             flow(run.plan.tvId).value = RunState.AwaitingConfirm(run.plan, section, deadlineWall, homeCheck, run.thumbnail)
             val decision = withTimeoutOrNull(liveCheckEveryMs) { run.decisions.receive() }
@@ -395,8 +397,47 @@ class DefaultEngine(
                     return HomeOutcome.WRONG_FOCUS
                 }
                 homeCheck = focus.pkg == section.expectedHome.pkg
+                // 0.4.6: a TV that starts on its last input (the maintainer's Mi TV starts Live TV,
+                // original_device_tv_mode_inputs_auto_play=1) can put a TV app in front of the new
+                // home screen in the first minute after it is switched on, and a Home press then lands
+                // on ours. So when no home screen is in front, Home still answers to ours, and what is
+                // in front is no Home claimant (a TV input, Live TV, an app), Home is pressed again: a
+                // few tries spread over the first minute of the check. The window and the watchdog
+                // stay as they are, and a home screen of the TV's own in front still rolls back at once.
+                val now = clock.monotonicMs()
+                // No try that would run into the check's deadline; a try that found no case for a press
+                // waits as long as a press does, so Home is not read every 2 s for the whole minute.
+                if (!homeCheck && presses < PATIENT_PRESSES && now - lastPress >= PATIENT_GAP_MS && now - run.sectionOpenedAt <= PATIENT_WINDOW_MS &&
+                    deadlineMono - now >= PATIENT_GAP_MS) {
+                    lastPress = now
+                    when (pressHomeAgain(run, section, focus)) {
+                        null -> {}
+                        true -> presses++
+                        false -> return HomeOutcome.CONNECTION_LOST
+                    }
+                }
             }
             thumbnail(run, force = false)
+        }
+    }
+
+    // One more Home press during the check (see awaitConfirm): null when it is not the case for one
+    // (Home answers to another home screen, or a Home claimant is in front), true when pressed, false
+    // when the TV went away. Journaled under the section's last step, whose verify it does not change
+    // (a press is no change: ChangeRecords and the undo skip it).
+    private suspend fun pressHomeAgain(run: Run, section: GuardedSection, focus: Component): Boolean? {
+        val home = try {
+            prober.homeNow(run.session)
+        } catch (e: AdbException) {
+            return if (e.error.isLost()) false else null
+        }
+        if (home.resolved != section.expectedHome) return null
+        if (home.claimants.any { it.component.pkg == focus.pkg }) return null
+        log("engine: the home check saw no home screen in front, so Home was pressed again")
+        val rendered = try { renderer.render(Op.PressHome) } catch (e: RenderRefused) { return null }
+        return when (perform(run, section.to, Op.PressHome, rendered, null)) {
+            is Outcome.Lost -> false
+            else -> true
         }
     }
 
@@ -1036,6 +1077,12 @@ class DefaultEngine(
     companion object {
         val GATED = setOf(Privilege.PROFILE_STEP, Privilege.COMMUNITY, Privilege.TAKEOVER)
         const val WATCHDOG_MARGIN_MS = 10_000L   // the phone's window ends at least this long before the watchdog fires (R1 R-1)
+        // 0.4.6: the check's extra Home presses while a TV app is in front: at most this many, this
+        // far apart, within this long of the section opening (about the first minute after the TV
+        // starts, when a TV that starts on its last input brings that input up).
+        const val PATIENT_PRESSES = 3
+        const val PATIENT_GAP_MS = 15_000L
+        const val PATIENT_WINDOW_MS = 60_000L
         // The journal's Failed text for a live protected refusal. KEPT_TV_INPUT marks a package kept
         // because it runs the TV's inputs (RF-LAUNCHER-250 F1); Done and Manage name it.
         const val PROTECTED = "protected: "

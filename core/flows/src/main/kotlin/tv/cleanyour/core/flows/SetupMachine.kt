@@ -346,6 +346,8 @@ class SetupMachine(
 
     override fun chooseCandidate(tryIt: Boolean) = send(Ev.CandidateChosen(tryIt))
 
+    override fun report(title: String) = shareDiagnostics(title)
+
     // reducer
 
     override fun reduce(state: SetupState, event: Any): SetupState = when (event) {
@@ -1419,9 +1421,50 @@ class SetupMachine(
 
     // 0.3.2 B2: the cards that offered "Share diagnostics" open the "Report a problem" preview, which
     // shows the redacted text first and copies or shares it only when the person says so.
-    private fun shareDiagnostics() {
-        effect(SetupEffect.Navigate(tvIdOf(state.value)?.let { "report/problem/${it.value}" } ?: "report/problem"))
+    // 0.4.6 (REPORTING-PROPOSAL 2.2): every card where a run or a connect stopped badly opens the
+    // GitHub form at once, with what the card said (ReportContext) and the TV as this phone last
+    // read it; the app copies the whole report too, and nothing is public until the person posts.
+    // A connect has no TV to read, so the card sends the phone's side instead: how the TV was found,
+    // the port, the named error and the socket's reason.
+    private fun shareDiagnostics(title: String? = null) {
+        val s = state.value
+        val card = (s as? SetupState.Stopped)?.card ?: mutableExtras.value.card
+        val names = arrayOf(tv?.nickname, knownTv?.nickname, doorTv?.friendlyName)
+        val connect = s is SetupState.Welcome || s is SetupState.Picker || s is SetupState.OpenDoor || s is SetupState.PairingNeeded
+        val err = mutableExtras.value.connectError
+        val case = when {
+            card != null -> card.case.name
+            s is SetupState.PairingNeeded -> StopCase.PAIRING_NEEDED.name
+            err != null -> "CONNECT_FAILED"
+            else -> s::class.simpleName?.uppercase() ?: "SETUP"
+        }
+        val shown = ReportContext.named(title ?: card?.title.orEmpty(), *names)
+        val ctx = if (!connect) ReportContext(screen = "Setup", card = shown, case = case) else {
+            val found = (s as? SetupState.OpenDoor)?.tv ?: (s as? SetupState.PairingNeeded)?.tv ?: doorTv
+            val error = when {
+                card?.case == StopCase.TV_NOT_SUPPORTED -> LogCodes.of(AdbError.Transport.NoShellV2)
+                s is SetupState.PairingNeeded -> "pairing_needed"
+                else -> err?.kind
+            }
+            ReportContext(
+                screen = "Connect", card = shown, case = case, connect = true, error = error,
+                // The port the app connects to (connect() opens Endpoint.PlainTcp at its default).
+                found = found?.let { f -> foundBy(f) }, port = Endpoint.PlainTcp(found?.host.orEmpty()).port,
+                detail = if (err != null) runCatching { deps.connectDetail() }.getOrNull() else null,
+            )
+        }
+        // A connect to a TV this phone has read before still sends its summary.
+        val id = if (connect) knownTv?.id else tvIdOf(s)
+        effect(SetupEffect.Navigate(IssueRoute.of(id, ctx)))
     }
+
+    // "adb_mdns+google_cast, pairing service seen": what discovery saw, never an address. Not the
+    // port's state: the door polls the port itself, so the found record's flag can be an old one.
+    private fun foundBy(f: FoundTv): String = listOfNotNull(
+        f.sources.joinToString("+") { if (it == DiscoverySource.MANUAL) "address typed" else it.name.lowercase() }.ifEmpty { "found" },
+        f.pairingService?.let { "pairing service seen" },
+        f.connectService?.let { "wireless debugging seen" },
+    ).joinToString(", ")
 
     // Done (S5)
 
@@ -1659,14 +1702,8 @@ class SetupMachine(
         deps.log.line("setup: run ${pauseLine(p)}")
     }
 
-    private suspend fun pauseLine(p: RunState.Paused): String {
-        val head = "paused ${p.reason} at step ${p.at}"
-        val failed = (if (p.reason == PauseReason.STEP_FAILED) attempt { deps.ledger.lastFailure(p.plan.id, p.at) }.getOrNull() else null)
-            ?: return runLabel(p)
-        val code = p.error?.let { errorName(it) } ?: failed.exit?.let { "nonzero_exit($it)" } ?: "failed"
-        val stderr = LogCodes.clean(failed.stderrHead, 160).takeIf { it.isNotEmpty() }?.let { " $it" }.orEmpty()
-        return "$head: ${if (failed.undo) "undo step failed" else "step failed"}: ${LogCodes.op(failed.op)}: $code$stderr"
-    }
+    // 0.4.6: the same words as a report's step line (RunLines).
+    private suspend fun pauseLine(p: RunState.Paused): String = RunLines.pause(p, deps.ledger)
 
     // Issue #338: the step the home screen switch stopped at, with its exit code and the head of the
     // TV's answer, the way a pause line names its step (0.3.2 B3).
@@ -1677,18 +1714,7 @@ class SetupMachine(
         deps.log.line("setup: home switch stopped at ${LogCodes.op(failed.op)}: $code$head")
     }
 
-    private fun runLabel(r: RunState): String = when (r) {
-        is RunState.Running -> "running"
-        is RunState.AwaitingConfirm -> "awaiting confirm"
-        is RunState.RollingBack -> "rolling back"
-        // Issue #367's log said "run cd2": the class name, renamed by R8 in a release build.
-        is RunState.InDoubt -> "in doubt"
-        is RunState.Paused -> "paused ${r.reason} at step ${r.at}${r.error?.let { " (${errorName(it)})" } ?: ""}"
-        // 0.3.3 (issue #10): the skipped switch-offs by name, so a report shows what stayed on.
-        is RunState.Finished -> "finished ${r.status}${r.home?.let { ", home $it" } ?: ""}, ${r.skipped.size} skipped" +
-            r.skipped.filter { it.op is Op.Disable }.take(SKIPS_LOGGED).joinToString(", ") { LogCodes.op(it.op) }.let { if (it.isEmpty()) "" else ": $it" }
-        else -> r::class.simpleName ?: "state"
-    }
+    private fun runLabel(r: RunState): String = RunLines.label(r)
 
     private fun counts(plan: Plan, done: Int): Map<String, Any> = mapOf("done" to done, "total" to plan.steps.count { it.op is Op.Disable })
 

@@ -34,6 +34,7 @@ import tv.cleanyour.core.ops.UndoOrder
 import tv.cleanyour.core.ops.Watchdog
 import tv.cleanyour.core.spec.AppNames
 import tv.cleanyour.core.spec.FactsTable
+import tv.cleanyour.core.spec.KnownLaunchers
 import tv.cleanyour.core.spec.ProfileCategory
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.spec.ProfileSource
@@ -560,7 +561,26 @@ class DefaultPlanner(
             val inverse = change?.let { renderer.inverse(it.op, it.prior ?: Prior()) } ?: Op.Enable(pkg)
             val op = protectedInverse(pkg, inverse) ?: return
             step(op, Prior(packageState = state(pkg)?.enabled), GROUP_PUT_BACK, "Switching ${name(pkg)} back on", FailurePolicy.STOP_AND_ROLLBACK)
+            // 0.4.6: a home screen switched back on under the new one can take the Home button. On the
+            // maintainer's Mi TV, tvlauncher back on answered Home at once (its filter's priority 2
+            // beats an installed app's 0, and the resolver then never asks the preferred activity), and
+            // the enable downgraded our preferred entry. So ours is made the default again and Home is
+            // checked. When the app still has Home, the run pauses there: the open run card says it
+            // took the Home button, and its undo is the existing undo of this run, which switches the
+            // app off again (TvWriter.publish, OpenWrite.tookHome).
+            if (snapshot.home.resolved == launcher && mayClaimHome(pkg)) {
+                step(Op.SetHome(launcher), Prior(home = launcher), GROUP_PUT_BACK, "Keeping the new home screen as the default", FailurePolicy.STOP_AND_ROLLBACK)
+                step(Op.VerifyHome(launcher), null, GROUP_PUT_BACK, "Checking the home screen", FailurePolicy.STOP_AND_ROLLBACK)
+            }
         }
+
+        // 0.4.6: a package that may answer Home once it is on again (a switched off package is no
+        // claimant, so the snapshot cannot say): Google's and Amazon's TV home screens, the stock
+        // launchers of this TV's resolution, the TV's own home the switch armed its watchdog with, a
+        // vendor home, or a claimant the TV still lists.
+        fun mayClaimHome(pkg: PackageName): Boolean =
+            pkg in KnownLaunchers.byPackage || managedStockLaunchers.any { it.pkg == pkg } || HomePlaceholder.stockFromRecords(journals)?.pkg == pkg ||
+                pkg.value in Denylist.vendorHomes || snapshot.home.claimants.any { it.component.pkg == pkg }
 
         fun switchOff(pkgs: Set<PackageName>) {
             val rows = mutableListOf<RowSummary>()

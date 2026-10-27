@@ -204,7 +204,7 @@ class WhatWeFoundMatchesThePlanTest {
         assertTrue(plan.steps.none { it.op is Op.SetHome || it.op == Op.Disable(Samples.stockLauncher.pkg) })
     }
 
-    @Test fun unknownModel() {
+    @Test fun unknownModel() = releaseRule {
         val facts = Samples.miTvFacts().copy(brand = "Acme", manufacturer = "Acme", model = "ACME-55", device = "acme55", fingerprint = "acme/acme55:9/x")
         val withWizard = Samples.snapshot(facts = facts, packages = Samples.miTvPackages(emptySet()))
         assertTheCleanUpAlone(withWizard)
@@ -217,15 +217,23 @@ class WhatWeFoundMatchesThePlanTest {
         assertEquals(1, plan.summary.switchOffCount)
     }
 
+    // 0.4.6 (R0): an unknown Xiaomi whose only claimant is Google's Android TV home gets the switch
+    // with its setup wizard on (before, the clean-up alone): the wizard is left as it is.
     @Test fun unknownXiaomiModelWithTheBrandSureSet() {
         val facts = Samples.miTvFacts().copy(model = "MiTV-UNKNOWN", device = "unknown")
-        assertTheCleanUpAlone(Samples.snapshot(facts = facts, packages = Samples.miTvPackages(emptySet())))
-        val (plan, res) = plan(Samples.snapshot(facts = facts, packages = Samples.miTvPackages(emptySet())).withoutWizard())
+        val withWizard = Samples.snapshot(facts = facts, packages = Samples.miTvPackages(emptySet()))
+        assertTrue(wizard in withWizard.packages)
+        val (switched, sure) = plan(withWizard)
+        assertIs<ProfileResolution.BrandSureSet>(sure)
+        assertS3AgreesWithThePlan(switched)
+        assertEquals(1, switched.sections.size)
+        assertTrue(switched.steps.none { (it.op as? Op.Disable)?.pkg == wizard || (it.op as? Op.Enable)?.pkg == wizard })
+        val (plan, res) = plan(withWizard.withoutWizard())
         assertIs<ProfileResolution.BrandSureSet>(res)
         assertS3AgreesWithThePlan(plan)
     }
 
-    @Test fun emulatorCapture() = runTest {
+    @Test fun emulatorCapture() = runTest { releaseRule {
         val tv = Fixtures.emulatorTv()
         val snapshot = AdbProber(FakeClock()).snapshot(tv.session(), SnapshotReason.BASELINE) {}
         // What the probe read: Android TV home is HOME, FallbackHome the other claimant, nothing off.
@@ -271,6 +279,7 @@ class WhatWeFoundMatchesThePlanTest {
         assertEquals(DefaultPlanner.DESCRIPTION_OLD_HOME, row.description)
         // The rollback puts it back, and the section guards the whole switch.
         assertTrue(Op.Enable(row.pkg) in plan.sections.single().rollback)
+    }
     }
 
     @Test fun emulatorCaptureProbeStaysUnderTenShellCallsAndNamesTheDockApps() = runTest {

@@ -9,6 +9,7 @@ import tv.cleanyour.core.model.Component
 import tv.cleanyour.core.model.EnabledState
 import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.ops.HomePlaceholder
 import tv.cleanyour.core.planner.FireOs
 import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.core.planner.PlanRequest
@@ -300,7 +301,9 @@ class HomeScreenMachine(
             ?.let { id -> drafts.gallery().firstOrNull { it.id == id }?.name ?: id }
             else choice?.endedLook(today)?.let { id -> theme(id)?.name ?: id }
         send(Loaded(HomeScreenState(tv.nickname, dock, apps, if (choice?.isNew == true) null else lookId, offeredThemes(d),
-            stock = profile?.stockLaunchers?.firstOrNull(),
+            // 0.4.6: a TV on a brand set or none (R0) has no list of its own; the stock home the
+            // switch armed its watchdog with is the TV's own then.
+            stock = profile?.stockLaunchers?.firstOrNull() ?: attempt { HomePlaceholder.stockFromRecords(d.ledger.changes(tvId)) }.getOrNull(),
             homeScreenOurs = tv.launcher != null, columns = columns, updateTo = updateTo(tv, packages),
             tvSideSettings = (packages[Launcher.pkg]?.versionCode ?: 0) >= FIRST_WITH_TV_SETTINGS,
             notOnTv = notOnTv(tv, snap), tclRemoteKeys = snap != null && TclGoogleTv.applies(snap.facts, snap),
@@ -547,12 +550,9 @@ class HomeScreenMachine(
     // installed (PRODUCT-SPEC M2).
     private suspend fun useStock(stock: Component) {
         send(Preview(null))
-        val r = writer.write(tvId, PlanRequest.UseStockHome(stock)) { send(BusyNow(it)) }
+        val r = writer.useStockHome(tvId, stock) { send(BusyNow(it)) }
         send(BusyNow(null))
-        if (r is WriteResult.Done) {
-            d.tv(tvId)?.let { d.tvs.upsert(it.copy(launcher = null)) }
-            effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, d.nameOf(stock.pkg), false))
-        }
+        if (r is WriteResult.Done) effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, d.nameOf(stock.pkg), false))
         load()
     }
 }

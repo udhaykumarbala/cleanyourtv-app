@@ -5,13 +5,17 @@ import tv.cleanyour.core.model.DeviceFacts
 import tv.cleanyour.core.model.EnabledState
 import tv.cleanyour.core.model.HomeClaimant
 import tv.cleanyour.core.model.HomeResolution
+import tv.cleanyour.core.model.Level
 import tv.cleanyour.core.model.Op
 import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.Quirk
 import tv.cleanyour.core.model.Snapshot
+import tv.cleanyour.core.model.TestedInfo
 import tv.cleanyour.core.planner.HomeSwitchRisk.Risk
 import tv.cleanyour.core.planner.PlannerFixtures.choices
+import tv.cleanyour.core.planner.PlannerFixtures.otherMaker
+import tv.cleanyour.core.planner.PlannerFixtures.releaseRule
 import tv.cleanyour.core.planner.PlannerFixtures.plan
 import tv.cleanyour.core.planner.PlannerFixtures.refused
 import tv.cleanyour.core.planner.PlannerFixtures.setup
@@ -63,16 +67,18 @@ class HomeSwitchRiskTest {
     // (a) The generic path never switches the wizard off, so a setup wizard that is on would stay on
     // while the TV's own home screen goes off: no switch, whatever the Wi-Fi answer (the Wi-Fi line
     // when the TV says the wizard saved it). Without a wizard, or with it off, the switch goes ahead.
-    @Test fun anUnknownTvWithItsSetupWizardOnGetsNoSwitch() {
-        assertEquals(Risk.WIZARD_WIFI, HomeSwitchRisk.of(tv.facts, null, tv, WizardWifi.OWNER))
-        assertEquals(Risk.WIZARD_STAYS_ON, HomeSwitchRisk.of(tv.facts, null, tv, WizardWifi.UNKNOWN))
-        assertEquals(Risk.WIZARD_STAYS_ON, HomeSwitchRisk.of(tv.facts, null, tv, WizardWifi.NOT_OWNER))
-        assertEquals(listOf(Risk.WIZARD_WIFI.reason), refused(setup(profile = null, choices = choices(wizardWifi = WizardWifi.OWNER))))
-        assertEquals(listOf(Risk.WIZARD_STAYS_ON.reason), refused(setup(profile = null, choices = choices(wizardWifi = WizardWifi.NOT_OWNER))))
+    // 0.4.6: on the reference TV under another maker, since the Xiaomi itself now meets R0 (below).
+    @Test fun anUnknownTvWithItsSetupWizardOnGetsNoSwitch() = releaseRule {
+        val acme = otherMaker(tv)
+        assertEquals(Risk.WIZARD_WIFI, HomeSwitchRisk.of(acme.facts, null, acme, WizardWifi.OWNER))
+        assertEquals(Risk.WIZARD_STAYS_ON, HomeSwitchRisk.of(acme.facts, null, acme, WizardWifi.UNKNOWN))
+        assertEquals(Risk.WIZARD_STAYS_ON, HomeSwitchRisk.of(acme.facts, null, acme, WizardWifi.NOT_OWNER))
+        assertEquals(listOf(Risk.WIZARD_WIFI.reason), refused(setup(profile = null, choices = choices(wizardWifi = WizardWifi.OWNER)), snapshot = acme))
+        assertEquals(listOf(Risk.WIZARD_STAYS_ON.reason), refused(setup(profile = null, choices = choices(wizardWifi = WizardWifi.NOT_OWNER)), snapshot = acme))
         for (w in WizardWifi.entries) assertNull(HomeSwitchRisk.of(noWizard.facts, null, noWizard, w), "$w")
-        val off = snapshot(disabled = setOf(wizard.value))
+        val off = otherMaker(snapshot(disabled = setOf(wizard.value)))
         assertNull(HomeSwitchRisk.of(off.facts, null, off, WizardWifi.UNKNOWN), "a wizard already off stays off")
-        assertTrue(Op.SetHome(PlannerFixtures.launcher) in plan(setup(profile = null, choices = choices(wizardWifi = WizardWifi.UNKNOWN)), snapshot = noWizard).steps.map { it.op })
+        assertTrue(Op.SetHome(PlannerFixtures.launcher) in plan(setup(profile = null, choices = choices(wizardWifi = WizardWifi.UNKNOWN)), snapshot = otherMaker(noWizard)).steps.map { it.op })
     }
 
     // (b) Google's own hardware: the switch costs casting after every restart.
@@ -213,4 +219,164 @@ class HomeSwitchRiskTest {
         assertEquals(Risk.WIZARD_STAYS_ON, HomeSwitchRisk.of(unlisted.facts, null, unlisted, WizardWifi.NOT_OWNER))
         assertEquals(Risk.WIZARD_STAYS_ON, HomeSwitchRisk.of(unlisted.facts, keeps, unlisted, WizardWifi.NOT_OWNER))
     }
+
+    // 0.4.6 (R0): 171 of 236 Xiaomi reports are global firmware whose only Home claimants are Google's
+    // Android TV home (priority 2) and Settings' FallbackHome (-1000), with no exact profile. Their
+    // setup wizard is on and no Home claimant, so it cannot take Home once tvlauncher is off: the
+    // switch goes ahead with the wizard left on, whatever the Wi-Fi answer. Facts from the reports.
+    private val tvlauncher = Component(PackageName("com.google.android.tvlauncher"), ".MainActivity")
+    private val fallback = Component(PackageName("com.android.tv.settings"), ".system.FallbackHome")
+    private val launcherx = Component(PackageName("com.google.android.apps.tv.launcherx"), ".home.HomeActivity")
+    private val patchWall = Component(PackageName("com.mitv.tvhome"), ".MainActivityUserMode")
+    private val recovery = Component(wizard, ".RecoveryActivity")
+    private fun reported(model: String, device: String, sdk: Int, fingerprint: String, brand: String = "Xiaomi", manufacturer: String = "Xiaomi") =
+        tv.facts.copy(brand = brand, manufacturer = manufacturer, model = model, device = device, sdk = sdk, release = "$sdk", fingerprint = fingerprint)
+    private val axso1 = reported("MiTV-AXSO1", "dangalFHD", 28, "Xiaomi/dangalFHD/dangalFHD:9/PI/6157:user/release-keys")
+    private val mitv4i = reported("MiTV4I", "magnolia", 28, "Xiaomi/magnolia/magnolia:9/PI/3698:user/release-keys")
+    private val aesp0 = reported("MiTV-AESP0", "aquaman", 29, "Xiaomi/aquaman/aquaman:10/QT/2514:user/release-keys")
+    private val mooq3 = reported("MiTV-MOOQ3", "tarzan", 30, "Redmi/onward/tarzan:11/RTM4.220307.164/8237:user/release-keys", brand = "Redmi")
+    private val r0Tvs = listOf(axso1, mitv4i, aesp0, mooq3)
+
+    // A TV with those facts, the reference packages (the wizard installed and on), Home on `home`
+    // and these claimants at the priorities the TVs report.
+    private fun r0Tv(f: DeviceFacts, claimants: List<HomeClaimant> = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(fallback, -1000)),
+        home: Component? = tvlauncher, disabled: Set<String> = emptySet()): Snapshot =
+        snapshot(disabled = disabled).copy(facts = f, home = HomeResolution(home, claimants)).let { it.copy(contentHash = SnapshotCodec.hash(it)) }
+
+    @Test fun r0LetsTheReportedXiaomiSetsSwitchWithTheWizardLeftOn() {
+        for (f in r0Tvs) {
+            val s = r0Tv(f)
+            val res = source.resolveNow(f)
+            assertTrue(res is ProfileResolution.BrandSureSet && res.brand == "Xiaomi", "${f.model}: $res")
+            assertEquals(EnabledState.ENABLED, s.packages.getValue(wizard).enabled)
+            assertTrue(HomeSwitchRisk.wizardStaysOnSafely(f, s), f.model)
+            for (w in WizardWifi.entries) {
+                assertNull(HomeSwitchRisk.of(f, null, s, w), "${f.model} $w")
+                // The plan has the switch, never touches the wizard and writes no setting (so no Wi-Fi).
+                val p = plan(PlanRequest.Setup(res, choices(wizardWifi = w), PlannerFixtures.artifact(), Level.SIMPLE), snapshot = s)
+                val ops = p.steps.map { it.op }
+                assertEquals(1, p.sections.size, "${f.model} $w")
+                assertTrue(Op.Disable(tvlauncher.pkg) in ops && Op.SetHome(PlannerFixtures.launcher) in ops, "${f.model} $w")
+                assertTrue(ops.none { (it is Op.Disable && it.pkg == wizard) || (it is Op.Enable && it.pkg == wizard) }, "${f.model} $w: the wizard is left as it is")
+                assertTrue(ops.none { it is Op.SettingsPut }, "${f.model} $w: no setting is written")
+                assertTrue(p.sections.single().rollback.none { it == Op.Enable(wizard) || it == Op.Disable(wizard) }, "${f.model} $w")
+            }
+        }
+        // Our own home screen among the claimants (a set where it is installed) changes nothing, nor
+        // does the case of the maker's name (xiaomi in some reports).
+        val ours = r0Tv(axso1, listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(PlannerFixtures.launcher, 0), HomeClaimant(fallback, -1000)))
+        assertNull(HomeSwitchRisk.of(axso1, null, ours, WizardWifi.OWNER))
+        // Home answering to a placeholder (FallbackHome) or to nothing is the same case.
+        assertNull(HomeSwitchRisk.of(axso1, null, r0Tv(axso1, home = fallback), WizardWifi.OWNER))
+        assertNull(HomeSwitchRisk.of(axso1, null, r0Tv(axso1, home = null), WizardWifi.OWNER))
+        val lower = axso1.copy(brand = "xiaomi", manufacturer = "xiaomi")
+        assertNull(HomeSwitchRisk.of(lower, null, r0Tv(lower), WizardWifi.OWNER))
+        // A Redmi by its brand alone counts as Xiaomi's own.
+        val redmi = mooq3.copy(manufacturer = "Redmi")
+        assertNull(HomeSwitchRisk.of(redmi, null, r0Tv(redmi), WizardWifi.UNKNOWN))
+    }
+
+    @Test fun r0KeepsTheRuleWhereTheWizardCouldTakeHome() {
+        for (f in r0Tvs) for (w in WizardWifi.entries) {
+            val blocked = if (w == WizardWifi.OWNER) Risk.WIZARD_WIFI else Risk.WIZARD_STAYS_ON
+            fun check(s: Snapshot, why: String, facts: DeviceFacts = f, profile: Profile? = null, risk: Risk? = blocked) =
+                assertEquals(risk, HomeSwitchRisk.of(facts, profile, s, w), "${f.model} $w: $why")
+            val two = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(fallback, -1000))
+            // The wizard claims Home: no switch, whoever saved the Wi-Fi.
+            check(r0Tv(f, two + HomeClaimant(recovery, 0)), "the wizard claims Home")
+            // Another wizard claims Home: a vendor one (Xiaomi's own) or AOSP's provision.
+            check(r0Tv(f, two + HomeClaimant(Component(PackageName("com.xiaomi.setupwizard"), ".SetupActivity"), 0)), "Xiaomi's setup wizard claims Home")
+            check(r0Tv(f, two + HomeClaimant(Component(PackageName("com.android.provision"), ".DefaultActivity"), 0)), "provision claims Home")
+            // Google TV (launcherx), PatchWall, or any other home among the claimants.
+            check(r0Tv(f, listOf(HomeClaimant(launcherx, 2), HomeClaimant(fallback, -1000)), home = launcherx), "Google TV")
+            check(r0Tv(f, two + HomeClaimant(launcherx, 1)), "launcherx next to tvlauncher")
+            check(r0Tv(f, listOf(HomeClaimant(patchWall, 100), HomeClaimant(fallback, -1000)), home = patchWall), "PatchWall")
+            check(r0Tv(f, two + HomeClaimant(patchWall, 0)), "PatchWall next to tvlauncher")
+            check(r0Tv(f, two + HomeClaimant(Component(PackageName("com.vendor.launcher"), ".Home"), 0)), "a vendor home")
+            // tvlauncher not a claimant, or switched off.
+            check(r0Tv(f, listOf(HomeClaimant(fallback, -1000)), home = fallback), "no tvlauncher")
+            check(r0Tv(f, disabled = setOf(tvlauncher.pkg.value)), "tvlauncher switched off")
+            // Home answers to an app the claimants do not list (PatchWall resolved while only tvlauncher
+            // and FallbackHome are listed), no claimants at all, or tvlauncher with no package entry.
+            check(r0Tv(f, home = patchWall), "Home answers to PatchWall")
+            check(r0Tv(f, emptyList(), home = null), "no claimants")
+            check(r0Tv(f).let { s -> s.copy(packages = s.packages - tvlauncher.pkg).let { it.copy(contentHash = SnapshotCodec.hash(it)) } }, "tvlauncher not in the package list")
+            check(r0Tv(f, two + HomeClaimant(Component(PackageName("com.unlisted.home"), ".Home"), 0)), "a claimant with no package entry")
+            // The same TV under another maker.
+            val acme = f.copy(brand = "Acme", manufacturer = "Acme")
+            releaseRule { check(r0Tv(acme), "not a Xiaomi", facts = acme) }
+            // An exact profile keeps its own rule: one whose switch switches the wizard off while the
+            // wizard saved the Wi-Fi, and a test build's candidate list (never tried with the switch).
+            val quirk = PlannerFixtures.profile(quirks = setOf(Quirk.HOME_TAKEOVER_SETUPWRAITH), setupWraith = wizard)
+            check(r0Tv(f), "an exact profile with the wizard quirk", profile = quirk, risk = when (w) {
+                WizardWifi.OWNER -> Risk.WIZARD_WIFI; WizardWifi.UNKNOWN -> Risk.WIZARD_WIFI_UNKNOWN; WizardWifi.NOT_OWNER -> null })
+            val candidate = PlannerFixtures.profile().copy(tested = TestedInfo("candidate", null, null, rebootTested = false, candidate = true))
+            releaseRule { check(r0Tv(f), "a candidate list", profile = candidate) }
+        }
+        // The planner refuses a switch asked for anyway on a set where the wizard claims Home.
+        val claims = r0Tv(axso1, listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(recovery, 0), HomeClaimant(fallback, -1000)))
+        assertEquals(listOf(Risk.WIZARD_STAYS_ON.reason), refused(setup(profile = null), snapshot = claims))
+    }
+
+    // The test build's switch (-Pcyt.wizardStaysAnyBrand=true): R0 without its brand test. The
+    // release bundles no marker, so its rule is Xiaomi only; the widened rule keeps every other test.
+    @Test fun r0IsXiaomiOnlyUnlessATestBuildWidensItToEveryBrand() {
+        assertEquals(System.getProperty("cyt.wizardStaysAnyBrand") == "true", HomeSwitchRisk.ANY_BRAND_BUILD, "the bundled switch is the build's")
+        if (System.getProperty("cyt.wizardStaysAnyBrand") != "true") {
+            assertNull(HomeSwitchRisk::class.java.getResource(HomeSwitchRisk.ANY_BRAND_RESOURCE), "a release build bundles no marker")
+        }
+        val two = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(fallback, -1000))
+        for (brand in listOf("Sony", "OnePlus", "Philips", "Mecool", "Skyworth", "Hisense", "realme", "Haier", "TCL")) {
+            val f = axso1.copy(brand = brand, manufacturer = brand, model = "unknown", device = "unknown", fingerprint = "$brand/unknown/unknown:11/x")
+            for (w in WizardWifi.entries) {
+                val blocked = if (w == WizardWifi.OWNER) Risk.WIZARD_WIFI else Risk.WIZARD_STAYS_ON
+                assertEquals(blocked, HomeSwitchRisk.of(f, null, r0Tv(f), w, anyBrand = false), "$brand $w, release")
+                assertNull(HomeSwitchRisk.of(f, null, r0Tv(f), w, anyBrand = true), "$brand $w, test build")
+                // Every other condition of R0 still holds in the test build.
+                for ((why, s) in listOf(
+                    "the wizard claims Home" to r0Tv(f, two + HomeClaimant(recovery, 0)),
+                    "Google TV" to r0Tv(f, listOf(HomeClaimant(launcherx, 2), HomeClaimant(fallback, -1000)), home = launcherx),
+                    "a vendor home" to r0Tv(f, two + HomeClaimant(Component(PackageName("com.vendor.launcher"), ".Home"), 0)),
+                    "no tvlauncher" to r0Tv(f, listOf(HomeClaimant(fallback, -1000)), home = fallback),
+                    "tvlauncher switched off" to r0Tv(f, disabled = setOf(tvlauncher.pkg.value)),
+                )) assertEquals(blocked, HomeSwitchRisk.of(f, null, s, w, anyBrand = true), "$brand $w, test build: $why")
+                val candidate = PlannerFixtures.profile().copy(tested = TestedInfo("candidate", null, null, rebootTested = false, candidate = true))
+                // A candidate list gets R0 in the test build (aCandidateListGetsR0OnlyInTheWidenedTestBuild), never in a release.
+                assertNull(HomeSwitchRisk.of(f, candidate, r0Tv(f), w, anyBrand = true), "$brand $w, test build: a candidate list")
+                assertEquals(blocked, HomeSwitchRisk.of(f, candidate, r0Tv(f), w, anyBrand = false), "$brand $w, release: a candidate list")
+            }
+        }
+        // The other risks are untouched: the MOKA family and Google's hardware keep theirs.
+        val moka = axso1.copy(brand = "Kalley", manufacturer = "MOKA", device = "R10G")
+        assertEquals(Risk.BOOT_LOOP, HomeSwitchRisk.of(moka, null, r0Tv(moka), WizardWifi.NOT_OWNER, anyBrand = true))
+        val boreal = axso1.copy(brand = "google", manufacturer = "Google", device = "boreal")
+        assertEquals(Risk.CASTING, HomeSwitchRisk.of(boreal, null, r0Tv(boreal), WizardWifi.NOT_OWNER, anyBrand = true))
+    }
+
+    // 0.4.6: in a test build with R0 widened to every brand, a candidate list gets R0 too, since the
+    // volunteers who try one are the ones checking it. Issue #258: a OnePlus C00 (Cebu) on Android 11
+    // with the candidate list oneplus-tv-c00-cebu, claimants tvlauncher (priority 2) and FallbackHome,
+    // setupwraith on and no claimant, was blocked WIZARD_WIFI. A release keeps the rule as it was,
+    // and a candidate whose wizard claims Home stays blocked either way.
+    @Test fun aCandidateListGetsR0OnlyInTheWidenedTestBuild() {
+        val cebu = axso1.copy(brand = "OnePlus", manufacturer = "OnePlus", model = "OnePlus TV C00", device = "cebu", sdk = 30, release = "11",
+            fingerprint = "OnePlus/cebu/cebu:11/x:user/release-keys")
+        val candidate = PlannerFixtures.profile().copy(id = "oneplus-tv-c00-cebu", tested = TestedInfo("candidate, issue #258", null, null, rebootTested = false, candidate = true))
+        val s = r0Tv(cebu)
+        for (w in WizardWifi.entries) {
+            val blocked = if (w == WizardWifi.OWNER) Risk.WIZARD_WIFI else Risk.WIZARD_STAYS_ON
+            assertNull(HomeSwitchRisk.of(cebu, candidate, s, w, anyBrand = true), "test build $w")
+            assertEquals(blocked, HomeSwitchRisk.of(cebu, candidate, s, w, anyBrand = false), "release $w")
+            val claims = r0Tv(cebu, listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(recovery, 0), HomeClaimant(fallback, -1000)))
+            assertEquals(blocked, HomeSwitchRisk.of(cebu, candidate, claims, w, anyBrand = true), "test build, the wizard claims Home, $w")
+            assertEquals(blocked, HomeSwitchRisk.of(cebu, candidate, claims, w, anyBrand = false), "release, the wizard claims Home, $w")
+            // An exact list keeps its own rule in the test build too (here one whose switch would
+            // switch the wizard off while it may own the Wi-Fi).
+            val exact = PlannerFixtures.profile(quirks = setOf(Quirk.HOME_TAKEOVER_SETUPWRAITH), setupWraith = wizard)
+            assertEquals(HomeSwitchRisk.of(cebu, exact, s, w, anyBrand = false), HomeSwitchRisk.of(cebu, exact, s, w, anyBrand = true), "exact $w")
+        }
+        // On a Xiaomi a release still never gives a candidate R0.
+        for (w in WizardWifi.entries) assertTrue(HomeSwitchRisk.of(axso1, candidate, r0Tv(axso1), w, anyBrand = false) != null, "xiaomi release $w")
+    }
 }
+

@@ -81,6 +81,8 @@
     <string name="door_connect_failed_hint">If ADB from a computer works but this app can\'t reach the TV, something on the phone may be in the way: a per-app network limit (MIUI, Samsung), a VPN, Private DNS, or mobile data. Turn it off for a moment and try again.</string>
     <string name="door_copy_error">Copy error</string>
     <string name="door_error_copied">Copied. Paste it into your issue.</string>
+    <!-- 0.4.6: under a connect that failed; opens the GitHub form with the phone's side filled in. The wording of every report button. -->
+    <string name="connect_report">Report a problem</string>
     <string name="door_unknown_note">We haven\'t met this exact TV before. The steps are usually the same.</string>
 
     <!-- S2a step cards by platform family (UX 2 table). Note to translators: match the TV's own menu names. -->

@@ -3,6 +3,7 @@ package tv.cleanyour.core.planner
 import tv.cleanyour.core.model.Level
 import tv.cleanyour.core.model.Op
 import tv.cleanyour.core.ops.Denylist
+import tv.cleanyour.core.planner.PlannerFixtures.releaseRule
 import tv.cleanyour.core.planner.PlannerFixtures.artifact
 import tv.cleanyour.core.planner.PlannerFixtures.choices
 import tv.cleanyour.core.planner.PlannerFixtures.plan
@@ -24,7 +25,9 @@ import tv.cleanyour.core.spec.SureSetGenerator
 // rule the planner and the engine apply, and a TV on one gets the home screen decision of a TV with
 // no set at all, since its stock launchers are the generic ones.
 class CarefulSetSafetyTest {
-    private val tv = snapshot()   // the reference TV, its setup wizard installed and on
+    // The reference TV, its setup wizard installed and on, under another maker: the careful sets are
+    // other brands', and the Xiaomi itself meets R0 (0.4.6).
+    private val tv = PlannerFixtures.otherMaker(snapshot())
     private val noWizard = tv.copy(packages = tv.packages - wizard).let { it.copy(contentHash = SnapshotCodec.hash(it)) }
     private val careful: List<SureSet> = BundledProfileSource.bundled.let { b ->
         val lists = SureSetGenerator.feeding(b.profiles.filter { !it.isCandidate }).groupBy { it.match.brand!!.lowercase() }
@@ -46,11 +49,11 @@ class CarefulSetSafetyTest {
         assertEquals(emptyList(), refusedRows)
     }
 
-    @Test fun aCarefulSetGetsTheHomeScreenDecisionOfNoSet() {
+    @Test fun aCarefulSetGetsTheHomeScreenDecisionOfNoSet() = releaseRule {
         for (s in careful) {
             assertEquals(KnownLaunchers.generic, s.stockLaunchers, s.brand)
             // With the setup wizard on, the switch is refused for the same reason as without a set.
-            for (w in WizardWifi.entries) assertEquals(refused(setup(none, w)), refused(setup(of(s), w)), "${s.brand} $w")
+            for (w in WizardWifi.entries) assertEquals(refused(setup(none, w), tv), refused(setup(of(s), w), tv), "${s.brand} $w")
             // Without it, the same home screen steps are planned; only the careful rows are added,
             // with the pause that lets the TV settle after a clean-up and before the switch.
             val rows = s.groups.flatMap { g -> g.packages.map { it.name } }.toSet()

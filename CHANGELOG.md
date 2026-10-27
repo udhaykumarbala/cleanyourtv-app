@@ -2,6 +2,44 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Home screen
+- Xiaomi TVs on Android TV (Mi TV 4i, Mi TV P1 and others), Redmi sets among them, can now get the
+  new home screen; their setup wizard stays on. This is for the sets whose only home screen is
+  Google's Android TV home and whose setup wizard does not answer the Home button.
+- Each time you open Manage with the TV connected, the app checks the Home button again. If the
+  setup wizard could now take it while the new home screen is in charge, Manage says so and offers
+  to switch the TV's own home screen back on, so the TV keeps starting normally.
+- Switching the TV's own home screen back on from "Switched off" (or "Better back on") keeps the
+  new one as Home. If the TV still gives Home to the app you switched on, the app says so and
+  offers to switch it off again.
+- Right after the switch, if the TV brings up Live TV or another input in front of the new home
+  screen (some TVs start on the last input they showed), the check presses Home again for you.
+- "Use the TV's own home screen" in Manage now also works on TVs with no list of their own.
+
+### Reporting a problem
+- Every stop, timeout, paused change and connect problem has "Report a problem" on
+  its card, and so does Home screen when the new home screen can't go on the TV. One tap opens a
+  ready filled GitHub issue with what the card said and how the TV is now, so there is nothing to
+  paste. The app still sends nothing itself: your browser opens the form, and nothing is public
+  until you post it.
+- A long report always fits in the form now. It keeps the TV, its list and its home screen lines,
+  what went wrong and the newest lines of the log, and the app copies the whole report too. Before,
+  a report too long for the link left the box empty and asked you to paste it.
+- When the phone can't connect, the report has the phone's side instead of the TV's: how the TV was
+  found, the port, the error the app named and the phone's Android version. The app hasn't read
+  the TV yet, so type its brand and model into the form's TV box.
+- Links to GitHub are shorter, so they open for people signed in to GitHub too (a long link and the
+  browser's sign-in data together got an error page). The "Help add this TV" report doesn't fit in
+  such a link, so the app copies it and you paste it into the form, as before for long reports.
+- The issue's title names the TV, for example "Problem: Xiaomi MiTV-AXSO0 (dangal, Android 9)", or
+  "Problem: could not connect (refused)" when no TV was read.
+
+### Under the hood
+- Test builds can offer the switch with the setup wizard left on to other brands' sets that look the
+  same, so volunteers can check them across restarts. Releases do this on Xiaomi sets only.
+
 ## 0.4.5 (2026-10-27)
 
 The home screen app from Gathin's Clean Your TV goes to 3.0, with more choices in the Look sheet, 25

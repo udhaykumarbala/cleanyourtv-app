@@ -23,6 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
@@ -131,6 +132,7 @@ class ReportFlowsTest {
     }
 
     // B2: "Share diagnostics" on the home screen card opens the report preview instead of sharing at once.
+    // 0.4.6: it opens the prefilled GitHub form at once (IssueRoute), with the card's title and case.
     @Test fun theHomeUnknownCardOpensTheReportPreview() = runTest(timeout = 30.seconds) {
         val h = Harness()
         h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
@@ -143,8 +145,81 @@ class ReportFlowsTest {
         m.effects.test {
             m.dispatch(SetupIntent.StopAction(StopAction.PRIMARY)); settle()
             val effects = drain()
-            assertTrue(SetupEffect.Navigate("report/problem/${Samples.miTvId().value}") in effects, effects.toString())
+            val route = assertNotNull(effects.filterIsInstance<SetupEffect.Navigate>().firstNotNullOfOrNull { IssueRoute.parse(it.key) }, effects.toString())
+            assertEquals(Samples.miTvId(), route.first)
+            val card = assertIs<SetupState.Stopped>(m.state.value).card
+            assertEquals(ReportContext("Setup", card.title, StopCase.HOME_UNKNOWN.name), route.second)
             assertTrue(effects.none { it is SetupEffect.Share })
+        }
+    }
+
+    // 0.4.6 (REPORTING-PROPOSAL 2.2): "Report a problem" on the card of a step that failed opens the
+    // GitHub form for this TV with the card and the step the run paused at; the link holds the report.
+    @Test fun aFailedStepCardReportsTheCardAndTheStep() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        h.setupPlan = h.plan(listOf(Op.Disable(adPkg), Op.Disable(promoPkg)), takeover = true)
+        h.engine.onStart = { p ->
+            h.journal.append(JournalRecord.Begin(p.id, 1, Op.Disable(promoPkg), listOf("pm disable-user ${promoPkg.value}"), null, 0))
+            h.journal.append(JournalRecord.Failed(p.id, 1, 1, "exit 1", "Error: refused at 192.168.1.20"))
+            emit(p.tvId, RunState.Paused(p, 1, PauseReason.STEP_FAILED, AdbError.NonZeroExit(1, "secret")))
+        }
+        val m = h.setup(backgroundScope)
+        toFound(h, m)
+        m.dispatch(SetupIntent.MakeItClean); settle()
+        val card = assertIs<SetupState.Stopped>(m.state.value).card
+        assertEquals(StopCase.STEP_FAILED, card.case)
+        m.effects.test {
+            m.report(card.title); settle()
+            val (id, ctx) = assertNotNull(IssueRoute.parse(drain().filterIsInstance<SetupEffect.Navigate>().single().key))
+            assertEquals(Samples.miTvId(), id)
+            assertEquals(ReportContext("Setup", card.title, "STEP_FAILED"), ctx)
+            val r = ProblemReports.build(h.manageDeps(), id, ctx)
+            assertTrue(r.link.reportInLink && r.link.url.length <= IssueLinks.MAX_URL, r.link.url)
+            val step = "Step: paused STEP_FAILED at step 1: step failed: Disable ${promoPkg.value}: nonzero_exit(1) Error: refused at [address]\n"
+            assertTrue("What happened\nScreen: Setup\nCard: ${card.title} (STEP_FAILED)\n$step" in r.sent, r.sent)
+            assertTrue("Model: ${Samples.miTvFacts().model}\n" in r.sent, r.sent)
+            assertFalse("192.168.1.20" in r.link.url || "192.168.1.20" in r.full)
+            assertTrue(r.link.url.contains("&what="), r.link.url)
+        }
+        // The TV's nickname in a title comes out, as a whole word.
+        val nick = assertNotNull(m.extras.value.tvName)
+        m.effects.test {
+            m.report("$nick stopped, ${nick}Box"); settle()
+            val named = assertNotNull(IssueRoute.parse(drain().filterIsInstance<SetupEffect.Navigate>().single().key)).second
+            assertEquals("the TV stopped, ${nick}Box", named.card)
+        }
+    }
+
+    // 0.4.6: a connect that failed has no TV to read: the report has the phone's side, how the TV was
+    // found, the port and the named error, and the title says it could not connect.
+    @Test fun aConnectFailureReportsThePhonesSide() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val other = "192.0.2.20"
+        val about = AppAbout("0.4.6", "full", "Xiaomi 2201117TG", "Android 13")
+        val m = SetupMachine(h.setupDeps(diagnostics = { "Clean Your TV 0.4.6, Android 33\n1 I session: x.x.x.20 refused" }, about = about,
+            connectDetail = { "ConnectException, ECONNREFUSED (Connection refused) to 192.0.2.20" }), backgroundScope, SetupStart.Fresh)
+        h.discovery.emit(DiscoveryEvent.Found(miTvFound.copy(host = other))); settle()
+        m.dispatch(SetupIntent.Start); settle()
+        h.discovery.open5555[other] = true
+        settle(2_100); settle(700)
+        assertEquals("unreachable", assertNotNull(m.extras.value.connectError).kind)
+        m.effects.test {
+            m.report("The TV answered, but the phone could not connect"); settle()
+            val (id, ctx) = assertNotNull(IssueRoute.parse(drain().filterIsInstance<SetupEffect.Navigate>().single().key))
+            assertNull(id)
+            assertEquals("Connect", ctx.screen)
+            assertEquals("CONNECT_FAILED", ctx.case)
+            assertTrue(ctx.connect)
+            assertEquals("unreachable", ctx.error)
+            assertEquals(5555, ctx.port)
+            assertEquals("google_cast", ctx.found)
+            val r = ProblemReports.build(h.manageDeps(), id, ctx)
+            val q = r.link.url.substringAfter('?').split('&').associate { it.substringBefore('=') to java.net.URLDecoder.decode(it.substringAfter('='), "UTF-8") }
+            assertEquals("Problem: could not connect (unreachable)", q["title"])
+            assertTrue("TV: none read yet" in r.sent, r.sent)
+            assertTrue("Connection\nFound by: google_cast\nPort: 5555\nError: unreachable (ConnectException, ECONNREFUSED (Connection refused) to [address])\n" in r.sent, r.sent)
+            for (leak in listOf("192.0.2", "x.x.x.20")) assertFalse(leak in r.link.url || leak in r.full, leak)
         }
     }
 

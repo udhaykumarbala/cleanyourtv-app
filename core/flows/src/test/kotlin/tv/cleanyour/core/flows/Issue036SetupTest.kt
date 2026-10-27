@@ -22,6 +22,7 @@ import tv.cleanyour.testing.fixtures.Samples
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
@@ -85,7 +86,10 @@ class Issue036SetupTest {
         // Both buttons, and the old intent if it still arrives, leave the saved choices alone.
         m.effects.test {
             m.dispatch(SetupIntent.StopAction(StopAction.PRIMARY)); settle()
-            assertEquals(SetupEffect.Navigate("report/problem/${Samples.miTvId().value}"), drain().filterIsInstance<SetupEffect.Navigate>().last())
+            // 0.4.6: the prefilled GitHub form for this TV, with the card it came from.
+            val route = assertNotNull(IssueRoute.parse(drain().filterIsInstance<SetupEffect.Navigate>().last().key))
+            assertEquals(Samples.miTvId(), route.first)
+            assertEquals(StopCase.HOME_UNKNOWN.name, route.second.case)
         }
         m.dispatch(SetupIntent.TryWithWizardOff); settle()
         assertIs<SetupState.Done>(m.state.value)

@@ -56,6 +56,8 @@
     <string name="home_not_on_tv_next_list">What would change this is a list made for this TV. Send us its report and we\'ll make one; a later version may then offer the new home screen.</string>
     <string name="home_run_setup_again">Run Setup again</string>
     <string name="home_help_add_tv">Help add this TV</string>
+    <!-- 0.4.6: opens the GitHub form with why the new home screen isn't on this TV filled in -->
+    <string name="home_report">Report a problem</string>
     <string name="home_fire_tv_name" translatable="false">Fire TV</string>
     <!-- Under the Dock and Look rows (look2, spec 11.1): a send from the phone replaces what was
          changed with the TV's own Launcher settings (launcher 2.4 and later). -->

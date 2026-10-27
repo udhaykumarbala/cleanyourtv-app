@@ -14,6 +14,9 @@ and checks:
   - the hosts of the network security config, per store flavour (STORES-PLAN 1): `full` (GitHub
     and F-Droid) names exactly the four GitHub hosts of DownloadHosts; `play` (Google Play) names
     no host at all and its code carries no GitHub release check;
+  - no test-build switch (0.4.6: core/planner's wizard-stays-any-brand marker, which widens R0 to
+    every brand) unless the versionName is a pre-release (X.Y.Z-alphaN, -betaN or -rcN), so a
+    release can never carry one while a test build from the same scripts can;
   - an APK: signed with v2 and v3, not v1 (minSdk 28), and, when --expect-cert is given, by that
     certificate (SHA-256 of the DER certificate, lower-case hex);
   - an AAB: the base module's manifest and resources (converted with aapt2 into an APK and checked
@@ -232,6 +235,28 @@ def dex_contains(path, needle, prefix=""):
     return False
 
 
+# Test-build switches carried as bundled marker files (a Gradle property each, off by default). In an
+# APK a Java resource sits at the root, in a bundle under base/root/.
+TEST_BUILD_MARKERS = ("tv/cleanyour/core/planner/wizard-stays-any-brand",)
+PRERELEASE = re.compile(r"^\d+\.\d+\.\d+-(alpha|beta|rc)\.?\d*$")
+
+
+def test_build_markers(path, bundle):
+    """The test-build marker files in an APK or a bundle's base module."""
+    prefix = "base/root/" if bundle else ""
+    with zipfile.ZipFile(path) as z:
+        names = set(z.namelist())
+    return sorted(m for m in TEST_BUILD_MARKERS if prefix + m in names)
+
+
+def test_build_check(markers, version_name):
+    """(ok, detail): a test-build switch only in a pre-release version."""
+    if not markers:
+        return True, ""
+    pre = bool(version_name and PRERELEASE.match(version_name))
+    return pre, f"{','.join(markers)} in {'pre-release' if pre else 'release'} {version_name or '?'}"
+
+
 def is_bundle(path):
     try:
         with zipfile.ZipFile(path) as z:
@@ -340,6 +365,8 @@ def main(argv=None):
             check(f"versionCode {a.expect_version_code}", pkg and int(pkg.group(2)) == a.expect_version_code, pkg.group(2) if pkg else "missing")
         if a.expect_version_name is not None:
             check(f"versionName {a.expect_version_name}", pkg and pkg.group(3) == a.expect_version_name, pkg.group(3) if pkg else "missing")
+        ok, detail = test_build_check(test_build_markers(a.apk, bundle), pkg.group(3) if pkg else None)
+        check("no test-build switch unless a pre-release", ok, detail)
         min_sdk = re.search(r"^(?:minSdkVersion|sdkVersion):'(\d+)'", b, re.M)
         check("minSdkVersion 28", min_sdk and int(min_sdk.group(1)) == MIN_SDK, min_sdk.group(1) if min_sdk else "missing")
         tgt = re.search(r"^targetSdkVersion:'(\d+)'", b, re.M)

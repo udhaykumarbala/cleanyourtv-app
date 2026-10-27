@@ -124,21 +124,50 @@ object TvReport {
 
     // B2 "Report a problem": the TV summary (no package list) when a TV was read, then the redacted
     // diagnostics log (already redacted by the app's logger).
-    fun problem(about: AppAbout, input: TvReportInput?, log: String): String = buildString {
+    // 0.4.6: from a card, what happened there comes after the header (ReportContext): the screen,
+    // the card, the step and, for a connect, the phone's side; each value cleaned like the TV's own
+    // text, with every address masked (ConnectErrorSummary.redact) and the app's redactor (`redact`)
+    // over it. A connect report's log lines get the same address mask as "Copy error". `names` false
+    // gives the count of what this app switched off instead of the names (ProblemReports.fit).
+    fun problem(
+        about: AppAbout, input: TvReportInput?, log: String, context: ReportContext? = null, names: Boolean = true,
+        redact: (String) -> String = { it },
+    ): String = buildString {
         appendLine("Clean Your TV: problem report")
         appendHeader(about)
-        if (input != null) appendTv(input, Packages.NONE) else { appendLine(); appendLine("TV: none read yet") }
+        if (context != null) appendContext(context, redact)
+        if (input != null) appendTv(input, Packages.NONE, names) else { appendLine(); appendLine("TV: none read yet") }
         appendLine()
         appendLine("Diagnostics log (addresses, serial numbers, keys and codes removed)")
-        append(log.trimEnd())
+        append(if (context?.connect == true) log.trimEnd().lines().joinToString("\n") { ConnectErrorSummary.redact(it) } else log.trimEnd())
     }.trimEnd() + "\n"
+
+    // One value from a card, on one line, at most `max` characters, masked twice.
+    fun said(s: String, redact: (String) -> String, max: Int = 200): String =
+        redact(ConnectErrorSummary.redact(LogCodes.clean(s, max))).ifEmpty { "unknown" }
+
+    private fun StringBuilder.appendContext(c: ReportContext, redact: (String) -> String) {
+        appendLine()
+        appendLine("What happened")
+        appendLine("Screen: ${said(c.screen, redact, 60)}")
+        appendLine("Card: ${said(c.card, redact)} (${said(c.case, redact, 60)})")
+        c.step?.let { appendLine("Step: ${said(it, redact, 400)}") }
+        if (!c.connect) c.error?.let { appendLine("Error: ${said(it, redact, 120)}") }
+        if (c.connect) {
+            appendLine()
+            appendLine("Connection")
+            appendLine("Found by: ${c.found?.let { said(it, redact, 120) } ?: "unknown"}")
+            appendLine("Port: ${c.port ?: "unknown"}")
+            appendLine("Error: ${said(c.error ?: "unknown", redact, 120)}${c.detail?.let { " (${said(it, redact, 160)})" } ?: ""}")
+        }
+    }
 
     private fun StringBuilder.appendHeader(about: AppAbout) {
         appendLine("App: ${v(about.appLine)}")
         appendLine("Phone: ${v(about.phoneLine)}")
     }
 
-    private fun StringBuilder.appendTv(input: TvReportInput, packages: Packages) {
+    private fun StringBuilder.appendTv(input: TvReportInput, packages: Packages, names: Boolean = true) {
         val s = input.snapshot
         val f = s.facts
         appendLine()
@@ -212,7 +241,7 @@ object TvReport {
             }
             Packages.NONE -> {
                 appendLine("Apps: ${system.size} system, $others other")
-                appendSwitchedOff(input)
+                appendSwitchedOff(input, names)
             }
         }
     }
@@ -221,13 +250,16 @@ object TvReport {
     // reply to "the Wi-Fi drops" or "a button stopped working" could not say what to put back. The
     // change records' list (still off by this app, RunLedger.switchedOffByUs), the TV's own apps by
     // name, any app the person installed only counted, as everywhere in the reports.
-    private fun StringBuilder.appendSwitchedOff(input: TvReportInput) {
+    // 0.4.6: `names` false (a report cut to fit the link) keeps the count on the same line, which
+    // the triage reads, and leaves the names to the whole report on the phone.
+    private fun StringBuilder.appendSwitchedOff(input: TvReportInput, names: Boolean = true) {
         val all = input.switchedOffByApp
         if (all.isEmpty()) return
         val s = input.snapshot
         val named = all.filter { nameable(s, it) }.map { it.value }.sorted()
         val theirs = all.size - named.size
         appendLine()
+        if (!names) { appendLine("Switched off by this app (${all.size}): names left out to fit the link"); return }
         appendLine("Switched off by this app (${all.size}):")
         for (line in wrap(named, WRAP)) appendLine(line)
         if (theirs > 0) appendLine("and $theirs ${if (theirs == 1) "app" else "apps"} you installed (not named)")
@@ -293,6 +325,16 @@ object TvReport {
         return if (model.startsWith(brand, ignoreCase = true)) model else "$brand $model"
     }
 
+    // 0.4.6 (REPORTING-PROPOSAL 2.4): the TV's key for a problem issue's title, "Xiaomi MiTV-AXSO0
+    // (dangal, Android 9)": the name, then the device codename and the Android release in brackets.
+    // The triage keys a TV by its title when an issue has no report (scripts/triage facts.py
+    // model_key), and drops what is in brackets, so the key stays "mitvaxso0" as for the report's
+    // own Model line and for titles before 0.4.6.
+    fun tvKey(s: Snapshot): String {
+        val device = LogCodes.clean(s.facts.device, 60)
+        return "${tvName(s)} (${listOfNotNull(device.ifEmpty { null }, "Android ${v(s.facts.release)}").joinToString(", ")})"
+    }
+
     // "Android 11, RTM6.230109.155": the release and the build id from the fingerprint
     // (brand/product/device:release/id/incremental:type/tags).
     fun androidLine(s: Snapshot): String {
@@ -311,9 +353,13 @@ object TvReport {
 object IssueLinks {
     const val REPO = "https://github.com/udhaykumarbala/cleanyourtv-app"
     const val MAX_VALUE = 200
-    // GitHub answers links of about 8 KB and more with an error page; 7,000 keeps a margin for the
-    // browser and for a redirect through the sign-in page, which carries the link as a parameter.
-    const val MAX_URL = 7000
+    // 0.4.6: GitHub answers HTTP 500 once the link and the request headers together pass about
+    // 6,875 bytes (measured 2026-10-27: a bare request with a 6,900 character link works and 6,920
+    // fails; with 1.5 KB of cookies, 5,400 works and 5,600 fails), and a phone signed in to GitHub
+    // sends 1.5 to 2.5 KB of cookies. Signed out, a link over about 6,000 characters loses its
+    // return_to at the sign-in page, so the form never opens. 4,000 leaves room for both. Before
+    // 0.4.6 the cap was 7,000, which failed for most signed-in phones.
+    const val MAX_URL = 4000
 
     // The form fields that hold the report (the ids in .github/ISSUE_TEMPLATE).
     const val TV_REPORT_FIELD = "report"
@@ -331,12 +377,35 @@ object IssueLinks {
     ), TV_REPORT_FIELD, report)
 
     // B2 with the problem report (TvReport.problem).
-    fun bugReport(about: AppAbout, input: TvReportInput?, report: String? = null): Link = link("bug_report.yml", listOfNotNull(
-        "title" to (input?.let { "Problem: ${TvReport.tvName(it.snapshot)}" } ?: "Problem report"),
+    // 0.4.6: the title carries the TV's key (TvReport.tvKey), or for a connect that failed before
+    // the TV was read "Problem: could not connect (refused)" with the named error. From a card, the
+    // form's "What happened" box says what the card said, marked as the app's words, so the person
+    // can post it as it is.
+    fun bugReport(
+        about: AppAbout, input: TvReportInput?, report: String? = null, context: ReportContext? = null, redact: (String) -> String = { it },
+    ): Link = link("bug_report.yml", listOfNotNull(
+        "title" to problemTitle(input, context, redact),
         "version" to about.appLine,
         "phone" to about.phoneLine,
         input?.let { "tv" to "${TvReport.tvName(it.snapshot)}, ${TvReport.androidLine(it.snapshot)} (${TvReport.platformOf(it.snapshot)})" },
+        context?.let { "what" to what(it, redact) },
     ), PROBLEM_REPORT_FIELD, report)
+
+    fun problemTitle(input: TvReportInput?, context: ReportContext? = null, redact: (String) -> String = { it }): String = when {
+        context?.connect == true -> "Problem: could not connect (${TvReport.said(context.error ?: "unknown", redact, 60)})"
+        input != null -> "Problem: ${TvReport.tvKey(input.snapshot)}"
+        else -> "Problem report"
+    }
+
+    // "(Filled in by the app) Setup: A step didn't work (STEP_FAILED). paused STEP_FAILED at step 72".
+    const val FILLED_IN = "(Filled in by the app)"
+
+    // Cut at a word with "..." to stay within MAX_VALUE, so link() never cuts it mid word.
+    fun what(c: ReportContext, redact: (String) -> String = { it }): String =
+        ("$FILLED_IN ${TvReport.said(c.screen, redact, 60)}: ${TvReport.said(c.card, redact, 120)} (${TvReport.said(c.case, redact, 60)})" +
+            (c.step ?: c.error)?.let { ". ${TvReport.said(it, redact, 160)}" }.orEmpty()).let { w ->
+            if (w.length <= MAX_VALUE) w else w.take(MAX_VALUE - 3).substringBeforeLast(' ') + "..."
+        }
 
     private fun link(template: String, params: List<Pair<String, String>>, reportField: String, report: String?): Link {
         val query = (listOf("template" to template) + params).joinToString("&") { (k, v) -> "$k=${enc(v.take(MAX_VALUE))}" }

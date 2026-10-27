@@ -1,0 +1,137 @@
+Clean Your TV: problem report
+App: 0.4.0 (full)
+Phone: Google Pixel 8a, Android 17
+
+TV
+Brand: Xiaomi
+Manufacturer: Xiaomi
+Model: MIBOX3
+Device: once
+Android: 9 (SDK 28)
+Build: Xiaomi/once/once:9/PI/3934:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-10-26
+
+Matching
+Profile: exact xiaomi-mi-box-3
+Home switch: planned
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+Apps: 76 system, 17 other
+
+Switched off by this app (7):
+android.autoinstalls.config.xioami.mibox3, com.google.android.tv.bugreportsender,
+com.google.android.tvrecommendations, com.google.android.youtube.tvmusic, com.netflix.ninja,
+com.xm.webcontent, tv.alphonso.alphonso_eula
+
+Diagnostics log (addresses, serial numbers, keys and codes removed)
+Clean Your TV 0.4.0, Android 37
+1793028819004 I setup: connect start (new TV, google_cast+adb_mdns+android_tv_remote)
+1793028825909 I setup: connected (allow dialog shown, identity check not needed)
+1793028826515 I setup: probe start
+1793028829757 I setup: probe done in 3238 ms, 94 packages, 24 launchable, profile exact xiaomi-mi-box-3, tv Xiaomi MIBOX3 (once) sdk 28
+1793028830767 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793028830844 I setup: plan ready, 36 steps, 6 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793028830845 I setup: home switch planned
+1793028937568 I setup: plan ready, 36 steps, 6 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793028944327 I setup: run running
+1793028985490 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793028985511 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793028995841 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793028995916 I setup: plan ready, 23 steps, 1 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793028995978 I setup: run running
+1793029018531 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029018543 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029026657 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029026707 I setup: plan ready, 23 steps, 1 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793029026772 I setup: run running
+1793029048643 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029048657 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029080625 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029080679 I setup: plan ready, 23 steps, 1 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793029080737 I setup: run running
+1793029109714 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029109719 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029162443 I session: socket connect failed: SocketTimeoutException
+1793029167460 I session: socket connect failed: SocketTimeoutException
+1793029173768 I session: socket connect failed: ConnectException, EHOSTUNREACH (No route to host)
+1793029268079 I setup: connect start (known TV, manual)
+1793029268170 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793029268173 I setup: connect failed refused
+1793029315435 I setup: connect start (known TV, manual)
+1793029315776 I setup: connected (allow dialog not shown, identity check not needed)
+1793029316378 I setup: probe start
+1793029318683 I setup: probe done in 2302 ms, 94 packages, 24 launchable, profile exact xiaomi-mi-box-3, tv Xiaomi MIBOX3 (once) sdk 28
+1793029318954 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029319033 I setup: plan ready, 23 steps, 1 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793029319034 I setup: home switch planned
+1793029332958 I setup: plan ready, 27 steps, 2 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793029334454 I setup: plan ready, 29 steps, 3 to switch off, level SIMPLE, dock 4, 23 dock candidates
+1793029374872 I setup: plan ready, 29 steps, 3 to switch off, level SIMPLE, dock 3, 23 dock candidates
+1793029379686 I setup: run running
+1793029419886 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029419896 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029453454 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029453524 I setup: plan ready, 23 steps, 1 to switch off, level SIMPLE, dock 3, 21 dock candidates
+1793029453576 I setup: run running
+1793029471996 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029472010 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029477415 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029477489 I setup: plan ready, 23 steps, 1 to switch off, level SIMPLE, dock 3, 21 dock candidates
+1793029477531 I setup: run running
+1793029497435 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029497442 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029539064 I session: socket connect failed: SocketTimeoutException
+1793029544074 I session: socket connect failed: SocketTimeoutException
+1793029550377 I session: socket connect failed: ConnectException, EHOSTUNREACH (No route to host)
+1793029927464 I setup: connect start (known TV, manual)
+1793029927834 I setup: connected (allow dialog not shown, identity check not needed)
+1793029928437 I setup: probe start
+1793029930714 I setup: probe done in 2275 ms, 94 packages, 22 launchable, profile exact xiaomi-mi-box-3, tv Xiaomi MIBOX3 (once) sdk 28
+1793029930994 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029931065 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793029931066 I setup: home switch planned
+1793029940784 I setup: run running
+1793029958699 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793029958709 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793029981059 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029981146 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793029981201 I setup: run running
+1793029985627 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029985705 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793029986944 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029987029 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793029987183 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793029987245 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030001429 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793030001437 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793030015169 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030015233 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030015283 I setup: run running
+1793030020619 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030020710 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030022125 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030022195 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030037800 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793030037809 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793030044553 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030044656 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030044713 I setup: run running
+1793030065822 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793030065829 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
+1793030071222 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030071335 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030071392 I setup: run running
+1793030075882 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030075985 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030077278 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030077378 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030077733 I setup: setup wizard and saved Wi-Fi: wizard_owns
+1793030077825 I setup: plan ready, 23 steps, 1 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793030095557 I setup: run finished COMPLETED_WITH_SKIPS, home VERIFY_FAILED, 11 skipped: Disable com.google.android.tvlauncher
+1793030095564 I setup: home switch stopped at Install com.gathin.tvhome: failed: streamed install failed, the TV is still connected: Protocol(detail=the TV closed the stream)
