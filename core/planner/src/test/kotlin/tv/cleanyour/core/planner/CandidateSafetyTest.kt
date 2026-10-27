@@ -19,9 +19,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-// Test build (0.3.5-test1): a candidate list goes through every rule a tested list does, and for
-// the home screen switch's setup wizard rule it counts as no profile at all, so trying a list
-// that nobody tested never brings a switch the careful path would skip.
+// Test builds (0.3.5-test1, 0.3.6-beta1, 0.3.8-beta1, 0.3.8-beta2, 0.4.5-beta1): a candidate list goes
+// through every rule a tested list does, and for the home screen switch's setup wizard rule it counts
+// as no profile at all, so trying a list that nobody tested never brings a switch the careful path
+// would skip.
 class CandidateSafetyTest {
     private val tv = snapshot()   // the reference TV, its setup wizard installed and on
     private val noWizard = tv.copy(packages = tv.packages - wizard).let { it.copy(contentHash = SnapshotCodec.hash(it)) }
@@ -54,10 +55,29 @@ class CandidateSafetyTest {
         )
         assertEquals(emptyList(), problems)
         val candidates = bundle.profiles.filter { it.isCandidate }
-        assertEquals(5, candidates.size)
+        assertEquals(39, candidates.size)
         val refusedLines = mutableListOf<String>()
         for (p in candidates) for (g in p.groups.filter { it.default == GroupDefault.DISABLE }) for (e in g.packages)
             SwitchOffRule.reason(e.name, null, p, null, p.stockLaunchers)?.let { refusedLines += "${p.id} ${e.name.value}: $it" }
         assertEquals(emptyList(), refusedLines)
+    }
+
+    // 0.4.5-beta1: no candidate is on a TV family whose switch HomeSwitchRisk holds back by name (the
+    // MOKA boot loop, Google's own casting hardware, the remote buttons of sony-bravia-vu3), so a
+    // candidate never needs a rule a tested list has; without a setup wizard on the TV, the switch of
+    // each one is planned as on the careful path, or refused for want of a known home (clean-up only).
+    @Test fun noCandidateIsOnATvFamilyTheSwitchHoldsBack() {
+        val unconverted = ProfileConverter.readUnconverted(File(Fixtures.repoRoot, "core/spec/upstream-feedback/unconverted.txt"))
+        val (bundle, _) = ProfileConverter.convert(
+            File(Fixtures.upstreamDir, "examples"), File(Fixtures.repoRoot, "core/spec/src/main/resources/tv/cleanyour/core/spec/profile-meta.json"),
+            "b06ab21", unconverted, File(Fixtures.repoRoot, "core/spec/candidates"), File(Fixtures.repoRoot, "core/spec/candidates/candidate-meta.json"),
+        )
+        val held = mutableListOf<String>()
+        for (p in bundle.profiles.filter { it.isCandidate }) {
+            val m = p.match
+            val f = noWizard.facts.copy(brand = m.brand!!, manufacturer = m.brand!!, model = m.models.firstOrNull() ?: "unknown", device = m.devices.first(), sdk = m.sdkMin!!)
+            for (w in WizardWifi.entries) HomeSwitchRisk.of(f, p, noWizard, w)?.let { held += "${p.id} $w: $it" }
+        }
+        assertEquals(emptyList(), held)
     }
 }

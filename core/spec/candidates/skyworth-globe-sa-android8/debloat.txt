@@ -1,0 +1,32 @@
+# DRAFT, NOT TESTED. globe_ATV globe
+# (ro.product.brand globe_ATV, manufacturer Skyworth, model globe, device globe_sa),
+# Android 8.0.0 (SDK 26), fingerprint globe_ATV/globe_sa/globe_sa:8.0.0/GLB.MP30.0/www-da08300843:user/release-keys
+# Drafted for cleanyourtv-app issue #83 from the TV report in #83,
+# starting from examples/karbonn-swtv-20ae, examples/skyworth-swtv-21ae, plus the Skyworth careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/skyworth-globe-sa-android8/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/skyworth-globe-sa-android8/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter, com.mediatek.tvinput,
+# com.mediatek.wwtv.setupwizard, com.mediatek.tunerservice.
+#
+# Left alone although a source list switches them off: com.google.android.backdrop (protected in
+# the header of parked upstream tcl-50dp660).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+com.google.android.tv.bugreportsender        # Bug report sender
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.google.android.tvrecommendations       # Home recommendations
+# com.google.android.youtube.tv              # YouTube

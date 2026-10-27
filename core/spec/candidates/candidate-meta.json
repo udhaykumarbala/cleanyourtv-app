@@ -2,6 +2,74 @@
   "schema": 1,
   "upstreamCommit": null,
   "profiles": {
+    "amazon-fire-tv-cube-aftr": {
+      "match": {
+        "models": [
+          "AFTR"
+        ],
+        "devices": [
+          "raven"
+        ],
+        "brand": "Amazon",
+        "sdkMin": 28,
+        "sdkMax": 28,
+        "fingerprintPrefix": null
+      },
+      "platform": "FIRE_OS",
+      "stockLaunchers": [
+        "com.amazon.tv.launcher"
+      ],
+      "liveTv": "com.amazon.tv.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.amazon.tv.livetv",
+        "com.amazon.tv.ime",
+        "com.amazon.venezia",
+        "com.amazon.tigris",
+        "com.amazon.vizzini",
+        "com.amazon.logan",
+        "com.amazon.tv.settings.v2",
+        "com.amazon.tv.oobe",
+        "com.amazon.prism.android.service",
+        "com.amazon.autopairservice",
+        "com.amazon.device.bluetoothkeymaplib",
+        "com.amazon.device.bluetoothpa",
+        "com.amazon.franktvinput",
+        "com.android.bluetoothmidiservice"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #319",
+        "firmware": "PS7690.4716N/0032381234176",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
     "aurzen-boomair": {
       "match": {
         "models": [
@@ -37,6 +105,206 @@
       },
       "groups": {
         "Telemetry": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "bpl-ai-pont-samseong": {
+      "match": {
+        "models": [],
+        "devices": [
+          "samseong"
+        ],
+        "brand": "BPL",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "BPL/DVB93BL/samseong:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.homwee.dmt.upgrade",
+        "com.homwee.synckey",
+        "com.homwee.factory",
+        "com.mediatek.tv.service",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.autopair",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #201",
+        "firmware": "RTO2.230323.001/9800992",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "changhong-ai-pont-redwood-android14": {
+      "match": {
+        "models": [],
+        "devices": [
+          "redwood"
+        ],
+        "brand": "Changhong",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": "Changhong/DVB92/redwood:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": null,
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.android.bluetooth.rro"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #150",
+        "firmware": "UKNV.260514.001/15419756",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "changhong-ai-pont-samseong": {
+      "match": {
+        "models": [],
+        "devices": [
+          "samseong"
+        ],
+        "brand": "Changhong",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "Changhong/DVB93/samseong:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.homwee.dmt.upgrade",
+        "com.homwee.synckey",
+        "com.homwee.factory",
+        "com.mediatek.tv.service",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.autopair",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #525",
+        "firmware": "RTO2.250508.001/13470691",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "formovie-c025rgn-tianshan": {
+      "match": {
+        "models": [
+          "C025RGN"
+        ],
+        "devices": [
+          "tianshan"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.android.bluetooth.rro",
+        "com.fengmi.Autopair",
+        "com.mediatek.android.tv.globalkeyoverlay",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #533",
+        "firmware": "UKNV.260130.001/14809224",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Tracking, analytics and feedback": {
           "category": "tracking",
           "ask": false
         },
@@ -106,53 +374,410 @@
         }
       }
     },
-    "smarttech-apollo-premium4k": {
+    "kivi-4k-android-tv-bangbae": {
       "match": {
         "models": [
-          "Apollo Premium4K TV"
+          "KIVI 4K Android TV"
         ],
         "devices": [
-          "marina"
+          "bangbae"
         ],
-        "brand": "Smarttech",
+        "brand": "KIVI",
         "sdkMin": 30,
         "sdkMax": 30,
         "fingerprintPrefix": null
       },
-      "platform": "GOOGLE_TV",
+      "platform": "ANDROID_TV",
       "stockLaunchers": [
-        "com.google.android.apps.tv.launcherx"
+        "com.google.android.tvlauncher"
       ],
       "liveTv": "com.mediatek.wwtv.tvcenter",
       "setupWraith": null,
       "quirks": [],
       "neverDisable": [
-        "com.mediatek.tv.service",
-        "com.mediatek.tvinput",
-        "com.mediatek.autopair",
-        "com.express.bt.autopair",
         "com.mediatek.wwtv.tvcenter",
-        "com.mediatek.hotkey.dispatcher"
+        "fusion.android.tv.demo",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.mediatek.tv.service",
+        "com.mediatek.mtc.factory",
+        "com.mediatek.testpq",
+        "com.mediatek.network",
+        "com.airoha.btd",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
       ],
       "suggestedDock": [],
       "tested": {
-        "by": "candidate, issue #15",
-        "firmware": "RTMA.250416.028",
+        "by": "candidate, issue #545",
+        "firmware": "RTO8.250915.001/14107831",
         "daysLivedWith": null,
         "rebootTested": false,
         "candidate": true
       },
       "groups": {
-        "Telemetry": {
-          "category": "tracking",
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
           "ask": false
         },
-        "Content rows and partner extras": {
-          "category": "other",
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "kogan-ai-pont-samseong": {
+      "match": {
+        "models": [],
+        "devices": [
+          "samseong"
+        ],
+        "brand": "Kogan",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "Kogan/DVB93KG/samseong:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.homwee.dmt.upgrade",
+        "com.homwee.synckey",
+        "com.homwee.factory",
+        "com.mediatek.tv.service",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.autopair",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #138",
+        "firmware": "RTO2.250508.001/13470691",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
           "ask": false
         },
         "Preloaded apps": {
           "category": "preloads",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "nokia-android-tv-shandao": {
+      "match": {
+        "models": [],
+        "devices": [
+          "shandao"
+        ],
+        "brand": "Nokia",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "Nokia/EMIR_Nokia/shandao:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.mediatek.android.leanbacklauncher.partnercustomizer",
+        "com.mediatek.tv.service",
+        "com.google.android.tungsten.setupwraith",
+        "com.mediatek.tvinput",
+        "com.mediatek.autopair",
+        "com.mediatek.wwtv.mediaplayer",
+        "com.vestel.tv.service",
+        "com.vestel.tv.keycontroller",
+        "com.vestel.tv.backlight",
+        "com.vestel.tv.eib",
+        "com.dolby.android.audio.service",
+        "com.android.tv.settings",
+        "com.android.vending",
+        "com.google.android.gms",
+        "com.google.android.gsf",
+        "com.google.android.inputmethod.latin",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #210",
+        "firmware": "RTM6.230109.138/10045850",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "oneplus-tv-c00-cebu": {
+      "match": {
+        "models": [
+          "C00"
+        ],
+        "devices": [
+          "Cebu"
+        ],
+        "brand": "OnePlus",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.heytap.tv.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.heytap.tv.livetv",
+        "com.google.android.katniss",
+        "com.google.android.apps.mediashell",
+        "com.oneplus.tv.remote",
+        "com.heytap.tv.remotecontrolinspect",
+        "com.oneplus.oobe.tv"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #133 #174 #258",
+        "firmware": "RTM8.240401.135",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "oneplus-tv-dubai-android11": {
+      "match": {
+        "models": [
+          "D00"
+        ],
+        "devices": [
+          "Dubai"
+        ],
+        "brand": "OnePlus",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.heytap.tv.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.heytap.tv.livetv",
+        "com.heytap.optvfactory",
+        "com.oneplus.tv.factory",
+        "com.heytap.oprcupgradeservice",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.heytap.tv.remotecontrolinspect",
+        "com.mediatek.tvinput",
+        "com.oneplus.tv.remote"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #235",
+        "firmware": "RTM1.210315.027/2303030058",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "panasonic-tv-r2-scbc": {
+      "match": {
+        "models": [],
+        "devices": [
+          "R2"
+        ],
+        "brand": "PANASONIC",
+        "sdkMin": 28,
+        "sdkMax": 28,
+        "fingerprintPrefix": "PANASONIC/PANASONIC/R2:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.android.tv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.android.tv",
+        "com.rtk.engmenu",
+        "com.realtek.factorytools",
+        "com.apps.factory.ui",
+        "com.apps.fivekey",
+        "com.apps.smartkey",
+        "com.apps.virtualkey",
+        "com.realtek.keyinterceptserver",
+        "com.realtek.dtv",
+        "com.realtek.leanbacklauncher.partnercustomizer",
+        "com.apps.bluetoothremote",
+        "com.functions.autopair",
+        "com.apps.puresound",
+        "com.apps.usbmediaplayer",
+        "com.apps.ota",
+        "com.apps.authota",
+        "com.realtek.tv.settings",
+        "com.google.android.presetup.bluetoothpair"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #450",
+        "firmware": "PTT1.201001.001/199",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        },
+        "Shop and demo mode": {
+          "category": "demo",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "realme-ai-pont-ikebukuro": {
+      "match": {
+        "models": [],
+        "devices": [
+          "ikebukuro"
+        ],
+        "brand": "Realme",
+        "sdkMin": 28,
+        "sdkMax": 28,
+        "fingerprintPrefix": "Realme/DVB91RM/ikebukuro:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.homwee.dmt.upgrade",
+        "com.homwee.synckey",
+        "com.homwee.factory",
+        "com.mediatek.tvinput",
+        "com.mediatek.autopair",
+        "com.mediatek.wwtv.setupwizard",
+        "com.mstar.android.tv.disclaimercustomization",
+        "com.google.android.apps.nbu.smartconnect.tv",
+        "com.mediatek.tvinputservice.arbitratorservice"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #132",
+        "firmware": "PTO1.220702.001/8794315",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
           "ask": false
         }
       },
@@ -224,6 +849,1274 @@
           "ask": false
         }
       }
+    },
+    "skyworth-4k-google-tv-box-yda": {
+      "match": {
+        "models": [],
+        "devices": [
+          "YDA"
+        ],
+        "brand": "Skyworth",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "Skyworth/HP4618gb_Skyworth/YDA:"
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": null,
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mft.rcupair",
+        "com.mft.frontpanelledsservice",
+        "com.google.android.tv.dfuservice",
+        "com.google.android.katniss",
+        "com.google.android.apps.mediashell",
+        "com.google.android.inputmethod.latin",
+        "com.android.bluetoothmidiservice"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #473",
+        "firmware": "RTT0.210829.002/P2.7.1_20231220",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "skyworth-globe-sa-android8": {
+      "match": {
+        "models": [],
+        "devices": [
+          "globe_sa"
+        ],
+        "brand": "globe_ATV",
+        "sdkMin": 26,
+        "sdkMax": 26,
+        "fingerprintPrefix": "globe_ATV/globe_sa/globe_sa:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard",
+        "com.mediatek.tunerservice"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #83",
+        "firmware": "GLB.MP30.0/www-da08300843",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "skyworth-sw-22ae-nf": {
+      "match": {
+        "models": [
+          "SW-22AE NF"
+        ],
+        "devices": [
+          "SW6H"
+        ],
+        "brand": "Skyworth",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": "com.smartdevice.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.smartdevice.livetv",
+        "com.smartdevice.dailyshortcut",
+        "com.smartdevice.duplebluetooth",
+        "com.smartdevice.factory",
+        "org.liskovsoft.androidtv.rukeyboard",
+        "com.smartdevice.bleconnectservice"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #29 #189 #200",
+        "firmware": "RTT2.220103.001",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "skyworth-swtv-20sa-sw4h": {
+      "match": {
+        "models": [
+          "SWTV-20SA"
+        ],
+        "devices": [
+          "SW4H"
+        ],
+        "brand": "SW",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.smartdevice.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.smartdevice.livetv",
+        "com.mediatek.tvinput",
+        "com.mediatek.tv.agent",
+        "com.mediatek.network",
+        "com.mediatek.OledFuctionService",
+        "com.mediatek.partner.netflix",
+        "com.smartdevice.duplebluetooth",
+        "com.smartdevice.factory",
+        "com.google.android.tungsten.setupwraith",
+        "com.google.android.tv.remote.service",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.google.android.backdrop",
+        "com.mediatek.wwtv.tvrecommendation",
+        "com.smartdevice.dtv.icast",
+        "com.smartdevice.firewall",
+        "com.tianci.localmedia",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #528",
+        "firmware": "RTM5.220609.106/20240809",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Shop and demo mode": {
+          "category": "demo",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "skyworth-swtv-21ae-android11": {
+      "match": {
+        "models": [
+          "SWTV-21AE"
+        ],
+        "devices": [
+          "sunnyvale"
+        ],
+        "brand": "skyworth",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.autopair",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #238",
+        "firmware": "RTM2.210929.192/8093133",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "skyworth-swtv-24ae-fhd-beomil": {
+      "match": {
+        "models": [
+          "SWTV-24AE-FHD"
+        ],
+        "devices": [
+          "beomil"
+        ],
+        "brand": "skyworth",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": "com.cltv.hybrid",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.cltv.hybrid",
+        "com.mediatek.tvinput",
+        "com.google.android.tv.googletvremotepairer",
+        "com.mediatek.android.tv.globalkeyoverlay",
+        "com.mediatek.android.tv.googletvremotepaireroverlay",
+        "com.mediatek.tvinput.overlay",
+        "com.mediatek.wwtv.setupwizard",
+        "com.sky.android.tv.globalkeyoverlay"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #108",
+        "firmware": "UKN7.260716.011/15978261",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "skyworth-swtv-shibuya": {
+      "match": {
+        "models": [],
+        "devices": [
+          "shibuya"
+        ],
+        "brand": "skyworth",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "skyworth/SW1_T/shibuya:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.google.android.katniss",
+        "com.google.android.apps.mediashell",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #212",
+        "firmware": "RTO9.240708.002/12195242",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Shop and demo mode": {
+          "category": "demo",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "smarttech-apollo-premium4k": {
+      "match": {
+        "models": [
+          "Apollo Premium4K TV"
+        ],
+        "devices": [
+          "marina"
+        ],
+        "brand": "Smarttech",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.tv.service",
+        "com.mediatek.tvinput",
+        "com.mediatek.autopair",
+        "com.express.bt.autopair",
+        "com.mediatek.wwtv.tvcenter",
+        "com.mediatek.hotkey.dispatcher"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #15",
+        "firmware": "RTMA.250416.028",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Telemetry": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Content rows and partner extras": {
+          "category": "other",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "sony-bravia-4k-ur1": {
+      "match": {
+        "models": [
+          "BRAVIA 4K UR1"
+        ],
+        "devices": [
+          "BRAVIA_UR1_4K"
+        ],
+        "brand": "Sony",
+        "sdkMin": 29,
+        "sdkMax": 29,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.sony.dtv.tvx",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.sony.dtv.tvx",
+        "com.sony.dtv.tvapi",
+        "com.sony.dtv.sonysystemservice",
+        "com.sony.dtv.common.base.AccessibilityText",
+        "com.sony.dtv.remotecontrolsettings",
+        "com.sony.dtv.tvinput.external",
+        "com.sony.dtv.tvinput.hardwaremanager",
+        "com.sony.dtv.tvinput.provider",
+        "com.sony.dtv.tvinput.tuner"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #278",
+        "firmware": "QTG3.200305.006.S97/662301",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Shop and demo mode": {
+          "category": "demo",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "tcl-beyondtv-c02-4k": {
+      "match": {
+        "models": [],
+        "devices": [
+          "BeyondTV"
+        ],
+        "brand": "TCL",
+        "sdkMin": 28,
+        "sdkMax": 28,
+        "fingerprintPrefix": "TCL/C02_4K_US/BeyondTV:9/PPR1.180610.011/AP12"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.tcl.tv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.tcl.tv",
+        "com.tcl.videoplayer",
+        "com.tcl.audioplayer",
+        "com.tcl.imageplayer",
+        "com.tcl.rc.ota",
+        "com.tcl.tvinput",
+        "com.tcl.keycustomfunctionservice",
+        "com.tcl.framework.custom",
+        "com.tcl.tcl_bt_rcu_service",
+        "com.tcl.autopair",
+        "com.google.android.tv.remote.service",
+        "com.tcl.inputmethod.international",
+        "com.tcl.settings",
+        "com.tcl.initsetup",
+        "com.tcl.factory.view",
+        "com.tcl.showmode",
+        "com.tcl.xian.StartandroidService",
+        "com.tcl.appstatecontroller",
+        "com.realtek.netflix.setting",
+        "com.android.WifiCountryService"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #79 #118 #282",
+        "firmware": "PPR1.180610.011 AP12",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Shop and demo mode": {
+          "category": "demo",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "tcl-g06-google-tv": {
+      "match": {
+        "models": [],
+        "devices": [
+          "G06"
+        ],
+        "brand": "TCL",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": "com.tcl.tv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.tcl.tv",
+        "com.tcl.tvinput",
+        "com.tcl.settings",
+        "com.tcl.system.server",
+        "com.tcl.keyhelp",
+        "com.tcl.autopair",
+        "com.tcl.tcl_bt_rcu_service",
+        "com.tcl.providers.config",
+        "com.tcl.suspension",
+        "com.google.android.tv.remote.service",
+        "com.tcl.inputmethod.international",
+        "com.tcl.initsetup",
+        "com.tcl.factory.view",
+        "com.tcl.micmanager",
+        "com.google.android.apps.nbu.smartconnect.tv",
+        "com.tcl.channelplus"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #135 #91 #119",
+        "firmware": "AR2101 (AR16, AR38)",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Shop and demo mode": {
+          "category": "demo",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "tdsystems-android-tv-redwood-android14": {
+      "match": {
+        "models": [
+          "TD SYSTEMS Android TV"
+        ],
+        "devices": [
+          "redwood"
+        ],
+        "brand": "TDSYSTEMS",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.homwee.factory",
+        "com.mediatek.wwtv.setupwizard",
+        "com.homwee.synckey",
+        "com.mediatek.tv.service",
+        "com.mediatek.tvinput",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.android.bluetooth.rro",
+        "com.mediatek.android.tv.globalkeyoverlay",
+        "com.mediatek.autopair"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #577",
+        "firmware": "UKNV.260514.001/15419756",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "toshiba-tv-hayward": {
+      "match": {
+        "models": [],
+        "devices": [
+          "hayward"
+        ],
+        "brand": "Toshiba",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "Toshiba/huashan_emT/hayward:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.mediatek.android.leanbacklauncher.partnercustomizer",
+        "com.mediatek.wwtv.mediaplayer",
+        "com.android.providers.contacts",
+        "com.airoha.android.btd",
+        "com.cvte.autobacklight",
+        "com.cvte.tv.at",
+        "com.cvte.tv.hisensefac",
+        "com.cvte.tv.infoprovider",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #428",
+        "firmware": "RTMA.250416.097/13725141",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "wansa-ai-pont-redwood": {
+      "match": {
+        "models": [],
+        "devices": [
+          "redwood"
+        ],
+        "brand": "Wansa",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": "Wansa/DVB92WS/redwood:"
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.homwee.factory",
+        "com.mediatek.wwtv.setupwizard",
+        "com.homwee.synckey",
+        "com.mediatek.tv.service",
+        "com.mediatek.tvinput",
+        "com.google.android.leanbacklauncher.partnercustomizer",
+        "com.android.bluetooth.auto_generated_rro_product__",
+        "com.android.bluetooth.auto_generated_rro_vendor__",
+        "com.mediatek.autopair"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #398",
+        "firmware": "RTM6.230109.082/9776461",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mi-tv-4a-android11": {
+      "match": {
+        "models": [
+          "MiTV-MOOQ1",
+          "MiTV-MOOQ3"
+        ],
+        "devices": [
+          "tarzan"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mediatek.wwtv.tvcenter",
+        "com.xiaomi.android.tvsetup.partnercustomizer",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard",
+        "mitv.service",
+        "com.mi.bluetooth"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #54 #202 #203 #204 #205 #236 #237",
+        "firmware": "RTM4.220307.164",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-aesp0-android10": {
+      "match": {
+        "models": [
+          "MiTV-AESP0"
+        ],
+        "devices": [
+          "aquaman"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 29,
+        "sdkMax": 29,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": null,
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mi.bluetooth"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #41 #43",
+        "firmware": "QT.2514",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-afzp0": {
+      "match": {
+        "models": [
+          "MiTV-AFZP0"
+        ],
+        "devices": [
+          "moderntimes"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [],
+      "liveTv": "com.xiaomi.mitv.tvplayer",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.xiaomi.mitv.tvplayer",
+        "com.mitv.tvhome",
+        "mitv.service",
+        "com.xiaomi.mitv.settings",
+        "com.xiaomi.mitv.smartpanel",
+        "com.sohu.inputmethod.sogou.tv",
+        "com.xiaomi.account",
+        "com.xiaomi.mitv.mediaexplorer",
+        "com.xiaomi.mitv.tvmanager",
+        "com.xiaomi.mitv.upgrade"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #92 #93 #94 #95 #96",
+        "firmware": "UD2A.240505.001.W1 (OS3.0.6.0.UFZAATV)",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-axfu0": {
+      "match": {
+        "models": [
+          "MiTV-AXFU0"
+        ],
+        "devices": [
+          "arctictale"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": [
+        "com.google.android.apps.tv.launcherx"
+      ],
+      "liveTv": "com.mitv.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mitv.livetv",
+        "com.xiaomi.android.tvsetup.partnercustomizer",
+        "mitv.service",
+        "com.mi.bluetooth"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #109 #147 #168",
+        "firmware": "UKG3.241124.001 / V816.0.26.4.2.UXFAATV",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-axso2-android11": {
+      "match": {
+        "models": [
+          "MiTV-AXSO2"
+        ],
+        "devices": [
+          "dangalUHD"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.android.tv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.android.tv",
+        "com.mi.bluetooth",
+        "com.droidlogic.tvinput"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #157 #158 #191 #280",
+        "firmware": "RTT0.211201.001",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Brand extras": {
+          "category": "brand",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-mftr0-android14": {
+      "match": {
+        "models": [
+          "MiTV-MFTR0"
+        ],
+        "devices": [
+          "freeguy"
+        ],
+        "brand": "xiaomi",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [],
+      "liveTv": "com.xiaomi.mitv.tvplayer",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.xiaomi.mitv.tvplayer",
+        "com.xiaomi.mitv.smartpanel",
+        "mitv.service",
+        "com.mitv.tvhome",
+        "com.xiaomi.mitv.settings",
+        "com.mediatek.tvinput",
+        "com.mi.bluetooth"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #198",
+        "firmware": "UQ1A.240105.004.A1/OS3.0.107.0.UFTMATV",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-mosr1": {
+      "match": {
+        "models": [
+          "MiTV-MOSR1"
+        ],
+        "devices": [
+          "hermano"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 30,
+        "sdkMax": 30,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [
+        "com.google.android.tvlauncher"
+      ],
+      "liveTv": "com.mitv.livetv",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.mitv.livetv",
+        "mitv.service",
+        "com.mi.bluetooth",
+        "com.google.android.tv.remote.service",
+        "com.xiaomi.android.tvsetup.partnercustomizer",
+        "com.mediatek.tvinput",
+        "com.mediatek.wwtv.setupwizard",
+        "com.duokan.factorytest"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #50 #70 #197",
+        "firmware": "RTT8.210119.001",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        },
+        "Other background services": {
+          "category": "other",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-mtsu0": {
+      "match": {
+        "models": [
+          "MiTV-MTSU0"
+        ],
+        "devices": [
+          "interstellar"
+        ],
+        "brand": "xiaomi",
+        "sdkMin": 34,
+        "sdkMax": 34,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [],
+      "liveTv": "com.xiaomi.mitv.tvplayer",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.xiaomi.mitv.tvplayer",
+        "com.xiaomi.mitv.smartpanel",
+        "mitv.service",
+        "com.mitv.tvhome",
+        "com.xiaomi.mitv.settings",
+        "com.xiaomi.mitv.upgrade",
+        "com.xiaomi.mitv.smartshare",
+        "com.mediatek.tvinput",
+        "com.mi.bluetooth"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #548",
+        "firmware": "UQ1A.240105.004.A1/OS3.0.119.0.UTSMATV",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
+    },
+    "xiaomi-mitv-nsop0": {
+      "match": {
+        "models": [
+          "MiTV-NSOP0"
+        ],
+        "devices": [
+          "furyroad"
+        ],
+        "brand": "Xiaomi",
+        "sdkMin": 28,
+        "sdkMax": 28,
+        "fingerprintPrefix": null
+      },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": [],
+      "liveTv": "com.xiaomi.mitv.tvplayer",
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": [
+        "com.xiaomi.mitv.tvplayer",
+        "com.xiaomi.mitv.smartpanel",
+        "mitv.service",
+        "com.mitv.tvhome",
+        "com.xiaomi.mitv.settings",
+        "com.xiaomi.mitv.systemui",
+        "com.xiaomi.mitv.upgrade",
+        "com.xiaomi.mitv.pay",
+        "com.xiaomi.mitv.payment",
+        "com.xiaomi.mitv.smartshare",
+        "com.novatek.ATVTVinput",
+        "com.novatek.DVBTTVinput",
+        "com.novatek.cvbstvinput",
+        "com.novatek.hdmi1tvinput",
+        "com.novatek.hdmi2tvinput",
+        "com.novatek.hdmi3tvinput",
+        "com.xiaomi.mitv.remotecontroller.service"
+      ],
+      "suggestedDock": [],
+      "tested": {
+        "by": "candidate, issue #458",
+        "firmware": "PPR1.180610.011/1365",
+        "daysLivedWith": null,
+        "rebootTested": false,
+        "candidate": true
+      },
+      "groups": {
+        "Adverts, sponsored rows and partner auto-installs": {
+          "category": "ads",
+          "ask": false
+        },
+        "Tracking, analytics and feedback": {
+          "category": "tracking",
+          "ask": false
+        },
+        "Preloaded apps": {
+          "category": "preloads",
+          "ask": false
+        }
+      },
+      "packages": {}
     },
     "xiaomi-mitv4i-magnolia": {
       "match": {

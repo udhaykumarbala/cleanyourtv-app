@@ -1,0 +1,94 @@
+# DRAFT, NOT TESTED. Amazon AFTR
+# (ro.product.brand Amazon, manufacturer Amazon, model AFTR, device raven),
+# Android 9 (SDK 28), fingerprint Amazon/raven/raven:9/PS7690.4716N/0032381234176:user/amz-p,release-keys
+# Drafted for cleanyourtv-app issue #319 from the TV report in #319,
+# starting from examples/amazon-fire-tv-stick-4k-2018, examples/amazon-fire-tv-stick-lite-2020, plus the Amazon careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/amazon-fire-tv-cube-aftr/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/amazon-fire-tv-cube-aftr/debloat.txt com.amazon.tv.launcher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: an app you installed (not named). Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.amazon.tv.livetv, com.amazon.tv.ime, com.amazon.venezia,
+# com.amazon.tigris, com.amazon.vizzini, com.amazon.logan, com.amazon.tv.settings.v2,
+# com.amazon.tv.oobe, com.amazon.prism.android.service, com.amazon.autopairservice,
+# com.amazon.device.bluetoothkeymaplib, com.amazon.device.bluetoothpa, com.amazon.franktvinput,
+# com.android.bluetoothmidiservice.
+#
+# Left alone although a source list switches them off: com.amazon.tv.website_launcher (input,
+# setup, launcher, voice, update or factory role), com.amazon.wifilocker (never-disable on
+# amazon-fire-tv-afttiff43), com.amazon.franktvinput (remote, pairing, input or accessibility word
+# (safety rule 8)), com.amazon.tv.livetv (Live TV on amazon-fire-tv-afttiff43),
+# com.amazon.tv.easyupgrade (input, setup, launcher, voice, update or factory role).
+# Off from the factory (disabled), so not listed (restore.sh would turn them on):
+# com.amazon.sneakpeek.
+# Off on the report already (by the careful set or the owner): com.amazon.kso.blackbird,
+# com.amazon.hybridadidservice, com.amazon.shoptv.client, com.amazon.shoptv.firetv.client,
+# com.amazon.providers.contentsupport, com.amazon.client.metrics.api, com.amazon.tv.fw.metrics,
+# com.amazon.wirelessmetrics.service, com.amazon.perfcollection, com.amazon.dp.logger,
+# com.amazon.ceviche, com.amazon.tv.developer.dataservice, com.amazon.livedeviceservice,
+# com.amazon.privacypassservice, com.amazon.tmm.tutorial, com.amazon.storm.lightning.tutorial,
+# com.amazon.systemnotices, com.amazon.uxnotification, com.amazon.tv.releasenotes,
+# com.amazon.tv.acr.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+com.amazon.device.sale.service               # Amazon deals service
+com.amazon.hybridadidservice                 # Advertising ID service
+com.amazon.kso.blackbird                     # Amazon ad sync
+com.amazon.providers.contentsupport          # Amazon content provider
+com.amazon.shoptv.client                     # Shop on TV
+com.amazon.shoptv.firetv.client              # Shop on Fire TV
+
+# Tracking, analytics and feedback
+com.amazon.ceviche                           # Amazon data pipeline
+com.amazon.client.metrics.api                # Amazon metrics interface
+com.amazon.dp.logger                         # Amazon data logger
+com.amazon.livedeviceservice                 # Amazon live device service
+com.amazon.perfcollection                    # Amazon performance data
+com.amazon.privacypassservice                # Amazon Privacy Pass
+com.amazon.tv.acr                            # Amazon ACR
+com.amazon.tv.developer.dataservice          # Amazon content data
+com.amazon.tv.fw.metrics                     # Fire OS metrics
+com.amazon.wirelessmetrics.service           # Wireless metrics
+
+# Preloaded apps
+com.amazon.storm.lightning.tutorial          # Remote tutorial
+com.amazon.tmm.tutorial                      # Fire TV tutorial
+
+# Brand extras
+com.amazon.systemnotices                     # Amazon system notices
+com.amazon.uxnotification                    # Amazon notifications
+
+# Other background services
+com.amazon.tv.releasenotes                   # Release notes
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.amazon.bueller.music                   # Amazon Music
+# com.amazon.bueller.photos                  # Amazon Photos
+# com.amazon.cloud9                          # Silk Browser
+# com.amazon.whad                            # Multi-room music
+# com.amazon.whasettings                     # Multi-room settings
+# com.amazon.wha.mediabrowserservice         # Multi-room music browser
+# com.amazon.ods.kindleconnect               # Show on Fire TV
+# com.amazon.hedwig                          # Fire TV Channels
+# com.amazon.gamehub                         # Amazon Luna
+# com.amazon.minitv.android.app              # Amazon miniTV
+# com.amazon.tahoe                           # Amazon Kids (FreeTime)
+# com.amazon.whisperjoin.middleware.np       # Amazon easy setup
+# com.amazon.tv.ffsprovisioneeclient         # Amazon easy setup client
+# com.amazon.imdb.tv.android.app             # Freevee (stub)
+# com.amazon.tv.alexaalerts                  # Alexa alerts
+# com.amazon.tv.alexanotifications           # Alexa notifications
+# com.amazon.alexa.externalmediaplayer.fireos # Alexa media app link
+# com.amazon.alexamediaplayer.runtime.ftv    # Alexa media player
+# com.amazon.aiondec                         # Alexa skill links
+# com.amazon.naatyam                         # Amazon Naatyam
+# com.amazon.audiohome                       # Alexa Home Theater
+# com.amazon.aca                             # Alexa background service

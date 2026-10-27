@@ -1,0 +1,37 @@
+# DRAFT, NOT TESTED. Skyworth SW-22AE NF (Google TV, Android 11)
+# (ro.product.brand SW, manufacturer skyworth, model SW-22AE NF, device SW6H),
+# Android 11 (SDK 30), fingerprint SW/SW6H_TG_NF/SW6H:11/RTT2.220103.001/20250208:user/release-keys
+# Drafted for cleanyourtv-app issues #29 #189 #200 from the TV report in #200,
+# starting from examples/skyworth-swtv-24na-4k-nf.
+# Skyworth Google TV on Android 11 (SW6H); the source is the Android 14 Skyworth Google TV list. Most
+# of the source's rows are not on this firmware, so the draft is short.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/skyworth-sw-22ae-nf/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/skyworth-sw-22ae-nf/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.apps.tv.launcherx/.home.HomeActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_STAYS_ON).
+#
+# KEEP (never-disable on other lists, present here): com.dolby.android.audio.service, com.google.android.apps.mediashell, com.google.android.apps.nbu.smartconnect.tv, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.tts, com.google.android.tv.remote.service, com.mediatek.OledFuctionService, com.mediatek.android.leanbacklauncher.partnercustomizer, com.mediatek.androidbox, com.mediatek.network, com.mediatek.tv.service, com.mediatek.tvinput and more.
+# Left alone although a source list switches them off: com.smartdevice.leanbacklauncher.customizer (input, tuner, setup, launcher or factory role); com.google.android.katniss (never-disable on aipro2k).
+# Vendor packages no source list names, left alone: com.coocaa.demonow.lightining, com.dolby.android.audio.service, com.mediatek.OledFuctionService, com.mediatek.android.boot.appsplashscreen, com.mediatek.android.leanbacklauncher.partnercustomizer, com.mediatek.android.tv.mdns.offload, com.mediatek.androidbox, com.mediatek.network, com.mediatek.tv.service, com.mediatek.tvinput, com.mediatek.wwtv.webview, com.mstar.android.tv.disclaimercustomization, com.smartdevice.bleconnectservice, com.smartdevice.dailymanage, com.smartdevice.dtv.icast, com.smartdevice.epopplayer and 7 more.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+com.smartdevice.recommendation               # Content recommendation rows
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+com.smartdevice.aftersale                    # Tracks boot, network and location
+
+# Preloaded apps
+com.Smartdevice.emanual                      # On-screen user manual
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.google.android.apps.tv.dreamx          # Screensaver that mixes in recommendations

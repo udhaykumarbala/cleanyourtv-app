@@ -236,7 +236,8 @@ class ProfilesTest {
     )
 
     @Test fun theProfilesWithNoKnownStockLauncher() {
-        val none = BundledProfileSource.bundled.profiles.filter { it.stockLaunchers.isEmpty() && it.platform != Platform.FIRE_OS && it.platform != Platform.TCL_CN }
+        // The candidate lists of a test build are pinned in CandidatesTest (cleanUpOnly).
+        val none = BundledProfileSource.bundled.profiles.filter { it.stockLaunchers.isEmpty() && it.platform != Platform.FIRE_OS && it.platform != Platform.TCL_CN && !it.isCandidate }
         // xiaomi-mitv-mftr0 (0.3.7): China firmware whose home is com.mitv.tvhome, not a known launcher.
         // sber-salute-tv-at30a6 (0.4.5): StarOS, whose home is Sber's ru.sberdevices.starlauncher.
         assertEquals(setOf("challenger-32t22bt", "freebox-player-pop", "google-tv-streamer-4k-kirkwood", "hisense-e5q-pro", "kalley-43g200",
@@ -315,7 +316,7 @@ class ProfilesTest {
         // one, asked with its own keys, resolves to itself (no tested list matches those keys).
         for (c in BundledProfileSource.bundled.profiles.filter { it.isCandidate }) {
             val m = c.match
-            val own = facts(m.models.first(), m.devices.first(), m.brand!!, m.sdkMin!!)
+            val own = facts(m.models.firstOrNull() ?: "unknown", m.devices.first(), m.brand!!, m.sdkMin!!, (m.fingerprintPrefix ?: "") + "x")
             assertEquals(null, winner(own), c.id)
             assertEquals(c.id, source.candidateFor(own)?.id, c.id)
             assertEquals(c.id, (source.resolveNow(own, tryCandidate = true) as? ProfileResolution.Exact)?.profile?.id, c.id)

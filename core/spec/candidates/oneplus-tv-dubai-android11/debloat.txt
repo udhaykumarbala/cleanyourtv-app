@@ -1,0 +1,39 @@
+# DRAFT, NOT TESTED. OnePlus D00
+# (ro.product.brand OnePlus, manufacturer OnePlus, model D00, device Dubai),
+# Android 11 (SDK 30), fingerprint OnePlus/OnePlusTV/Dubai:11/RTM1.210315.027/2303030058:user/release-keys
+# Drafted for cleanyourtv-app issue #235 from the TV report in #235,
+# starting from examples/oneplus-tv-dubai, plus the OnePlus careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/oneplus-tv-dubai-android11/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/oneplus-tv-dubai-android11/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.heytap.tv.livetv, com.heytap.optvfactory, com.oneplus.tv.factory,
+# com.heytap.oprcupgradeservice, com.android.bluetooth.auto_generated_rro_product__,
+# com.android.bluetooth.auto_generated_rro_vendor__, com.heytap.tv.remotecontrolinspect,
+# com.mediatek.tvinput, com.oneplus.tv.remote.
+#
+# Left alone although a source list switches them off: com.oneplus.tv.launcher (protected list
+# (Denylist)).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+
+# Brand extras
+com.heytap.olink                             # OnePlus Connect
+com.heytap.tv.assistant.oneplus              # OnePlus TV Assistant
+com.heytap.tv.btspeaker                      # Bluetooth speaker mode
+com.heytap.tv.filebrowser                    # File Browser
+oneplus.smarthome                            # OnePlus Smart Home
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.google.android.tvrecommendations       # Home recommendations

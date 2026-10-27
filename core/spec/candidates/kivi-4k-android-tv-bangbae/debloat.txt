@@ -1,0 +1,43 @@
+# DRAFT, NOT TESTED. KIVI KIVI 4K Android TV
+# (ro.product.brand KIVI, manufacturer MTC, model KIVI 4K Android TV, device bangbae),
+# Android 11 (SDK 30), fingerprint KIVI/MTCMSD6886EU_KIVI/bangbae:11/RTO8.250915.001/14107831:user/release-keys
+# Drafted for cleanyourtv-app issue #545 from the TV report in #545,
+# starting from examples/hitachi-65qledsm20, plus the MTC careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/kivi-4k-android-tv-bangbae/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/kivi-4k-android-tv-bangbae/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter, fusion.android.tv.demo,
+# com.google.android.leanbacklauncher.partnercustomizer, com.mediatek.tv.service,
+# com.mediatek.mtc.factory, com.mediatek.testpq, com.mediatek.network, com.airoha.btd,
+# com.android.bluetooth.auto_generated_rro_product__,
+# com.android.bluetooth.auto_generated_rro_vendor__, com.mediatek.tvinput,
+# com.mediatek.wwtv.setupwizard.
+#
+# Left alone although a source list switches them off: com.google.android.katniss (never-disable
+# on aipro2k), com.google.android.backdrop (protected in the header of parked upstream
+# tcl-50dp660).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.JVC              # JVC partner installs
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+tv.anoki.acr.controller                      # Anoki ACR
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.google.android.tvrecommendations       # Home recommendations
+# com.google.android.play.games              # Play Games
+# com.google.android.syncadapters.calendar   # Calendar sync
+# com.google.android.youtube.tvmusic         # YouTube Music
+# com.amazon.amazonvideo.livingroom          # Prime Video

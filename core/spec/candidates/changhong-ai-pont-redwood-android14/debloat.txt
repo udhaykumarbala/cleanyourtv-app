@@ -1,0 +1,35 @@
+# DRAFT, NOT TESTED. Changhong AI PONT
+# (ro.product.brand Changhong, manufacturer Changhong, model AI PONT, device redwood),
+# Android 14 (SDK 34), fingerprint Changhong/DVB92/redwood:14/UKNV.260514.001/15419756:user/release-keys
+# Drafted for cleanyourtv-app issue #150 from the TV report in #150,
+# starting from examples/rca-ai-pont, examples/liberton-ltv-24h01at.
+# The report was cut short by the form (89 of 141 system apps), so only those were matched.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/changhong-ai-pont-redwood-android14/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/changhong-ai-pont-redwood-android14/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.google.android.leanbacklauncher.partnercustomizer,
+# com.android.bluetooth.rro.
+#
+# Left alone although a source list switches them off: com.google.android.katniss (never-disable
+# on aipro2k), com.google.android.backdrop (protected in the header of parked upstream
+# tcl-50dp660), com.google.android.marvin.talkback (protected list (Denylist)).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.homwee           # Homwee partner installs
+
+# Tracking, analytics and feedback
+com.android.tv.feedbackconsent               # Feedback consent
+com.google.android.feedback                  # Google Feedback
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.cltv.fast                              # FAST channels

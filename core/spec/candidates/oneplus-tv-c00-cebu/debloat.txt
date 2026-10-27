@@ -1,0 +1,40 @@
+# DRAFT, NOT TESTED. OnePlus TV C00 (Cebu, Android 11)
+# (ro.product.brand OnePlus, manufacturer OnePlus, model C00, device Cebu),
+# Android 11 (SDK 30), fingerprint OnePlus/OnePlusTV/Cebu:11/RTM8.240401.135/2408080101:user/release-keys
+# Drafted for cleanyourtv-app issues #133 #174 #258 from the TV report in #174,
+# starting from examples/oneplus-tv-y1.
+# Android 11 with the OnePlus TV layer; the Y1 list is the OnePlus Android TV list (Android 11).
+# OnePlus has two lists, too few for a brand set, so today this TV gets nothing switched off.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/oneplus-tv-c00-cebu/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/oneplus-tv-c00-cebu/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_STAYS_ON).
+#
+# KEEP (never-disable on other lists, present here): com.google.android.apps.mediashell, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.tts, com.google.android.tv.remote.service, com.heytap.oprcupgradeservice, com.heytap.optvfactory, com.mediatek.android.leanbacklauncher.partnercustomizer, com.mediatek.androidbox, com.mediatek.backgrounddetection, com.mediatek.hotkey.dispatcher, com.mediatek.network, com.mediatek.tv.agent, com.mediatek.tv.service and more.
+# Left alone although a source list switches them off: com.mstar.android.tv.disclaimercustomization (never-disable on sharp-aquos-tve21f).
+# Vendor packages no source list names, left alone: com.coloros.relax.tv, com.heytap.ars.sink, com.heytap.mcs, com.heytap.olink, com.heytap.oprcupgradeservice, com.heytap.optvfactory, com.heytap.optvmiracastservice, com.heytap.rom.service, com.heytap.tv.assistant.oneplus, com.heytap.tv.btspeaker, com.heytap.tv.camera, com.heytap.tv.filebrowser, com.heytap.tv.livetv, com.heytap.tv.remotecontrolinspect, com.heytap.tv.remotediagnosing, com.heytap.tv.support and 23 more.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+com.google.android.tvrecommendations         # Promoted rows; also the notification panel and sign-in notices
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+
+# Preloaded apps
+com.google.android.play.games                # Google game app
+
+# Other background services
+com.google.android.syncadapters.calendar     # Syncs Google Calendar
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.android.providers.calendar             # Stores calendar events for apps
+# com.google.android.videos                  # Google's film store, recommendations and your purchased films

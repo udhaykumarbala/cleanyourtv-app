@@ -1,0 +1,41 @@
+# DRAFT, NOT TESTED. Skyworth 4K Google TV Box
+# (ro.product.brand Skyworth, manufacturer SkyworthDigital, model 4K Google TV Box, device YDA),
+# Android 11 (SDK 30), fingerprint Skyworth/HP4618gb_Skyworth/YDA:11/RTT0.210829.002/P2.7.1_20231220:user/release-keys
+# Drafted for cleanyourtv-app issue #473 from the TV report in #473,
+# starting from examples/wanbo-x5-pro, examples/skyworth-swtv-22ae-fhd, plus the Skyworth careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/skyworth-4k-google-tv-box-yda/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/skyworth-4k-google-tv-box-yda/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.apps.tv.launcherx/.home.HomeActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mft.rcupair, com.mft.frontpanelledsservice,
+# com.google.android.tv.dfuservice, com.google.android.katniss,
+# com.google.android.apps.mediashell, com.google.android.inputmethod.latin,
+# com.android.bluetoothmidiservice.
+#
+# Left alone although a source list switches them off: com.google.android.katniss (never-disable
+# on aipro2k), com.google.android.marvin.talkback (protected list (Denylist)).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+com.oemservice                               # Remote management agent
+
+# Preloaded apps
+com.android.dynsystem                        # Dynamic system updates
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.android.printspooler                   # Print spooler
+# com.google.android.play.games              # Play Games
+# com.google.android.syncadapters.calendar   # Calendar sync
+# com.oem.qa                                 # Box factory test
+# com.android.hotspot2.osulogin              # Hotspot sign-in
+# com.google.android.youtube.tvmusic         # YouTube Music

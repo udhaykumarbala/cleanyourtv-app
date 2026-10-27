@@ -1,0 +1,34 @@
+# DRAFT, NOT TESTED. Xiaomi MiTV-AFZP0 (PatchWall home, Android 14)
+# (ro.product.brand Xiaomi, manufacturer xiaomi, model MiTV-AFZP0, device moderntimes),
+# Android 14 (SDK 34), fingerprint Xiaomi/moderntimes/moderntimes:14/UD2A.240505.001.W1/OS3.0.6.0.UFZAATV:user/release-keys
+# Drafted for cleanyourtv-app issues #92 #93 #94 #95 #96 from the TV report in #96,
+# starting from examples/xiaomi-mitv-mffu0, examples/xiaomi-mitv-astp1.
+# PatchWall (com.mitv.tvhome) is the home screen here, so it and its helpers stay on; the source
+# lists are the Android 14 MFFU0 list and the ASTP1 list, the two Xiaomi lists with PatchWall as home.
+# Clean-up only: no profile can plan a home screen switch away from PatchWall.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/xiaomi-mitv-afzp0/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/xiaomi-mitv-afzp0/debloat.txt com.mitv.tvhome
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.mitv.tvhome/.MainActivityUserMode. Not in this list.
+# Home switch outlook if this became a profile: clean-up only (home is the maker's own: com.mitv.tvhome).
+#
+# KEEP (never-disable on other lists, present here): com.android.devicelockcontroller, com.android.sdksandbox, com.mitv.tvhome, com.sohu.inputmethod.sogou.tv, com.xiaomi.account, com.xiaomi.mitv.mediaexplorer, com.xiaomi.mitv.settings, com.xiaomi.mitv.smartpanel, com.xiaomi.mitv.smartshare, com.xiaomi.mitv.tvmanager, com.xiaomi.mitv.tvplayer, com.xiaomi.mitv.upgrade, mitv.service.
+# Left alone although a source list switches them off: com.xiaomi.mitv.tvmanager (never-disable on xiaomi-mitv-mffu0); com.xiaomi.mitv.smartpanel (never-disable on xiaomi-mitv-mffu0); com.xiaomi.mitv.upgrade (never-disable on xiaomi-mitv-ansp0).
+# Vendor packages no source list names, left alone: com.amlogic.tv.overlay.lowram, com.droidlogic, com.droidlogic.imageplayer, com.droidlogic.tvinput, com.droidlogic.tvprovider.overlay, com.droidlogic.wifion, com.droidlogic.wifitetheringoverlay, com.framework.paneltv.overlay, com.mitv.toolhouse, com.xiaomi.account.auth, com.xiaomi.hyper_connect.tv, com.xiaomi.mi_connect_service, com.xiaomi.miplay, com.xiaomi.mitv.appstore, com.xiaomi.mitv.healthdiagnosis, com.xiaomi.mitv.hyper.screensaver and 3 more.
+# Already off on the report (switched off by the app's brand set or by the owner): com.xm.webcontent, com.miui.tv.analytics, com.mitv.cloudcontrol.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+com.xm.webcontent                            # Promo web content
+
+# Tracking, analytics and feedback
+com.mitv.cloudcontrol                        # Lets Xiaomi push apps to the TV remotely
+com.miui.tv.analytics                        # Reports what you watch to Xiaomi
+com.xiaomi.mitv.tvpush.tvpushservice         # Delivers Xiaomi push messages and promos
+com.xiaomi.tvqs                              # Uploads crash and performance data to Xiaomi

@@ -1,0 +1,58 @@
+# DRAFT, NOT TESTED. Nokia Android TV
+# (ro.product.brand Nokia, manufacturer My, model Android TV, device shandao),
+# Android 11 (SDK 30), fingerprint Nokia/EMIR_Nokia/shandao:11/RTM6.230109.138/10045850:user/release-keys
+# Drafted for cleanyourtv-app issue #210 from the TV report in #210,
+# starting from examples/cecotec-shandao.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/nokia-android-tv-shandao/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/nokia-android-tv-shandao/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter,
+# com.mediatek.android.leanbacklauncher.partnercustomizer, com.mediatek.tv.service,
+# com.google.android.tungsten.setupwraith, com.mediatek.tvinput, com.mediatek.autopair,
+# com.mediatek.wwtv.mediaplayer, com.vestel.tv.service, com.vestel.tv.keycontroller,
+# com.vestel.tv.backlight, com.vestel.tv.eib, com.dolby.android.audio.service,
+# com.android.tv.settings, com.android.vending, com.google.android.gms, com.google.android.gsf,
+# com.google.android.inputmethod.latin, com.android.bluetooth.auto_generated_rro_product__,
+# com.android.bluetooth.auto_generated_rro_vendor__, com.mediatek.wwtv.setupwizard.
+#
+# Left alone although a source list switches them off: com.google.android.partnersetup (input,
+# setup, launcher, voice, update or factory role), com.android.se (never-disable on
+# nvidia-shield-tv-2019), com.mediatek.wwtv.mediaplayer (never-disable on cecotec-shandao),
+# fusion.android.tv.demo (never-disable on eko-2k-google-tv-tennoji), com.mediatek.tv.freeviewplay
+# (never-disable on candidate sharp-aquos-tve19a), com.google.android.katniss (never-disable on
+# aipro2k), com.google.android.backdrop (protected in the header of parked upstream tcl-50dp660),
+# com.google.android.tts (never-disable on candidate philips-google-tv-ph1m-9972).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.vestel.medusa    # Vestel partner installs
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+com.vestel.smartcenter                       # Vestel SmartCenter
+com.vestel.smartlogger                       # Vestel logger
+com.vestel.tv.speedup                        # Vestel speed up
+com.vestel.vestelreporter                    # Vestel reporter
+
+# Preloaded apps
+com.android.dynsystem                        # Dynamic system updates
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.google.android.play.games              # Play Games
+# com.android.cts.ctsshim                    # CTS test shim
+# com.android.cts.priv.ctsshim               # CTS test shim
+# com.android.settings.intelligence          # Settings search
+# com.google.android.syncadapters.calendar   # Calendar sync
+# com.google.android.tvrecommendations       # Home recommendations
+# com.google.android.youtube.tvmusic         # YouTube Music
+# com.google.android.videos                  # Google TV app (Play Movies & TV)

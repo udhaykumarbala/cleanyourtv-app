@@ -1,0 +1,54 @@
+# DRAFT, NOT TESTED. TCL Smart TV on BeyondTV, C02_4K_US firmware AP12 (Android 9)
+# (ro.product.brand TCL, manufacturer TCL, model Smart TV, device BeyondTV),
+# Android 9 (SDK 28), fingerprint TCL/C02_4K_US/BeyondTV:9/PPR1.180610.011/AP12:user/release-keys
+# Drafted for cleanyourtv-app issues #79 #118 #282 from the TV report in #282,
+# starting from examples/tcl-55c715, examples/tcl-beyondtv-rt2851.
+# Same BeyondTV device as the 55C715 list, but the C02_4K_US firmware AP12 that the profile's
+# fingerprint pin does not cover. com.tcl.keycustomfunctionservice claims HOME (FallbackHome) and the
+# TCL key services stay on.
+# Volunteers (ticked "I can try a list"): #79.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/tcl-beyondtv-c02-4k/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/tcl-beyondtv-c02-4k/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_STAYS_ON).
+#
+# KEEP (never-disable on other lists, present here): com.android.WifiCountryService, com.google.android.apps.mediashell, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.speech.pumpkin, com.google.android.tts, com.google.android.tv.remote.service, com.netflix.ninja, com.realtek.netflix.setting, com.tcl.appmarket2, com.tcl.appstatecontroller, com.tcl.assistant, com.tcl.audioplayer, com.tcl.autopair and more.
+# Left alone although a source list switches them off: com.google.android.leanbacklauncher.recommendations (input, tuner, setup, launcher or factory role); com.tcl.messagebox (never-disable on tcl-40s5400a); com.tcl.ui_mediaCenter (never-disable on ffalcon-65s585c-pro); com.tcl.partnercustomizer (never-disable on hitachi-cdh-le32smart21); com.tcl.keyhelp (never-disable on hitachi-cdh-le32smart21); com.tcl.copydatatotv (never-disable on hitachi-cdh-le32smart21); com.tcl.appmarket2 (never-disable on ffalcon-65s585c-pro); com.tcl.useragreement (never-disable on tcl-43s5k); com.tcl.usercenter (never-disable on tcl-55c815); com.google.android.katniss (never-disable on aipro2k).
+# Vendor packages no source list names, left alone: com.tcl.bootadservice, com.tcl.pvr.pvrplayer, com.tcl.smartalexa, com.tcl.systemuioverlay, com.tcl.waterfall.overseas.
+# Already off on the report (switched off by the app's brand set or by the owner): android.autoinstalls.config.tcl.device, com.google.android.tvrecommendations, com.tcl.bi, com.google.android.feedback, com.google.android.tv.bugreportsender, com.google.android.partnersetup, com.android.printspooler, com.tcl.esticker, com.google.android.onetimeinitializer, com.google.android.syncadapters.calendar.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.tcl.device       # Installs partner apps without asking
+com.google.android.tvrecommendations         # Promoted rows; also the notification panel and sign-in notices
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+com.google.android.partnersetup              # Tracks which partner set up the TV
+com.google.android.tv.bugreportsender        # Uploads bug reports to Google
+com.tcl.bi                                   # Reports usage data to TCL
+
+# Preloaded apps
+com.android.printspooler                     # Printing service a TV rarely needs
+com.google.android.syncadapters.contacts     # Syncs contacts with your Google account
+
+# Shop and demo mode
+com.tcl.esticker                             # Retail demo stickers
+
+# Other background services
+com.google.android.onetimeinitializer        # Leftover first-run setup tasks
+com.google.android.syncadapters.calendar     # Syncs Google Calendar
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.tcl.tvweishi                           # Cleaner widget service
+# com.tcl.android.webview                    # TCL copy of the web view
+# com.google.android.backdrop                # Google photo screensaver
+# com.google.android.videos                  # Google's film store, recommendations and your purchased films

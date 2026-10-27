@@ -1,0 +1,53 @@
+# DRAFT, NOT TESTED. Kogan AI PONT
+# (ro.product.brand Kogan, manufacturer Changhong, model AI PONT, device samseong),
+# Android 11 (SDK 30), fingerprint Kogan/DVB93KG/samseong:11/RTO2.250508.001/13470691:user/release-keys
+# Drafted for cleanyourtv-app issue #138 from the TV report in #138,
+# starting from examples/chiq-ai-pont, plus the Kogan careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/kogan-ai-pont-samseong/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/kogan-ai-pont-samseong/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter,
+# com.google.android.leanbacklauncher.partnercustomizer, com.homwee.dmt.upgrade,
+# com.homwee.synckey, com.homwee.factory, com.mediatek.tv.service,
+# com.android.bluetooth.auto_generated_rro_product__,
+# com.android.bluetooth.auto_generated_rro_vendor__, com.mediatek.autopair, com.mediatek.tvinput,
+# com.mediatek.wwtv.setupwizard.
+#
+# Left alone although a source list switches them off: com.google.android.katniss (never-disable
+# on aipro2k), com.google.android.apps.mediashell (never-disable on aipro2k),
+# com.homwee.multiscreenshare (never-disable on kogan-gtvu65kg), com.homwee.mmp.screenshare
+# (never-disable on kogan-gtvu65kg), com.google.android.backdrop (protected in the header of
+# parked upstream tcl-50dp660), com.homwee.upgrade (never-disable on aiwa-ai-pont-sa).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.homwee           # Homwee partner installs
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+tv.anoki.acr.controller                      # Anoki ACR
+
+# Preloaded apps
+com.android.printspooler                     # Print spooler
+
+# Brand extras
+com.homwee.aipont                            # AI PONT portal
+com.homwee.help                              # Homwee e-manual
+com.homwee.store                             # Homwee app store
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.cltv.fast                              # FAST channels
+# com.google.android.tvrecommendations       # Home recommendations
+# com.google.android.play.games              # Play Games
+# com.google.android.syncadapters.calendar   # Calendar sync
+# com.google.android.youtube.tvmusic         # YouTube Music

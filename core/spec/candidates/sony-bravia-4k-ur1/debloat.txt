@@ -1,0 +1,86 @@
+# DRAFT, NOT TESTED. Sony BRAVIA 4K UR1
+# (ro.product.brand Sony, manufacturer Sony, model BRAVIA 4K UR1, device BRAVIA_UR1_4K),
+# Android 10 (SDK 29), fingerprint Sony/BRAVIA_UR1_4K_UC/BRAVIA_UR1_4K:10/QTG3.200305.006.S97/662301:user/release-keys
+# Drafted for cleanyourtv-app issue #278 from the TV report in #278,
+# starting from examples/sony-bravia-4k-vh1, examples/sony-xbr-x900e, plus the Sony careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/sony-bravia-4k-ur1/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/sony-bravia-4k-ur1/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: an app you installed (not named). Not in this list.
+# setupwraith is installed (disabled-user); the report says: home switch blocked HOME_CHANGED. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.sony.dtv.tvx, com.sony.dtv.tvapi, com.sony.dtv.sonysystemservice,
+# com.sony.dtv.common.base.AccessibilityText, com.sony.dtv.remotecontrolsettings,
+# com.sony.dtv.tvinput.external, com.sony.dtv.tvinput.hardwaremanager,
+# com.sony.dtv.tvinput.provider, com.sony.dtv.tvinput.tuner.
+#
+# Left alone although a source list switches them off: com.sony.dtv.homekit (never-disable on
+# sony-bravia-4k-ur3), com.netflix.ninja (never-disable on xiaomi-mitv-mosr4),
+# com.google.android.katniss (never-disable on aipro2k), com.google.android.backdrop (protected in
+# the header of parked upstream tcl-50dp660), com.google.android.marvin.talkback (protected list
+# (Denylist)), com.google.android.apps.mediashell (never-disable on aipro2k),
+# com.sony.huey.dlna.module (protected in the header of parked upstream sony-kd-55xf8096),
+# com.google.android.tv.remote.service (never-disable on aipro2k).
+# Off from the factory (disabled), so not listed (restore.sh would turn them on):
+# com.sony.dtv.b2b.vendorprotocol.
+# Off on the report already (by the careful set or the owner): com.sony.dtv.promos,
+# com.sony.dtv.sonyselect, android.autoinstalls.config.sony.bravia,
+# com.google.android.tvrecommendations, tv.samba.ssm, com.qterics.da.product,
+# com.sony.dtv.da.service, com.sonyericsson.idd.agent, com.sony.dtv.sonybugreportsys,
+# com.google.android.feedback, com.sony.dtv.customersupport, com.sony.dtv.smarthelp,
+# com.sony.dtv.helpguidecontents, com.google.android.play.games, com.android.printspooler,
+# com.sony.dtv.demosupport, com.sony.dtv.demosystemsupport, com.sony.dtv.multiscreendemo,
+# com.sony.dtv.bivlinfo, com.sony.dtv.tvlaunchercustomizer, com.google.android.tv.bugreportsender,
+# com.sony.dtv.usercontext.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.sony.bravia      # Sony partner installs
+com.google.android.tvrecommendations         # Home recommendations
+com.sony.dtv.bivlinfo                        # Sony content list
+com.sony.dtv.promos                          # My BRAVIA promos
+com.sony.dtv.sonyselect                      # Sony Select
+com.sony.dtv.tvlaunchercustomizer            # Sony home customizer
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+com.google.android.tv.bugreportsender        # Bug report sender
+com.qterics.da.product                       # Qterics device agent
+com.sony.dtv.da.service                      # Sony device agent
+com.sony.dtv.sonybugreportsys                # Sony bug reports
+com.sony.dtv.usercontext                     # Sony user context
+com.sonyericsson.idd.agent                   # Sony device data agent
+tv.samba.ssm                                 # Samba TV
+
+# Preloaded apps
+com.android.printspooler                     # Print spooler
+com.google.android.play.games                # Play Games
+com.sony.dtv.customersupport                 # Sony Help
+com.sony.dtv.helpguidecontents               # Sony help guide
+com.sony.dtv.smarthelp                       # Sony Smart Help
+
+# Shop and demo mode
+com.sony.dtv.b2b.softap                      # Sony pro hotspot
+com.sony.dtv.demosupport                     # Sony demo support
+com.sony.dtv.demosystemsupport               # Sony demo system support
+com.sony.dtv.multiscreendemo                 # Sony multi-screen demo
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.sony.dtv.b2b.hotelmode                 # Sony hotel mode
+# com.sony.dtv.b2b.rs232csupport             # Sony RS-232C control
+# com.sony.dtv.livingfit                     # Living Decor
+# com.sony.dtv.osat.music                    # Sony music player
+# com.google.android.youtube.tvmusic         # YouTube Music
+# com.google.android.videos                  # Google TV app (Play Movies & TV)
+# com.netflix.partner.ncm                    # Netflix partner service
+# com.sony.dtv.smartmediaapp                 # Sony Media Player
+# com.sony.dtv.networkapp.wifidirect         # Sony Wi-Fi Direct
+# com.sony.huey.dlna.renderersettings        # Sony DLNA settings
+# com.sonyericsson.dlna                      # DLNA service

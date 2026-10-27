@@ -1,0 +1,39 @@
+# DRAFT, NOT TESTED. Xiaomi C025RGN
+# (ro.product.brand Xiaomi, manufacturer FORMOVIE, model C025RGN, device tianshan),
+# Android 14 (SDK 34), fingerprint Xiaomi/tianshanrm/tianshan:14/UKNV.260130.001/14809224:user/release-keys
+# Drafted for cleanyourtv-app issue #533 from the TV report in #533,
+# starting from examples/xiaomi-mi-box-s-2nd-gen, examples/xiaomi-mitv-afmu0, plus the Xiaomi careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/formovie-c025rgn-tianshan/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/formovie-c025rgn-tianshan/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.apps.tv.launcherx/.home.HomeActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_WIFI. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter, com.android.bluetooth.rro,
+# com.fengmi.Autopair, com.mediatek.android.tv.globalkeyoverlay, com.mediatek.tvinput,
+# com.mediatek.wwtv.setupwizard.
+#
+# Left alone although a source list switches them off: com.google.android.marvin.talkback
+# (protected list (Denylist)).
+# Off on the report already (by the careful set or the owner): com.google.android.feedback,
+# com.google.android.partnersetup, com.google.android.play.games.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Tracking, analytics and feedback
+com.android.tv.feedbackconsent               # Feedback consent
+com.google.android.feedback                  # Google Feedback
+com.google.android.partnersetup              # Google partner setup
+
+# Preloaded apps
+com.google.android.play.games                # Play Games
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.amazon.amazonvideo.livingroom          # Prime Video
+# com.google.android.youtube.tvmusic         # YouTube Music

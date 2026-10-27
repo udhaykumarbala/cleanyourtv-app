@@ -1,0 +1,56 @@
+# DRAFT, NOT TESTED. Toshiba Toshiba TV
+# (ro.product.brand Toshiba, manufacturer Hisense, model Toshiba TV, device hayward),
+# Android 11 (SDK 30), fingerprint Toshiba/huashan_emT/hayward:11/RTMA.250416.097/13725141:user/release-keys
+# Drafted for cleanyourtv-app issue #428 from the TV report in #428,
+# starting from examples/polytron-2k-hayward, examples/motorola-mt4310, plus the Hisense careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/toshiba-tv-hayward/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/toshiba-tv-hayward/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_WIFI. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter,
+# com.mediatek.android.leanbacklauncher.partnercustomizer, com.mediatek.wwtv.mediaplayer,
+# com.android.providers.contacts, com.airoha.android.btd, com.cvte.autobacklight, com.cvte.tv.at,
+# com.cvte.tv.hisensefac, com.cvte.tv.infoprovider,
+# com.android.bluetooth.auto_generated_rro_product__,
+# com.android.bluetooth.auto_generated_rro_vendor__, com.mediatek.tvinput,
+# com.mediatek.wwtv.setupwizard.
+#
+# Left alone although a source list switches them off: fusion.android.tv.demo (never-disable on
+# eko-2k-google-tv-tennoji), com.mediatek.android.leanbacklauncher.partnercustomizer
+# (never-disable on aiwa-ai-pont-sa), com.mstar.android.tv.disclaimercustomization (never-disable
+# on candidate sharp-aquos-tve19a), com.netflix.ninja (never-disable on xiaomi-mitv-mosr4),
+# com.google.android.katniss (never-disable on aipro2k), com.google.android.apps.mediashell
+# (never-disable on aipro2k), com.google.android.backdrop (protected in the header of parked
+# upstream tcl-50dp660), com.google.android.tts (never-disable on candidate
+# philips-google-tv-ph1m-9972), com.google.android.marvin.talkback (protected list (Denylist)).
+# Off on the report already (by the careful set or the owner):
+# com.google.android.tvrecommendations, com.google.android.feedback.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.hisense.hayward  # Hisense partner installs
+com.google.android.tvrecommendations         # Home recommendations
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+com.google.android.partnersetup              # Google partner setup
+
+# Other background services
+com.google.android.syncadapters.calendar     # Calendar sync
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.android.printspooler                   # Print spooler
+# com.google.android.play.games              # Play Games
+# com.android.providers.calendar             # Calendar storage
+# com.google.android.youtube.tv              # YouTube
+# com.amazon.amazonvideo.livingroom          # Prime Video
+# com.google.android.youtube.tvmusic         # YouTube Music

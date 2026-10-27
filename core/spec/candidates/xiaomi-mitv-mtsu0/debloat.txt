@@ -1,0 +1,58 @@
+# DRAFT, NOT TESTED. xiaomi MiTV-MTSU0
+# (ro.product.brand xiaomi, manufacturer xiaomi, model MiTV-MTSU0, device interstellar),
+# Android 14 (SDK 34), fingerprint xiaomi/interstellar/interstellar:14/UQ1A.240105.004.A1/OS3.0.119.0.UTSMATV:user/release-keys
+# Drafted for cleanyourtv-app issue #548 from the TV report in #548,
+# starting from examples/xiaomi-mitv-mftr0, examples/xiaomi-mitv-ansp0, plus the Xiaomi careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/xiaomi-mitv-mtsu0/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/xiaomi-mitv-mtsu0/debloat.txt com.mitv.tvhome
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.mitv.tvhome/.MainActivityUserMode. Not in this list.
+# No Google or Amazon home here, so the app does clean-up only (no home screen switch).
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.xiaomi.mitv.tvplayer, com.xiaomi.mitv.smartpanel, mitv.service,
+# com.mitv.tvhome, com.xiaomi.mitv.settings, com.xiaomi.mitv.upgrade, com.xiaomi.mitv.smartshare,
+# com.mediatek.tvinput, com.mi.bluetooth.
+#
+# Left alone although a source list switches them off: com.xiaomi.mitv.tvmanager (never-disable on
+# candidate xiaomi-mitv-afzp0), com.xiaomi.mitv.smartpanel (never-disable on candidate
+# xiaomi-mitv-afzp0), com.xiaomi.voicecontrol (input, setup, launcher, voice, update or factory
+# role).
+# Off on the report already (by the careful set or the owner): com.xm.webcontent,
+# com.xiaomi.mitv.shop, com.miui.tv.analytics, com.xiaomi.tvqs, com.xiaomi.mitv.calendar,
+# com.xiaomi.mitv.healthdiagnosis, com.xiaomi.screenrecorder, com.xiaomi.tweather,
+# com.mitv.gallery, com.mitv.cloudcontrol, com.android.printspooler.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+com.xiaomi.mitv.shop                         # Xiaomi shop
+com.xiaomi.mitv.tvpush.tvpushservice         # Xiaomi push service
+com.xm.webcontent                            # Xiaomi web promos
+
+# Tracking, analytics and feedback
+com.mitv.cloudcontrol                        # Xiaomi cloud control
+com.miui.tv.analytics                        # Xiaomi Analytics
+com.xiaomi.tvqs                              # Xiaomi quality reports
+
+# Preloaded apps
+com.android.printspooler                     # Print spooler
+com.mitv.gallery                             # Mi Gallery
+com.xiaomi.mitv.calendar                     # Mi Calendar
+com.xiaomi.mitv.healthdiagnosis              # Xiaomi health check
+com.xiaomi.screenrecorder                    # Screen recorder
+com.xiaomi.tweather                          # Mi Weather
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.xiaomi.mitv.health                     # MiHealth
+# com.xiaomi.mitv.karaoke.service            # Xiaomi karaoke
+# com.miui.hybrid.tv                         # Xiaomi quick apps
+# com.xiaomi.smarthome.tv                    # Mi Home
+# com.mitv.toolhouse                         # Mi Tool House
+# com.xiaomi.mitv.hyper.screensaver          # HyperOS screensaver
+# com.xiaomi.wakeupservice                   # Xiao Ai wake-up

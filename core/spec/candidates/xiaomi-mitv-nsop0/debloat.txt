@@ -1,0 +1,53 @@
+# DRAFT, NOT TESTED. Xiaomi MiTV-NSOP0
+# (ro.product.brand Xiaomi, manufacturer xiaomi, model MiTV-NSOP0, device furyroad),
+# Android 9 (SDK 28), fingerprint Xiaomi/furyroad/furyroad:9/PPR1.180610.011/1365:user/release-keys
+# Drafted for cleanyourtv-app issue #458 from the TV report in #458,
+# starting from examples/xiaomi-mitv-mftr0, examples/xiaomi-mitv-ansp0, plus the Xiaomi careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/xiaomi-mitv-nsop0/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/xiaomi-mitv-nsop0/debloat.txt com.mitv.tvhome
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.mitv.tvhome/.MainActivityUserMode. Not in this list.
+# No Google or Amazon home here, so the app does clean-up only (no home screen switch).
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.xiaomi.mitv.tvplayer, com.xiaomi.mitv.smartpanel, mitv.service,
+# com.mitv.tvhome, com.xiaomi.mitv.settings, com.xiaomi.mitv.systemui, com.xiaomi.mitv.upgrade,
+# com.xiaomi.mitv.pay, com.xiaomi.mitv.payment, com.xiaomi.mitv.smartshare,
+# com.novatek.ATVTVinput, com.novatek.DVBTTVinput, com.novatek.cvbstvinput,
+# com.novatek.hdmi1tvinput, com.novatek.hdmi2tvinput, com.novatek.hdmi3tvinput,
+# com.xiaomi.mitv.remotecontroller.service.
+#
+# Left alone although a source list switches them off: com.xiaomi.mitv.tvmanager (never-disable on
+# candidate xiaomi-mitv-afzp0), com.xiaomi.mitv.smartpanel (never-disable on candidate
+# xiaomi-mitv-afzp0), com.xiaomi.voicecontrol (input, setup, launcher, voice, update or factory
+# role).
+# Off on the report already (by the careful set or the owner): com.duokan.videodaily,
+# com.miui.tv.analytics, com.xiaomi.statistic, com.mitv.cloudcontrol, com.android.printspooler.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+com.duokan.videodaily                        # Video Daily
+com.xiaomi.mitv.tvpush.tvpushservice         # Xiaomi push service
+
+# Tracking, analytics and feedback
+com.mitv.cloudcontrol                        # Xiaomi cloud control
+com.miui.tv.analytics                        # Xiaomi Analytics
+com.xiaomi.statistic                         # Xiaomi statistics
+com.xiaomi.tvqs                              # Xiaomi quality reports
+
+# Preloaded apps
+com.android.printspooler                     # Print spooler
+com.xiaomi.tweather                          # Mi Weather
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.xiaomi.gamecenter.sdk.service.mibox    # Xiaomi game service
+# com.xiaomi.mitv.karaoke.service            # Xiaomi karaoke
+# com.xiaomi.wakeupservice                   # Xiao Ai wake-up
+# com.xiaomi.mico.mqtt.service.application.tv # Xiao Ai speaker link
+# com.mitv.screensaver                       # Xiaomi screensaver

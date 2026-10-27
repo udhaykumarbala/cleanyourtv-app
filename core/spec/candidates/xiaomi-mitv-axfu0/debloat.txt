@@ -1,0 +1,53 @@
+# DRAFT, NOT TESTED. Xiaomi MiTV-AXFU0 (arctictale, Google TV, Android 14)
+# (ro.product.brand Xiaomi, manufacturer Xiaomi, model MiTV-AXFU0, device arctictale),
+# Android 14 (SDK 34), fingerprint Xiaomi/arctictale/arctictale:14/UKG3.241124.001/V816.0.26.4.2.UXFAATV:user/release-keys
+# Drafted for cleanyourtv-app issues #109 #147 #168 from the TV report in #168,
+# starting from examples/xiaomi-mitv-afmu0.
+# Google TV on Android 14; every switch-off row of the AFMU0 list is on this TV, and most were
+# already off with the Xiaomi brand set. com.mi.bluetooth (remote pairing) is left alone.
+# Volunteers (ticked "I can try a list"): #168.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/xiaomi-mitv-axfu0/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/xiaomi-mitv-axfu0/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.apps.tv.launcherx/.home.HomeActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_WIFI. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_WIFI).
+#
+# KEEP (never-disable on other lists, present here): com.android.devicelockcontroller, com.android.sdksandbox, com.dolby.android.audio.service, com.droidlogic.updater, com.google.android.apps.mediashell, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.tts, com.google.android.tv.remote.service, com.mi.bluetooth, com.mitv.livetv, com.mitv.overseaservice, com.mitv.setup and more.
+# Left alone although a source list switches them off: com.xiaomi.mitv.mediaexplorer (never-disable on xiaomi-mitv-mffu0); com.google.android.tv.remote.service (never-disable on aipro2k); com.google.android.katniss (never-disable on aipro2k); com.xiaomi.mitv.smartshare (never-disable on xiaomi-mitv-ansp0); com.google.android.marvin.talkback (remote, pairing or accessibility (safety rule 8)).
+# Vendor packages no source list names, left alone: com.dolby.android.audio.service, com.droid.tv.mdnsoffloadmanager, com.droidlogic, com.droidlogic.dtvkit.inputsource, com.droidlogic.gtv.overlay, com.droidlogic.mdnsoffload, com.droidlogic.overlay, com.droidlogic.tvinput, com.droidlogic.tvprovider.overlay, com.droidlogic.updater, com.droidlogic.wifitetheringoverlay, com.framework.overlay, com.mdnsoffload.droidlogic.overlay, com.mi.bluetooth, com.mitv.ABUpdateStatus, com.mitv.livetv and 13 more.
+# Already off on the report (switched off by the app's brand set or by the owner): com.mitv.tvhome.atv, com.mitv.tvhome.michannel, com.mitv.tvhome.oemtab, com.xm.webcontent, com.miui.tv.analytics, com.xiaomi.statistic, com.google.android.feedback, com.google.android.play.games, com.xiaomi.mimusic2, com.android.printspooler, com.mitv.gallery.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.soc.amlogic      # Installs partner apps without asking
+com.mitv.tvhome.atv                          # Xiaomi's home screen with adverts
+com.mitv.tvhome.michannel                    # Xiaomi content rows on the home screen
+com.mitv.tvhome.mitvplus                     # Sponsored live channels
+com.mitv.tvhome.oemtab                       # Xiaomi tab added to Google TV home
+com.xm.webcontent                            # Promo web content
+
+# Tracking, analytics and feedback
+com.android.tv.feedbackconsent               # Asks permission to send feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+com.miui.tv.analytics                        # Reports what you watch to Xiaomi
+com.xiaomi.statistic                         # Sends usage statistics to Xiaomi
+com.xiaomi.tvqs.overseas.y24                 # Uploads quality logs to Xiaomi
+
+# Preloaded apps
+com.android.printspooler                     # Printing service a TV rarely needs
+com.google.android.play.games                # Google game app
+com.mitv.gallery                             # Xiaomi photo gallery
+com.xiaomi.mimusic2                          # Xiaomi music app
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.mitv.videoplayer                       # Xiaomi video player
+# com.google.android.youtube.tvmusic         # Music streaming app
+# com.xiaomi.wfdsinkhelperservice            # Xiaomi Miracast receiver helper
+# com.xiaomi.mi_connect_service              # Links the TV with Xiaomi phones and devices

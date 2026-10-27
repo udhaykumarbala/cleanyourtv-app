@@ -1,0 +1,54 @@
+# DRAFT, NOT TESTED. TCL Smart TV on G06 (Google TV, Android 11)
+# (ro.product.brand TCL, manufacturer TCL, model Smart TV, device G06),
+# Android 11 (SDK 30), fingerprint TCL/G06_2K_US/G06:11/AR2101/AR38:user/release-keys
+# Also reported on TCL/G06_2K_GB/G06:11/AR2101/AR16:user/release-keys
+# Drafted for cleanyourtv-app issues #91 #119 #135 from the TV report in #135,
+# starting from examples/tcl-g05-google-tv, examples/tcl-g07-google-tv.
+# G06 Google TV on Android 11; the G05 and G07 lists are the TCL Google TV lists on Android 11. TCL
+# Live (com.tcl.channelplus) registers a TV input and is never in a list (RF-SAFETY-250 d).
+# Volunteers (ticked "I can try a list"): #135.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/tcl-g06-google-tv/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/tcl-g06-google-tv/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.apps.tv.launcherx/.home.HomeActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_STAYS_ON).
+#
+# KEEP (never-disable on other lists, present here): com.dolby.android.audio.service, com.google.android.apps.mediashell, com.google.android.apps.nbu.smartconnect.tv, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.tts, com.google.android.tv.remote.service, com.netflix.ninja, com.tcl.autopair, com.tcl.copydatatotv, com.tcl.dashboard, com.tcl.factory.view, com.tcl.guard and more.
+# Left alone although a source list switches them off: com.tcl.partnercustomizer (never-disable on hitachi-cdh-le32smart21); com.tcl.messagebox (never-disable on tcl-40s5400a); com.tcl.dashboard (never-disable on tcl-40s5400a); com.tcl.ttvs (never-disable on ffalcon-65s585c-pro); com.tcl.guard (never-disable on ffalcon-65s585c-pro); com.tcl.ui_mediaCenter (never-disable on ffalcon-65s585c-pro); com.tcl.usercenter (never-disable on tcl-55c815); com.tcl.suspension (never-disable on hitachi-cdh-le32smart21); com.google.android.katniss (never-disable on aipro2k); com.google.android.apps.mediashell (never-disable on aipro2k).
+# Vendor packages no source list names, left alone: com.dolby.android.audio.service, com.tcl.common.shortcutmenu, com.tcl.copydatatotv, com.tcl.wifi.resources.overlay.
+# Already off on the report (switched off by the app's brand set or by the owner): com.tcl.tv.plus, android.autoinstalls.config.google.gtvpai, com.google.android.feedback, com.tcl.esticker, com.google.android.partnersetup, com.google.android.onetimeinitializer.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.google.gtvpai    # Installs partner apps without asking
+com.tcl.tv.plus                              # TCL's ad-funded channels
+com.tcl.tv.tclchannel                        # TCL channel app with Google ads
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+com.google.android.partnersetup              # Tracks which partner set up the TV
+
+# Shop and demo mode
+com.tcl.esticker                             # Retail demo stickers
+
+# Other background services
+com.google.android.onetimeinitializer        # Leftover first-run setup tasks
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.tcl.channelplus                        # Free ad-supported TCL channels
+# com.google.android.play.games              # Google game app
+# com.google.android.videos                  # Google's film store, recommendations and your purchased films
+# com.google.android.youtube.tvmusic         # Music streaming app
+# com.google.android.tv.assistant            # Controls the Assistant light and listening
+# com.tcl.smartalexa                         # Alexa voice service
+# com.google.android.apps.tv.dreamx          # Screensaver that mixes in recommendations
+# com.tcl.android.webview                    # TCL copy of the web view
+# com.google.android.syncadapters.calendar   # Syncs Google Calendar
+# com.amazon.amazonvideo.livingroom          # Amazon's video streaming app

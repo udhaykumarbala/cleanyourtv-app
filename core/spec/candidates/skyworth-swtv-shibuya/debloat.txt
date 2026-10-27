@@ -1,0 +1,53 @@
+# DRAFT, NOT TESTED. skyworth SWTV
+# (ro.product.brand skyworth, manufacturer SWTV, model SWTV, device shibuya),
+# Android 11 (SDK 30), fingerprint skyworth/SW1_T/shibuya:11/RTO9.240708.002/12195242:user/release-keys
+# Drafted for cleanyourtv-app issue #212 from the TV report in #212,
+# starting from examples/oneplus-tv-y1, examples/panasonic-th-40hs550k, plus the Skyworth careful set this TV already gets.
+# Every line below is a package a source list switches off by default (or the careful set
+# switches off) and that this TV has. Nothing has been tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/skyworth-swtv-shibuya/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/skyworth-swtv-shibuya/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+#
+# KEEP (never-disable on the source lists, the TV input, the home claimants, remote and pairing
+# packages present here): com.mediatek.wwtv.tvcenter,
+# com.google.android.leanbacklauncher.partnercustomizer, com.google.android.katniss,
+# com.google.android.apps.mediashell, com.android.bluetooth.auto_generated_rro_product__,
+# com.android.bluetooth.auto_generated_rro_vendor__, com.mediatek.tvinput,
+# com.mediatek.wwtv.setupwizard.
+#
+# Left alone although a source list switches them off: com.coocaa.factory (input, setup, launcher,
+# voice, update or factory role), fusion.android.tv.demo (never-disable on
+# eko-2k-google-tv-tennoji), com.mstar.android.tv.disclaimercustomization (never-disable on
+# candidate sharp-aquos-tve19a), com.google.android.leanbacklauncher.partnercustomizer
+# (never-disable on chiq-ai-pont), com.mediatek.testpq (never-disable on hitachi-65qledsm20),
+# com.airoha.ble.ota (input, setup, launcher, voice, update or factory role),
+# com.mediatek.wwtv.mediaplayer (never-disable on cecotec-shandao), com.google.android.katniss
+# (never-disable on aipro2k).
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.skyworth         # Skyworth partner installs
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Google Feedback
+
+# Preloaded apps
+com.Smartdevice.emanual                      # Skyworth e-manual
+
+# Shop and demo mode
+com.smartdevice.common.demonow               # Demo Now
+
+# Owner's choice (ask rows on the source lists or on other lists): remove the # to switch off
+# com.google.android.tvrecommendations       # Home recommendations
+# com.google.android.play.games              # Play Games
+# com.google.android.syncadapters.calendar   # Calendar sync
+# com.android.providers.calendar             # Calendar storage
+# com.google.android.boot.appsplashscreen    # Boot splash
+# com.amazon.amazonvideo.livingroom          # Prime Video

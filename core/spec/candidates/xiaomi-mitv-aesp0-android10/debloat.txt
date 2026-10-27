@@ -1,0 +1,56 @@
+# DRAFT, NOT TESTED. Xiaomi MiTV-AESP0 on Android 10
+# (ro.product.brand Xiaomi, manufacturer Xiaomi, model MiTV-AESP0, device aquaman),
+# Android 10 (SDK 29), fingerprint Xiaomi/aquaman/aquaman:10/QT/2514:user/release-keys
+# Drafted for cleanyourtv-app issues #41 #43 from the TV report in #43,
+# starting from examples/xiaomi-mitv-aesp0, examples/xiaomi-mitv-axso2.
+# The AESP0 list was tested on Android 9 (PI.2055); this is Android 10 (QT/2514). The Xiaomi brand
+# set already switched most of this off; a tested list adds the home screen switch. com.mi.bluetooth
+# (remote pairing) is left alone.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/xiaomi-mitv-aesp0-android10/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/xiaomi-mitv-aesp0-android10/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_WIFI. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_WIFI).
+#
+# KEEP (never-disable on other lists, present here): com.google.android.apps.mediashell, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.tts, com.google.android.tv.remote.service, com.mi.bluetooth, com.netflix.ninja, com.xiaomi.android.tvsetup.partnercustomizer, mitv.service.
+# Left alone although a source list switches them off: com.google.android.marvin.talkback (remote, pairing or accessibility (safety rule 8)).
+# Vendor packages no source list names, left alone: com.droidlogic, com.droidlogic.droidtvsettingsoverlay, com.droidlogic.overlay, com.mi.bluetooth, com.mitv.download.service, com.mitv.videoplayer, com.xiaomi.android.tvsetup.partnercustomizer, com.xiaomi.wfdsinkhelperservice, mitv.service.
+# Already off on the report (switched off by the app's brand set or by the owner): com.mitv.tvhome.atv, com.mitv.tvhome.michannel, com.xm.webcontent, com.google.android.tvrecommendations, android.autoinstalls.config.xioami.mibox3, com.miui.tv.analytics, com.google.android.feedback, com.google.android.tv.bugreportsender, com.google.android.play.games, com.xiaomi.statistic, com.android.printspooler, com.xiaomo.tv.milegal.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.xioami.mibox3    # Installs partner apps without asking
+com.google.android.tvrecommendations         # Promoted rows; also the notification panel and sign-in notices
+com.mitv.tvhome.atv                          # Xiaomi's home screen with adverts
+com.mitv.tvhome.michannel                    # Xiaomi content rows on the home screen
+com.mitv.tvhome.mitvplus                     # Sponsored live channels
+com.xm.webcontent                            # Promo web content
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+com.google.android.tv.bugreportsender        # Uploads bug reports to Google
+com.miui.tv.analytics                        # Reports what you watch to Xiaomi
+com.xiaomi.statistic                         # Sends usage statistics to Xiaomi
+
+# Preloaded apps
+com.android.camera2                          # Camera app for phones
+com.android.gallery3d                        # Old photo viewer
+com.android.printspooler                     # Printing service a TV rarely needs
+com.google.android.music                     # Music app; the service has shut down
+com.google.android.play.games                # Google game app
+
+# Brand extras
+com.xiaomo.tv.milegal                        # Legal and privacy screens
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.google.android.videos                  # Google's film store, recommendations and your purchased films
+# com.google.android.youtube.tvmusic         # Music streaming app
+# com.android.dreams.basic                   # Simple colour screensaver
+# com.xiaomi.mitv.updateservice              # Firmware and PatchWall updates

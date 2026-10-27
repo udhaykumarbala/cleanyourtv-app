@@ -1,0 +1,57 @@
+# DRAFT, NOT TESTED. Xiaomi Mi TV 4A / Redmi MOOQ3 on Android 11
+# (ro.product.brand Redmi, manufacturer Xiaomi, model MiTV-MOOQ3, device tarzan),
+# Android 11 (SDK 30), fingerprint Redmi/onward/tarzan:11/RTM4.220307.164/8237:user/release-keys
+# Also reported on Xiaomi/tarzan/tarzan:11/RTM4.220307.164/8277:user/release-keys
+# Drafted for cleanyourtv-app issues #54 #202 #203 #204 #205 #236 #237 from the TV report in #54,
+# starting from examples/xiaomi-mi-tv-4a, examples/xiaomi-mitv-mooq0.
+# The Mi TV 4A list was tested on Android 10 (QTG3.200305.006.2591); this firmware is Android 11 and
+# adds a setup wizard and com.mi.bluetooth (remote pairing), both left alone (docs/lists-0.3.4 on lists034).
+# #54 (Redmi MOOQ3) runs the same tarzan platform under another model name.
+# Volunteers (ticked "I can try a list"): #54 #204.
+# Every line below is a package a source list switches off and that this TV has. Nothing has been
+# tried on this TV yet.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/xiaomi-mi-tv-4a-android11/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/xiaomi-mi-tv-4a-android11/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Home on the report: com.google.android.tvlauncher/.MainActivity. Not in this list.
+# setupwraith is installed (default); the report says: home switch blocked WIZARD_STAYS_ON. Not in this list.
+# Home switch outlook if this became a profile: home switch possible only with setupwraith named and the takeover quirk; the wizard is on (blocked WIZARD_STAYS_ON).
+#
+# KEEP (never-disable on other lists, present here): com.google.android.apps.mediashell, com.google.android.inputmethod.latin, com.google.android.katniss, com.google.android.tts, com.google.android.tv.remote.service, com.mediatek.network, com.mediatek.tv.service, com.mediatek.tvinput, com.mediatek.wwtv.setupwizard, com.mediatek.wwtv.tvcenter, com.mi.bluetooth, com.mitv.overseaservice, com.mstar.android.tv.disclaimercustomization, com.netflix.ninja and more.
+# Left alone although a source list switches them off: com.xiaomi.mitv.tvmanager (never-disable on xiaomi-mitv-mffu0); fusion.android.tv.demo (never-disable on eko-2k-google-tv-tennoji); com.xiaomi.mitv.smartshare (never-disable on xiaomi-mitv-ansp0); com.mstar.android.tv.disclaimercustomization (never-disable on sharp-aquos-tve21f); com.mediatek.wwtv.webview (TV stack vendor package).
+# Vendor packages no source list names, left alone: com.mediatek.network, com.mediatek.tv.service, com.mi.bluetooth, com.mitv.livetv.ci_mediatek, com.mitv.overseaservice, com.mitv.videoplayer, com.xiaomi.mitv.mediaexplorer, com.xiaomi.tvqs.overseas, com.xiaomi.wfdsinkhelperservice, mediatek.factorymenu.ui.
+# Already off on the report (switched off by the app's brand set or by the owner): com.mitv.tvhome.atv, com.mitv.tvhome.michannel, com.xm.webcontent, android.autoinstalls.config.xiaomi.amelie, com.google.android.tvrecommendations, com.miui.tv.analytics, com.xiaomi.statistic, com.google.android.feedback, com.xiaomi.mimusic2, com.google.android.play.games, com.mitv.gallery, com.xiaomo.tv.milegal.
+#
+# To check before this goes upstream: Wi-Fi after a restart, the remote (every key, including
+# Input and the voice button, and pairing it again), every HDMI input, Live TV, casting.
+
+# Adverts, sponsored rows and partner auto-installs
+android.autoinstalls.config.xiaomi.amelie    # Installs partner apps without asking
+com.google.android.tvrecommendations         # Promoted rows; also the notification panel and sign-in notices
+com.mitv.tvhome.atv                          # Xiaomi's home screen with adverts
+com.mitv.tvhome.michannel                    # Xiaomi content rows on the home screen
+com.mitv.tvhome.mitvplus                     # Sponsored live channels
+com.xm.webcontent                            # Promo web content
+
+# Tracking, analytics and feedback
+com.google.android.feedback                  # Sends feedback and crash reports
+com.miui.tv.analytics                        # Reports what you watch to Xiaomi
+com.xiaomi.statistic                         # Sends usage statistics to Xiaomi
+
+# Preloaded apps
+com.google.android.play.games                # Google game app
+com.mitv.gallery                             # Xiaomi photo gallery
+com.xiaomi.mimusic2                          # Xiaomi music app
+
+# Other background services
+com.xiaomo.tv.milegal                        # Legal and privacy screens
+
+# Owner's choice (ask rows on the source lists): remove the # to switch off
+# com.xiaomi.amazon.alexa                    # Alexa integration
+# com.mitv.milinkservice                     # Cast from Xiaomi phones
+# com.xiaomi.mitv.updateservice              # Firmware and PatchWall updates
+# com.mitv.tvlock                            # Parental lock and password; switching it off removes the lock
+# com.mitv.dream                             # Xiaomi MiDream screensaver
+# com.google.android.backdrop                # Google photo screensaver
