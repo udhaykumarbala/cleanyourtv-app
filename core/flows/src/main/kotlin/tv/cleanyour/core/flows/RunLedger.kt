@@ -61,19 +61,22 @@ class RunLedger(private val store: DocumentStore, private val journal: Journal) 
     suspend fun progress(planId: PlanId): RunProgress {
         val records = journal.read(planId)
         val begins = HashMap<Int, Op>()
+        val doneOps = HashMap<Int, Op?>()   // the last op done at each step: step R and undo journal their op under the step they undo
         var doneSteps = 0
-        var doneDisables = 0
         var open = false
         var ended = false
         for (r in records) {
             when (r) {
                 is JournalRecord.Begin -> begins[r.i] = r.op
-                is JournalRecord.Done -> { doneSteps++; if (begins[r.i] is Op.Disable) doneDisables++ }
+                is JournalRecord.Done -> { doneSteps++; doneOps[r.i] = begins[r.i] }
                 is JournalRecord.Section -> open = r.state == SectionState.ARMED
                 is JournalRecord.End -> ended = true
                 else -> {}
             }
         }
+        // QA of 0.4.5: a switch-off that step R or an undo switched back on (the TV's own home screen
+        // after the home check ran out of time) is not counted as switched off.
+        val doneDisables = doneOps.values.count { it is Op.Disable }
         return RunProgress(doneSteps, doneDisables, open, ended)
     }
 
@@ -160,6 +163,19 @@ class RunLedger(private val store: DocumentStore, private val journal: Journal) 
     }
 
     // The packages this app switched off and has not put back since, in the order they went off.
+    // QA of 0.4.5: the packages a run switched off and left off: the last op done at each step is a
+    // switch-off (step R and undo journal their op under the step they undo).
+    suspend fun disabledBy(planId: PlanId): Set<PackageName> {
+        val begins = HashMap<Int, Op>()
+        val doneOps = HashMap<Int, Op?>()
+        for (r in journal.read(planId)) when (r) {
+            is JournalRecord.Begin -> begins[r.i] = r.op
+            is JournalRecord.Done -> doneOps[r.i] = begins[r.i]
+            else -> {}
+        }
+        return doneOps.values.mapNotNull { (it as? Op.Disable)?.pkg }.toSet()
+    }
+
     suspend fun switchedOffByUs(tvId: TvId): List<PackageName> {
         val off = LinkedHashSet<PackageName>()
         for (c in changes(tvId)) when (val op = c.op) {

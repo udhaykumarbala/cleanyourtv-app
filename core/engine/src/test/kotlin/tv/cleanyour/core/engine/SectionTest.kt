@@ -145,6 +145,39 @@ class SectionTest {
         h.assertStockHomeIsBack(plan.sections.single().token.value)
     }
 
+    // QA of 0.4.5 (bug-040-retry): the check timed out, the old home screen went back, and the run
+    // ended with the TV curtain still installed and running, because its removal (the last step)
+    // was skipped with the rest. It is removed now, and the old home screen is still back.
+    @Test fun theTimerRollsBackAndTheCurtainIsRemoved() = runTest(timeout = TEST_TIMEOUT) {
+        val h = Harness(this)
+        val engine = h.engine()
+        val curtainPkg = PackageName("tv.cleanyour.curtain")
+        val bytes = "fake curtain apk".encodeToByteArray()
+        val sha = h.tv.acceptApk(bytes, curtainPkg, 1, h.signer)
+        val curtain = tv.cleanyour.core.model.LauncherArtifact(curtainPkg, 1, "0.1", sha, h.signer, tv.cleanyour.core.model.BlobRef(sha, bytes.size.toLong(), "bundled:curtain.apk"))
+        val plan = h.plan(tv.cleanyour.core.planner.PlanRequest.Setup(tv.cleanyour.core.spec.ProfileResolution.Exact(h.profile()),
+            tv.cleanyour.core.planner.Choices(emptySet(), emptySet(), null, null, true, true, false, false, wizardWifi = tv.cleanyour.core.planner.WizardWifi.NOT_OWNER),
+            h.artifact, tv.cleanyour.core.model.Level.SIMPLE, curtain = curtain))
+        val removal = plan.steps.last()
+        assertEquals(Op.Uninstall(curtainPkg), removal.op)
+        assertTrue(removal.index > plan.sections.single().to, "the removal comes after the home screen switch")
+        assertEquals(StartResult.Started, engine.start(plan, h.tv, plan.hash, h.pass()))
+        var s = engine.runState(h.tv.tvId).value
+        var guard = 0
+        while (s !is RunState.AwaitingConfirm) { advanceTimeBy(1_000); runCurrent(); s = engine.runState(h.tv.tvId).value; check(guard++ < 600) { "no check screen: $s" } }
+        assertTrue(curtainPkg in h.tv.packages, "the curtain is on the TV during the check")
+        advanceTimeBy(130_000); runCurrent()
+        h.settle(engine)
+        val fin = engine.runState(h.tv.tvId).value as RunState.Finished
+        assertEquals(HomeOutcome.TIMED_OUT, fin.home)
+        h.assertStockHomeIsBack(plan.sections.single().token.value)
+        assertTrue(curtainPkg !in h.tv.packages, "the curtain is not left on the TV")
+        assertTrue(removal !in fin.skipped)
+        val types = h.types(plan)
+        assertTrue("done${removal.index}" in types, types.toString())
+        assertEquals("end:COMPLETED_WITH_SKIPS", types.last())
+    }
+
     @Test fun withoutARecentThumbnailTheWindowIs120s() = runTest(timeout = TEST_TIMEOUT) {
         val h = Harness(this)
         h.prober.screenshotOkCount = 5   // through the section's screencap precondition; the check screen's fetch fails

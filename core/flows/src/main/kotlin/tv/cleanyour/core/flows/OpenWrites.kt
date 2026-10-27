@@ -9,6 +9,8 @@ import tv.cleanyour.core.model.PlanId
 import tv.cleanyour.core.model.Tv
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.planner.PlanKind
+import tv.cleanyour.core.planner.PlanRequest
+import java.util.concurrent.ConcurrentHashMap
 
 // R5-W8 O2: a Manage write that paused (the TV stopped answering, a step failed) leaves its run
 // open, and the engine refuses every later write on that TV (RUN_OPEN) until the run is carried
@@ -23,6 +25,7 @@ data class OpenWrite(
     val reason: PauseReason,
     val busy: Boolean = false,       // carry on, undo or stop is running
     val notTaken: Boolean = false,   // the engine did not take the last action (the TV went away again)
+    val nothingDone: Boolean = false,   // QA of 0.4.5: no step of the run was done (a STALE pause before step 0)
 )
 
 enum class OpenWriteAction { CARRY_ON, UNDO, STOP_HERE }
@@ -31,9 +34,16 @@ class OpenWrites {
     private val state = MutableStateFlow<OpenWrite?>(null)
     val current: StateFlow<OpenWrite?> = state.asStateFlow()
 
-    fun show(tv: Tv, paused: RunState.Paused) {
-        state.value = OpenWrite(tv.id, tv.nickname, paused.plan.id, paused.plan.kind, paused.reason)
+    fun show(tv: Tv, paused: RunState.Paused, nothingDone: Boolean = false) {
+        state.value = OpenWrite(tv.id, tv.nickname, paused.plan.id, paused.plan.kind, paused.reason, nothingDone = nothingDone)
     }
+
+    // QA of 0.4.5: what each Manage write asked for, by its plan, so "Check again" on a run paused
+    // STALE can plan the same request again from a fresh read of the TV. Kept for this process
+    // only: after a restart the request is unknown, and "Check again" reads the TV and ends the run.
+    private val requests = ConcurrentHashMap<PlanId, PlanRequest>()
+    fun remember(planId: PlanId, request: PlanRequest) { requests[planId] = request }
+    fun requestOf(planId: PlanId): PlanRequest? = requests[planId]
 
     fun update(tvId: TvId, change: (OpenWrite) -> OpenWrite) {
         state.value?.takeIf { it.tvId == tvId }?.let { state.value = change(it) }

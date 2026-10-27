@@ -57,6 +57,7 @@ enum class CopyKey(val res: String) {
     STOP_HOME_SETTINGS_OPEN_BODY("stop_home_settings_open_body"),   // issue #629
     STOP_HOME_USER_SAID_NO_PRIMARY("stop_home_user_said_no_primary"), STOP_HOME_USER_SAID_NO_SECONDARY("stop_home_user_said_no_secondary"),
     STOP_HOME_TIMED_OUT_TITLE("stop_home_timed_out_title"), STOP_HOME_TIMED_OUT_BODY("stop_home_timed_out_body"),
+    STOP_HOME_TIMED_OUT_BODY_OFF("stop_home_timed_out_body_off"),   // {count}: QA of 0.4.5, switch-offs kept, the home screen as it was
     STOP_HOME_TIMED_OUT_PRIMARY("stop_home_timed_out_primary"), STOP_HOME_TIMED_OUT_SECONDARY("stop_home_timed_out_secondary"),
     STOP_CONNECTION_LOST_TITLE("stop_connection_lost_title"), STOP_CONNECTION_LOST_BODY("stop_connection_lost_body"),   // {done} {total}
     STOP_CONNECTION_LOST_PRIMARY("stop_connection_lost_primary"), STOP_CONNECTION_LOST_SECONDARY("stop_connection_lost_secondary"),

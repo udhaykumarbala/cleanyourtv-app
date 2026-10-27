@@ -207,13 +207,18 @@ internal fun ColumnScope.OpenWriteContent(
     initiallyAsking: OpenWriteAction? = null, onReport: () -> Unit = {},
 ) {
     val setup = open.kind == PlanKind.SETUP
+    // QA of 0.4.5: a run paused STALE (the TV changed after we read it) is checked again, never
+    // carried on; with no step done it says nothing was changed and offers no undo.
+    val stale = !setup && open.reason == PauseReason.STALE
     val body = when {
         open.notTaken -> stringResource(R.string.openwrite_not_taken)
         setup -> msg(R.string.openwrite_body_setup, "tv" to open.tvName)
+        stale && open.nothingDone -> stringResource(R.string.openwrite_body_stale_nothing)
+        stale -> stringResource(R.string.openwrite_body_stale)
         open.reason == PauseReason.CONNECTION_LOST -> stringResource(R.string.openwrite_body_lost)
         else -> stringResource(R.string.openwrite_body)
     }
-    val title = msg(R.string.openwrite_title, "tv" to open.tvName)
+    val title = msg(if (stale) R.string.openwrite_title_stale else R.string.openwrite_title, "tv" to open.tvName)
     Gap(8.dp)
     if (setup) {
         StopCard(title, body,
@@ -233,8 +238,8 @@ internal fun ColumnScope.OpenWriteContent(
         }
         fun act(a: OpenWriteAction) { if (Confirmations.forOpenWrite(a) != null) asking = a else onAction(a) }
         StopCard(title, body,
-            primaryLabel = if (open.busy) null else stringResource(R.string.openwrite_carry_on), onPrimary = { act(OpenWriteAction.CARRY_ON) },
-            secondaryLabel = if (open.busy) null else stringResource(R.string.openwrite_undo), onSecondary = { act(OpenWriteAction.UNDO) },
+            primaryLabel = if (open.busy) null else stringResource(if (stale) R.string.openwrite_check_again else R.string.openwrite_carry_on), onPrimary = { act(OpenWriteAction.CARRY_ON) },
+            secondaryLabel = if (open.busy || (stale && open.nothingDone)) null else stringResource(R.string.openwrite_undo), onSecondary = { act(OpenWriteAction.UNDO) },
             tertiaryLabel = if (open.busy) null else stringResource(R.string.openwrite_stop), onTertiary = { act(OpenWriteAction.STOP_HERE) },
             busyText = if (open.busy) stringResource(R.string.openwrite_busy) else null)
     }

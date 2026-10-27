@@ -514,6 +514,11 @@ object SetupShots {
             Stopped(home(StopCase.HOME_TIMED_OUT, R.string.stop_home_timed_out_title, R.string.stop_home_timed_out_body,
                 R.string.stop_home_timed_out_primary, R.string.stop_home_timed_out_secondary), connected.copy(commands = commands))
         },
+        // QA of 0.4.5: things stayed switched off, so the card says how many, never "as it was".
+        Shot("stopped_home_timed_out_switched_off") {
+            Stopped(home(StopCase.HOME_TIMED_OUT, R.string.stop_home_timed_out_title, R.string.stop_home_timed_out_body_off,
+                R.string.stop_home_timed_out_primary, R.string.stop_home_timed_out_secondary, args = mapOf("count" to 3)), connected.copy(commands = commands))
+        },
         // M5: step R put the old home screen back after a lost connection (D-W8-16)
         Shot("stopped_home_put_back") { Stopped(homePutBack(), connected.copy(commands = commands)) },
         Shot("stopped_details_sheet") { SheetFrame({ Stopped(homePutBack(), connected.copy(commands = commands)) }, maxHeight = 420.dp) { DetailsContent(commands) } },
@@ -594,6 +599,8 @@ object SetupShots {
         Shot("done_finished") { Setup(done(), connected.copy(chip = ChipState.DEBUGGING_OFF, finishing = Finishing.DONE)) },
         // D7: "Keep debugging on" chosen, so Done says debugging stays on (baseline QA, 0.4.0).
         Shot("done_keep_debugging") { Setup(done(), connected.copy(keepsDebugging = true)) },
+        // QA of 0.4.5: OK on the timed out card; the home screen is unchanged and Done says why.
+        Shot("done_home_kept_timed_out") { Setup(done(off = 3, home = false), connected.copy(doneHomeKept = tv.cleanyour.core.engine.HomeOutcome.TIMED_OUT)) },
         // The Google Play build (STORES-PLAN 1): Done offers no card to add.
         Shot("play_done_home_on") { Setup(done(), connected.copy(addOns = false)) },
     )

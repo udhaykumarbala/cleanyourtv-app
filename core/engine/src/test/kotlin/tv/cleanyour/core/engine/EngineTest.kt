@@ -141,6 +141,41 @@ class EngineTest {
         assertEquals(expected, h.types(plan))
     }
 
+    // QA of 0.4.5: "Stop here" after a paused Setup gave the run up with the TV curtain still
+    // installed and running. The run's own curtain removal runs first; nothing else is touched, and
+    // what the run switched off stays off.
+    @Test fun stopHereRemovesTheCurtainTheRunInstalled() = runTest(timeout = TEST_TIMEOUT) {
+        val h = Harness(this)
+        val engine = h.engine()
+        val curtainPkg = PackageName("tv.cleanyour.curtain")
+        val bytes = "fake curtain apk".encodeToByteArray()
+        val sha = h.tv.acceptApk(bytes, curtainPkg, 1, h.signer)
+        val curtain = tv.cleanyour.core.model.LauncherArtifact(curtainPkg, 1, "0.1", sha, h.signer, tv.cleanyour.core.model.BlobRef(sha, bytes.size.toLong(), "bundled:curtain.apk"))
+        val req = PlanRequest.Setup(tv.cleanyour.core.spec.ProfileResolution.Exact(h.profile()),
+            tv.cleanyour.core.planner.Choices(emptySet(), emptySet(), null, null, true, false, false, false), h.artifact, tv.cleanyour.core.model.Level.SIMPLE, curtain = curtain)
+        val plan = h.plan(req)
+        assertEquals(StartResult.Started, engine.start(plan, h.tv, plan.hash, h.pass()))
+        val firstOff = plan.steps.first { it.op is Op.Disable }.index
+        var guard = 0
+        while (h.records(plan).none { it is JournalRecord.Done && it.i == firstOff }) { advanceTimeBy(100); runCurrent(); check(guard++ < 6_000) { "no switch-off done" } }
+        assertTrue(curtainPkg in h.tv.packages, "the curtain is on the TV")
+        engine.stop(h.tv.tvId)
+        val paused = h.settle(engine)
+        assertIs<RunState.Paused>(paused)
+        assertEquals(PauseReason.USER_STOP, paused.reason)
+        val before = h.tv.execLog.size
+        engine.abandon(h.tv.tvId); h.settle(engine)
+        val fin = engine.runState(h.tv.tvId).value
+        assertIs<RunState.Finished>(fin)
+        assertEquals(RunStatus.ABANDONED, fin.status)
+        assertTrue(curtainPkg !in h.tv.packages, "the curtain is not left on the TV")
+        val sent = h.tv.execLog.drop(before).map { tv.cleanyour.testing.fixtures.Recording.normalize(it) }.filter { !it.startsWith("dumpsys") && !it.startsWith("pm list") && !it.startsWith("pm path") }   // reads
+        assertEquals(listOf("pm uninstall --user 0 tv.cleanyour.curtain"), sent, "only the curtain's removal is sent")
+        val off = plan.steps.filter { it.op is Op.Disable && it.index in h.records(plan).filterIsInstance<JournalRecord.Done>().map { d -> d.i } }
+        assertTrue(off.isNotEmpty())
+        for (s in off) assertEquals(EnabledState.DISABLED_USER, h.tv.state((s.op as Op.Disable).pkg), "kept off")
+    }
+
     // RF-CURTAIN-1 F1: a new group forces a thumbnail, but silent steps (the curtain's cues woven
     // after every switch-off) never force one and do not end a group, so the cues add no screenshots.
     @Test fun silentStepsForceNoThumbnail() {

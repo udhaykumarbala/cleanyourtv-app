@@ -249,10 +249,11 @@ class ModulesMachine(
             cardsOn = cardsOnLook(snapshot.launcherOverlay)
             val request = PlanRequest.AddModule(m, v, blob, cardsOn?.first?.config, cardsOn?.first?.wallpaper)
             val plan = (d.runner.plan(tv, request, snapshot) as? PlanResult.Ok)?.plan ?: return@attempt null
+            d.openWrites.remember(plan.id, request)
             d.runner.run(tv, plan, session, pass, onStarted = { d.sessionEnd.touched(tvId) }) { s -> if (s is RunState.Running) send(Step(InstallStep.Installing(s.percent))) }
         }.getOrNull()
         // A paused install (or a run another write left open) is the OpenWrites card's to resolve (O2).
-        if (outcome is RunOutcome.Paused) { d.openWrites.show(tv, outcome.state); return send(Step(null)) }
+        if (outcome is RunOutcome.Paused) { TvWriter(d).publish(tv, outcome.state); return send(Step(null)) }
         if (outcome is RunOutcome.StartRefused && outcome.refusal == StartRefusal.RUN_OPEN && TvWriter(d).openRun(tv, session) != null) return send(Step(null))
         if (outcome !is RunOutcome.Finished) return send(Step(InstallStep.Failed(m.name, null)))
         cardsOn?.let { keepCardsOn(it) }

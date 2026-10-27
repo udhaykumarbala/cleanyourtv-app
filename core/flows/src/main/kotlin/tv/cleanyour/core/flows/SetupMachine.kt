@@ -149,6 +149,7 @@ data class SetupExtras(
     val doneKept: List<String> = emptyList(),    // RF-LAUNCHER-250 F1: switch-offs kept because they run the TV's inputs
     val doneNothing: Boolean = false,            // 0.3.3 (issue #15): the run changed nothing on the TV, so Done says so
     val doneNothingWhy: NothingWhy = NothingWhy.NOTHING_PLANNED,   // which "nothing was changed" body Done shows
+    val doneHomeKept: HomeOutcome? = null,       // QA of 0.4.5: the switch was tried and the old home screen is back, why (Done's line)
     val restorePointPushed: Boolean = false,     // D44
     val dock: List<AppChoice> = emptyList(),     // D4 row and the dock sheet (S3b): the dock, then Row 2 and Row 3
     val apps: List<AppChoice> = emptyList(),     // installed apps for the dock sheet
@@ -261,6 +262,9 @@ class SetupMachine(
     private var undoRequested = false
     private var askedNotifications = false
     private var lastFinished: RunState.Finished? = null
+    // QA of 0.4.5: the earlier Setup runs of this Setup ("Try again" after the home check), whose
+    // switch-offs are still on the TV; Done and the timed out card count them with the last run's.
+    private val earlierRuns = mutableListOf<PlanId>()
     private var abandonJob: Job? = null   // R1 R-11: an abandon waiting for the TV to come back
     private var heldTv: TvId? = null      // T7 item 1: the TV whose session this wizard holds (TvAccess.keep)
     private var launchable: Set<PackageName>? = null   // finding 3: null when the TV could not say
@@ -1027,6 +1031,7 @@ class SetupMachine(
             if (pass == null) { mutableExtras.update { it.copy(starting = false) }; return }
         }
         mutableExtras.update { it.copy(noScreenLock = deps.gate.noScreenLock(record.id) || it.noScreenLock) }
+        earlierRuns.clear()
         if (!askedNotifications) { askedNotifications = true; effect(SetupEffect.RequestNotificationPermission) }
         startPlan(record, s, plan, pass)
     }
@@ -1146,7 +1151,7 @@ class SetupMachine(
             f.status == RunStatus.ABANDONED && f.home == HomeOutcome.CONNECTION_LOST && f.plan.steps.isEmpty() ->
                 send(Ev.Stop(tvId, homePutBackCard(f.plan.id)))
             f.status == RunStatus.ABANDONED -> effect(SetupEffect.Navigate("manage/${tvId.value}"))
-            f.home != null && f.home != HomeOutcome.CONFIRMED -> send(Ev.Stop(tvId, homeCard(f)))
+            f.home != null && f.home != HomeOutcome.CONFIRMED -> send(Ev.Stop(tvId, homeCard(f, switchedOffSoFar(f.plan))))
             else -> showDone(tvId, f, homeOn = f.plan.sections.isNotEmpty() && f.home == HomeOutcome.CONFIRMED)
         }
     }
@@ -1161,7 +1166,10 @@ class SetupMachine(
         // skips. "Stop here" (the run abandoned) counts only what the ledger shows: with no step
         // done, nothing was switched off, whatever the plan said.
         val stopped = f == null || f.status == RunStatus.ABANDONED
+        // QA of 0.4.5: after "Try again", what this Setup's runs switched off and left off, all of them.
+        val soFar = if (plan != null && earlierRuns.isNotEmpty()) switchedOffSoFar(plan) else null
         val off = when {
+            soFar != null && (stopped || (progress?.doneSteps ?: 0) > 0) -> soFar
             progress != null && progress.doneSteps > 0 -> progress.doneDisables
             stopped -> 0
             plan != null -> planned.size - skipped.count { it.op is Op.Disable }
@@ -1216,8 +1224,12 @@ class SetupMachine(
             planned.all { p -> skipped.any { it.index == p.index } } -> NothingWhy.KEPT_ON
             else -> NothingWhy.STOPPED
         }
+        // QA of 0.4.5: the switch was in the plan and the old home screen is back (the check ran out
+        // of time, the person said no, the new one did not take over): Done says the home screen is
+        // unchanged and why, never only "Your TV is ready".
+        val homeKept = f?.home?.takeIf { !homeOn && it != HomeOutcome.CONFIRMED && plan?.sections?.isNotEmpty() == true }
         mutableExtras.update { it.copy(doneLines = skippedNames, doneKept = keptNames, doneNothing = off == 0 && !homeOn && !changed, doneNothingWhy = why,
-            keepsDebugging = keepsDebugging(tvId)) }
+            keepsDebugging = keepsDebugging(tvId), doneHomeKept = homeKept) }
         send(Ev.ShowDone(tvId, DoneSummary(off, homeOn, restorePointAt, skippedNames, recommended)))
         session?.let { s -> mutableExtras.update { it.copy(restorePointPushed = deps.restorePoint.write(done, s, p)) } }
     }
@@ -1289,10 +1301,16 @@ class SetupMachine(
     }
 
     // Plans again from a fresh snapshot (the debloat part is already done) and starts at once.
+    // QA of 0.4.5: only a plan made now from that read is started. When none could be made (the TV
+    // went away, the plan was refused) the plan of the run that just ended is never started again;
+    // the card the replan showed stays, or the run's own card when there is none.
     private suspend fun retakeover(record: Tv) {
         val s = session ?: return
+        val before = setupPlan
+        setupPlan = null
         replan(record.copy(wizard = record.wizard ?: draftFor(record)), fresh = true)
-        val plan = setupPlan ?: return
+        val plan = setupPlan ?: run { setupPlan = before; return }
+        lastFinished?.plan?.takeIf { it.kind == PlanKind.SETUP && it.id != plan.id && it.id !in earlierRuns }?.let { earlierRuns += it.id }
         val pass = if (GateKeeper.needsPass(plan)) deps.gate.pass(record.id, record.nickname) ?: return else null
         startPlan(record, s, plan, pass)
     }
@@ -1317,7 +1335,10 @@ class SetupMachine(
             StopCase.HOME_OTHER_LAUNCHER -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
             StopCase.HOME_UNKNOWN -> if (action == StopAction.PRIMARY) shareDiagnostics() else send(SetupIntent.LeaveOldHome)
             StopCase.HOME_USER_SAID_NO -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else shareDiagnostics()
-            StopCase.HOME_TIMED_OUT -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
+            // QA of 0.4.5: the card's primary is "OK" and its secondary "Try again" (stopKeys); the
+            // two were the wrong way round, so "Try again" went straight to Done with the old home
+            // screen on the TV, and "OK" started the switch again.
+            StopCase.HOME_TIMED_OUT -> if (action == StopAction.SECONDARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
             StopCase.HOME_SETTINGS_OPEN -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
             StopCase.CONNECTION_LOST, StopCase.STEP_FAILED -> when (action) {
                 StopAction.PRIMARY -> send(SetupIntent.CarryOn)
@@ -1554,7 +1575,11 @@ class SetupMachine(
     // "We put the old home screen back": step R ran after the connection was lost (UX 4.7, 4.9).
     private fun homePutBackCard(planId: PlanId?): StopCard = card(StopCase.HOME_PUT_BACK, planId, args = mapOf("tv" to (tv?.nickname ?: "")))
 
-    private fun homeCard(f: RunState.Finished): StopCard {
+    // The switch-offs this Setup's runs made and left on the TV (the journal is the record).
+    private suspend fun switchedOffSoFar(plan: Plan): Int =
+        (earlierRuns + plan.id).distinct().flatMap { id -> attempt { deps.ledger.disabledBy(id) }.getOrDefault(emptySet()) }.toSet().size
+
+    private fun homeCard(f: RunState.Finished, off: Int = 0): StopCard {
         val other = otherLauncherName()
         // Issue #375: "Try with the wizard off" is never offered. The planner switches the wizard off
         // only inside the home screen switch, on a profile with the wizard quirk, and then this run
@@ -1589,6 +1614,9 @@ class SetupMachine(
             val body = if (wizardWifi == WizardWifi.OWNER) CopyKey.STOP_HOME_SETUPWRAITH_WIFI_BODY else CopyKey.STOP_HOME_SETUPWRAITH_WIFI_UNKNOWN_BODY
             return card(case, f.plan.id, body = body, primary = CopyKey.STOP_HOME_SETUPWRAITH_WIFI_PRIMARY)
         }
+        // QA of 0.4.5: "Your TV is as it was" only when nothing stayed switched off; otherwise the
+        // card says how many things are still off and that the home screen is as it was.
+        if (case == StopCase.HOME_TIMED_OUT && off > 0) return card(case, f.plan.id, args = mapOf("launcher" to (other ?: ""), "count" to off), body = CopyKey.STOP_HOME_TIMED_OUT_BODY_OFF)
         return card(case, f.plan.id, args = mapOf("launcher" to (other ?: "")))
     }
 

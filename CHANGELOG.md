@@ -27,10 +27,10 @@ more TV lists and a "Better back on" offer for apps an earlier list switched off
   Aqua Matrix TV EE 50, Epson LS800, Hisense Fire TV (AFTCIBFBD1), JVC LT-55MB508, Lumio Vision 7,
   NVIDIA SHIELD TV (2017), OnePlus TV (Cebu and Dosa), Philips Google TV TA1 and TA7, Redmi Mi TV
   MFTP0, Sber SaluteTV AT30A6, Sharp 2T-C32GH3000I, Sony BRAVIA VU1 and VU3, TCL 50DP660, TCL G08
-  (EU, Android 12), Thomson 43RT1055, Xiaomi Mi Box S (Android 12) and Xiaomi Mi TV ASTP0, AYFR0,
+  (EU, Android 12), Motorola MotorolaTV (MT4310), Thomson 43RT1055, Xiaomi Mi Box S (Android 12) and Xiaomi Mi TV ASTP0, AYFR0,
   MSSP0, MSSP2 and MTEQ0.
 - Lists we already had for TCL, Xiaomi, Sony, Philips, Amazon and others got their contributors'
-  fixes. The Sony BRAVIA BF1 lists now match BF1 sets, the Skyworth SWTV-22AE list works on
+  fixes. The Sony BRAVIA BF1 list now matches BF1 sets, the Skyworth SWTV-22AE list works on
   Android 11, and the Mi Box S list covers older firmware.
 - The Sony BRAVIA VU3 keeps its own home screen, so the remote's app buttons (Netflix, YouTube,
   Prime Video and YouTube Music) keep working. The app still switches off the adverts and tracking.
@@ -51,7 +51,8 @@ your TV, Manage now says so under "Better back on" and offers to switch it back 
 - the TCL G10's remote mic service;
 - the update helper on the TCL G03;
 - the updater on the TCL ak30a5;
-- the stock home screen and setup wizard on the Kalley R10G.
+- the stock home screen and setup wizard on the Kalley R10G (the wizard is offered once the TV's
+  own home screen is back in charge).
 
 ### Safety
 - After the home screen update, it restarts cleanly and its remote helpers come back.
@@ -95,6 +96,15 @@ your TV, Manage now says so under "Better back on" and offers to switch it back 
   asks you to press only Home and not open anything else (#629).
 - When reading the TV fails, the log line now says what the app found, for example "getprop has
   no ro.product.model", instead of only the step that failed (#788, #1112).
+- When the home screen check timed out and the TV put its old home screen back, Try again now
+  reads the TV and runs the switch again, and OK keeps the old home screen. Before, the two buttons
+  were swapped, so Try again ended on "Your TV is ready" with nothing switched. The last screen now
+  says when the home screen stayed and why, and counts only what is really switched off.
+- Stop here, and a home screen check that puts the old home screen back, now remove the app's
+  full-screen page from the TV instead of leaving it running.
+- When the TV changed since the app last read it, a paused change says so ("changed since we last
+  read it", nothing was changed) and Check again reads the TV and plans from that, instead of
+  pausing again.
 
 ## 0.4.0 (2026-10-26)
 

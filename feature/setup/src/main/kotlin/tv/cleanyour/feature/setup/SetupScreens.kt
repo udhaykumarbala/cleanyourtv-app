@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlinx.coroutines.delay
+import tv.cleanyour.core.engine.HomeOutcome
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.flows.AppChoice
 import tv.cleanyour.core.flows.ChipState
@@ -679,6 +680,14 @@ fun DoneScreen(state: SetupState.Done, extras: SetupExtras, actions: SetupAction
             else -> msg(R.string.done_body_no_home, "count" to s.switchedOff)
         }
         Lead(lead, Modifier.padding(top = 8.dp))
+        // QA of 0.4.5: the home screen switch was tried and the old home screen is back; Done says so and why.
+        extras.doneHomeKept?.let { why ->
+            Body(stringResource(when (why) {
+                HomeOutcome.TIMED_OUT -> R.string.done_home_kept_timed_out
+                HomeOutcome.USER_SAID_NO -> R.string.done_home_kept_said_no
+                else -> R.string.done_home_kept
+            }), Modifier.padding(top = 8.dp))
+        }
         Column(Modifier.padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             CheckLine(msg(R.string.done_restore_saved, "date" to dateTime(s.restorePointAtMs, locale)))
             // D7: with "Keep debugging on" chosen, Finish leaves debugging on, and the line says so.

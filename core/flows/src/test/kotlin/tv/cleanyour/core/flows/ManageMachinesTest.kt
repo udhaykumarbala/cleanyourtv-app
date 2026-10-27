@@ -570,6 +570,63 @@ class ManageMachinesTest {
         assertNull(d.openWrites.current.value)
     }
 
+    // QA of 0.4.5 (obs-unfinished): the TV changed after the read a send was planned from, so the
+    // engine paused it STALE before step 0. The card said "We stopped partway through" though
+    // nothing was done, and Carry on met the same check again at once, for good. Now the card knows
+    // nothing was done, and Carry on ("Check again") ends that run, reads the TV afresh, plans the
+    // same request from that read and runs the new plan; the old plan never runs.
+    @Test fun aStalePauseBeforeTheFirstStepIsCheckedAgainAndPlannedFromAFreshRead() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = h.knownTv()
+        h.ranDisable(tv, listOf(adPkg))
+        var made = 0
+        val previous = h.planner.respond
+        h.planner.respond = { r, snap ->
+            if (r is PlanRequest.PutBack) PlanResult.Ok(h.plan(listOf(Op.Enable(adPkg)), kind = PlanKind.PUT_BACK, id = "01FAKEPUTB0000000000000" + (++made).toString().padStart(3, '0')))
+            else previous(r, snap)
+        }
+        val stale = RunState.Paused(h.plan(listOf(Op.Enable(adPkg)), kind = PlanKind.PUT_BACK, id = "01FAKEPUTB0000000000000001"), 0, PauseReason.STALE, AdbError.Policy.Stale(listOf("com.miui.tv.analytics: DISABLED_USER -> ENABLED")))
+        h.engine.onStart = { p -> if (p.id == stale.plan.id) emit(p.tvId, stale.copy(plan = p)) else finish(p, RunStatus.COMPLETED) }
+        val d = h.manageDeps()
+        assertIs<WriteResult.Paused>(TvWriter(d).write(tv.id, PlanRequest.PutBack(adPkg)))
+        val card = assertNotNull(d.openWrites.current.value)
+        assertEquals(PauseReason.STALE, card.reason)
+        assertTrue(card.nothingDone, "no step was done, so the card never says we stopped partway")
+        val reads = h.prober.calls.count { it == "snapshot ${SnapshotReason.MANUAL}" }
+        var result: WriteResult? = null
+        backgroundScope.launch { result = TvWriter(d).resolveOpen(tv.id, OpenWriteAction.CARRY_ON) }
+        settle()
+        assertTrue(h.engine.calls.none { it is FakeEngine.Call.ContinueRun }, "the stale plan is never carried on")
+        assertTrue(h.engine.calls.any { it is FakeEngine.Call.Abandon })
+        assertTrue(h.prober.calls.count { it == "snapshot ${SnapshotReason.MANUAL}" } > reads, "the TV is read again")
+        val starts = h.engine.calls.filterIsInstance<FakeEngine.Call.Start>().filter { it.plan.kind == PlanKind.PUT_BACK }
+        assertEquals(listOf("01FAKEPUTB0000000000000001", "01FAKEPUTB0000000000000002"), starts.map { it.plan.id.value }, "a new plan from the fresh read")
+        assertIs<WriteResult.Done>(result)
+        assertEquals(stale.plan.id.value.dropLast(1) + "2", assertIs<WriteResult.Done>(result).plan.id.value)
+        assertNull(d.openWrites.current.value)
+    }
+
+    // The same pause after a restart: the request is not known any more, so "Check again" ends the
+    // run and reads the TV, and starts nothing; the next change is planned from that read.
+    @Test fun aStalePauseWhoseRequestIsUnknownIsEndedAndTheTvRead() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = h.knownTv()
+        val open = h.plan(listOf(Op.Disable(promoPkg)), kind = PlanKind.SWITCH_OFF, id = "01FAKEOPENRUN000000000001")
+        h.engine.emit(tv.id, RunState.Paused(open, 0, PauseReason.STALE, null))
+        val d = h.manageDeps()
+        assertNotNull(TvWriter(d).openRun(tv, h.session))
+        assertTrue(assertNotNull(d.openWrites.current.value).nothingDone)
+        val reads = h.prober.calls.count { it == "snapshot ${SnapshotReason.MANUAL}" }
+        var result: WriteResult? = null
+        backgroundScope.launch { result = TvWriter(d).resolveOpen(tv.id, OpenWriteAction.CARRY_ON) }
+        settle()
+        assertTrue(h.engine.calls.none { it is FakeEngine.Call.ContinueRun })
+        assertEquals(RunStatus.ABANDONED, assertIs<WriteResult.Done>(result).finished.status)
+        assertTrue(h.prober.calls.count { it == "snapshot ${SnapshotReason.MANUAL}" } > reads, "the TV is read again")
+        assertTrue(h.engine.calls.none { it is FakeEngine.Call.Start })
+        assertNull(d.openWrites.current.value)
+    }
+
     // O2 after process death: the engine has not loaded the open run, so start says RUN_OPEN; the
     // writer resumes it (safety only) and shows its card instead of the failed snackbar.
     @Test fun aRunOpenRefusalLoadsTheRunThroughResumeAndShowsItsCard() = runTest(timeout = 30.seconds) {

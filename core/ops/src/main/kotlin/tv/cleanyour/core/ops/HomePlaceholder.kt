@@ -13,7 +13,7 @@ import tv.cleanyour.core.model.Op
 object HomePlaceholder {
     fun isPlaceholder(c: Component): Boolean {
         val pkg = c.pkg.value
-        return pkg == Denylist.FRAMEWORK || c.cls.endsWith("FallbackHome") || pkg == "com.android.provision" ||
+        return pkg == Denylist.FRAMEWORK || "FallbackHome" in c.cls || pkg == "com.android.provision" ||
             pkg in Denylist.setupWizards || pkg in Denylist.vendorSetupWizards || "setupwraith" in pkg.lowercase()
     }
 

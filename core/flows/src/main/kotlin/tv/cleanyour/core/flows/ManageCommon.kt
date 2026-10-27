@@ -8,6 +8,7 @@ import tv.cleanyour.core.discovery.Discovery
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import tv.cleanyour.core.engine.Engine
+import tv.cleanyour.core.engine.PauseReason
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.engine.RunStatus
 import tv.cleanyour.core.engine.StartRefusal
@@ -17,6 +18,7 @@ import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.PlanResult
 import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Profile
+import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.Tv
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.ops.ConfigTransport
@@ -313,13 +315,22 @@ class TvWriter(private val d: ManageDeps) {
         }
         val tv = d.tv(tvId) ?: return WriteResult.NoTv
         // An earlier write left its run open: no new plan, no prompt, the card for that run (O2).
-        (d.engine.runState(tvId).value as? RunState.Paused)?.let { p -> d.openWrites.show(tv, p); return WriteResult.Paused(p.plan, p) }
+        (d.engine.runState(tvId).value as? RunState.Paused)?.let { p -> publish(tv, p); return WriteResult.Paused(p.plan, p) }
         return attempt {
             val snapshot = if (fresh) d.runner.freshSnapshot(session) else d.runner.snapshotFor(tv, session)
+            runFrom(tv, session, request, snapshot, onBusy)
+        }.getOrElse { WriteResult.Failed(it.message ?: it.toString()) }
+    }
+
+    // The plan for the request from this read of the TV, then the run, followed to its end or pause.
+    private suspend fun runFrom(tv: Tv, session: TvSession, request: PlanRequest, snapshot: Snapshot, onBusy: (Busy) -> Unit): WriteResult {
+        val tvId = tv.id
+        return attempt {
             val plan = when (val r = d.runner.plan(tv, request, snapshot)) {
                 is PlanResult.Ok -> r.plan
                 is PlanResult.Refused -> return@attempt WriteResult.Refused(r.reasons)
             }
+            d.openWrites.remember(plan.id, request)
             val outcome = d.runner.run(tv, plan, session, onStarted = { d.sessionEnd.touched(tvId) }) { s ->
                 if (s is RunState.Running) onBusy(Busy.Working(s.percent, s.narration.map { it.text }))
             }
@@ -328,7 +339,7 @@ class TvWriter(private val d: ManageDeps) {
                     afterRun(tv, session, plan, outcome.state)
                     WriteResult.Done(plan, outcome.state)
                 }
-                is RunOutcome.Paused -> { d.openWrites.show(tv, outcome.state); WriteResult.Paused(plan, outcome.state) }
+                is RunOutcome.Paused -> { publish(tv, outcome.state); WriteResult.Paused(plan, outcome.state) }
                 is RunOutcome.StartRefused -> if (outcome.refusal == StartRefusal.RUN_OPEN) {
                     openRun(tv, session)?.let { WriteResult.Paused(it.plan, it) } ?: WriteResult.Failed(outcome.refusal.name)
                 } else WriteResult.Failed(outcome.refusal.name)
@@ -350,8 +361,15 @@ class TvWriter(private val d: ManageDeps) {
     suspend fun openRun(tv: Tv, session: TvSession, publish: Boolean = true): RunState.Paused? {
         if (d.engine.runState(tv.id).value !is RunState.Paused) attempt { d.engine.resume(tv.id, session) }
         val p = d.engine.runState(tv.id).value as? RunState.Paused ?: return null
-        if (publish) d.openWrites.show(tv, p)
+        if (publish) publish(tv, p)
         return p
+    }
+
+    // The open run's card (O2). QA of 0.4.5: it knows whether any step of the run was done, so a run
+    // paused STALE before its first step says nothing was changed, never "we stopped partway".
+    suspend fun publish(tv: Tv, p: RunState.Paused) {
+        val nothingDone = attempt { d.ledger.progress(p.plan.id).doneSteps == 0 }.getOrDefault(false)
+        d.openWrites.show(tv, p, nothingDone)
     }
 
     // The card's buttons (O2): carry on, undo what we did, or stop here, for the open run on this
@@ -369,6 +387,7 @@ class TvWriter(private val d: ManageDeps) {
         return attempt {
             val paused = openRun(tv, session, publish = false) ?: run { d.openWrites.clear(tvId); return@attempt WriteResult.NoTv }   // it ended meanwhile
             val plan = paused.plan
+            if (action == OpenWriteAction.CARRY_ON && paused.reason == PauseReason.STALE) return@attempt checkAgain(tv, session, paused)
             when (action) {
                 OpenWriteAction.CARRY_ON, OpenWriteAction.UNDO -> {
                     val pass = if (GateKeeper.needsPass(plan)) d.gate.pass(tvId, tv.nickname) ?: run { idle(); return@attempt WriteResult.GateCancelled } else null
@@ -387,10 +406,37 @@ class TvWriter(private val d: ManageDeps) {
                     afterRun(tv, session, plan, outcome.state)
                     WriteResult.Done(plan, outcome.state)
                 }
-                is RunOutcome.Paused -> { d.openWrites.show(tv, outcome.state); WriteResult.Paused(plan, outcome.state) }
+                is RunOutcome.Paused -> { publish(tv, outcome.state); WriteResult.Paused(plan, outcome.state) }
                 else -> { idle(); WriteResult.Failed("unexpected") }
             }
         }.getOrElse { idle(); WriteResult.Failed(it.message ?: it.toString()) }
+    }
+
+    // QA of 0.4.5: the TV changed after the read the plan was made from, so the engine paused the run
+    // STALE before the step whose prior no longer held. Carrying on with that plan meets the same
+    // check again, for good (the engine re-reads the TV but the plan's priors stay old). "Check
+    // again" ends that run (what was done stays done), reads the TV afresh and plans the same request
+    // from what it has now, and runs it; the engine checks the new plan against the TV once more
+    // before its first step, so a plan made from an old read never runs. When the request is not
+    // known (the app was restarted since), the run is ended and the TV read, and the next change
+    // starts from that read.
+    private suspend fun checkAgain(tv: Tv, session: TvSession, paused: RunState.Paused): WriteResult {
+        d.engine.abandon(tv.id)
+        val after = d.engine.runState(tv.id).value
+        if (after is RunState.Paused) {   // the run could not be ended (the TV went away again)
+            d.openWrites.update(tv.id) { it.copy(busy = false, notTaken = true) }
+            return WriteResult.Paused(paused.plan, after)
+        }
+        val snapshot = d.runner.freshSnapshot(session)
+        val request = d.openWrites.requestOf(paused.plan.id)
+        if (request == null) {
+            d.openWrites.clear(tv.id)
+            return WriteResult.Done(paused.plan, after as? RunState.Finished ?: RunState.Finished(paused.plan, RunStatus.ABANDONED, emptyList(), null))
+        }
+        // The card stays, busy, while the new plan runs; a pause of that run shows its own card.
+        val result = runFrom(tv, session, request, snapshot) {}
+        if (result !is WriteResult.Paused) d.openWrites.clear(tv.id)
+        return result
     }
 
     companion object { const val MOVE_WAIT_MS = 5_000L }

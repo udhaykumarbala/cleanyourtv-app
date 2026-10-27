@@ -78,6 +78,7 @@ class ResourceFlowCopy(context: Context) : FlowCopy {
         CopyKey.STOP_HOME_USER_SAID_NO_SECONDARY -> SetupR.string.stop_home_user_said_no_secondary
         CopyKey.STOP_HOME_TIMED_OUT_TITLE -> SetupR.string.stop_home_timed_out_title
         CopyKey.STOP_HOME_TIMED_OUT_BODY -> SetupR.string.stop_home_timed_out_body
+        CopyKey.STOP_HOME_TIMED_OUT_BODY_OFF -> SetupR.string.stop_home_timed_out_body_off
         CopyKey.STOP_HOME_TIMED_OUT_PRIMARY -> SetupR.string.stop_home_timed_out_primary
         CopyKey.STOP_HOME_TIMED_OUT_SECONDARY -> SetupR.string.stop_home_timed_out_secondary
         CopyKey.STOP_CONNECTION_LOST_TITLE -> SetupR.string.stop_connection_lost_title

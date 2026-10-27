@@ -39,6 +39,7 @@ import tv.cleanyour.core.ops.Rendered
 import tv.cleanyour.core.ops.Transfer
 import tv.cleanyour.core.ops.VerifyResult
 import tv.cleanyour.core.model.Component
+import tv.cleanyour.core.planner.DefaultPlanner
 import tv.cleanyour.core.planner.GuardedSection
 import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.core.planner.PlanKind
@@ -718,10 +719,38 @@ class DefaultEngine(
     // ---- ending a run ------------------------------------------------------------------------------
 
     private suspend fun finishWithSkips(run: Run, home: HomeOutcome?, from: Int) {
+        removeCurtain(run, from)
         for (i in from until run.plan.steps.size) if (i !in run.done && run.plan.steps[i] !in run.skipped) {
             run.skipped += run.plan.steps[i]; run.states[i] = NarrationState.SKIPPED
         }
         end(run, RunStatus.COMPLETED_WITH_SKIPS, home)
+    }
+
+    // QA of 0.4.5 (the home check timed out and the old home screen was put back): the run ended
+    // there and skipped every step after it, the TV curtain's removal (the plan's last step) too, so
+    // the curtain stayed installed and running on the TV. Its removal still runs when the rest is
+    // skipped. Like every curtain step it can never stop the run: a refusal or a lost connection
+    // only leaves it skipped.
+    private suspend fun removeCurtain(run: Run, from: Int) {
+        for (i in from until run.plan.steps.size) {
+            val step = run.plan.steps[i]
+            if (i in run.done || step.group != DefaultPlanner.GROUP_CURTAIN || step.op !is Op.Uninstall) continue
+            val outcome = try {
+                perform(run, i, step.op, step.rendered, step.prior)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                null
+            }
+            if (outcome == Outcome.Ok) { run.done += i; run.states[i] = NarrationState.DONE }
+        }
+    }
+
+    // A curtain step of this run was done (its install or its start) and its removal was not.
+    private fun curtainLeft(run: Run): Boolean {
+        val steps = run.plan.steps.filter { it.group == DefaultPlanner.GROUP_CURTAIN }
+        val removal = steps.lastOrNull { it.op is Op.Uninstall } ?: return false
+        return removal.index !in run.done && steps.any { it.index in run.done && (it.op is Op.Install || it.op is Op.InstallStream || it.op is Op.StartActivity) }
     }
 
     private suspend fun end(run: Run, status: RunStatus, home: HomeOutcome?) {
@@ -844,7 +873,11 @@ class DefaultEngine(
         if (flow(tvId).value !is RunState.Paused) return
         val open = run.plan.sections.firstOrNull { it.name in run.openSections }
         val restore = unfinishedAccessibilityRestore(run)
-        if (open == null && restore.isEmpty()) { end(run, RunStatus.ABANDONED, run.home); return }
+        // QA of 0.4.5: "Stop here" left the TV curtain this run installed running on the TV. Its
+        // removal (the plan's own curtain step, nothing else) runs before the run is given up, when
+        // the TV is there; without the TV the run ends as before, and Leftovers removes it later.
+        val curtain = curtainLeft(run) && run.session.state.value is ConnectionState.Connected
+        if (open == null && restore.isEmpty() && !curtain) { end(run, RunStatus.ABANDONED, run.home); return }
         // An open section means the TV's own home screen may be off: step R runs before the run is
         // given up. A restore of the accessibility services cut off half way (upstream #424) leaves
         // the TV with none, and accessibility off: its remaining steps run first too (RF-LAUNCHER-250
@@ -856,6 +889,7 @@ class DefaultEngine(
             guarded(run) {
                 if (open != null && !rollbackSection(run, open, HomeOutcome.CONNECTION_LOST)) return@guarded
                 if (!finishAccessibilityRestore(run, restore)) return@guarded
+                if (curtainLeft(run)) removeCurtain(run, 0)
                 end(run, RunStatus.ABANDONED, run.home)
             }
         }
