@@ -30,7 +30,7 @@ class CandidateListsTest {
     private class Lists(val profile: Profile?) : CandidateLists {
         var tried: Boolean? = null
         val asked = mutableListOf<Pair<String, Boolean>>()
-        override fun offer(facts: DeviceFacts): Profile? = profile
+        override fun offer(facts: DeviceFacts, home: tv.cleanyour.core.model.HomeResolution?, packages: Map<tv.cleanyour.core.model.PackageName, tv.cleanyour.core.model.PackageState>?): Profile? = profile
         override suspend fun choose(profileId: String, tryIt: Boolean) { asked += profileId to tryIt; tried = tryIt }
     }
 

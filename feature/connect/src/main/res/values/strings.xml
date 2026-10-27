@@ -156,8 +156,8 @@
     <string name="pairing_steps_intro">On the TV, open Developer options > Wireless debugging > Pair device with pairing code. Then run these three commands on the computer, one at a time.</string>
     <string name="pairing_steps_cmd_pair" translatable="false">adb pair ADDRESS:PAIR_PORT</string>
     <string name="pairing_steps_cmd_connect" translatable="false">adb connect ADDRESS:CONNECT_PORT</string>
-    <string name="pairing_steps_cmd_tcpip" translatable="false">adb tcpip 5555</string>
-    <string name="pairing_steps_note">Use the address, ports and six-digit code the TV shows. When the last command has run, come back to this app.</string>
+    <string name="pairing_steps_cmd_tcpip" translatable="false">adb -s ADDRESS:CONNECT_PORT tcpip 5555</string>
+    <string name="pairing_steps_note">Use the address, ports and six-digit code the TV shows. When the last command has run, come back to this app. After the TV restarts, run the last two commands again with the port the TV shows then; there is no need to pair again.</string>
 
     <!-- Stop: TV not found (UX 4.1, no Wi-Fi name, D19) -->
     <string name="stop_tv_not_found_title">No TV found yet</string>

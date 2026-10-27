@@ -3,7 +3,9 @@ package tv.cleanyour.adb.session
 import kotlinx.coroutines.withTimeoutOrNull
 import tv.cleanyour.adb.wire.AdbConnection
 import tv.cleanyour.adb.wire.AdbService
+import tv.cleanyour.adb.wire.AdbStream
 import tv.cleanyour.adb.wire.AdbStreamReader
+import tv.cleanyour.adb.wire.SIGNER_FAILED
 import tv.cleanyour.adb.wire.ShellPacket
 import tv.cleanyour.adb.wire.ShellV2
 import tv.cleanyour.adb.wire.protocolError
@@ -189,6 +191,32 @@ object ConnectFailure {
     }
 }
 
+// Issues #325 and #620: the socket connected, then the connect failed inside the app, and the person
+// saw "unreachable" with no reason. A handshake or identity read that fails with anything but the
+// TV's own answer now says why, in the log and in "Copy error": the phone's key (SIGNER_FAILED, with
+// the Keystore's exception class) or an unexpected exception (its class). Same rules as
+// ConnectFailure: platform class names and errno reasons only, never a message.
+object HandshakeFailure {
+    // Not an AdbException at all: a bug of ours, typed here so TvSession's contract holds (R0: 7).
+    const val UNEXPECTED = "unexpected exception in the handshake"
+
+    // The line's text for a failure worth naming, or null for a plain AdbException from the TV
+    // (lost, timeout, denied, the TV's protocol error), which the log already names by its kind.
+    fun detail(e: Throwable): String? {
+        val error = (e as? AdbException)?.error
+        return when {
+            error is AdbError.Transport.Protocol && error.detail == SIGNER_FAILED -> "$SIGNER_FAILED: ${ConnectFailure.detail(e.cause ?: e)}"
+            e !is AdbException -> "handshake failed: ${ConnectFailure.detail(e)}"
+            else -> null
+        }
+    }
+
+    // What the caller gets for an exception that is not an AdbException: a typed error that keeps it
+    // as its cause.
+    fun typed(e: Throwable): AdbException =
+        e as? AdbException ?: AdbException(AdbError.Transport.Protocol(UNEXPECTED)).also { it.initCause(e) }
+}
+
 // Keeps the first cap bytes and remembers that more arrived.
 internal class CappedBuffer(private val cap: Int) {
     private val bytes = ByteArrayOutputStream()
@@ -215,11 +243,18 @@ internal suspend fun <T> bounded(ms: Long, phase: String, block: suspend () -> T
     return r.value
 }
 
+// Issue #616: the OPEN of a stream waited for the TV's OKAY with no bound. A TV that left the Wi-Fi
+// without closing the socket never answers it, so the step hung with the session's lock held (the
+// keepalive that would notice could not run), the run sat on the Working screen for minutes and
+// Stop, which acts between steps, did nothing, until the app was closed. Every open is bounded now,
+// by the call's idle window, and a TV that does not answer is a timeout like any other.
+internal suspend fun AdbConnection.openBounded(service: AdbService, ms: Long): AdbStream = bounded(ms, "open") { openStream(service) }
+
 // shell v2 over one stream with the ExecSpec's two clocks and two caps (ARCHITECTURE 3.3, 3.7).
 internal object Exec {
     suspend fun run(conn: AdbConnection, line: ShellLine, spec: ExecSpec, clock: Clock): ExecResult {
         val start = clock.monotonicMs()
-        val stream = conn.openStream(AdbService.ShellV2(line))
+        val stream = conn.openBounded(AdbService.ShellV2(line), minOf(spec.idleTimeoutMs, spec.timeoutMs))
         try {
             return bounded(spec.timeoutMs, "exec-total") {
                 val reader = AdbStreamReader(stream)

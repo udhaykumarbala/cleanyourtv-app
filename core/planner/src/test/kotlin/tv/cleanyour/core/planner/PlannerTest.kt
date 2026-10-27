@@ -367,6 +367,30 @@ class PlannerTest {
         assertEquals(emptyList<Op>(), ops(plan(PlanRequest.UndoEverything(changes.take(1), false), snapshot())))
     }
 
+    // QA 0.4.5-beta1: the undo's progress said "Removing Gathin Home from the TV". The probe reads
+    // no labels, so the launcher's name came from its package; the app calls it the new home screen.
+    @Test fun removingOurLauncherSaysTheNewHomeScreen() {
+        val unlabelled = installedLauncher().let { (pkg, st) -> pkg to st.copy(label = null) }
+        val changes = listOf(
+            change(0, Op.InstallStream(artifact().blob, artifact().sha256, launcher.pkg, 1, artifact().signer), Prior(present = false)),
+            change(1, Op.Disable(stock.pkg), Prior(packageState = EnabledState.ENABLED)),
+            change(2, Op.SetHome(launcher), Prior(home = stock)),
+        )
+        val now = snapshot(disabled = setOf(stock.pkg.value), home = launcher, claimants = listOf(launcher, stock), extra = mapOf(unlabelled))
+        val undo = plan(PlanRequest.UndoEverything(changes, removeLauncher = true), now, changes)
+        assertEquals("Removing the new home screen from the TV", undo.steps.single { it.op == Op.Uninstall(launcher.pkg) }.narration)
+        assertTrue(undo.steps.none { "Gathin" in it.narration }, undo.steps.map { it.narration }.toString())
+        // Removing it from Manage (the TV's own home screen already back) says the same.
+        val stockBack = snapshot(extra = mapOf(unlabelled))
+        assertEquals("Removing the new home screen from the TV", plan(PlanRequest.RemoveModule(launcher.pkg), stockBack, changes).steps.single().narration)
+        // Another app of ours keeps its own name.
+        val (m, v) = module()
+        val apk = BlobRef(v.artifact.sha256, v.artifact.size, "cache/retro")
+        val installed = m.pkg to PackageState(EnabledState.ENABLED, false, 3, v.artifact.signer, false, false, "Retro Games", false)
+        val j = listOf(change(0, Op.InstallStream(apk, apk.sha256, m.pkg, 3, v.artifact.signer), Prior(present = false)))
+        assertEquals("Removing Retro Games from the TV", plan(PlanRequest.RemoveModule(m.pkg), snapshot(extra = mapOf(installed)), j).steps.single().narration)
+    }
+
     @Test fun debugOffAndRestorePoint() {
         val p = plan(PlanRequest.DebugOff)
         assertEquals(listOf(Op.DebugOff), ops(p))

@@ -41,7 +41,9 @@ data class RestoreStep(val kind: RestoreStepKind, val change: ChangeRecord, val 
 //
 // Left out on purpose: ops that change nothing lasting on the TV (reads, settles, the HOME
 // watchdog and its confirmation, restarts, debugging off, reboot, mkdir), and our own restore
-// point files under /sdcard/cleanyourtv, which every plan rewrites.
+// point files under /sdcard/cleanyourtv, which every plan rewrites. So the two small files the
+// watchdog leaves in /data/local/tmp/cleanyourtv (its token file and its log) have no step here;
+// the phone's Undo everything removes them with the launcher (DefaultPlanner.tidyWatchdogFiles).
 class RestoreCommands(private val renderer: OpRenderer) {
 
     fun steps(changes: List<ChangeRecord>): List<RestoreStep> {

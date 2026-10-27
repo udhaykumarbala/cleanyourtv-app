@@ -47,6 +47,21 @@ object LogCodes {
         else -> "unexpected"
     }
 
+    // Issues #788 and #1112: "probe failed probe_failed(facts)" named the stage but not what went
+    // wrong. A ProbeException's detail is the prober's own fixed text ("getprop has no
+    // ro.product.model", "output over 524288 bytes", "the script stopped before gms"). Where it goes
+    // on to quote the TV after a colon (stderr, an odd line), only the fixed part before it is kept.
+    // Cleaned like any TV text and cut to PROBE_DETAIL_MAX; null for any other error.
+    fun probeDetail(t: Throwable): String? {
+        val detail = (t as? ProbeException)?.detail ?: return null
+        return clean(detail.substringBefore(": "), PROBE_DETAIL_MAX).takeIf { it.isNotEmpty() }
+    }
+
+    // of(t), then a probe failure's detail after a colon.
+    fun withDetail(t: Throwable): String = of(t) + (probeDetail(t)?.let { ": $it" } ?: "")
+
+    const val PROBE_DETAIL_MAX = 120
+
     // What an op is, by its kind and the package or component it acts on. Never a run token, a
     // checksum or a file the phone holds.
     fun op(op: Op): String = when (op) {

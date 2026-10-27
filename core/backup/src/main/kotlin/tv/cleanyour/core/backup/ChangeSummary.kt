@@ -19,11 +19,14 @@ data class ChangeSummary(
     val homeNow: Component?,                     // the target of our last SetHome
     val settings: List<SettingChange>,           // value before our first write and after our last, sorted by key
     val installed: List<PackageName>,            // installed by us and not removed since
-    val files: List<String>,                     // absolute TV paths we wrote and did not delete, restore point files excluded
+    val files: List<String>,                     // absolute TV paths we wrote and did not delete (nor uninstall with their app), restore point files excluded
 ) {
     data class SettingChange(val key: SettingKey, val before: String?, val now: String?)
 
     companion object {
+        // The app specific folder Android removes with the app (RemoteDir.OVERLAY is the launcher's).
+        private const val APP_FOLDER = "/sdcard/Android/data/"
+
         fun of(changes: List<ChangeRecord>): ChangeSummary {
             val firstPrior = LinkedHashMap<PackageName, EnabledState?>()
             val off = LinkedHashMap<PackageName, Boolean>()
@@ -44,7 +47,15 @@ data class ChangeSummary(
                     is Op.DefaultState -> { touch(op.pkg, c); off[op.pkg] = false }
                     is Op.Install -> if (c.prior?.present != true) installed += op.pkg
                     is Op.InstallStream -> if (c.prior?.present != true) installed += op.pkg
-                    is Op.Uninstall -> { installed -= op.pkg; off.remove(op.pkg) }
+                    // An uninstall takes the app's own folder on shared storage with it
+                    // (/sdcard/Android/data/<pkg>/, where the launcher's look files live), so the
+                    // files we wrote there are gone from the TV too (QA 0.4.5-beta1: after Undo
+                    // everything with the launcher removed, restore-point.json still listed them).
+                    is Op.Uninstall -> {
+                        installed -= op.pkg; off.remove(op.pkg)
+                        val folder = APP_FOLDER + op.pkg.value + "/"
+                        files.removeAll { it.startsWith(folder) }
+                    }
                     is Op.SetHome -> {
                         if (!homeSeen) { homeBefore = c.prior?.home; homeSeen = true }
                         homeNow = op.component

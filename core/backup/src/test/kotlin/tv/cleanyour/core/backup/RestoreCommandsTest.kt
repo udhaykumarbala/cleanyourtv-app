@@ -40,7 +40,10 @@ class RestoreCommandsTest {
         val planner = DefaultPlanner(FakeClock(), FakeIdGen(), renderer, FakeConfigTransport(), "0.1.0")
         val r = planner.plan(PlanRequest.UndoEverything(changes, removeLauncher), Scenario.snapshotAfter(changes), MapFactsTable(), changes)
         val plan = (r as? PlanResult.Ok)?.plan ?: fail("refused: $r")
-        return plan.steps.filterNot { RestoreCommands.isTransient(it.op) }.flatMap { s -> s.rendered.lines.map { it.text } }
+        // The watchdog's own files in tmp, which the phone tidies when it removes the launcher, are
+        // left out like the watchdog itself: a script puts back lasting changes only.
+        return plan.steps.filterNot { RestoreCommands.isTransient(it.op) || (it.op as? Op.RemoveFile)?.path?.dir == RemoteDir.TMP }
+            .flatMap { s -> s.rendered.lines.map { it.text } }
     }
 
     private fun lines(s: List<RestoreStep>, vararg kinds: RestoreStepKind) = s.filter { it.kind in kinds }.flatMap { it.lines }

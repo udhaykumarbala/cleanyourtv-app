@@ -39,8 +39,9 @@ class Issue10Test {
     }
 
     // The 0.3.2 plan for that box: the Xiaomi sure set, the home screen switch blocked (WIZARD_WIFI).
+    // Issue #111: PatchWall is an ask row since 0.3.8, so the owner chose it in Customise here.
     private fun sureSetPlan(h: Harness) = h.plan(PlanRequest.Setup(source.resolveNow(h.tv.facts),
-        Choices(emptySet(), emptySet(), null, null, installLauncher = false, takeover = false, replaceLauncherSigner = false, keepDebuggingOn = false,
+        Choices(emptySet(), setOf(Issue033.patchwall), null, null, installLauncher = false, takeover = false, replaceLauncherSigner = false, keepDebuggingOn = false,
             wizardWifi = WizardWifi.OWNER), h.artifact, Level.SIMPLE))
 
     @Test fun aSwitchOffTheTvKeepsOnIsSkippedAndTheRunGoesOn() = runTest(timeout = TEST_TIMEOUT) {

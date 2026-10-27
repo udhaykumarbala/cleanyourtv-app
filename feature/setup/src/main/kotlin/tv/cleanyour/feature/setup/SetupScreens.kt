@@ -596,7 +596,7 @@ private val REPORT_CASES = setOf(StopCase.STEP_FAILED, StopCase.INSTALL_FAILED, 
 // The home cases: their card offers "Show details" with the run's lines (D21).
 private val HOME_CASES = setOf(
     StopCase.HOME_SETUPWRAITH, StopCase.HOME_OTHER_LAUNCHER, StopCase.HOME_UNKNOWN, StopCase.HOME_USER_SAID_NO,
-    StopCase.HOME_TIMED_OUT, StopCase.UNDONE, StopCase.HOME_PUT_BACK,
+    StopCase.HOME_TIMED_OUT, StopCase.UNDONE, StopCase.HOME_PUT_BACK, StopCase.HOME_SETTINGS_OPEN,
 )
 
 // S4c, S4d, S4e: stop cards with a grey icon and the way out on the card (UX 4).
@@ -681,8 +681,13 @@ fun DoneScreen(state: SetupState.Done, extras: SetupExtras, actions: SetupAction
         Lead(lead, Modifier.padding(top = 8.dp))
         Column(Modifier.padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             CheckLine(msg(R.string.done_restore_saved, "date" to dateTime(s.restorePointAtMs, locale)))
+            // D7: with "Keep debugging on" chosen, Finish leaves debugging on, and the line says so.
             CheckLine(
-                stringResource(if (finishing == Finishing.DONE) R.string.done_finished else R.string.done_debug_note),
+                stringResource(when {
+                    finishing == Finishing.DONE -> R.string.done_finished
+                    extras.keepsDebugging -> R.string.done_debug_kept
+                    else -> R.string.done_debug_note
+                }),
                 state = if (finishing == Finishing.SWITCHING) CheckState.PENDING else CheckState.DONE,
             )
         }

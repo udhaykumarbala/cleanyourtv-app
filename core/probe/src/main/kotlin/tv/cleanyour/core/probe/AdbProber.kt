@@ -65,7 +65,7 @@ class AdbProber(
             val t = l.removeSuffix("\r")
             if (t.startsWith(ProbeScripts.MARK + " ")) {
                 val name = t.removePrefix(ProbeScripts.MARK + " ")
-                if (name !in expected || name in out) throw ProbeException(stage, "unexpected section marker $name")
+                if (name !in expected || name in out) throw ProbeException(stage, "unexpected section marker")   // the name is the TV's text, never logged
                 cur = name; out[cur] = mutableListOf(); continue
             }
             out.getValue(cur) += t

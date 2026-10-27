@@ -54,6 +54,7 @@ enum class CopyKey(val res: String) {
     STOP_HOME_UNKNOWN_TITLE("stop_home_unknown_title"), STOP_HOME_UNKNOWN_BODY("stop_home_unknown_body"),
     STOP_HOME_UNKNOWN_PRIMARY("stop_home_unknown_primary"), STOP_HOME_UNKNOWN_SECONDARY("stop_home_unknown_secondary"),
     STOP_HOME_USER_SAID_NO_TITLE("stop_home_user_said_no_title"), STOP_HOME_USER_SAID_NO_BODY("stop_home_user_said_no_body"),
+    STOP_HOME_SETTINGS_OPEN_BODY("stop_home_settings_open_body"),   // issue #629
     STOP_HOME_USER_SAID_NO_PRIMARY("stop_home_user_said_no_primary"), STOP_HOME_USER_SAID_NO_SECONDARY("stop_home_user_said_no_secondary"),
     STOP_HOME_TIMED_OUT_TITLE("stop_home_timed_out_title"), STOP_HOME_TIMED_OUT_BODY("stop_home_timed_out_body"),
     STOP_HOME_TIMED_OUT_PRIMARY("stop_home_timed_out_primary"), STOP_HOME_TIMED_OUT_SECONDARY("stop_home_timed_out_secondary"),

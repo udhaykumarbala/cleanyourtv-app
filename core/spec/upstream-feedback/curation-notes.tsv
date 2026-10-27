@@ -216,6 +216,19 @@ lumio-vision-7	(launcher)	after the home screen switch the remote's YouTube, Net
 lumio-vision-7	(match)	device khardi only: the model LUMIO VISION is also a templeton set (issue #1107), another KTC board
 lumio-vision-7	com.google.android.tungsten.setupwraith	it takes Home back once launcherx is off, so it goes with the home screen switch and the Wi-Fi guard; the header notes it can cost Chromecast
 lumio-vision-7	com.hk.gingaplayer.huangs	interactive TV for ISDB-T broadcasts, inert on this DVB set; an ask row, as tcl-g09 keeps its Ginga engine
+motorola-mt4310	(match)	device hayward from the header; brand Motorola from a TV report of this model (issue #446: brand MOTOROLA, manufacturer Hisense). No model key: MotorolaTV names the whole range
+motorola-mt4310	(match)	the same Hisense/CVTE board as polytron-2k-hayward; the brand keeps the two apart
+motorola-mt4310	(header)	the Do NOT disable names (com.mediatek.* for Live TV, the inputs and the remote's app keys, the CVTE key, backlight and serial services, the Bluetooth service) and the factory manager the header says never to disable are in the curated never-disable list
+motorola-mt4310	(header)	rebooted with the list applied and the new home screen, then Live TV, HDMI and the remote's buttons checked; a day of use
+motorola-mt4310	com.google.android.tungsten.setupwraith	not listed: the header says it does not claim Home here and owns a saved Wi-Fi network; never-disable
+motorola-mt4310	com.mediatek.android.leanbacklauncher.partnercustomizer	ask row: the header rebooted this set with it off and the keys still worked, but polytron-2k-hayward (same board) keeps it, and on MediaTek sets it can feed the TV service at boot (RF-PROFILES-63 P4)
+motorola-mt4310	fusion.android.tv.demo	ask row: the header checked the Input key with it off, but not remote pairing (RF-PROFILES-63 P6)
+motorola-mt4310	com.mstar.android.tv.disclaimercustomization	first-setup disclaimer; ask row as on polytron-2k-hayward
+motorola-mt4310	com.android.providers.calendar	calendar storage for apps is an ask row, as on polytron-2k-hayward
+motorola-mt4310	com.google.android.marvin.talkback	accessibility ask row; the header says it comes back on after a reboot but never runs (REENABLED_AT_BOOT)
+motorola-mt4310	com.google.android.tts	text to speech; accessibility ask row
+motorola-mt4310	com.google.android.videos	off by the owner's choice; ask row, since it holds purchased films
+motorola-mt4310	com.google.android.play.games	in the owner's choice group; default-off as on most shipped lists
 motorola-swtv-24ae-fhd	(launcher)	the remote's Settings button sends KEYCODE_NOTIFICATION, which needs the launcher's HomeKeyService after the switch (RF-PROFILES-63 P15)
 motorola-swtv-24ae-fhd	(match)	brand inferred, confirm with getprop: Motorola (the header calls it a Skyworth OEM build, so the manufacturer may be Skyworth); a wrong guess fails closed (the profile never matches)
 motorola-swtv-24ae-fhd	com.google.android.tungsten.setupwraith	the header warns it owns the Wi-Fi saved at setup and deleting it drops the TV off the network; the takeover's Wi-Fi guard skips it then

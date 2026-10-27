@@ -57,6 +57,15 @@ class AdbSessionManager(
         log("session: socket connect failed: $detail")
     }
 
+    // Issues #325, #620: the socket connected and the handshake or the identity read failed inside
+    // the app (the phone's key, or an exception that is not an AdbException). Logged and kept for
+    // "Copy error" like a failed socket connect; a plain answer of the TV is left to the flows' line.
+    private fun noteHandshakeFailure(e: Throwable) {
+        val detail = HandshakeFailure.detail(e) ?: return
+        lastConnectFailure = detail
+        log("session: $detail")
+    }
+
     private fun publish(tvId: TvId, state: ConnectionState) {
         mutableStates.update { it + (tvId to state) }
     }
@@ -93,8 +102,16 @@ class AdbSessionManager(
                 },
                 firstAuthTimeoutMs = SessionConfig.FIRST_AUTH_TIMEOUT_MS,
             )
-        } catch (e: AdbException) {
-            return@withLock failed(expected, e.error)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: VirtualMachineError) {
+            throw e
+        } catch (e: Throwable) {
+            // Before, only an AdbException was caught here: anything else left open() and the flows
+            // turned it into "unreachable" (issues #325, #620). The socket is closed by open() itself.
+            // Throwable, so an Error such as NoSuchFieldError (a Java API the phone lacks) is named too.
+            noteHandshakeFailure(e)
+            return@withLock failed(expected, HandshakeFailure.typed(e).error)
         }
         try {
             if ("shell_v2" !in conn.features) { conn.close(); return@withLock failed(expected, AdbError.Transport.NoShellV2) }
@@ -107,16 +124,22 @@ class AdbSessionManager(
                 existing.adopt(conn, endpoint)
                 return@withLock OpenResult.Ok(existing)
             }
-            val session = AdbTvSession(identity, endpoint, conn, Link(socketFactory, signer, tls, onAwaitingAllow, ::noteConnectFailure), clock, scope, ::publish, ::remove, blobIo)
+            val session = AdbTvSession(identity, endpoint, conn, Link(socketFactory, signer, tls, onAwaitingAllow, ::noteConnectFailure, ::noteHandshakeFailure), clock, scope, ::publish, ::remove, blobIo)
             sessions[identity.tvId] = session
             publish(identity.tvId, session.state.value)
             OpenResult.Ok(session)
-        } catch (e: AdbException) {
-            conn.close()
-            failed(expected, e.error)
         } catch (e: CancellationException) {
             conn.close()
             throw e
+        } catch (e: VirtualMachineError) {
+            conn.close()
+            throw e
+        } catch (e: Throwable) {
+            // An identity read that fails with anything else closes the connection too (it was left
+            // open before) and is typed for the flows (R0: 7).
+            conn.close()
+            noteHandshakeFailure(e)
+            failed(expected, HandshakeFailure.typed(e).error)
         }
     }
 

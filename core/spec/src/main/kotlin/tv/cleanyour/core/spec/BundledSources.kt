@@ -2,7 +2,9 @@ package tv.cleanyour.core.spec
 
 import tv.cleanyour.core.model.BlobRef
 import tv.cleanyour.core.model.DeviceFacts
+import tv.cleanyour.core.model.HomeResolution
 import tv.cleanyour.core.model.PackageName
+import tv.cleanyour.core.model.PackageState
 import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.Sha256
 import java.security.MessageDigest
@@ -18,27 +20,35 @@ private fun resourceBytes(path: String): ByteArray? = BundledProfileSource::clas
 // Test build: a candidate list (Profile.isCandidate, only in a build with -Pcyt.candidates=true) is
 // the exact profile only when no tested list matches and the person chose to try it on this phone
 // (`consent`); otherwise the TV resolves as it would without it, to the brand sure set or None.
-class BundledProfileSource(private val bundle: ProfileBundle = bundled, private val consent: CandidateConsent? = null) : ProfileSource {
+//
+// Issue #114: with the Home a snapshot read (`home`), a winning list that does not fit it (HomeFit:
+// an Android TV list on a TV showing Google TV's home screen) is refused, tested or candidate, and the
+// TV resolves as one no list knows. No other list takes its place: the next one down is a looser
+// match (for that TV, tcl-g05-google-tv by the model name alone), so it would be a guess.
+class BundledProfileSource(private val bundle: ProfileBundle = bundled, private val consent: CandidateConsent? = null) : HomeAwareProfileSource {
     override suspend fun all(): List<Profile> = bundle.profiles
 
-    override suspend fun resolve(facts: DeviceFacts): ProfileResolution {
-        val candidate = candidateFor(facts)
-        return resolveNow(facts, tryCandidate = candidate != null && consent?.tries(candidate.id) == true)
+    override suspend fun resolve(facts: DeviceFacts): ProfileResolution = resolve(facts, null)
+
+    override suspend fun resolve(facts: DeviceFacts, home: HomeResolution?, packages: Map<PackageName, PackageState>?): ProfileResolution {
+        val candidate = candidateFor(facts, home, packages)
+        return resolveNow(facts, tryCandidate = candidate != null && consent?.tries(candidate.id) == true, home = home, packages = packages)
     }
 
     fun sureSets(): List<SureSet> = bundle.sureSets
 
-    // The candidate list this TV would get, or null: a tested list matches, or none of either does.
-    fun candidateFor(facts: DeviceFacts): Profile? =
-        if (best(facts, candidates = false) != null) null else best(facts, candidates = true)
+    // The candidate list this TV would get, or null: a tested list matches, or none of either does, or
+    // the candidate does not fit the TV's Home (HomeFit).
+    fun candidateFor(facts: DeviceFacts, home: HomeResolution? = null, packages: Map<PackageName, PackageState>? = null): Profile? =
+        if (best(facts, candidates = false) != null) null else best(facts, candidates = true)?.takeIf { HomeFit.fits(it, home, packages) }
 
     private fun best(facts: DeviceFacts, candidates: Boolean): Profile? =
         bundle.profiles.filter { it.isCandidate == candidates }.mapNotNull { p -> score(p, facts)?.let { it to p } }
             .sortedWith(compareByDescending<Pair<Int, Profile>> { it.first }.thenByDescending { specificity(it.second) }.thenBy { it.second.id })
             .firstOrNull()?.second
 
-    fun resolveNow(facts: DeviceFacts, tryCandidate: Boolean = false): ProfileResolution {
-        val exact = best(facts, candidates = false) ?: if (tryCandidate) best(facts, candidates = true) else null
+    fun resolveNow(facts: DeviceFacts, tryCandidate: Boolean = false, home: HomeResolution? = null, packages: Map<PackageName, PackageState>? = null): ProfileResolution {
+        val exact = (best(facts, candidates = false) ?: if (tryCandidate) best(facts, candidates = true) else null)?.takeIf { HomeFit.fits(it, home, packages) }
         if (exact != null) return ProfileResolution.Exact(exact)
         val sure = bundle.sureSets.firstOrNull { it.brand.equals(facts.brand, ignoreCase = true) || it.brand.equals(facts.manufacturer, ignoreCase = true) }
         if (sure != null) return ProfileResolution.BrandSureSet(sure.brand, sure.groups, sure.stockLaunchers)

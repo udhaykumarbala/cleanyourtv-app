@@ -233,8 +233,10 @@ internal object DebloatTxt {
                 if (e.pkg in KnownLaunchers.byPackage) { stockPkgs += e.pkg; continue }
                 val override = meta?.packages?.get(e.pkg.value)
                 val (c, ask) = when {
-                    override != null -> ProfileCategory.of(override.category) to override.ask
+                    // Issue #111: an owner's-choice package stays an ask row, whatever the override says.
+                    override != null -> ProfileCategory.of(override.category) to (override.ask || ProfileCategory.isOwnersChoice(e.pkg))
                     ProfileCategory.isUpdater(e.pkg) -> ProfileCategory.UPDATES to true
+                    ProfileCategory.isOwnersChoice(e.pkg) -> gc to true
                     else -> gc to gask
                 }
                 placed += Placed(c, ask, PackageEntry(e.pkg, e.note))

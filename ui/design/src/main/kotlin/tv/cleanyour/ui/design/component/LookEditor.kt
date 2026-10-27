@@ -456,12 +456,25 @@ internal fun pictureWords(state: LookEditorState): String = when {
         ?: stringResource(R.string.cyt_look_picture_words_none)
 }
 
-// "Preview of the TV's home screen: Glass, the Mist picture, 5 apps in a row."
+// "Preview of the TV's home screen: Glass, the Mist picture, 5 apps in a row.", then the home
+// screen 3.0 extras that act in this look (previewExtraWords): "..., 5 apps in a row, every app in
+// one row, the date under the clock."
 @Composable
-internal fun previewDescription(state: LookEditorState): String = lookMsg(
-    if (state.names) R.string.cyt_look_preview_cd_names else R.string.cyt_look_preview_cd,
-    "style" to styleName(state.style), "picture" to pictureWords(state), "count" to state.columns,
-)
+internal fun previewDescription(state: LookEditorState): String {
+    val extras = previewExtraWords(state)
+    val style = styleName(state.style)
+    val picture = pictureWords(state)
+    if (extras.isEmpty()) {
+        return lookMsg(
+            if (state.names) R.string.cyt_look_preview_cd_names else R.string.cyt_look_preview_cd,
+            "style" to style, "picture" to picture, "count" to state.columns,
+        )
+    }
+    return lookMsg(
+        if (state.names) R.string.cyt_look_preview_cd_names_more else R.string.cyt_look_preview_cd_more,
+        "style" to style, "picture" to picture, "count" to state.columns, "extras" to extras.joinToString(", "),
+    )
+}
 
 // Copy: puts text on the phone's clipboard (Advanced's settings file).
 @Composable

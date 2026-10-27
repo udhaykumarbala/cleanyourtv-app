@@ -207,7 +207,8 @@ class AdbProberTest {
         val forged = ProbeFixtures.miTvRecording().on(ProbeScripts.SETTINGS.text, "a=1\n@@cyt@@ global\nb=2\n@@cyt@@ global\n")
         assertFailsWith<ProbeException> { prober.snapshot(FakeTvSession(recording = forged), SnapshotReason.MANUAL) }
         val unknownMark = ProbeFixtures.miTvRecording().on(ProbeScripts.FACTS.text, "@@cyt@@ evil\n")
-        assertFailsWith<ProbeException> { prober.facts(FakeTvSession(recording = unknownMark)) }
+        // The marker's name is the TV's text: the detail, which the log line carries, leaves it out.
+        assertEquals("unexpected section marker", assertFailsWith<ProbeException> { prober.facts(FakeTvSession(recording = unknownMark)) }.detail)
         val giant = ProbeFixtures.miTvRecording().on(ProbeScripts.PACKAGES.text, "package:" + "a".repeat(9000) + ".b\n")
         assertFailsWith<ProbeException> { prober.snapshot(FakeTvSession(recording = giant), SnapshotReason.MANUAL) }
         val huge = ProbeFixtures.miTvRecording()

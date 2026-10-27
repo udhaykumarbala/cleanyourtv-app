@@ -36,6 +36,7 @@ import tv.cleanyour.core.spec.LookKeys
 import tv.cleanyour.core.spec.Movement
 import tv.cleanyour.core.spec.StyleId
 import tv.cleanyour.core.spec.FactsTable
+import tv.cleanyour.core.spec.HomeFit
 import tv.cleanyour.core.spec.Looks
 import tv.cleanyour.core.spec.PictureSource
 import tv.cleanyour.core.spec.ProfileSource
@@ -120,7 +121,14 @@ class ManageDeps(
 ) {
     fun tv(id: TvId): Tv? = tvs.tvs.value.firstOrNull { it.id == id }
 
-    suspend fun profileOf(tv: Tv): Profile? = tv.profileId?.let { id -> attempt { profiles.all() }.getOrNull()?.firstOrNull { it.id == id } }
+    // The TV's exact profile as Setup last stored it, unless it does not fit the Home of the TV's
+    // latest snapshot (issue #114: a record kept from before the rule names an Android TV list for a
+    // Google TV set; Setup clears it on the next connect, Manage already leaves it out).
+    suspend fun profileOf(tv: Tv): Profile? {
+        val profile = tv.profileId?.let { id -> attempt { profiles.all() }.getOrNull()?.firstOrNull { it.id == id } } ?: return null
+        val latest = attempt { snapshots.latest(tv.id) }.getOrNull()
+        return profile.takeIf { HomeFit.fits(it, latest?.home, latest?.packages) }
+    }
 
     fun nameOf(pkg: PackageName, label: String? = null): String = AppNames.of(pkg, facts, label)
 }

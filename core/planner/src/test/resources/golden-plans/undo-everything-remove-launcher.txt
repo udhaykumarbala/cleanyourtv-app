@@ -1,0 +1,18 @@
+# undo-everything-remove-launcher
+step 0: group=undo policy=CONTINUE narration=Switching Tvlauncher back on
+  prior: packageState=DISABLED_USER
+  'pm' 'enable' '--user' '0' 'com.google.android.tvlauncher'
+step 1: group=home policy=STOP_AND_ROLLBACK narration=Making the TV's own home screen the default
+  prior: home=com.gathin.tvhome/.MainActivity
+  'cmd' 'package' 'set-home-activity' '--user' '0' 'com.google.android.tvlauncher/.MainActivity'
+step 2: group=home policy=STOP_AND_ROLLBACK narration=Checking the home screen
+  'cmd' 'package' 'resolve-activity' '--brief' '-c' 'android.intent.category.HOME' '-a' 'android.intent.action.MAIN'
+step 3: group=home policy=CONTINUE narration=Showing the home screen
+  'input' 'keyevent' '3'
+step 4: group=undo policy=CONTINUE narration=Removing the new home screen from the TV
+  prior: present=true
+  'pm' 'uninstall' '--user' '0' 'com.gathin.tvhome'
+step 5: group=undo policy=CONTINUE narration=Tidying up
+  'rm' '-f' '/data/local/tmp/cleanyourtv/home-ok-0e2ffd0489942e55'
+step 6: group=undo policy=CONTINUE narration=
+  'rm' '-f' '/data/local/tmp/cleanyourtv/watchdog-0e2ffd0489942e55.log'

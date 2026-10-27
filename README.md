@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/udhaykumarbala/cleanyourtv-app/releases/latest"><img src="https://img.shields.io/github/v/release/udhaykumarbala/cleanyourtv-app?style=flat&color=E8A84C&labelColor=15181e&label=download%20APK" alt="Download the latest APK"></a>
-  <img src="https://img.shields.io/badge/TVs-131%20models%20%C2%B7%2046%20brands-E8A84C?style=flat&labelColor=15181e" alt="131 TV models from 46 brands">
+  <img src="https://img.shields.io/badge/TVs-173%20lists%20%C2%B7%2047%20brands-E8A84C?style=flat&labelColor=15181e" alt="173 TV lists from 47 brands">
   <img src="https://img.shields.io/badge/phone-Android%209%2B-E8A84C?style=flat&labelColor=15181e" alt="Android 9 or newer">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-E8A84C?style=flat&labelColor=15181e" alt="MIT licence"></a>
 </p>
@@ -73,7 +73,7 @@ without uninstalling them, and keep a way back for every change.
 
 ## Supported TVs
 
-**131 TV models from 46 brands**, from the Clean Your TV community lists: TCL, Sony, Xiaomi,
+**173 TV lists from 47 brands**, from the Clean Your TV community lists: TCL, Sony, Xiaomi,
 Hisense, Philips, Amazon Fire TV, Panasonic, XGIMI, BenQ, NVIDIA Shield, onn, Google and many more,
 on Android TV, Google TV and Fire OS. A model nobody has listed yet still gets a careful clean-up
 based on its brand.
@@ -81,7 +81,7 @@ based on its brand.
 <details>
 <summary>The details</summary>
 
-- **Profiles:** TCL (24 models), Sony (17), Xiaomi (17), Hisense, Philips, Amazon Fire TV,
+- **Profiles:** TCL (26 lists), Sony (22), Xiaomi (29), Hisense, Philips, Amazon Fire TV,
   Panasonic, XGIMI, BenQ, NVIDIA Shield, Skyworth, Haier, CHiQ, onn, Google, Vestel-made sets (JVC,
   Toshiba, Cecotec), the Freebox Player and more, on Android TV, Google TV, Fire OS and TCL's China
   builds. Each profile names who tested it.

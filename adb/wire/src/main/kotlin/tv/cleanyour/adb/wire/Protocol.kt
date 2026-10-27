@@ -86,6 +86,12 @@ class AdbHeader(val command: Int, val arg0: Int, val arg1: Int, val payloadLengt
 
 fun protocolError(detail: String): AdbException = AdbException(AdbError.Transport.Protocol(detail))
 
+// Issues #325, #620: the phone's ADB key could not answer the TV's AUTH token (a Keystore error, say).
+// The detail is this fixed text; the signer's own exception is the cause, never part of the text.
+const val SIGNER_FAILED = "the phone's key could not sign"
+
+fun signerFailed(cause: Throwable): AdbException = AdbException(AdbError.Transport.Protocol(SIGNER_FAILED)).also { it.initCause(cause) }
+
 // Encoder and bounded decoder shared by the client (:adb:wire) and the fake adbd.
 object FrameCodec {
 

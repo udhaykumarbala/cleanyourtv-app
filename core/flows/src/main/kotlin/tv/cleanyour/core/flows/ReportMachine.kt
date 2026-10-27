@@ -3,6 +3,7 @@ package tv.cleanyour.core.flows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.spec.resolveFor
 
 // 0.3.2 B1 and B2: the report preview. "Help add this TV" (TV) is the TV report for a TV with no exact
 // profile; "Report a problem" (PROBLEM) is the redacted diagnostics log with a short TV summary. Both
@@ -70,7 +71,7 @@ class ReportMachine(
             attempt { d.snapshots.latest(t.id) }.getOrNull()?.let { snap ->
                 TvReportInput(
                     about = d.about, snapshot = snap,
-                    profile = attempt { d.profiles.resolve(snap.facts) }.getOrNull(),
+                    profile = attempt { d.profiles.resolveFor(snap) }.getOrNull(),
                     home = attempt { d.homeDecisions.load(t.id) }.getOrNull(),
                     switchedOffByApp = attempt { d.ledger.switchedOffByUs(t.id).toSet() }.getOrDefault(emptySet()),
                 )

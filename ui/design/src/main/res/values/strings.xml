@@ -138,6 +138,17 @@
     <string name="cyt_look_preview_smaller_cd">Show the preview smaller</string>
     <string name="cyt_look_preview_cd">Preview of the TV\'s home screen: {style}, {picture}, {count, plural, one {# app in a row} other {# apps in a row}}.</string>
     <string name="cyt_look_preview_cd_names">Preview of the TV\'s home screen: {style}, {picture}, {count, plural, one {# app in a row} other {# apps in a row}}, names under every app.</string>
+    <!-- The same, with the home screen 3.0 extras that act in this look named after the rest, for example "Classic, the Mist picture, 5 apps in a row, every app in one row, the date under the clock." -->
+    <string name="cyt_look_preview_cd_more">Preview of the TV\'s home screen: {style}, {picture}, {count, plural, one {# app in a row} other {# apps in a row}}, {extras}.</string>
+    <string name="cyt_look_preview_cd_names_more">Preview of the TV\'s home screen: {style}, {picture}, {count, plural, one {# app in a row} other {# apps in a row}}, names under every app, {extras}.</string>
+    <string name="cyt_look_cd_one_row">every app in one row</string>
+    <string name="cyt_look_cd_no_band">no dock band</string>
+    <string name="cyt_look_cd_no_greeting">no greeting</string>
+    <string name="cyt_look_cd_date_below">the date under the clock</string>
+    <string name="cyt_look_cd_bright_date">a brighter date</string>
+    <string name="cyt_look_cd_icon_tiles">icons on the cards</string>
+    <string name="cyt_look_cd_rim">a rim highlight</string>
+    <string name="cyt_look_cd_halo">a halo highlight</string>
     <string name="cyt_look_picture_words_photo">your photo</string>
     <string name="cyt_look_picture_words_none">no picture</string>
     <string name="cyt_look_picture_words">the {name} picture</string>

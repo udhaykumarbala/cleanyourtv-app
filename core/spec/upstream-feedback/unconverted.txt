@@ -47,7 +47,6 @@ ktc-4k-smart-tv-hongkong    # parked at v2.7.0: not curated yet and no TV report
 liberton-ltv-24h01at    # parked at v2.7.0: not curated yet and no TV report needs it; a profile needs match keys, platform, tested info, a category for every group title and the safety review
 magcubic-hy300-pro    # parked at b06ab21 (after v3.0.0): not curated yet; a profile needs match keys, platform, tested info, a category for every group title and the safety review
 master-g-mga3200    # parked at b06ab21 (after v3.0.0): not curated yet; a profile needs match keys, platform, tested info, a category for every group title and the safety review
-motorola-mt4310    # parked at v2.7.0: not curated yet and no TV report needs it; a profile needs match keys, platform, tested info, a category for every group title and the safety review
 next-start-pro-4k    # parked at b06ab21 (after v3.0.0): not curated yet; a profile needs match keys, platform, tested info, a category for every group title and the safety review
 noblex-shinjuku    # parked at v2.7.0: not curated yet and no TV report needs it; a profile needs match keys, platform, tested info, a category for every group title and the safety review
 nokia-streaming-box-8000    # parked at v2.7.0: not curated yet and no TV report needs it; a profile needs match keys, platform, tested info, a category for every group title and the safety review

@@ -6,16 +6,24 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import tv.cleanyour.core.model.BlobRef
+import tv.cleanyour.core.model.ChangeRecord
 import tv.cleanyour.core.model.GroupDefault
+import tv.cleanyour.core.model.Op
 import tv.cleanyour.core.model.PackageEntry
 import tv.cleanyour.core.model.PackageGroup
 import tv.cleanyour.core.model.PackageName
+import tv.cleanyour.core.model.PlanId
 import tv.cleanyour.core.model.Platform
 import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.ProfileMatch
+import tv.cleanyour.core.model.Prior
+import tv.cleanyour.core.model.RemoteDir
+import tv.cleanyour.core.model.RemotePath
 import tv.cleanyour.testing.fixtures.FakeClock
 import tv.cleanyour.testing.fixtures.Fixtures
 import tv.cleanyour.testing.fixtures.Samples
+import tv.cleanyour.testing.fixtures.sha256Of
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
@@ -150,6 +158,43 @@ class TvRestoreFilesTest {
         val changesBack = ChangeJson.decodeArray(o.getValue("changes").jsonArray)
         assertContentEquals(ChangeJson.encode(changes), ChangeJson.encode(changesBack))
         assertTrue(!bytes.decodeToString().contains(tv.nickname), "no nickname on the TV's shared storage")
+    }
+
+    // QA 0.4.5-beta1: after Undo everything with "Remove it from the TV", restore-point.json still
+    // listed the launcher's config.json and wallpaper.jpg under `files`, though the uninstall had
+    // taken the launcher's folder with it. `files` is what is on the TV now, as the fake TV replays it.
+    @Test fun filesGoWithTheAppThatHoldsThem() {
+        fun listedFiles(changes: List<ChangeRecord>) =
+            Json.parseToJsonElement(files.restorePointJson(tv, changes).decodeToString()).jsonObject.getValue("files").jsonArray.map { it.jsonPrimitive.content }
+        val onTv = { changes: List<ChangeRecord> -> TvState(emptyMap(), null, emptyMap(), emptySet()).apply(changes).files.sorted() }
+
+        val removed = Scenario.m1Changes()
+        assertTrue(removed.last().op == Op.Uninstall(Scenario.launcher.pkg), "the scenario ends with the launcher removed")
+        assertEquals(emptyList(), listedFiles(removed))
+        assertEquals(onTv(removed), listedFiles(removed).sorted())
+        val o = Json.parseToJsonElement(files.restorePointJson(tv, removed).decodeToString()).jsonObject
+        assertTrue(o.getValue("installed").jsonArray.none { it.jsonPrimitive.content == Scenario.launcher.pkg.value })
+
+        // Set up again: a look pushed after the reinstall is on the TV, and listed.
+        val plan = PlanId("01SETUPAGAIN00000000000007")
+        val t = removed.maxOf { it.atMs } + 1_000
+        val apk = BlobRef(sha256Of("launcher apk"), 260_000, "bundled:launcher.apk")
+        val config = BlobRef(sha256Of("{\"columns\":5}"), 13, "mem:config")
+        val configPath = RemotePath(RemoteDir.OVERLAY, listOf("config.json"))
+        val again = removed + listOf(
+            ChangeRecord(plan, 0, Op.InstallStream(apk, apk.sha256, Scenario.launcher.pkg, 1, Samples.zeroHash),
+                Prior(present = false), t),
+            ChangeRecord(plan, 1, Op.PushAsset(config, configPath, config.sha256),
+                Prior(present = false), t + 1_000),
+        )
+        assertEquals(listOf(configPath.absolute), listedFiles(again))
+        assertEquals(onTv(again), listedFiles(again).sorted())
+
+        // A file outside the removed app's folder stays listed.
+        val tmpFile = RemotePath(RemoteDir.TMP, listOf("kept.bin"))
+        val other = listOf(ChangeRecord(plan, 0, Op.PushAsset(config, tmpFile, config.sha256),
+            Prior(present = false), 1)) + removed
+        assertEquals(listOf(tmpFile.absolute), listedFiles(other))
     }
 
     @Test fun nothingSwitchedOff() {

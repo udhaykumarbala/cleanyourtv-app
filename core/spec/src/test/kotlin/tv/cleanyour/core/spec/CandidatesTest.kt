@@ -14,7 +14,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-// Test builds (0.3.5-test1, 0.3.6-beta1, 0.3.8-beta1, 0.3.8-beta2, 0.4.5-beta1): the candidate lists in core/spec/candidates.
+// Test builds (0.3.5-test1, 0.3.6-beta1, 0.3.8-beta1, 0.3.8-beta2, 0.4.6-beta1): the candidate lists in core/spec/candidates.
 // They are converted only with -Pcyt.candidates=true; these tests convert them directly, so they run in every build.
 class CandidatesTest {
     private val examples = File(Fixtures.upstreamDir, "examples")
@@ -25,7 +25,7 @@ class CandidatesTest {
     // In folder order: five of 0.3.5-test1, eleven of 0.3.6-beta1 and twenty-seven drafted from the TV
     // reports since (each for one reported TV, by device, brand or maker and one Android version, with
     // the fingerprint prefix where the model name is a family name). The others became tested lists in
-    // 0.3.7 (upstream v2.7.0) or match the same TV as one. 0.4.5-beta1 carries thirty-nine of the
+    // 0.3.7 (upstream v2.7.0) or match the same TV as one. 0.4.6-beta1 carries thirty-nine of the
     // forty-three of 0.3.8-beta2: the TV of each of the other four resolves to a list promoted in 0.4.5
     // (upstream b06ab21), the same device and Android version: philips-google-tv-ph1m-9972
     // (philips-google-tv-ta1), sharp-2k-smart-tv-a-beomil (sharp-2t-c32gh3000i),
@@ -131,7 +131,7 @@ class CandidatesTest {
         val tried = source.resolve(magnolia)
         assertIs<ProfileResolution.Exact>(tried)
         assertEquals("xiaomi-mitv4i-magnolia", tried.profile.id)
-        // 0.4.5-beta1: PatchWall answers the remote's PatchWall button (#111), so it is an ask row, never off by default.
+        // 0.4.6-beta1: PatchWall answers the remote's PatchWall button (#111), so it is an ask row, never off by default.
         val patchWall = tried.profile.groups.single { g -> g.packages.any { it.name == PackageName("com.mitv.tvhome.atv") } }
         assertEquals(GroupDefault.ASK, patchWall.default)
         // Another Android version of the same TV: no candidate (D-W4-14).

@@ -65,6 +65,16 @@ enum class ProfileCategory(val id: String, private val title: String, private va
             return c to ask
         }
 
+        // Issue #111: packages that are always the owner's choice (an ask row, kept on by default),
+        // whatever group a list files them in, with the reason the row gives. PatchWall: the Mi TV
+        // 4i's owner lost the remote's PatchWall button, as upstream's xiaomi-mitv-axso2 notes; on a
+        // TV where the app keeps the TV's own home screen, PatchWall is still how that owner browses.
+        // This only refuses more: a list's off becomes a row the owner can still choose in Customise.
+        val OWNERS_CHOICE: Map<PackageName, String> = mapOf(
+            PackageName("com.mitv.tvhome.atv") to "Off, the remote's PatchWall button stops working while the TV's own home screen is in use.",
+        )
+        fun isOwnersChoice(pkg: PackageName): Boolean = pkg in OWNERS_CHOICE
+
         // D22: a firmware updater is a "Software updates" row wherever upstream filed it. The second
         // line (0.3.7) holds the updaters upstream v2.7.0 lists name: CVTE, TCL, Sber, Fire TV, the TCL
         // remote and peripherals updater and Sony's camera firmware. The b06ab21 lists name no new one.

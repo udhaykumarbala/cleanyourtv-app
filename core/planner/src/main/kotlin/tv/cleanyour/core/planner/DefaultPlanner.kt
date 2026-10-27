@@ -31,11 +31,13 @@ import tv.cleanyour.core.ops.OpRenderer
 import tv.cleanyour.core.ops.RenderRefused
 import tv.cleanyour.core.ops.Rendered
 import tv.cleanyour.core.ops.UndoOrder
+import tv.cleanyour.core.ops.Watchdog
 import tv.cleanyour.core.spec.AppNames
 import tv.cleanyour.core.spec.FactsTable
 import tv.cleanyour.core.spec.ProfileCategory
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.spec.ProfileSource
+import tv.cleanyour.core.spec.resolveFor
 import tv.cleanyour.core.store.Clock
 import tv.cleanyour.core.store.IdGen
 
@@ -122,9 +124,10 @@ class DefaultPlanner(
 
         fun summary() = PlanSummary(groups.toList(), keepNames, dockNames, homeScreenPossible, replacesLauncher)
 
-        // This TV's resolution for the Manage requests (R1 R-3). The bundled source answers without
-        // suspending, so the blocking call returns at once; the planner stays a plain function.
-        val resolution: ProfileResolution? by lazy { profiles?.let { src -> runBlocking { src.resolve(snapshot.facts) } } }
+        // This TV's resolution for the Manage requests (R1 R-3), with the snapshot's Home (issue #114).
+        // The bundled source answers without suspending, so the blocking call returns at once; the
+        // planner stays a plain function.
+        val resolution: ProfileResolution? by lazy { profiles?.let { src -> runBlocking { src.resolveFor(snapshot) } } }
         val managedProfile: Profile? get() = (resolution as? ProfileResolution.Exact)?.profile
         val managedStockLaunchers: List<Component> get() = when (val r = resolution) {
             is ProfileResolution.Exact -> r.profile.stockLaunchers
@@ -134,7 +137,16 @@ class DefaultPlanner(
         }
 
         fun name(pkg: PackageName): String = AppNames.of(pkg, facts, snapshot.packages[pkg]?.label)
-        fun description(pkg: PackageName): String = facts.lookup(pkg)?.description ?: ""
+        // Issue #111: an owner's-choice row says what switching it off costs.
+        fun description(pkg: PackageName): String {
+            val what = facts.lookup(pkg)?.description ?: ""
+            val cost = ProfileCategory.OWNERS_CHOICE[pkg] ?: return what
+            return if (what.isEmpty()) cost else "$what. $cost"
+        }
+        // An uninstall's line on the progress screen. Our launcher is "the new home screen" there as
+        // everywhere else in the app: the TV reads no label for it, so AppNames would make its name
+        // from the package ("Gathin Home", QA 0.4.5-beta1).
+        fun removing(pkg: PackageName): String = if (pkg == launcher.pkg) NARRATION_REMOVE_LAUNCHER else "Removing ${name(pkg)} from the TV"
         fun state(pkg: PackageName): PackageState? = snapshot.packages[pkg]
         fun isOff(pkg: PackageName): Boolean = state(pkg)?.enabled.let { it == EnabledState.DISABLED_USER || it == EnabledState.DISABLED }
         fun installed(pkg: PackageName): Boolean = pkg in snapshot.packages
@@ -661,7 +673,7 @@ class DefaultPlanner(
             val ours = current.installedByUs || journals.any { (it.op as? Op.Install)?.pkg == pkg || (it.op as? Op.InstallStream)?.pkg == pkg }
             if (!ours) { refuse("${name(pkg)} was not installed by this app"); return }
             if (pkg == launcher.pkg && snapshot.home.resolved == launcher) { refuse("use the TV's own home screen first, then remove the new one"); return }
-            step(Op.Uninstall(pkg), Prior(present = true), GROUP_MODULE, "Removing ${name(pkg)} from the TV", FailurePolicy.STOP_AND_ROLLBACK)
+            step(Op.Uninstall(pkg), Prior(present = true), GROUP_MODULE, removing(pkg), FailurePolicy.STOP_AND_ROLLBACK)
         }
 
         // Also the core of UndoEverything and BeforeFactoryReset: the TV's own home screen back.
@@ -731,7 +743,8 @@ class DefaultPlanner(
                         if (pkg == launcher.pkg && snapshot.home.resolved == launcher && (originalHome == null || originalHome == launcher)) {
                             refuse("the new home screen is still in charge; the TV's own home screen must come back first"); continue
                         }
-                        step(Op.Uninstall(pkg), Prior(present = true), GROUP_UNDO, "Removing ${name(pkg)} from the TV", FailurePolicy.CONTINUE)
+                        val removed = step(Op.Uninstall(pkg), Prior(present = true), GROUP_UNDO, removing(pkg), FailurePolicy.CONTINUE)
+                        if (pkg == launcher.pkg && removed >= 0) tidyWatchdogFiles(changes + journals)
                     }
                     is UndoOrder.Target.File -> {
                         // Only files in the launcher's folder that did not exist before us; a file that
@@ -752,6 +765,27 @@ class DefaultPlanner(
             if (clearedLook) {
                 step(Op.RestartHome(launcher), null, GROUP_UNDO, "Restarting the home screen", FailurePolicy.CONTINUE)
                 restoreAccessibility(GROUP_UNDO)
+            }
+        }
+
+        // QA 0.4.5-beta1: the home switch leaves two small files of ours in /data/local/tmp/cleanyourtv,
+        // the token file that defused the watchdog and the watchdog's log (empty unless it fired).
+        // When the undo removes the new home screen they have no use left, so they go with it: one
+        // RemoveFile (`rm -f` of that one file, nothing broader) per file name the watchdog template
+        // writes, for the run tokens of our ArmHomeWatchdog and ConfirmHome records, skipping a file
+        // an earlier undo already removed. The folder itself stays (there is no op that removes one).
+        fun tidyWatchdogFiles(records: List<ChangeRecord>) {
+            val tokens = records.sortedWith(UndoOrder.CHRONOLOGICAL).mapNotNull { c ->
+                when (val op = c.op) { is Op.ArmHomeWatchdog -> op.token; is Op.ConfirmHome -> op.token; else -> null }
+            }.distinct()
+            val gone = records.mapNotNull { (it.op as? Op.RemoveFile)?.path }.toSet()
+            var first = true
+            for (token in tokens) {
+                for (file in listOf(Watchdog.tokenFileName(token), Watchdog.logFileName(token))) {
+                    val path = RemotePath(RemoteDir.TMP, listOf(file))
+                    if (path in gone) continue
+                    if (step(Op.RemoveFile(path), null, GROUP_UNDO, if (first) "Tidying up" else "", FailurePolicy.CONTINUE) >= 0) first = false
+                }
             }
         }
 
@@ -852,6 +886,7 @@ class DefaultPlanner(
         const val REASON_WIZARD_SECTION_ONLY = "the first-run setup wizard is only switched off as part of the home screen switch"
         const val NARRATION_WIZARD = "Switch off the first-run setup wizard so the new home screen can take over"
         // Launcher v2.4.0 plan, finding 4: the uninstall erases everything the other launcher kept.
+        const val NARRATION_REMOVE_LAUNCHER = "Removing the new home screen from the TV"
         const val NARRATION_REPLACE_LAUNCHER = "Replace the home screen app (its look, order, app list, settings and card answers on the TV are reset)"
         // UX 2, the preview sheet's "Needed for the new home screen" group.
         const val TITLE_HOME = "Needed for the new home screen"

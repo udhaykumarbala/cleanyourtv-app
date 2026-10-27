@@ -1274,6 +1274,35 @@
         "com.google.android.youtube.tvmusic": { "category": "streaming", "ask": true }
       }
     },
+    "motorola-mt4310": {
+      "match": { "models": [], "devices": ["hayward"], "brand": "Motorola", "sdkMin": 30, "sdkMax": 30, "fingerprintPrefix": null },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": ["com.google.android.tvlauncher"],
+      "liveTv": "com.mediatek.wwtv.tvcenter",
+      "setupWraith": null,
+      "quirks": ["REENABLED_AT_BOOT"],
+      "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.mediatek.tvinput", "com.mediatek.tv.service", "com.mediatek.autopair", "com.mediatek.network", "com.mediatek.wwtv.mediaplayer", "com.cvte.hotkey.receiver", "com.cvte.tv.infoprovider", "com.cvte.autobacklight", "com.airoha.android.btd", "com.at.factory.factorymanager", "mediatek.factorymenu.ui", "com.google.android.tungsten.setupwraith"],
+      "suggestedDock": [],
+      "tested": { "by": "Guillermo Asernitzky (PR #806)", "firmware": "RTM7.230903.035", "daysLivedWith": 1, "rebootTested": true },
+      "groups": {
+        "Batch 1: silent installs, store demo, setup leftovers, telemetry": { "category": "ads", "ask": false },
+        "Batch 2: recommendation and promo rows": { "category": "ads", "ask": false },
+        "Batch 3: unused system services": { "category": "other", "ask": false },
+        "Batch 4: off by choice on the tested set (keep what you use)": { "category": "streaming", "ask": true }
+      },
+      "packages": {
+        "fusion.android.tv.demo": { "category": "demo", "ask": true },
+        "com.mstar.android.tv.disclaimercustomization": { "category": "other", "ask": true },
+        "com.google.android.feedback": { "category": "tracking", "ask": false },
+        "com.google.android.partnersetup": { "category": "tracking", "ask": false },
+        "com.mediatek.android.leanbacklauncher.partnercustomizer": { "category": "other", "ask": true },
+        "com.android.printspooler": { "category": "preloads", "ask": false },
+        "com.android.providers.calendar": { "category": "other", "ask": true },
+        "com.google.android.play.games": { "category": "preloads", "ask": false },
+        "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true },
+        "com.google.android.tts": { "category": "accessibility", "ask": true }
+      }
+    },
     "motorola-swtv-24ae-fhd": {
       "match": { "models": [], "devices": ["beomil"], "brand": "Motorola", "sdkMin": 34, "sdkMax": 34, "fingerprintPrefix": null },
       "platform": "GOOGLE_TV",

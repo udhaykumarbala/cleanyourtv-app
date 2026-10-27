@@ -23,11 +23,11 @@ import tv.cleanyour.core.probe.ProbeStage
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.session.TvSession
 import tv.cleanyour.core.spec.FactsTable
+import tv.cleanyour.core.spec.HomeAwareProfileSource
 import tv.cleanyour.core.spec.PackageFacts
 import tv.cleanyour.core.spec.Picture
 import tv.cleanyour.core.spec.PictureSource
 import tv.cleanyour.core.spec.ProfileResolution
-import tv.cleanyour.core.spec.ProfileSource
 import tv.cleanyour.core.spec.Theme
 import tv.cleanyour.core.spec.ThemeSource
 import java.io.OutputStream
@@ -68,14 +68,19 @@ class FakeProber(
 }
 
 // Profiles from a list; resolve() is an exact model match, else None with no stock launchers.
+// `homeResolver`, when set, answers the resolution that weighs the snapshot's Home (issue #114);
+// otherwise that one is resolve() too.
 class FakeProfileSource(
     private val profiles: List<Profile> = emptyList(),
     var resolver: (DeviceFacts, List<Profile>) -> ProfileResolution = { facts, all ->
         all.firstOrNull { facts.model in it.match.models }?.let { ProfileResolution.Exact(it) } ?: ProfileResolution.None(emptyList())
     },
-) : ProfileSource {
+    var homeResolver: ((DeviceFacts, HomeResolution?) -> ProfileResolution)? = null,
+) : HomeAwareProfileSource {
     override suspend fun all(): List<Profile> = profiles
     override suspend fun resolve(facts: DeviceFacts): ProfileResolution = resolver(facts, profiles)
+    override suspend fun resolve(facts: DeviceFacts, home: HomeResolution?, packages: Map<PackageName, tv.cleanyour.core.model.PackageState>?): ProfileResolution =
+        homeResolver?.invoke(facts, home) ?: resolver(facts, profiles)
 }
 
 class MapFactsTable(private val facts: Map<PackageName, PackageFacts> = emptyMap()) : FactsTable {

@@ -56,6 +56,7 @@ import tv.cleanyour.core.session.SessionHold
 import tv.cleanyour.core.session.TvSession
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.spec.ProfileSource
+import tv.cleanyour.core.spec.resolveFor
 import tv.cleanyour.core.store.Clock
 import tv.cleanyour.core.store.GatePass
 import tv.cleanyour.core.store.SnapshotStore
@@ -84,6 +85,9 @@ class DefaultEngine(
     // Redacted lines for the diagnostics log (issue #375): only fixed words and the TV's own
     // package names, never an app the person installed. Defaulted and last, so every caller compiles.
     private val log: (String) -> Unit = {},
+    // Issue #629: what the home check saw in front when it rolled back (WRONG_FOCUS), so Setup can
+    // tell a Settings page the person opened from a home screen that did not hold. Defaulted, last.
+    private val onWrongFocus: (TvId, Component) -> Unit = { _, _ -> },
 ) : Engine {
 
     // `fromJournalOnly`: the plan file could not be trusted on resume, so this run holds only the
@@ -237,9 +241,10 @@ class DefaultEngine(
     }
 
     // The profile and the stock launchers of this TV's resolution, so the live check asks the same
-    // rule the planner asked (SwitchOffRule) with the same lists.
+    // rule the planner asked (SwitchOffRule) with the same lists, and with the snapshot's Home as
+    // Setup and the planner weigh it (issue #114).
     private suspend fun resolve(run: Run, snap: Snapshot) {
-        val r = profiles?.resolve(snap.facts)
+        val r = profiles?.resolveFor(snap)
         run.profile = (r as? ProfileResolution.Exact)?.profile
         run.stockLaunchers = when (r) {
             is ProfileResolution.Exact -> r.profile.stockLaunchers
@@ -385,6 +390,7 @@ class DefaultEngine(
                     val ownApp = run.snapshot?.packages?.get(focus.pkg)?.system == true || focus.pkg in tv.cleanyour.core.spec.KnownLaunchers.byPackage ||
                         focus.pkg.value in Denylist.setupWizards || focus.pkg.value in Denylist.vendorSetupWizards || focus.pkg.value == Denylist.FRAMEWORK || focus.pkg.value in SETTINGS_APPS
                     log("engine: the home check saw ${if (ownApp) focus.flat else "an app you installed"} in front, so the old home screen goes back")
+                    onWrongFocus(run.plan.tvId, focus)
                     return HomeOutcome.WRONG_FOCUS
                 }
                 homeCheck = focus.pkg == section.expectedHome.pkg
@@ -768,9 +774,17 @@ class DefaultEngine(
                 guarded(run) { if (rollbackSection(run, open, HomeOutcome.CONNECTION_LOST)) finishWithSkips(run, HomeOutcome.CONNECTION_LOST, run.at) }
                 return@launch
             }
-            execute(run, prePlan = false)
+            execute(run, prePlan = !begun(run))
         }
     }
+
+    // Issue #616: the TCL C735 lost the Wi-Fi while its run was saving the restore point ("run paused
+    // CONNECTION_LOST at step 0 (timeout)"), and later the app was closed before step 0 ("run paused
+    // IN_DOUBT at step 0" after the restart). Carry on then went on as after a step: no restore point
+    // was saved for the run, and the staleness check skipped step 0. A run with no step begun (no
+    // Begin in its journal) carries on from its very start instead: the restore point is taken and
+    // saved, and every step is checked against the TV, as a fresh start does.
+    private suspend fun begun(run: Run): Boolean = run.done.isNotEmpty() || journal.read(run.plan.id).any { it is JournalRecord.Begin }
 
     // A background job's failure lands the run in Paused, never in a crashed coroutine.
     private suspend fun guarded(run: Run, body: suspend () -> Unit) {
@@ -929,7 +943,8 @@ class DefaultEngine(
             run.lastPause = records.filterIsInstance<JournalRecord.Paused>().lastOrNull()?.reason
             run.home = if (run.closedSections.isNotEmpty() && records.filterIsInstance<JournalRecord.Section>().any { it.state == SectionState.ROLLED_BACK }) HomeOutcome.CONNECTION_LOST else null
             for (i in run.done) run.states[i] = NarrationState.DONE
-            run.restorePoint = NarrationState.DONE
+            // Issue #616: no step begun, so the restore point may not have been saved; Carry on takes it.
+            run.restorePoint = if (records.any { it is JournalRecord.Begin }) NarrationState.DONE else NarrationState.UPCOMING
             run.snapshot = snapshots.load(tvId, plan.baseSnapshot) ?: snapshots.latest(tvId)
             run.snapshot?.let { s -> resolve(run, s) }
             runs[tvId] = run

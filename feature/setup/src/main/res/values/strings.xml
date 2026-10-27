@@ -179,7 +179,7 @@
     <string name="check_thumbnail_cd">{count, plural, =0 {The TV shows the new home screen with an empty dock} one {The TV shows the new home screen with one app in the dock} other {The TV shows the new home screen with # apps in the dock}}</string>
     <string name="check_dock_sentence">The new home screen, with {dock} along the bottom.</string>
     <string name="check_dock_sentence_empty">The new home screen.</string>
-    <string name="check_press_home">Press Home on the remote once.</string>
+    <string name="check_press_home">Press only Home on the remote, once. Don\'t open anything else on the TV.</string>
     <string name="check_live_ok">Home opens the new screen</string>
     <string name="check_live_pending_cd">Not checked yet</string>
     <string name="check_live_done_cd">Checked</string>
@@ -206,6 +206,8 @@
     <string name="stop_home_other_launcher_body">Another home screen app, {launcher}, is in charge of Home. We don\'t switch off apps we don\'t know. Choose which one you want.</string>
     <string name="stop_home_other_launcher_primary">Use the new home screen</string>
     <string name="stop_home_other_launcher_secondary">Keep {launcher}</string>
+    <!-- Issue #629: the check rolled back because a Settings page was open on the TV. -->
+    <string name="stop_home_settings_open_body">A Settings page was open on the TV during the check, so we put the old home screen back to be safe. Nothing is wrong with your TV. Try again, and this time press only Home on the remote.</string>
     <string name="stop_home_unknown_title">The old home screen is back</string>
     <string name="stop_home_unknown_body">We couldn\'t make the new home screen take over on this TV, so we put things back. Everything else we did is kept. You can try again from Manage, or send us a report so we can look at this model.</string>
     <string name="stop_home_unknown_primary">Report a problem</string>
@@ -281,6 +283,7 @@
     <string name="done_body_partial_home_on">{total, plural, other {{done} of # switched off. New home screen on. Everything can be put back.}}</string>
     <string name="done_restore_saved">Restore point saved on this phone ({date})</string>
     <string name="done_debug_note">Debugging on the TV switches off when you tap Finish</string>
+    <string name="done_debug_kept">Debugging on the TV stays on, as you chose</string>
     <string name="done_skipped">{name} wouldn\'t switch off; it\'s harmless.</string>
     <!-- RF-LAUNCHER-250 F1 (owner copy): a switch-off the TV refused because the app runs the TV's inputs, on Done and in Manage -->
     <string name="kept_tv_input">{name}. Kept: it runs the TV\'s HDMI and tuner inputs.</string>

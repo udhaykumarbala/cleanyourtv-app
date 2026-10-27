@@ -32,7 +32,7 @@ WHAT YOU NEED
 
 SUPPORTED TVS
 
-131 TV models from 46 brands, including TCL, Sony, Xiaomi, Hisense, Philips, Panasonic, XGIMI, BenQ, NVIDIA Shield, onn and Google, on Android TV, Google TV and Fire OS. A model nobody has listed yet still gets a careful clean-up based on its brand. Samsung, LG and Roku TVs do not run Android, so this app does not work on them.
+173 TV lists from 47 brands, including TCL, Sony, Xiaomi, Hisense, Philips, Panasonic, XGIMI, BenQ, NVIDIA Shield, onn and Google, on Android TV, Google TV and Fire OS. A model nobody has listed yet still gets a careful clean-up based on its brand. Samsung, LG and Roku TVs do not run Android, so this app does not work on them.
 
 PRIVATE
 

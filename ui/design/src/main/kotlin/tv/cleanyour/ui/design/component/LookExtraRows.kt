@@ -71,3 +71,24 @@ internal fun extraWords(state: LookEditorState): List<String> {
     if (x.highlight && e.highlight == HighlightChoice.HALO) out += stringResource(R.string.cyt_look_word_halo)
     return out
 }
+
+// The same acting 3.0 extras in the words of the preview's description ("every app in one row",
+// "the date under the clock"), so TalkBack hears what the picture shows. Only what changes the
+// picture: the internet warnings only tint the Wi-Fi button while the internet is down, which the
+// preview never shows. With the DEFAULT extras (or below 3.0) the list is empty and the description
+// stays as it was.
+@Composable
+internal fun previewExtraWords(state: LookEditorState): List<String> {
+    val x = ExtraRows(state)
+    val e = x.acting
+    val out = mutableListOf<String>()
+    if (x.oneRowOn) out += stringResource(R.string.cyt_look_cd_one_row)
+    if (x.noBandOn) out += stringResource(R.string.cyt_look_cd_no_band)
+    if (x.header && e.hideGreeting) out += stringResource(R.string.cyt_look_cd_no_greeting)
+    if (x.header && e.dateBelow) out += stringResource(R.string.cyt_look_cd_date_below)
+    if (x.header && e.brightDate) out += stringResource(R.string.cyt_look_cd_bright_date)
+    if (x.tiles && e.tiles == TilesChoice.ICONS) out += stringResource(R.string.cyt_look_cd_icon_tiles)
+    if (x.highlight && e.highlight == HighlightChoice.RIM) out += stringResource(R.string.cyt_look_cd_rim)
+    if (x.highlight && e.highlight == HighlightChoice.HALO) out += stringResource(R.string.cyt_look_cd_halo)
+    return out
+}

@@ -49,7 +49,8 @@ enum class StopCase { HOME_SETUPWRAITH, HOME_OTHER_LAUNCHER, HOME_UNKNOWN, HOME_
     // W8 additions (growable, R0: 2; DECISIONS-W8.md D-W8-3): the stops of section 4 that had no case
     TV_NOT_FOUND, WRONG_NETWORK, TV_NOT_SUPPORTED, HOME_TIMED_OUT, STEP_FAILED, UNDONE, PROBE_FAILED, NOT_BACK_AFTER_RESTART,
     HOME_PUT_BACK,   // M5: step R put the old home screen back after a lost connection
-    PLAN_REFUSED }   // 0.3.4 (issues #171, #187, #220): the TV answered, the planner found no safe plan
+    PLAN_REFUSED,    // 0.3.4 (issues #171, #187, #220): the TV answered, the planner found no safe plan
+    HOME_SETTINGS_OPEN }   // issue #629: the home check rolled back because a Settings page was open on the TV
 data class StopCard(val case: StopCase, val title: String, val body: String, val primary: String, val secondary: String?, val planId: PlanId?,
     val tertiary: String? = null)   // W8 addition: S4d and S4e have three buttons
 data class DoneSummary(val switchedOff: Int, val homeScreenOn: Boolean, val restorePointAtMs: Long, val skipped: List<String>, val restartRecommended: Boolean)

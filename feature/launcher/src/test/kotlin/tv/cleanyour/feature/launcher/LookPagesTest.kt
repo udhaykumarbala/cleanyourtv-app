@@ -111,6 +111,44 @@ class LookPagesTest {
         }
     }
 
+    // QA 0.4.5-beta1: with one row or Date under the clock on, TalkBack still heard "Classic, the
+    // Mist picture, 5 apps in a row." The description names every 3.0 extra that acts in the look,
+    // from the same acting extras the rows use, and nothing more with the DEFAULT extras.
+    @Test fun thePreviewNamesThe30ExtrasThatAct() {
+        val prefix = "Preview of the TV's home screen: "
+        var draft by androidx.compose.runtime.mutableStateOf(LookFixtures.draft(reads30 = true, extras = LookExtras(oneRow = true, dateBelow = true)))
+        compose.showColumn { LookContent(sheet(draft), {}, pictures = LookFixtures.pictureFiles) }
+        compose.onNodeWithContentDescription(prefix + "Classic, the Mist picture, 5 apps in a row, every app in one row, the date under the clock.")
+            .assertIsDisplayed()
+
+        // Every extra at once, in page order; the internet warnings do not change the picture.
+        compose.runOnIdle {
+            draft = LookFixtures.draft(reads30 = true, extras = LookExtras(oneRow = true, noBand = true, hideGreeting = true, dateBelow = true,
+                brightDate = true, wifiWarnings = true, tiles = TilesChoice.ICONS, highlight = HighlightChoice.HALO))
+        }
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription(prefix + "Classic, the Mist picture, 5 apps in a row, every app in one row, no dock band, no greeting, " +
+            "the date under the clock, a brighter date, icons on the cards, a halo highlight.").assertIsDisplayed()
+
+        // With names under every app, the extras come after them.
+        compose.runOnIdle { draft = LookFixtures.draft(StyleId.GLASS, names = true, reads30 = true, extras = LookExtras(highlight = HighlightChoice.RIM)) }
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription(prefix + "Glass, the Mist picture, 5 apps in a row, names under every app, a rim highlight.").assertIsDisplayed()
+
+        // Only what acts: All apps has no dock row, so one row and no band say nothing.
+        compose.runOnIdle { draft = LookFixtures.draft(StyleId.ALL_APPS, reads30 = true, extras = LookExtras(oneRow = true, noBand = true)) }
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription(prefix + "All apps, the Mist picture, 5 apps in a row.").assertIsDisplayed()
+
+        // The DEFAULT extras on a 3.0 TV, and any extras below 3.0: the description as before.
+        compose.runOnIdle { draft = LookFixtures.draft(reads30 = true) }
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription(prefix + "Classic, the Mist picture, 5 apps in a row.").assertIsDisplayed()
+        compose.runOnIdle { draft = LookFixtures.draft(extras = LookExtras(oneRow = true, dateBelow = true)) }
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription(prefix + "Classic, the Mist picture, 5 apps in a row.").assertIsDisplayed()
+    }
+
     @Test fun aNoteShowsOnceWithItsActionAndIsAcknowledged() {
         val hits = mutableListOf<HomeScreenIntent>()
         val note = LookNote(7, LookNoteKind.RESET, action = true)

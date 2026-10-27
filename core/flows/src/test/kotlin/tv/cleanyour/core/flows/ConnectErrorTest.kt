@@ -43,6 +43,24 @@ class ConnectErrorTest {
         for (kept in listOf("xiaomi-mitv-axso0", "com.google.android.apps.tv.launcherx/.home.HomeActivity", "UKG3.250107.001", "app 0.3.6")) assertTrue(kept in s, "$kept in $s")
     }
 
+    // Issues #325 and #620: the session let an exception of the phone's own out of open(), and the
+    // door said "unreachable" with no reason. The machine names it now; the session types its own
+    // (Issue325HandshakeTest in :adb:session), so this is the last defence.
+    @Test fun issue325AnExceptionFromTheSessionIsNotUnreachable() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val throwing = object : tv.cleanyour.core.session.SessionManager by h.sessions {
+            override suspend fun open(endpoint: tv.cleanyour.core.model.Endpoint, expected: tv.cleanyour.core.model.TvId?, onAwaitingAllow: suspend (fingerprint: String) -> Unit) =
+                if (endpoint.host == other) throw java.security.ProviderException("Keystore operation failed") else h.sessions.open(endpoint, expected, onAwaitingAllow)
+        }
+        val m = SetupMachine(h.setupDeps(diagnostics = { log(3) }, about = about, sessions = throwing), backgroundScope, SetupStart.Fresh)
+        toDoor(h, m)
+        val e = assertNotNull(m.extras.value.connectError, "the door shows the connect card")
+        assertEquals("protocol", e.kind)
+        assertTrue("setup: connect threw unexpected" in h.logLines, h.logLines.toString())
+        assertTrue("setup: connect failed protocol" in h.logLines, h.logLines.toString())
+        assertTrue(h.logLines.none { "unreachable" in it || "Keystore" in it }, h.logLines.toString())
+    }
+
     private fun TestScope.toDoor(h: Harness, m: SetupMachine) {
         h.discovery.emit(DiscoveryEvent.Found(miTvFound.copy(host = other)))
         settle()

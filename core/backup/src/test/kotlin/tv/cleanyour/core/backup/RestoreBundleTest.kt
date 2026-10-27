@@ -125,6 +125,17 @@ class RestoreBundleTest {
             val utc = zip()
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Kolkata"))
             assertContentEquals(utc, zip())
+            TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"))
+            assertContentEquals(utc, zip())
+            // Each entry carries the writer zone's (UTC) local time, to the zip format's two seconds.
+            val expected = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(clock.nowMs()), java.time.ZoneOffset.UTC)
+                .withNano(0).let { it.withSecond(it.second - it.second % 2) }
+            ZipInputStream(ByteArrayInputStream(utc)).use { z ->
+                while (true) {
+                    val e = z.nextEntry ?: break
+                    assertEquals(expected, e.timeLocal, e.name)
+                }
+            }
         } finally {
             TimeZone.setDefault(saved)
         }

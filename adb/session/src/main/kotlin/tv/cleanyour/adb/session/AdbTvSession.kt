@@ -63,6 +63,8 @@ internal class Link(
     val onAwaitingAllow: suspend (String) -> Unit,
     // 0.3.6: a failed socket connect, for the diagnostics log (ConnectFailure).
     val onConnectFailure: (Throwable) -> Unit = {},
+    // Issues #325, #620: a handshake or identity read that failed inside the app (HandshakeFailure).
+    val onHandshakeFailure: (Throwable) -> Unit = {},
 )
 
 // TvSession over :adb:wire (PRODUCT-SPEC 5.3, ARCHITECTURE 3): one call at a time, two clocks
@@ -201,11 +203,22 @@ class AdbTvSession internal constructor(
             link.onConnectFailure(e)
             throw AdbException(classifyConnectFailure(e))
         }
-        val conn = AdbConnection.open(
-            socket, link.signer, link.tls,
-            onAwaitingAllow = { fp -> setState(ConnectionState.AwaitingAllow(clock.nowMs(), fp)); link.onAwaitingAllow(fp) },
-            firstAuthTimeoutMs = SessionConfig.FIRST_AUTH_TIMEOUT_MS,
-        )
+        val conn = try {
+            AdbConnection.open(
+                socket, link.signer, link.tls,
+                onAwaitingAllow = { fp -> setState(ConnectionState.AwaitingAllow(clock.nowMs(), fp)); link.onAwaitingAllow(fp) },
+                firstAuthTimeoutMs = SessionConfig.FIRST_AUTH_TIMEOUT_MS,
+            )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: VirtualMachineError) {
+            throw e
+        } catch (e: Throwable) {
+            // Issues #325, #620: typed, so the reconnect loop and the engine see an AdbException (R0: 7).
+            // Throwable, so an Error such as NoSuchFieldError is typed and named as well.
+            link.onHandshakeFailure(e)
+            throw HandshakeFailure.typed(e)
+        }
         try {
             if ("shell_v2" !in conn.features) throw AdbException(AdbError.Transport.NoShellV2)
             val found = Identity.read(conn, clock)
@@ -213,7 +226,9 @@ class AdbTvSession internal constructor(
             conn
         } catch (t: Throwable) {
             conn.close()
-            throw t
+            if (t is CancellationException || t is VirtualMachineError) throw t
+            link.onHandshakeFailure(t)
+            throw HandshakeFailure.typed(t)
         }
     }
 
@@ -226,6 +241,7 @@ class AdbTvSession internal constructor(
             try {
                 return@withLock block(conn)
             } catch (e: AdbException) {
+                if (e.error is AdbError.Transport.Timeout) dropIfSilentLocked(conn, e.error)
                 val retriable = e.error == AdbError.Transport.Closed && retry != RetryClass.NEVER && !retried && !closedForGood.get()
                 if (!retriable) throw e
                 retried = true
@@ -234,6 +250,33 @@ class AdbTvSession internal constructor(
         }
         @Suppress("UNREACHABLE_CODE")
         throw IllegalStateException()
+    }
+
+    // Issue #616 (TCL C735 on a Wi-Fi that kept dropping it): a call that timed out left its
+    // connection in place, as 5.3 wants for a TV that is only slow. For a TV that had left the
+    // network the session went on saying Connected: the keepalive that would notice runs only while
+    // the session is idle and held, and a paused run holds nothing. So the reconnect watcher said the
+    // TV was back at once, and Carry on started again on the dead socket and waited out every read.
+    // Now a timeout is followed by one keepalive (5 s, mutex held). A TV that answers keeps its
+    // connection (5.3); one that does not has it dropped, the state says so (Reconnecting while held,
+    // else Idle), and the next call or the background reconnect opens a fresh socket.
+    private suspend fun dropIfSilentLocked(c: AdbConnection, error: AdbError) {
+        if (closedForGood.get() || c.isClosed || connection !== c) return
+        val alive = try {
+            bounded(SessionConfig.PING_TIMEOUT_MS, "ping") {
+                val s = c.openStream(AdbService.Ping)
+                try { while (s.read() != null) { } } finally { s.close() }
+            }
+            true
+        } catch (e: AdbException) {
+            false
+        }
+        if (alive || connection !== c) return
+        connection = null
+        val held = holds.get() > 0
+        setState(if (held) ConnectionState.Reconnecting(error, 0, clock.nowMs()) else ConnectionState.Idle)
+        c.close()
+        if (held) scope.launch { reconnectInBackground() }
     }
 
     override suspend fun exec(line: ShellLine, spec: ExecSpec): ExecResult {
@@ -249,7 +292,7 @@ class AdbTvSession internal constructor(
     }
 
     private suspend fun streamLines(conn: AdbConnection, line: ShellLine, spec: ExecSpec, out: FlowCollector<String>) {
-        val stream = conn.openStream(AdbService.ShellV2(line))
+        val stream = conn.openBounded(AdbService.ShellV2(line), minOf(spec.idleTimeoutMs, spec.timeoutMs))   // issue #616
         try {
             bounded(spec.timeoutMs, "exec-total") {
                 val reader = AdbStreamReader(stream)
@@ -325,7 +368,7 @@ class AdbTvSession internal constructor(
         val file = blobFile(src)
         return call(RetryClass.NEVER) { conn ->
             val start = clock.monotonicMs()
-            val stream = conn.openStream(AdbService.Sync)
+            val stream = conn.openBounded(AdbService.Sync, SessionConfig.PUSH_IDLE_MS)   // issue #616
             val sync = SyncClient(stream, SessionConfig.PUSH_IDLE_MS, "push")
             val hasher = Hasher()
             try {
@@ -360,7 +403,7 @@ class AdbTvSession internal constructor(
     }
 
     override suspend fun pull(src: RemotePath, maxBytes: Long): ByteArray = call(RetryClass.IDEMPOTENT_READ) { conn ->
-        val stream = conn.openStream(AdbService.Sync)
+        val stream = conn.openBounded(AdbService.Sync, SessionConfig.PULL_IDLE_MS)   // issue #616
         val sync = SyncClient(stream, SessionConfig.PULL_IDLE_MS, "pull")
         try {
             bounded(SessionConfig.PULL_TOTAL_MS, "pull") {
@@ -379,7 +422,7 @@ class AdbTvSession internal constructor(
     override suspend fun installStream(apk: BlobRef, size: Long, onProgress: (Long) -> Unit): InstallOutcome {
         val file = blobFile(apk, size)
         return call(RetryClass.NEVER) { conn ->
-            val stream = conn.openStream(AdbService.ExecInstall(size))
+            val stream = conn.openBounded(AdbService.ExecInstall(size), SessionConfig.INSTALL_IDLE_MS)   // issue #616
             val hasher = Hasher()
             val total = SessionConfig.INSTALL_BASE_MS + size * 1000 / SessionConfig.INSTALL_BYTES_PER_SECOND
             try {

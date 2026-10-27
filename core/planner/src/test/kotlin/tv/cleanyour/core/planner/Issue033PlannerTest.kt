@@ -3,6 +3,7 @@ package tv.cleanyour.core.planner
 import tv.cleanyour.core.model.Component
 import tv.cleanyour.core.model.Level
 import tv.cleanyour.core.model.Op
+import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.planner.PlannerFixtures.artifact
@@ -31,8 +32,8 @@ class Issue033PlannerTest {
         is ProfileResolution.None -> r.stockLaunchers
     }
 
-    private fun setup(r: ProfileResolution, takeover: Boolean) =
-        PlanRequest.Setup(r, choices(installLauncher = takeover, takeover = takeover), artifact(), Level.SIMPLE)
+    private fun setup(r: ProfileResolution, takeover: Boolean, extraOff: Set<PackageName> = emptySet()) =
+        PlanRequest.Setup(r, choices(installLauncher = takeover, takeover = takeover).copy(extraOff = extraOff), artifact(), Level.SIMPLE)
 
     // Every switch-off of a plan passes the engine's rule for the same facts: outside the home screen
     // switch as a plain switch-off, inside it as part of the switch. This is what the engine checks
@@ -56,16 +57,21 @@ class Issue033PlannerTest {
         val sure = assertIs<ProfileResolution.BrandSureSet>(r, "no exact profile for jaws on Android 14")
         assertEquals("Xiaomi", sure.brand)
         assertTrue(Issue033.launcherx in sure.stockLaunchers)
-        val plan = (planner().plan(setup(r, takeover = false), snap, facts, emptyList()) as PlanResult.Ok).plan
+        // Issue #111: PatchWall is an ask row of the Xiaomi set, kept on unless the owner chooses it.
+        val kept = (planner().plan(setup(r, takeover = false), snap, facts, emptyList()) as PlanResult.Ok).plan
+        assertTrue(kept.steps.none { it.op == Op.Disable(Issue033.patchwall) })
+        val row = kept.summary.groups.flatMap { it.rows }.single { it.pkg == Issue033.patchwall }
+        assertTrue(!row.off && "the remote's PatchWall button stops working while the TV's own home screen is in use" in row.description, row.toString())
+        val plan = (planner().plan(setup(r, takeover = false, extraOff = setOf(Issue033.patchwall)), snap, facts, emptyList()) as PlanResult.Ok).plan
         val off = plan.steps.mapNotNull { (it.op as? Op.Disable)?.pkg }
-        assertTrue(Issue033.patchwall in off, "PatchWall is in the Xiaomi sure set: $off")
+        assertTrue(Issue033.patchwall in off, "chosen in Customise, PatchWall goes off: $off")
         assertTrue(plan.steps.filter { it.op is Op.Disable }.all { it.onFailure == tv.cleanyour.core.ops.FailurePolicy.SKIP_IF_REFUSED })
         for (p in listOf(Issue033.launcherx.pkg, Issue033.recovery.pkg, Issue033.fallbackHome.pkg)) assertTrue(p !in off, p.value)
         assertTheEngineWouldAllowEverySwitchOff(plan, snap, null, stocksOf(r))
         // PatchWall as HOME or a HOME claimant (a Mi TV whose own home it is) is never planned.
         val asHome = Issue033.jawsSnapshot().let { s -> s.copy(home = s.home.copy(claimants = s.home.claimants +
             tv.cleanyour.core.model.HomeClaimant(Component(Issue033.patchwall, ".MainActivity"), 0))) }
-        val plan2 = (planner().plan(setup(r, takeover = false), asHome, facts, emptyList()) as PlanResult.Ok).plan
+        val plan2 = (planner().plan(setup(r, takeover = false, extraOff = setOf(Issue033.patchwall)), asHome, facts, emptyList()) as PlanResult.Ok).plan
         assertTrue(plan2.steps.none { it.op == Op.Disable(Issue033.patchwall) })
         assertEquals(DefaultPlanner.REASON_HOME_SCREEN, plan2.summary.groups.flatMap { it.rows }.single { it.pkg == Issue033.patchwall }.whyProtected)
     }

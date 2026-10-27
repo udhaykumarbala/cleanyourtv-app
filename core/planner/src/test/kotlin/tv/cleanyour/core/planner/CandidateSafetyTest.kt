@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-// Test builds (0.3.5-test1, 0.3.6-beta1, 0.3.8-beta1, 0.3.8-beta2, 0.4.5-beta1): a candidate list goes
+// Test builds (0.3.5-test1, 0.3.6-beta1, 0.3.8-beta1, 0.3.8-beta2, 0.4.6-beta1): a candidate list goes
 // through every rule a tested list does, and for the home screen switch's setup wizard rule it counts
 // as no profile at all, so trying a list that nobody tested never brings a switch the careful path
 // would skip.
@@ -62,7 +62,7 @@ class CandidateSafetyTest {
         assertEquals(emptyList(), refusedLines)
     }
 
-    // 0.4.5-beta1: no candidate is on a TV family whose switch HomeSwitchRisk holds back by name (the
+    // 0.4.6-beta1: no candidate is on a TV family whose switch HomeSwitchRisk holds back by name (the
     // MOKA boot loop, Google's own casting hardware, the remote buttons of sony-bravia-vu3), so a
     // candidate never needs a rule a tested list has; without a setup wizard on the TV, the switch of
     // each one is planned as on the careful path, or refused for want of a known home (clean-up only).

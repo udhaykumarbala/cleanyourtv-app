@@ -136,7 +136,10 @@ class AppGraph(context: Context, val appVersion: String = versionOf(context), va
     val snapshots = DocumentSnapshotStore(documents)       // W6
     val journal = FileJournal(dataDir)                     // tvs/<tvId>/journal/<planId>.jsonl
     val plans = DocumentPlanStore(documents)
-    val engine: Engine = LiveSessionEngine(DefaultEngine(renderer, prober, journal, snapshots, plans, clock, workScope, profiles, log = { CytLog.i(it) }), sessions, tvs)
+    // Issue #629: what the home check saw in front when it rolled back, for Setup's stop card (taken once).
+    private val wrongFocus = java.util.concurrent.ConcurrentHashMap<tv.cleanyour.core.model.TvId, tv.cleanyour.core.model.Component>()
+    val engine: Engine = LiveSessionEngine(DefaultEngine(renderer, prober, journal, snapshots, plans, clock, workScope, profiles, log = { CytLog.i(it) },
+        onWrongFocus = { tvId, focus -> wrongFocus[tvId] = focus }), sessions, tvs)
 
     // W6: the restore files on the TV, the note, the zip.
     val restoreFiles = DefaultTvRestoreFiles(clock, zone)
@@ -202,6 +205,7 @@ class AppGraph(context: Context, val appVersion: String = versionOf(context), va
         candidates = tv.cleanyour.core.flows.BundledCandidateLists(profiles, candidateChoices),   // test build
         about = about, connectDetail = { sessions.lastConnectFailure },   // 0.3.6: "Copy error"
         documents = documents,     // 0.4.0: the person's photo for the look step (OwnPicture)
+        wrongFocus = { tvId -> wrongFocus.remove(tvId) },                 // issue #629
     )
 
     val manageDeps = ManageDeps(

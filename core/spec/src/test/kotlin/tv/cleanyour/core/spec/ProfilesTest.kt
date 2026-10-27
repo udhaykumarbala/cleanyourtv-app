@@ -25,7 +25,7 @@ class ProfilesTest {
 
     @Test fun everyConvertedUpstreamExampleParsesWithCuratedMetadata() {
         assertEquals(316, upstream.size)
-        assertEquals(172, examples.size)
+        assertEquals(173, examples.size)
         for (e in examples) {
             val profile = DebloatTxtParser.parse(e.debloatTxt, e.folder)
             assertEquals(e.folder, profile.id)
@@ -65,7 +65,7 @@ class ProfilesTest {
     @Test fun theUnconvertedListIsPinnedToTheSubmodule() {
         val meta = ProfileMeta.decode(File(Fixtures.repoRoot, "core/spec/src/main/resources/tv/cleanyour/core/spec/profile-meta.json").readText())
         assertEquals(upstream.map { it.folder }.filter { it !in meta.profiles }.toSet(), unconverted)
-        assertEquals(144, unconverted.size)
+        assertEquals(143, unconverted.size)
         val listed = unconvertedFile.readLines().filter { it.isNotBlank() && !it.startsWith("#") }
         assertEquals(listed.sorted(), listed, "one folder per line, sorted")
         assertTrue('\u2014' !in unconvertedFile.readText() && "-".repeat(2) !in unconvertedFile.readText())
@@ -147,7 +147,10 @@ class ProfilesTest {
         assertTrue(Quirk.REBOOT_COMMAND in mi.quirks)
         val byId = mi.groups.associateBy { it.id }
         assertEquals(GroupDefault.DISABLE, byId.getValue("ads").default)
-        assertTrue(p("com.mitv.tvhome.atv") in byId.getValue("ads").packages.map { it.name })
+        // Issue #111: PatchWall is the owner's choice (an ask row), not an advert switched off.
+        assertTrue(p("com.mitv.tvhome.atv") !in byId.getValue("ads").packages.map { it.name })
+        assertEquals(GroupDefault.ASK, byId.getValue("ads-optional").default)
+        assertTrue(p("com.mitv.tvhome.atv") in byId.getValue("ads-optional").packages.map { it.name })
         assertEquals(p("com.glance.tv"), byId.getValue("ads").packages.first { it.name.value == "com.glance.tv" }.name)
         assertEquals("Glance lock-screen news and ads", byId.getValue("ads").packages.first { it.name.value == "com.glance.tv" }.note)
         assertEquals(listOf("com.miui.tv.analytics", "com.xiaomi.statistic", "com.google.android.feedback", "com.google.android.tv.bugreportsender"),
@@ -159,11 +162,12 @@ class ProfilesTest {
         // Personal choices are ask groups: voice, casting, unused streaming apps.
         for (id in listOf("voice", "casting", "streaming")) assertEquals(GroupDefault.ASK, byId.getValue(id).default, id)
         assertEquals(listOf("com.google.android.katniss", "com.google.android.speech.pumpkin"), byId.getValue("voice").packages.map { it.name.value })
-        // Simple switches off the disable groups only; 20 packages on this TV.
+        // Simple switches off the disable groups only; 19 packages on this TV (20 before PatchWall
+        // became an ask row, issue #111).
         val simple = mi.groups.filter { it.default == GroupDefault.DISABLE }.flatMap { it.packages }
-        assertEquals(20, simple.size)
+        assertEquals(19, simple.size)
         // Disable groups come first, in the fixed category order.
-        assertEquals(listOf("ads", "tracking", "preloads", "brand", "other", "streaming", "voice", "casting", "updates"), mi.groups.map { it.id })
+        assertEquals(listOf("ads", "tracking", "preloads", "brand", "other", "ads-optional", "streaming", "voice", "casting", "updates"), mi.groups.map { it.id })
         assertEquals("Adverts and sponsored rows", byId.getValue("ads").title)
         assertEquals("Xiaomi extras", byId.getValue("brand").title)
         assertEquals(DebloatTxt.sha256(examples.first { it.folder == "xiaomi-mitv-axso0" }.debloatTxt), mi.sourceSha256)
@@ -516,7 +520,9 @@ class ProfilesTest {
         val keep = profiles.flatMap { it.neverDisable }.toSet()
         for (s in sets) {
             val mine = profiles.filter { it.match.brand.equals(s.brand, true) }
-            for (g in s.groups) {
+            // Issue #111: an ask group holds owner's-choice packages only (ProfileCategory.OWNERS_CHOICE).
+            for (g in s.groups.filter { it.default == GroupDefault.ASK }) assertTrue(g.packages.all { ProfileCategory.isOwnersChoice(it.name) }, "${s.brand} ${g.id}")
+            for (g in s.groups.filter { it.default != GroupDefault.ASK }) {
                 assertEquals(GroupDefault.DISABLE, g.default)
                 for (e in g.packages) {
                     assertTrue(e.name !in keep)
@@ -537,6 +543,8 @@ class ProfilesTest {
     // b06ab21: the same rows. The Amazon set's notes for com.amazon.media.recommendations,
     // com.amazon.client.metrics.api and com.amazon.tv.developer.dataservice now come from
     // amazon-fire-tv-afttiff43, the first Amazon list, whose Omni rows note them.
+    // Issue #111: the Xiaomi set's PatchWall row moves from off to an ask row ("More promoted
+    // content"), still 29 rows.
     @Test fun theFullSetsAreThoseOf034() {
         val profiles = SureSetGenerator.feeding(BundledProfileSource.bundled.profiles.filter { !it.isCandidate })
         val brands = profiles.groupBy { it.match.brand!!.lowercase() }
@@ -551,7 +559,7 @@ class ProfilesTest {
                 s.stockLaunchers.joinToString(",") { it.flat } + "\n"
         }
         val digest = java.security.MessageDigest.getInstance("SHA-256").digest(canon.encodeToByteArray()).joinToString("") { "%02x".format(it) }
-        assertEquals("87fc297c2148998441972fa6a737143094657bc28a78bd4d14db9db8a2089d01", digest)
+        assertEquals("701fb0da11cb2e11c122cb4d8944362c3ea95a20530152dfdd9e46004457e1a7", digest)
         // The careful sets come after every full set, so a full set wins when both match a TV.
         assertTrue(sets.drop(full.size).all { brands.getValue(it.brand.lowercase()).size < 3 })
     }

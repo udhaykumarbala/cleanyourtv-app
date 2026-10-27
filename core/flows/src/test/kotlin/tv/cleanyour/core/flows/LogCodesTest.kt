@@ -58,6 +58,21 @@ class LogCodesTest {
         assertEquals("unexpected", LogCodes.of(IllegalStateException("192.168.1.20")))
     }
 
+    // Issues #788 and #1112: a probe failure's line carries the prober's fixed detail, never what the
+    // TV printed after it, at most PROBE_DETAIL_MAX characters.
+    @Test fun aProbeFailureNamesItsDetail() {
+        assertEquals("probe_failed(facts): getprop has no ro.product.manufacturer",
+            LogCodes.withDetail(ProbeException(ProbeStage.FACTS, "getprop has no ro.product.manufacturer")))
+        // The scrubber masks any six-digit number as a code, as it does in every TV text.
+        assertEquals("probe_failed(packages): output over [code] bytes", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "output over 524288 bytes")))
+        assertEquals("probe_failed(packages): exit 1", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "exit 1: denied for 192.168.1.20")))
+        assertEquals("probe_failed(packages): unexpected line", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "unexpected line: serial 0123456789ABCDEF")))
+        val long = LogCodes.probeDetail(ProbeException(ProbeStage.FACTS, "the script stopped before " + "gms and ".repeat(40)))!!
+        assertEquals(LogCodes.PROBE_DETAIL_MAX, long.length)
+        assertEquals("nonzero_exit(1)", LogCodes.withDetail(AdbException(AdbError.NonZeroExit(1, "x"))))
+        assertEquals("unexpected", LogCodes.withDetail(IllegalStateException("192.168.1.20")))
+    }
+
     @Test fun opsAreNamedByKindAndTarget() {
         val home = Component(PackageName("com.gathin.tvhome"), ".MainActivity")
         val token = RunToken("00000000000000aa")

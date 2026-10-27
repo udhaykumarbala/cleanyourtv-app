@@ -146,7 +146,7 @@
     <string name="appsettings_up_to_date">You have the latest version</string>
     <string name="appsettings_update_error">Couldn\'t check for updates</string>
     <string name="appsettings_licences">Licences</string>
-    <string name="appsettings_licence_app">Clean Your TV: GPL-3.0-or-later</string>
+    <string name="appsettings_licence_app">Clean Your TV: MIT</string>
     <string name="appsettings_licence_font">Outfit typeface: SIL Open Font Licence 1.1</string>
     <string name="appsettings_licence_apache">dadb and Shizuku code we adapted: Apache-2.0 notices</string>
     <string name="appsettings_licence_pictures">Look pictures: our own work, CC0 1.0 (public domain); Aurora, Glass and Autumn lake (Ruska) from the Clean Your TV launcher, MIT</string>

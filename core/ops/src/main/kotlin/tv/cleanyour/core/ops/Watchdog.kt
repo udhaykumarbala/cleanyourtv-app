@@ -17,6 +17,7 @@ object Watchdog {
     const val PROCESS_NAME_PREFIX = "cleanyourtv-rollback-"
     const val TOKEN_FILE_PREFIX = "home-ok-"
     const val LOG_FILE_PREFIX = "watchdog-"
+    const val LOG_FILE_SUFFIX = ".log"
     const val MIN_SECONDS = 30
     const val MAX_SECONDS = 300
 
@@ -33,11 +34,11 @@ object Watchdog {
 
     // Variant A (PRODUCT-SPEC 3.4): nohup and setsid detach the shell from the adb socket.
     const val TEMPLATE_NOHUP_SETSID =
-        "nohup setsid sh -c '$BODY' ${PROCESS_NAME_PREFIX}TOKEN >$DIR/${LOG_FILE_PREFIX}TOKEN.log 2>&1 &"
+        "nohup setsid sh -c '$BODY' ${PROCESS_NAME_PREFIX}TOKEN >$DIR/${LOG_FILE_PREFIX}TOKEN$LOG_FILE_SUFFIX 2>&1 &"
 
     // Variant B: the same body in a backgrounded subshell (double fork) instead of nohup setsid.
     const val TEMPLATE_SUBSHELL =
-        "( sh -c '$BODY' ${PROCESS_NAME_PREFIX}TOKEN >$DIR/${LOG_FILE_PREFIX}TOKEN.log 2>&1 & )"
+        "( sh -c '$BODY' ${PROCESS_NAME_PREFIX}TOKEN >$DIR/${LOG_FILE_PREFIX}TOKEN$LOG_FILE_SUFFIX 2>&1 & )"
 
     fun template(variant: WatchdogVariant): String = when (variant) {
         WatchdogVariant.NOHUP_SETSID -> TEMPLATE_NOHUP_SETSID
@@ -87,6 +88,8 @@ object Watchdog {
 
     fun processName(token: RunToken): String = PROCESS_NAME_PREFIX + token.value
     fun tokenFileName(token: RunToken): String = TOKEN_FILE_PREFIX + token.value
+    // The file the template sends the watchdog's output to (empty unless something went wrong).
+    fun logFileName(token: RunToken): String = LOG_FILE_PREFIX + token.value + LOG_FILE_SUFFIX
 
     // The pattern pgrep and pkill match against full command lines (-f). The first letter sits in a
     // bracket expression, so the pattern matches the watchdog's command line (which carries the

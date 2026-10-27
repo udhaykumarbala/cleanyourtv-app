@@ -501,6 +501,11 @@ object SetupShots {
             Stopped(home(StopCase.HOME_UNKNOWN, R.string.stop_home_unknown_title, R.string.stop_home_unknown_body,
                 R.string.stop_home_unknown_primary, R.string.stop_home_unknown_secondary), connected.copy(commands = commands))
         },
+        // Issue #629: a Settings page was open on the TV during the check.
+        Shot("stopped_home_settings_open") {
+            Stopped(home(StopCase.HOME_SETTINGS_OPEN, R.string.stop_home_unknown_title, R.string.stop_home_settings_open_body,
+                R.string.stop_home_user_said_no_primary, R.string.stop_home_setupwraith_secondary), connected.copy(commands = commands))
+        },
         Shot("stopped_home_user_said_no") {
             Stopped(home(StopCase.HOME_USER_SAID_NO, R.string.stop_home_user_said_no_title, R.string.stop_home_user_said_no_body,
                 R.string.stop_home_user_said_no_primary, R.string.stop_home_user_said_no_secondary), connected.copy(commands = commands))
@@ -587,6 +592,8 @@ object SetupShots {
         },
         Shot("done_finishing") { Setup(done(), connected.copy(finishing = Finishing.SWITCHING)) },
         Shot("done_finished") { Setup(done(), connected.copy(chip = ChipState.DEBUGGING_OFF, finishing = Finishing.DONE)) },
+        // D7: "Keep debugging on" chosen, so Done says debugging stays on (baseline QA, 0.4.0).
+        Shot("done_keep_debugging") { Setup(done(), connected.copy(keepsDebugging = true)) },
         // The Google Play build (STORES-PLAN 1): Done offers no card to add.
         Shot("play_done_home_on") { Setup(done(), connected.copy(addOns = false)) },
     )

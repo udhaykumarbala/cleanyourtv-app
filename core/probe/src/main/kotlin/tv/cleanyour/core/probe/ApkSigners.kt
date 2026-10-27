@@ -1,6 +1,7 @@
 package tv.cleanyour.core.probe
 
 import tv.cleanyour.core.model.Sha256
+import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.MessageDigest
@@ -82,7 +83,8 @@ object ApkSigners {
     private fun slice(b: ByteBuffer, at: Int, len: Int): ByteBuffer {
         require(at >= 0 && len >= 0 && at.toLong() + len <= b.capacity())
         val d = b.duplicate().order(ByteOrder.LITTLE_ENDIAN)
-        d.position(at).limit(at + len)
+        // Through Buffer: JDK 9's ByteBuffer.position(int) and limit(int) overloads are not in Android's API.
+        (d as Buffer).position(at).limit(at + len)
         return d.slice().order(ByteOrder.LITTLE_ENDIAN)
     }
 
@@ -92,7 +94,7 @@ object ApkSigners {
         val len = b.int
         require(len >= 0 && len <= b.remaining())
         val out = slice(b, b.position(), len)
-        b.position(b.position() + len)
+        (b as Buffer).position(b.position() + len)
         return out
     }
 }

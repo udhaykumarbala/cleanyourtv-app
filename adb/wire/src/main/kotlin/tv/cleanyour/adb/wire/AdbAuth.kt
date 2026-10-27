@@ -50,7 +50,7 @@ object AdbPublicKeyCodec {
         val r32 = BigInteger.ONE.shiftLeft(32)
         var n = key.modulus
         val r = BigInteger.ONE.shiftLeft(WORDS * 32)
-        var rr = r.modPow(BigInteger.TWO, n)
+        var rr = r.modPow(BigInteger.valueOf(2), n)
         val n0inv = n.mod(r32).modInverse(r32)
         val myN = IntArray(WORDS)
         val myRr = IntArray(WORDS)
@@ -86,7 +86,7 @@ object AdbPublicKeyCodec {
         require(e == 3 || e == 65537) { "adb public key exponent is malformed" }
         val r32 = BigInteger.ONE.shiftLeft(32)
         require(n.mod(r32).modInverse(r32).negate().toInt() == n0inv) { "adb public key n0inv does not match" }
-        require(BigInteger.ONE.shiftLeft(WORDS * 32).modPow(BigInteger.TWO, n) == rr) { "adb public key rr does not match" }
+        require(BigInteger.ONE.shiftLeft(WORDS * 32).modPow(BigInteger.valueOf(2), n) == rr) { "adb public key rr does not match" }
         return KeyFactory.getInstance("RSA").generatePublic(RSAPublicKeySpec(n, BigInteger.valueOf(e.toLong()))) as RSAPublicKey
     }
 

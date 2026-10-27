@@ -557,8 +557,23 @@ class SetupMachineTest {
         m.dispatch(SetupIntent.KeepDebuggingOn(true)); settle()
         assertTrue(h.planner.requests.filterIsInstance<PlanRequest.Setup>().last().choices.keepDebuggingOn)
         m.dispatch(SetupIntent.MakeItClean); settle()
+        // Baseline QA (0.4.0): Done still said debugging switches off at Finish; it now knows it stays on.
+        assertIs<SetupState.Done>(m.state.value)
+        assertTrue(m.extras.value.keepsDebugging)
         m.dispatch(SetupIntent.Finish); settle(700)
         assertFalse(h.planner.requests.any { it == PlanRequest.DebugOff })
+    }
+
+    @Test fun withoutKeepDebuggingOnDoneSaysFinishSwitchesItOff() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        val m = h.setup(backgroundScope)
+        toFound(h, m)
+        m.dispatch(SetupIntent.MakeItClean); settle()
+        assertIs<SetupState.Done>(m.state.value)
+        assertFalse(m.extras.value.keepsDebugging)
+        m.dispatch(SetupIntent.Finish); settle(700)
+        assertTrue(h.planner.requests.any { it == PlanRequest.DebugOff })
     }
 
     @Test fun pairingOnlyTvGoesToThePairingDeadEnd() = runTest(timeout = 30.seconds) {

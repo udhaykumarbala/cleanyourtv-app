@@ -275,6 +275,26 @@ internal class ConnectionCore private constructor(
             return m
         }
 
+        // Issues #325 and #620: the TV's port answered, then every connect failed "unreachable" with no
+        // reason. Only the phone's key can fail that way in the handshake: a Keystore error from the
+        // signer is not an AdbException, so it left the session untyped and the flows read it as an
+        // unreachable TV. It is a typed failure now (SIGNER_FAILED) that keeps the signer's exception
+        // as its cause, so the session can log the platform class (ConnectFailure).
+        private suspend fun <T> keyStep(block: suspend () -> T): T = try {
+            block()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: VirtualMachineError) {
+            // Out of memory or stack: not the key's fault, and nothing to name.
+            throw e
+        } catch (e: AdbException) {
+            throw e
+        } catch (e: Throwable) {
+            // Throwable, not Exception: a Java API the phone lacks throws a LinkageError here
+            // (BigInteger.TWO on Android 9 to 12 was NoSuchFieldError), and it is named the same way.
+            throw signerFailed(e)
+        }
+
         // CNXN, then AUTH: sign the first token; a second token means the key is unknown, so send
         // the public key once and wait for the Allow tap; a third token is a denial.
         private suspend fun handshake(
@@ -301,16 +321,16 @@ internal class ConnectionCore private constructor(
                         if (m.payload.size != AdbProtocol.TOKEN_BYTES) throw protocolError("AUTH token of ${m.payload.size} bytes")
                         when {
                             !signatureSent -> {
-                                val signature = signer.sign(AuthToken(m.payload.copyOf()))
+                                val signature = keyStep { signer.sign(AuthToken(m.payload.copyOf())) }
                                 if (signature.isEmpty() || signature.size > AdbProtocol.MAX_CONTROL_PAYLOAD) throw protocolError("signer returned ${signature.size} bytes")
                                 writeFrame(socket, FrameCodec.encode(A_AUTH, AdbProtocol.AUTH_SIGNATURE, 0, signature))
                                 signatureSent = true
                             }
                             !publicKeySent -> {
-                                val line = signer.publicKeyLine.toByteArray(Charsets.US_ASCII)
+                                val line = keyStep { signer.publicKeyLine }.toByteArray(Charsets.US_ASCII)
                                 writeFrame(socket, FrameCodec.encode(A_AUTH, AdbProtocol.AUTH_RSAPUBLICKEY, 0, line.copyOf(line.size + 1)))
                                 publicKeySent = true
-                                onAwaitingAllow(signer.fingerprint)
+                                onAwaitingAllow(keyStep { signer.fingerprint })
                             }
                             else -> throw AdbException(AdbError.Auth.Denied)
                         }
