@@ -131,6 +131,9 @@ class CandidatesTest {
         val tried = source.resolve(magnolia)
         assertIs<ProfileResolution.Exact>(tried)
         assertEquals("xiaomi-mitv4i-magnolia", tried.profile.id)
+        // 0.4.5-beta1: PatchWall answers the remote's PatchWall button (#111), so it is an ask row, never off by default.
+        val patchWall = tried.profile.groups.single { g -> g.packages.any { it.name == PackageName("com.mitv.tvhome.atv") } }
+        assertEquals(GroupDefault.ASK, patchWall.default)
         // Another Android version of the same TV: no candidate (D-W4-14).
         assertNull(source.candidateFor(magnolia.copy(sdk = 30)))
         assertIs<ProfileResolution.BrandSureSet>(source.resolve(magnolia.copy(sdk = 30)))

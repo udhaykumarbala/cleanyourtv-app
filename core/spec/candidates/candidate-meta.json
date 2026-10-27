@@ -2175,7 +2175,12 @@
           "ask": false
         }
       },
-      "packages": {}
+      "packages": {
+        "com.mitv.tvhome.atv": {
+          "category": "ads",
+          "ask": true
+        }
+      }
     }
   }
 }
