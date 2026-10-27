@@ -122,7 +122,8 @@ object ProblemReports {
         val shortened: Boolean get() = sent != full
     }
 
-    fun fit(about: AppAbout, input: TvReportInput?, log: String, context: ReportContext? = null, redact: (String) -> String = { it }): Fitted {
+    fun fit(about: AppAbout, input: TvReportInput?, rawLog: String, context: ReportContext? = null, redact: (String) -> String = { it }): Fitted {
+        val log = collapseRepeats(rawLog)
         val full = TvReport.problem(about, input, ReportMachine.tail(log), context, redact = redact)
         val whole = IssueLinks.bugReport(about, input, full, context, redact)
         val lines = log.trimEnd().lines()
@@ -159,6 +160,39 @@ object ProblemReports {
         return Fitted(full, full, whole, rest.size, 0, true)
     }
 
+    // beta2 QA (and issue #1119): a door that retries every few seconds fills the log with the same
+    // line, or the same two lines in turn ("connect start", "connect failed lost"), and the link then
+    // keeps nothing else. A run of three or more is kept once, its last line ending with how many
+    // times it came and the time of the last one: "... (x12, last at 1793114601262)".
+    private val LOG_LINE = Regex("^(\\d+) ([A-Z]) (.*)$")
+    const val MIN_REPEATS = 3
+
+    fun collapseRepeats(log: String): String {
+        val lines = log.lines()
+        val parsed = lines.map { LOG_LINE.matchEntire(it) }
+        fun msg(i: Int) = parsed[i]?.let { it.groupValues[2] + " " + it.groupValues[3] }
+        val out = ArrayList<String>(lines.size)
+        var i = 0
+        while (i < lines.size) {
+            var done = false
+            for (period in 1..2) {
+                if (i + period > lines.size || (0 until period).any { msg(i + it) == null }) continue
+                if (period == 2 && msg(i) == msg(i + 1)) continue
+                var times = 1
+                while (i + (times + 1) * period <= lines.size && (0 until period).all { msg(i + times * period + it) == msg(i + it) }) times++
+                if (times < MIN_REPEATS) continue
+                for (k in 0 until period - 1) out += lines[i + k]
+                val lastAt = parsed[i + times * period - 1]!!.groupValues[1]
+                out += lines[i + period - 1] + " (${if (period == 2) "with the line above, " else ""}x$times, last at $lastAt)"
+                i += times * period
+                done = true
+                break
+            }
+            if (!done) { out += lines[i]; i++ }
+        }
+        return out.joinToString("\n")
+    }
+
     private fun isGap(line: String) = line.startsWith("(") && line.contains("older lines left out")
 
     // What a report is built from for `tvId`: its latest snapshot, the profile, the home switch
@@ -166,11 +200,12 @@ object ProblemReports {
     suspend fun input(d: ManageDeps, tvId: TvId?): TvReportInput? {
         val tv = tvId?.let { d.tv(it) } ?: return null
         val snap = attempt { d.snapshots.latest(tv.id) }.getOrNull() ?: return null
+        val profile = attempt { d.profiles.resolveFor(snap) }.getOrNull()
+        val home = attempt { d.homeDecisions.load(tv.id) }.getOrNull()
         return TvReportInput(
-            about = d.about, snapshot = snap,
-            profile = attempt { d.profiles.resolveFor(snap) }.getOrNull(),
-            home = attempt { d.homeDecisions.load(tv.id) }.getOrNull(),
+            about = d.about, snapshot = snap, profile = profile, home = home,
             switchedOffByApp = attempt { d.ledger.switchedOffByUs(tv.id).toSet() }.getOrDefault(emptySet()),
+            homeEarlier = home?.earlier(d.about.version, profile, tv.profileId) == true,
         )
     }
 

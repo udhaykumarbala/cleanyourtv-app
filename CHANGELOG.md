@@ -5,7 +5,7 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 ## Unreleased
 
 ### Home screen
-- Xiaomi TVs on Android TV (Mi TV 4i, Mi TV P1 and others), Redmi sets among them, can now get the
+- Xiaomi TVs on Android TV (the Mi TV 4i and others), Redmi sets among them, can now get the
   new home screen; their setup wizard stays on. This is for the sets whose only home screen is
   Google's Android TV home and whose setup wizard does not answer the Home button.
 - Each time you open Manage with the TV connected, the app checks the Home button again. If the
@@ -17,6 +17,14 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 - Right after the switch, if the TV brings up Live TV or another input in front of the new home
   screen (some TVs start on the last input they showed), the check presses Home again for you.
 - "Use the TV's own home screen" in Manage now also works on TVs with no list of their own.
+- A Xiaomi TV with a home screen app you installed next to Google's Android TV home can get the
+  new home screen too. Your app stays installed; if it takes the Home button during the switch, the
+  app puts the TV's own home screen back.
+- When another home screen app is the reason the app left the home screen alone, Setup and Home
+  screen now say so, instead of naming the setup wizard.
+- If Setup left the home screen alone with an earlier version of the app (for example before your
+  TV had a list of its own), Manage's Home screen now says so and offers to run Setup again, and the
+  report says the decision is an earlier Setup's.
 
 ### Reporting a problem
 - Every stop, timeout, paused change and connect problem has "Report a problem" on
@@ -33,6 +41,8 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 - Links to GitHub are shorter, so they open for people signed in to GitHub too (a long link and the
   browser's sign-in data together got an error page). The "Help add this TV" report doesn't fit in
   such a link, so the app copies it and you paste it into the form, as before for long reports.
+- Lines that repeat in the log, like a connection being tried again every few seconds, are counted
+  once ("x12") instead of filling the report.
 - The issue's title names the TV, for example "Problem: Xiaomi MiTV-AXSO0 (dangal, Android 9)", or
   "Problem: could not connect (refused)" when no TV was read.
 

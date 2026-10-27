@@ -170,7 +170,8 @@ internal fun NotOnTvScreen(tvName: String, n: NotOnTv, onIntent: (HomeScreenInte
         ScreenTitle(stringResource(R.string.home_title), Modifier.padding(top = 20.dp))
         val lead = msg(R.string.home_not_on_tv_lead, "tv" to tvName)
         Lead(lead, Modifier.padding(top = 12.dp))
-        val why = when (n.reason) {
+        // beta3: an earlier Setup's block may not hold with this version (issues #701, #1273).
+        val why = if (n.earlier) stringResource(R.string.home_not_on_tv_earlier) else when (n.reason) {
             HomeBlock.TV_REFUSES -> msg(R.string.home_not_on_tv_refuses, "brand" to (if (n.fireTv) stringResource(R.string.home_fire_tv_name) else n.brand))
             HomeBlock.OLD_ANDROID -> stringResource(R.string.home_not_on_tv_old_android)
             HomeBlock.UNKNOWN_HOME -> stringResource(R.string.home_not_on_tv_unknown_home)
@@ -181,15 +182,18 @@ internal fun NotOnTvScreen(tvName: String, n: NotOnTv, onIntent: (HomeScreenInte
             HomeBlock.REMOTE_BUTTONS -> stringResource(R.string.home_not_on_tv_remote_buttons)
             HomeBlock.WIZARD_STAYS_ON -> stringResource(R.string.home_not_on_tv_wizard_stays_on)
             HomeBlock.HOME_CHANGED -> stringResource(R.string.home_not_on_tv_home_changed)
+            HomeBlock.OTHER_HOME -> stringResource(R.string.home_not_on_tv_other_home)
             HomeBlock.NONE, null -> stringResource(R.string.home_not_on_tv_none)
         }
         Banner(why, BannerTone.INFO, Modifier.padding(top = 16.dp), icon = CytIcons.Info)
         val next = when {
             n.helpAddTv -> R.string.home_not_on_tv_next_list
             !n.setupAgain -> null
+            n.earlier -> R.string.home_not_on_tv_next_check
             n.reason == HomeBlock.WIZARD_WIFI -> R.string.home_not_on_tv_next_wifi
             n.reason == HomeBlock.WIZARD_WIFI_UNKNOWN -> R.string.home_not_on_tv_next_check
             n.reason == HomeBlock.HOME_CHANGED -> R.string.home_not_on_tv_next_home_changed
+            n.reason == HomeBlock.OTHER_HOME -> R.string.home_not_on_tv_next_other_home
             else -> R.string.home_not_on_tv_next_setup
         }
         next?.let { Body(stringResource(it), Modifier.padding(top = 16.dp, start = 4.dp, end = 4.dp)) }

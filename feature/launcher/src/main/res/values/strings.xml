@@ -48,6 +48,10 @@
     <string name="home_not_on_tv_remote_buttons">On this TV the remote\'s app buttons only work through its own home screen, so Setup left the home screen alone.</string>
     <string name="home_not_on_tv_wizard_stays_on">We don\'t know this TV well enough to switch its setup wizard off, and with the wizard left on and the TV\'s own home screen off, the TV can crash. So Setup left the home screen alone.</string>
     <string name="home_not_on_tv_home_changed">This TV\'s home screen was already changed, by another app or an earlier change, so Setup left it as it is and didn\'t add ours. The clean-up works without it.</string>
+    <!-- beta3: the home screen was left alone by Setup with an earlier version of the app or another list -->
+    <string name="home_not_on_tv_earlier">Setup left the home screen alone when it last ran, but this app has changed since and may now add the new home screen.</string>
+    <string name="home_not_on_tv_other_home">Another home screen app is set up on this TV, so Setup left the home screen alone.</string>
+    <string name="home_not_on_tv_next_other_home">To use the new one, remove that app, then run Setup again. Or ask us in your issue.</string>
     <string name="home_not_on_tv_none">The new home screen isn\'t installed on this TV right now.</string>
     <string name="home_not_on_tv_next_wifi">To change this, forget the Wi-Fi network in the TV\'s Settings and add it again, or use a network cable. Then run Setup again.</string>
     <string name="home_not_on_tv_next_check">Running Setup again checks once more.</string>

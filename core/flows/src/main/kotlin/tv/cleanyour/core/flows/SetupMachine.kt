@@ -107,8 +107,9 @@ enum class Finishing { SWITCHING, DONE }
 // HOME_CHANGED (0.3.3, issue #8): HOME answers to a home screen app the person installed and the
 // TV's own is not among the claimants, so the person's choice stays.
 // REMOTE_BUTTONS (0.4.5): the remote's app buttons need the TV's own home screen (HomeSwitchRisk).
+// OTHER_HOME (beta3): another home screen app claims Home where R0 would otherwise switch (HomeSwitchRisk).
 enum class HomeBlock { NONE, TV_REFUSES, OLD_ANDROID, UNKNOWN_HOME, WIZARD_WIFI, WIZARD_WIFI_UNKNOWN, CASTING, BOOT_LOOP,
-    WIZARD_STAYS_ON, HOME_CHANGED, REMOTE_BUTTONS }
+    WIZARD_STAYS_ON, HOME_CHANGED, REMOTE_BUTTONS, OTHER_HOME }
 
 // Why a run changed nothing, for Done's body (0.3.3): nothing was planned to switch off (on a TV
 // without an exact list, nothing we were sure about), every planned switch-off stayed on (the TV
@@ -835,6 +836,7 @@ class SetupMachine(
             risk == HomeSwitchRisk.Risk.WIZARD_WIFI -> HomeBlock.WIZARD_WIFI
             risk == HomeSwitchRisk.Risk.WIZARD_WIFI_UNKNOWN -> HomeBlock.WIZARD_WIFI_UNKNOWN
             risk == HomeSwitchRisk.Risk.WIZARD_STAYS_ON -> HomeBlock.WIZARD_STAYS_ON
+            risk == HomeSwitchRisk.Risk.OTHER_HOME -> HomeBlock.OTHER_HOME
             else -> HomeBlock.NONE
         }
     }
@@ -919,7 +921,8 @@ class SetupMachine(
                     "level ${draft.level}, dock ${dock.size}, ${apps.size} dock candidates")
                 // 0.3.2 B3: why the home screen switch is or is not in the plan, once per change, and
                 // kept for the TV report (B1) that Manage makes without the TV.
-                val decision = HomeDecision.of(block, r.plan.sections.isNotEmpty(), snap.home.resolved?.pkg == launcher.pkg)
+                val decision = HomeDecision.of(block, r.plan.sections.isNotEmpty(), snap.home.resolved?.pkg == launcher.pkg,
+                    app = deps.about?.version, profile = LogCodes.profile(res))
                 if (decision != lastDecision) {
                     lastDecision = decision
                     deps.log.line("setup: ${decision.line}")

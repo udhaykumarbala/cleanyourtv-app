@@ -62,8 +62,10 @@ class ProblemReportsTest {
             println("issue #$n: report ${fixture(n).length} characters, link ${f.link.url.length}, log ${f.logKept} of ${f.logLines} lines, names ${f.namesKept}")
             assertTrue(f.link.reportInLink, "issue #$n: ${f.link.url.length}")
             assertTrue(f.link.url.length <= IssueLinks.MAX_URL, "issue #$n: ${f.link.url.length}")
-            assertTrue(f.shortened, "issue #$n")
             assertEquals(f.sent.trimEnd(), q[IssueLinks.PROBLEM_REPORT_FIELD], "issue #$n")
+            // beta2 QA: with its 200 connect retries counted (collapseRepeats), #1006 fits whole.
+            if (n == 1006) { assertFalse(f.shortened, "issue #$n"); assertEquals(f.full, f.sent); continue }
+            assertTrue(f.shortened, "issue #$n")
             // Never the identity: every line before the log is there, but the names of what this
             // app switched off may become their count.
             val head = fixture(n).substringBefore("Diagnostics log").lines().filter { it.isNotBlank() }
@@ -73,14 +75,15 @@ class ProblemReportsTest {
             if (ctx.connect) assertTrue("Connection\nFound by: ${ctx.found}\nPort: 5555\nError: protocol (SSLException ECONNRESET)\n" in f.sent, f.sent)
             else assertTrue("Step: ${ctx.step}\n" in f.sent, f.sent)
             // The log's first line, a line that says how many older ones were left out, and the newest.
-            val logLines = p.log.lines()
+            // beta2 QA: repeated lines come once, with their count (ProblemReports.collapseRepeats).
+            val logLines = ProblemReports.collapseRepeats(p.log).lines()
             val sentLog = f.sent.substringAfter("Diagnostics log (addresses, serial numbers, keys and codes removed)\n").trimEnd().lines()
             assertEquals(logLines.first(), sentLog.first(), "issue #$n")
             assertEquals("(${logLines.size - 1 - f.logKept} older lines left out to fit the link; the app keeps them)", sentLog[1], "issue #$n")
             assertEquals(logLines.takeLast(f.logKept), sentLog.drop(2), "issue #$n")
             assertTrue(f.logKept >= ProblemReports.MIN_LOG_LINES, "issue #$n: ${f.logKept}")
             // The whole report stays on the phone: the preview, the copy and Share.
-            assertEquals(TvReport.problem(p.about, p.input, ReportMachine.tail(p.log), ctx), f.full)
+            assertEquals(TvReport.problem(p.about, p.input, ReportMachine.tail(ProblemReports.collapseRepeats(p.log)), ctx), f.full)
             // The form's other fields, and the title with the TV's key.
             assertEquals("bug_report.yml", q["template"])
             assertTrue(q["what"]!!.startsWith(IssueLinks.FILLED_IN + " ${ctx.screen}: ${ctx.card} (${ctx.case})"), q["what"])
@@ -252,6 +255,8 @@ class ProblemReportsTest {
                 p == "none" -> ProfileResolution.None(emptyList())
                 p.startsWith("brand set ") -> ProfileResolution.BrandSureSet(p.removePrefix("brand set "), emptyList(), emptyList())
                 p.startsWith("exact ") -> ProfileResolution.Exact(miProfile.copy(id = p.removePrefix("exact ")))
+                p.startsWith("candidate ") -> ProfileResolution.Exact(miProfile.copy(id = p.removePrefix("candidate "),
+                    tested = tv.cleanyour.core.model.TestedInfo("candidate", null, null, rebootTested = false, candidate = true)))
                 else -> error("profile $p")
             }
         }
@@ -264,6 +269,47 @@ class ProblemReportsTest {
             }
         }
         return Parsed(about, TvReportInput(about, snapshot, profile, home, off), log)
+    }
+
+    // Issue #1119 (0.4.6-beta2): the newest problem report, 66 lines as posted, its log cut short by
+    // the person's paste. Its tail is 22 "socket connect failed" lines of a door retrying. Fitted
+    // into the link, "Switched off by this app (4):" is followed by the four names, or says the names
+    // were left out, never nothing; and the retries are one line each with their count.
+    @Test fun issue1119TheSwitchedOffLineAlwaysSaysWhatFollowsAndRetriesAreCounted() {
+        val text = ReportText.fixture("problem-1119.txt")
+        val r = ReportText.parse(text)
+        val about = AppAbout("0.4.6-beta2", "full", "Xiaomi 25053PC47I", "Android 17")
+        val input = TvReportInput(about, r.snapshot, ProfileResolution.BrandSureSet("Xiaomi", emptyList(), emptyList()), HomeDecision(false, "WIZARD_STAYS_ON"), r.switchedOff)
+        val p = Parsed(about, input, text.substringAfter("Diagnostics log (addresses, serial numbers, keys and codes removed)\n").trimEnd())
+        assertEquals(4, input.switchedOffByApp.size)
+        val collapsed = ProblemReports.collapseRepeats(p.log)
+        assertTrue("session: socket connect failed: SocketTimeoutException (x3, last at 1793114501712)" in collapsed, collapsed)
+        assertEquals(p.log.lines().size - 9, collapsed.lines().size, collapsed)
+        // Lines that do not repeat, and the first line, stay as they are.
+        assertTrue(collapsed.startsWith("Clean Your TV 0.4.6-beta2, Android 37\n1793028050368 I setup: connect start (new TV, manual)\n"), collapsed)
+        // However long the log, the line after the header is the names or the note.
+        for (extra in listOf(0, 40, 200)) {
+            val log = p.log + (1..extra).joinToString("") { "\n17931146${10000 + it} I setup: probe done in ${it} ms, 117 packages, profile brand set Xiaomi" }
+            val f = ProblemReports.fit(p.about, input, log, stepCtx)
+            assertTrue(f.link.url.length <= IssueLinks.MAX_URL)
+            val after = f.sent.lines().dropWhile { !it.startsWith("Switched off by this app (4)") }
+            assertTrue(after.isNotEmpty(), f.sent)
+            assertTrue(after[0] == "Switched off by this app (4): names left out to fit the link" ||
+                (after[0] == "Switched off by this app (4):" && after[1] == "co.sensara.tv.mitv, com.android.camera2, com.android.gallery3d, com.xiaomi.mitv.tvmanager"),
+                "$extra: ${after.take(2)}")
+        }
+    }
+
+    // beta2 QA: the door's retries in turn ("connect start", "connect failed lost") are one pair.
+    @Test fun aRetryingPairIsCountedOnce() {
+        val pairs = (0 until 12).flatMap { i -> listOf("${1000 + 4 * i} I setup: connect start (manual)", "${1002 + 4 * i} I setup: connect failed lost") }
+        val log = (listOf("Clean Your TV 0.4.6, Android 14", "999 I setup: probe start") + pairs + "1100 I setup: door closed").joinToString("\n")
+        assertEquals(listOf("Clean Your TV 0.4.6, Android 14", "999 I setup: probe start", "1000 I setup: connect start (manual)",
+            "1002 I setup: connect failed lost (with the line above, x12, last at 1046)", "1100 I setup: door closed").joinToString("\n"),
+            ProblemReports.collapseRepeats(log))
+        // Two of a kind are left as they are.
+        val two = "h\n1 I a\n2 I a\n3 I b"
+        assertEquals(two, ProblemReports.collapseRepeats(two))
     }
 
     private fun query(url: String): Map<String, String> = url.substringAfter('?').split('&').associate {

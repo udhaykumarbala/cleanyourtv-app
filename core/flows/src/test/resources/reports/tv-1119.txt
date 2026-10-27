@@ -1,0 +1,70 @@
+Clean Your TV: TV report
+App: 0.4.0 (full)
+Phone: Xiaomi 25053PC47I, Android 17
+
+TV
+Brand: Xiaomi
+Manufacturer: xiaomi
+Model: MiTV4I
+Device: magnolia
+Android: 9 (SDK 28)
+Build: Xiaomi/magnolia/magnolia:9/PI/3698:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-10-26
+
+Matching
+Profile: brand set Xiaomi
+Home switch: blocked WIZARD_STAYS_ON
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+System apps (102)
+Switched off by this app (16):
+android.autoinstalls.config.xioami.dangal, com.android.printspooler, com.android.smspush,
+com.google.android.feedback, com.google.android.leanbacklauncher.recommendations,
+com.google.android.partnersetup, com.google.android.play.games,
+com.google.android.tv.bugreportsender, com.google.android.tvrecommendations, com.mitv.gallery,
+com.mitv.tvhome.atv, com.miui.tv.analytics, com.xiaomi.mimusic2, com.xiaomi.statistic,
+com.xiaomo.tv.milegal, com.xm.webcontent
+
+Off, disabled-user (5):
+co.sensara.tv.mitv, com.amazon.amazonvideo.livingroom, com.android.camera2,
+com.google.android.videos, com.google.android.youtube.tvmusic
+
+On, enabled (1):
+com.android.vending
+
+On, default (80):
+android, co.sensara.tv.mitv.res, com.android.backupconfirm, com.android.bluetooth,
+com.android.captiveportallogin, com.android.certinstaller, com.android.companiondevicemanager,
+com.android.cts.ctsshim, com.android.cts.priv.ctsshim, com.android.defcontainer,
+com.android.dreams.basic, com.android.externalstorage, com.android.gallery3d,
+com.android.htmlviewer, com.android.inputdevices, com.android.keychain, com.android.location.fused,
+com.android.onetimeinitializer, com.android.pacprocessor, com.android.providers.calendar,
+com.android.providers.contacts, com.android.providers.downloads, com.android.providers.media,
+com.android.providers.settings, com.android.providers.tv, com.android.providers.userdictionary,
+com.android.proxyhandler, com.android.se, com.android.settings.intelligence,
+com.android.sharedstoragebackup, com.android.shell, com.android.statementservice,
+com.android.systemui, com.android.tv, com.android.tv.settings, com.android.vpndialogs,
+com.android.wallpaperbackup, com.android.wallpapercropper, com.droidlogic,
+com.droidlogic.SubTitleService, com.droidlogic.ble, com.droidlogic.droidlivetv,
+com.droidlogic.overlay, com.droidlogic.tv.settings, com.droidlogic.tv.soundeffectsettings,
+com.droidlogic.tvinput, com.google.android.apps.mediashell, com.google.android.backdrop,
+com.google.android.backuptransport, com.google.android.ext.services, com.google.android.ext.shared,
+com.google.android.gms, com.google.android.gsf, com.google.android.inputmethod.latin,
+com.google.android.katniss, com.google.android.leanbacklauncher, com.google.android.marvin.talkback,
+com.google.android.onetimeinitializer, com.google.android.packageinstaller,
+com.google.android.speech.pumpkin, com.google.android.sss.authbridge,
+com.google.android.syncadapters.calendar, com.google.android.tts,
+com.google.android.tungsten.setupwraith, com.google.android.tv.frameworkpackagestubs,
+com.google.android.tv.remote.service, com.google.android.tvlauncher, com.google.android.webview,
+com.google.android.youtube.tv, com.mitv.milinkservice, com.mitv.tvlock, com.mitv.videoplayer,
+com.xiaomi.android.TV.audio, com.xiaomi.android.tvsetup.partnercustomizer,
+com.xiaomi.mitv.mediaexplorer, com.xiaomi.mitv.res, com.xiaomi.mitv.tvmanager,
+com.xiaomi.mitv.updateservice, mitv.service, org.chromium.webview_shell
+
+Other apps: 14 (not named)

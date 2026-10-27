@@ -42,7 +42,13 @@ data class AppAbout(val version: String, val flavour: String, val phone: String,
 
 // Why S3 did or did not plan the new home screen, as the wizard decided it (SetupMachine.homeBlock and
 // the plan). Kept beside the TV record, so Manage's report knows it without the TV.
-data class HomeDecision(val planned: Boolean, val block: String? = null, val alreadyOn: Boolean = false) {
+// beta3 (issues #701, #1273): `app` and `profile`, the app version and the list (LogCodes.profile)
+// Setup decided with; null in a decision kept by 0.4.6-beta2 or earlier. A decision is Setup's last
+// word and is not made again until Setup runs again, so after an update that brought the TV a list
+// (or a rule that changed), Manage's report said "blocked WIZARD_STAYS_ON" beside "Profile: exact"
+// and the Home screen page said we did not know the TV. `earlier` tells such a decision.
+data class HomeDecision(val planned: Boolean, val block: String? = null, val alreadyOn: Boolean = false,
+                        val app: String? = null, val profile: String? = null) {
     val line: String get() = when {
         planned -> "home switch planned"
         block != null -> "home switch blocked $block"
@@ -50,11 +56,22 @@ data class HomeDecision(val planned: Boolean, val block: String? = null, val alr
         else -> "home switch not in the plan"
     }
 
+    // A block decided by another version of the app, or with another list than the TV resolves to
+    // now (`now`); a decision that names no list is compared with the exact list the TV record
+    // kept from the same Setup (`recordProfileId`, null for a brand set or none).
+    fun earlier(app: String, now: ProfileResolution?, recordProfileId: String?): Boolean {
+        if (block == null) return false
+        if (this.app != null && this.app != app) return true
+        val nowLabel = LogCodes.profile(now)
+        return if (profile != null) profile != nowLabel
+            else (now as? ProfileResolution.Exact)?.profile?.id != recordProfileId
+    }
+
     companion object {
-        fun of(block: HomeBlock, planHasSwitch: Boolean, alreadyOn: Boolean): HomeDecision = when {
-            block != HomeBlock.NONE -> HomeDecision(false, block.name)
-            planHasSwitch -> HomeDecision(true)
-            else -> HomeDecision(false, alreadyOn = alreadyOn)
+        fun of(block: HomeBlock, planHasSwitch: Boolean, alreadyOn: Boolean, app: String? = null, profile: String? = null): HomeDecision = when {
+            block != HomeBlock.NONE -> HomeDecision(false, block.name, app = app, profile = profile)
+            planHasSwitch -> HomeDecision(true, app = app, profile = profile)
+            else -> HomeDecision(false, alreadyOn = alreadyOn, app = app, profile = profile)
         }
     }
 }
@@ -71,12 +88,18 @@ class HomeDecisions(private val store: DocumentStore) {
             d.alreadyOn -> "on"
             else -> "none"
         }
-        store.write(path(id), "home=$v\n".encodeToByteArray())
+        // beta3: "app=" and "profile=" lines after it, each only when known; an older file has none.
+        val extra = listOfNotNull(d.app?.let { "app=${oneLine(it)}" }, d.profile?.let { "profile=${oneLine(it)}" })
+        store.write(path(id), (listOf("home=$v") + extra).joinToString("") { "$it\n" }.encodeToByteArray())
     }
 
+    private fun oneLine(s: String) = s.replace('\n', ' ').replace('\r', ' ').trim()
+
     suspend fun load(id: TvId): HomeDecision? = store.read(path(id)) { bytes ->
-        val v = bytes.decodeToString().lines().firstOrNull { it.startsWith("home=") }?.removePrefix("home=")?.trim()
-        when {
+        val lines = bytes.decodeToString().lines()
+        fun value(key: String) = lines.firstOrNull { it.startsWith("$key=") }?.removePrefix("$key=")?.trim()?.ifEmpty { null }
+        val v = value("home")
+        val decision = when {
             v == null -> null
             v == "planned" -> HomeDecision(true)
             v.startsWith("blocked:") -> v.removePrefix("blocked:").takeIf { b -> HomeBlock.entries.any { it.name == b } }?.let { HomeDecision(false, it) }
@@ -84,6 +107,7 @@ class HomeDecisions(private val store: DocumentStore) {
             v == "none" -> HomeDecision(false)
             else -> null
         }
+        decision?.copy(app = value("app"), profile = value("profile"))
     }
 }
 
@@ -94,6 +118,8 @@ data class TvReportInput(
     val profile: ProfileResolution?,
     val home: HomeDecision?,
     val switchedOffByApp: Set<PackageName> = emptySet(),
+    // beta3: the home decision is an earlier Setup's (HomeDecision.earlier), so the line says so.
+    val homeEarlier: Boolean = false,
 )
 
 object TvReport {
@@ -184,7 +210,7 @@ object TvReport {
         appendLine()
         appendLine("Matching")
         appendLine("Profile: ${LogCodes.profile(input.profile)}")
-        appendLine("Home switch: ${input.home?.line?.removePrefix("home switch ") ?: "not recorded"}")
+        appendLine("Home switch: ${input.home?.line?.removePrefix("home switch ") ?: "not recorded"}${if (input.homeEarlier) earlierNote(input.home) else ""}")
         appendLine()
         appendLine("Home screen")
         appendLine("Resolves to: ${s.home.resolved?.let { named(s, it) } ?: "nothing (or the chooser)"}")
@@ -244,6 +270,13 @@ object TvReport {
                 appendSwitchedOff(input, names)
             }
         }
+    }
+
+    // beta3: " (from an earlier Setup: 0.3.7, brand set TCL)", or without the version and list when
+    // the decision is older than beta3 and names neither.
+    private fun earlierNote(d: HomeDecision?): String {
+        val with = listOfNotNull(d?.app?.let { v(it) }, d?.profile?.let { v(it) })
+        return " (from an earlier Setup${if (with.isEmpty()) "" else ": " + with.joinToString(", ")})"
     }
 
     // Issue #375 (and #253, #275): the problem report named nothing the app had switched off, so a

@@ -1,0 +1,72 @@
+Clean Your TV: TV report
+App: 0.4.5 (full)
+Phone: Xiaomi 23021RAA2Y, Android 15
+
+TV
+Brand: Xiaomi
+Manufacturer: Xiaomi
+Model: MIBOX4
+Device: oneday
+Android: 12 (SDK 31)
+Build: Xiaomi/oneday/oneday:12/STTC.230106.001/4560:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-10-27
+
+Matching
+Profile: exact xiaomi-mi-box-s-android12
+Home switch: blocked WIZARD_STAYS_ON
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+System apps (107)
+Switched off by this app (12):
+android.autoinstalls.config.xioami.mibox3, com.android.printspooler, com.google.android.feedback,
+com.google.android.partnersetup, com.google.android.play.games,
+com.google.android.tvrecommendations, com.mitv.tvhome.atv, com.mitv.tvhome.michannel,
+com.miui.tv.analytics, com.xiaomi.statistic, com.xiaomo.tv.milegal, com.xm.webcontent
+
+On, enabled (2):
+com.android.vending, com.google.android.videos
+
+On, default (93):
+android, com.amazon.amazonvideo.livingroom, com.android.backupconfirm, com.android.bluetooth,
+com.android.camera2, com.android.captiveportallogin, com.android.certinstaller,
+com.android.companiondevicemanager, com.android.connectivity.resources, com.android.cts.ctsshim,
+com.android.cts.priv.ctsshim, com.android.dreams.basic, com.android.dynsystem,
+com.android.externalstorage, com.android.hotspot2.osulogin, com.android.htmlviewer,
+com.android.inputdevices, com.android.keychain, com.android.localtransport,
+com.android.location.fused, com.android.managedprovisioning, com.android.mtp,
+com.android.networkstack.inprocess, com.android.networkstack.permissionconfig,
+com.android.networkstack.tethering.droidlogic, com.android.networkstack.tethering.inprocess,
+com.android.networkstack.tethering.inprocess.droidlogic, com.android.pacprocessor,
+com.android.providers.calendar, com.android.providers.contacts, com.android.providers.downloads,
+com.android.providers.media, com.android.providers.media.module, com.android.providers.settings,
+com.android.providers.tv, com.android.providers.userdictionary, com.android.proxyhandler,
+com.android.se, com.android.settings.intelligence, com.android.sharedstoragebackup,
+com.android.shell, com.android.soundpicker, com.android.statementservice, com.android.systemui,
+com.android.tv.frameworkpackagestubs, com.android.tv.overlay.settingsprovider,
+com.android.tv.settings, com.android.tv.settings.gms.resoverlay, com.android.vpndialogs,
+com.android.wallpaperbackup, com.android.wifi.resources, com.droidlogic,
+com.droidlogic.droidtvsettingsoverlay, com.droidlogic.overlay, com.google.android.apps.mediashell,
+com.google.android.backdrop, com.google.android.ext.services, com.google.android.ext.shared,
+com.google.android.gms, com.google.android.gsf, com.google.android.inputmethod.latin,
+com.google.android.katniss, com.google.android.marvin.talkback, com.google.android.modulemetadata,
+com.google.android.onetimeinitializer, com.google.android.overlay.googlewebview,
+com.google.android.overlay.gtvsconfig, com.google.android.overlay.modules.ext.services,
+com.google.android.overlay.modules.modulemetadata.forframework,
+com.google.android.overlay.modules.permissioncontroller,
+com.google.android.overlay.modules.permissioncontroller.forframework,
+com.google.android.packageinstaller, com.google.android.permissioncontroller,
+com.google.android.syncadapters.calendar, com.google.android.tts,
+com.google.android.tungsten.setupwraith, com.google.android.tv.remote.service,
+com.google.android.tvlauncher, com.google.android.webview, com.google.android.youtube.tv,
+com.google.android.youtube.tvmusic, com.mi.bluetooth, com.mitv.download.service, com.mitv.dream,
+com.mitv.milinkservice, com.mitv.tvhome.mitvplus, com.mitv.videoplayer, com.netflix.ninja,
+com.xiaomi.android.tvsetup.partnercustomizer, com.xiaomi.gtv.settings,
+com.xiaomi.mitv.updateservice, com.xiaomi.tvqs.overseas, mitv.service
+
+Other apps: 17 (not named)

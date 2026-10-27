@@ -38,6 +38,22 @@ class AdbProberTest {
         assertEquals(1, s.execLines.size)
     }
 
+    // Review of beta3: a package whose flags line came back empty is told by its install path, so a
+    // system app is never taken for one the person installed (HomeSwitchRisk.installedHome).
+    @Test fun anEmptyFlagsLineFallsBackToTheInstallPath() = runBlocking<Unit> {
+        val dump = ProbeFixtures.grepped(ProbeFixtures.res("mitv/dumpsys-package-packages.txt"))
+        val lines = dump.lines().toMutableList()
+        for (pkg in listOf("com.android.systemui", "in.startv.hotstar")) {
+            val at = lines.indexOfFirst { it.trim().startsWith("Package [$pkg]") }
+            val flags = (at + 1 until lines.size).first { lines[it].trim().startsWith("pkgFlags=") }
+            lines[flags] = "    pkgFlags=[ ]"
+        }
+        val s = FakeTvSession(recording = ProbeFixtures.miTvRecording().on(ProbeScripts.PACKAGE_FLAGS.text, lines.joinToString("\n")))
+        val snap = prober.snapshot(s, SnapshotReason.MANUAL) {}
+        assertTrue(snap.packages.getValue(p("com.android.systemui")).system, "/system/priv-app")
+        assertFalse(snap.packages.getValue(p("in.startv.hotstar")).system, "/data/app")
+    }
+
     @Test fun fullSnapshotOfTheReferenceTv() = runBlocking<Unit> {
         val s = ProbeFixtures.miTvSession()
         val stages = mutableListOf<ProbeStage>()

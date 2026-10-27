@@ -2,6 +2,8 @@ package tv.cleanyour.core.flows
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.model.DebugState
@@ -83,7 +85,13 @@ class ManageMachine(
 
     init {
         scope.launch {
-            combine(d.tvs.tvs, d.sessions.states) { tvs, states -> tvs to states }.collect { (tvs, states) ->
+            // beta2 QA: the run states too, so the chip leaves "Working" when a run ends (Stop and
+            // undo, then OK, kept it until the next connect changed something else).
+            @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+            val runs = d.tvs.tvs.flatMapLatest { tvs ->
+                if (tvs.isEmpty()) flowOf(emptyList()) else combine(tvs.map { d.engine.runState(it.id) }) { it.toList() }
+            }
+            combine(d.tvs.tvs, d.sessions.states, runs) { tvs, states, _ -> tvs to states }.collect { (tvs, states) ->
                 val cards = tvs.sortedByDescending { it.lastSeenAt }.map { tv ->
                     val run = d.engine.runState(tv.id).value
                     val offPkgs = d.ledger.switchedOffByUs(tv.id)
@@ -95,7 +103,7 @@ class ManageMachine(
                         chip = chipFor(states[tv.id]?.takeIf { d.access.live(tv.id) != null }, run, tv.debugging),
                         thumbnail = state.value.cards.firstOrNull { it.id == tv.id }?.thumbnail,
                         switchedOff = off, dockNames = home?.let { shownDock(it) }.orEmpty().map { d.nameOf(it) },
-                        restorePointAtMs = latest?.takenAtMs, debugging = tv.debugging,
+                        restorePointAtMs = (d.snapshots.baseline(tv.id) ?: latest)?.takenAtMs, debugging = tv.debugging,
                         helpAddTv = tv.profileId == null && latest != null,
                         ownHome = tv.launcher == null && latest != null && Launcher.pkg !in latest.packages,
                         betterBackOn = if (PutBackAdvice.forProfile(tv.profileId).isEmpty()) 0

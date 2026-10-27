@@ -95,6 +95,8 @@
     <string name="found_home_casting">On this Google device the new home screen needs the setup wizard off, and without it casting from phones stops working after every restart. So it keeps its own home screen. We\'ll still switch off the adverts and tracking.</string>
     <string name="found_home_boot_loop">On this TV family the setup wizard comes back at every restart, and with the TV\'s own home screen off that can stop the TV starting up. So it keeps its own home screen. We\'ll still switch off the adverts and tracking.</string>
     <string name="found_home_remote_buttons">On this TV the remote\'s app buttons (Netflix, YouTube, Prime Video and YouTube Music) only work through its own home screen. So it keeps its own home screen. We\'ll still switch off the adverts and tracking.</string>
+    <!-- beta3: another home screen app claims Home, where the switch could otherwise go ahead -->
+    <string name="found_home_other_home">Another home screen app is set up on this TV, so we left the home screen alone. To use the new one, remove that app or ask us in your issue. We\'ll still switch off the adverts and tracking.</string>
     <string name="found_home_wizard_stays_on">We don\'t know this TV well enough to switch its setup wizard off, and with the wizard left on and the TV\'s own home screen off, the TV can crash. So it keeps its own home screen. We\'ll still switch off the adverts and tracking.</string>
 
     <!-- S3a Customise sheet -->

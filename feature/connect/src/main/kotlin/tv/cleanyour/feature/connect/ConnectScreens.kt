@@ -250,7 +250,9 @@ fun DoorScreen(state: SetupState.OpenDoor, extras: SetupExtras, actions: SetupAc
                 CheckLine(stringResource(R.string.allow_trusted), Modifier.padding(top = 16.dp))
             }
             DoorPhase.STEPS, DoorPhase.CONNECTING -> {
-                StepsContent(state, actions, name, brandsOpen, onBrands = { brandsOpen = !brandsOpen })
+                // beta2 QA: "Not a 192.168.2.1? Change model" with a typed address; the line names a
+                // model only, never the address the chip falls back to.
+                StepsContent(state, actions, name?.takeUnless { it == state.tv.host }, brandsOpen, onBrands = { brandsOpen = !brandsOpen })
                 extras.connectError?.let { ConnectErrorCard(it, onCopyError, onReport = { title -> actions.report(title) }) }
                 NotThisTv(state, actions)
             }

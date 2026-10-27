@@ -134,6 +134,8 @@ object ConnectShots {
         Shot("door_steps_tcl") { Connect(door(Families.TCL, DoorPhase.STEPS, 0, banner = stringResource(R.string.banner_tcl), tv = tclTv), waiting.copy(tvName = "TCL C635")) },
         Shot("door_steps_mibox_usb") { Connect(door(Families.ATV, DoorPhase.STEPS, 0, banner = stringResource(R.string.banner_mibox_usb)), waiting.copy(tvName = "Mi Box S")) },
         Shot("door_steps_unknown_brand_chips") { Connect(door(Families.UNKNOWN, DoorPhase.STEPS, 0, tv = unknownTv), SetupExtras()) },
+        // beta2 QA: a typed address with no name yet; the chip shows the address, the line under the steps no model.
+        Shot("door_steps_typed_address") { Connect(door(Families.ATV, DoorPhase.STEPS, 0, tv = unknownTv), SetupExtras(chip = ChipState.WAITING)) },
         Shot("door_steps_still_waiting") { Connect(door(Families.ATV, DoorPhase.STEPS, 2, waitedMs = 181_000), waiting) },
 
         // S2b Connecting

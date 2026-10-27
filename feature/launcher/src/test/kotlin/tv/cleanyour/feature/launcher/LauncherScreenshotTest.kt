@@ -166,6 +166,9 @@ object LauncherShots {
         Shot("home_not_on_tv_unlisted") { HomeScreen(notOnTv(NotOnTv(HomeBlock.WIZARD_STAYS_ON, "Hisense", unlisted = true, helpAddTv = true), "Hisense 32A4200G"), {}, {}) },
         Shot("home_not_on_tv_fire_tv") { HomeScreen(notOnTv(NotOnTv(HomeBlock.TV_REFUSES, "Insignia", fireTv = true), "Insignia Fire TV"), {}, {}) },
         Shot("home_not_on_tv_home_changed") { HomeScreen(notOnTv(NotOnTv(HomeBlock.HOME_CHANGED, "TCL", setupAgain = true), "TCL G07"), {}, {}) },
+        // beta3: another home screen app claims Home (issue #1119); a block an earlier Setup decided (issues #701, #1273).
+        Shot("home_not_on_tv_other_home") { HomeScreen(notOnTv(NotOnTv(HomeBlock.OTHER_HOME, "Xiaomi", setupAgain = true), "Xiaomi MiTV4I"), {}, {}) },
+        Shot("home_not_on_tv_earlier") { HomeScreen(notOnTv(NotOnTv(HomeBlock.WIZARD_STAYS_ON, "TCL", setupAgain = true, earlier = true), "TCL Percee TV"), {}, {}) },
 
         // look2 Home: the Look row with its mini of what was last sent; a failed send kept for Open Look.
         Shot("home_look_row_mini") { HomeScreen(home().copy(sent = LookFixtures.preview(StyleId.GLASS), sentStyle = StyleId.GLASS, sentPicture = "mist",

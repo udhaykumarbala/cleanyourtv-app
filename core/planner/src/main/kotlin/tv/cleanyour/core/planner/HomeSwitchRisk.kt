@@ -4,6 +4,7 @@ import tv.cleanyour.core.model.DeviceFacts
 import tv.cleanyour.core.model.EnabledState
 import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Profile
+import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.ops.Denylist
 import tv.cleanyour.core.ops.HomePlaceholder
@@ -35,6 +36,9 @@ object HomeSwitchRisk {
         // Upstream's own install keeps launcherx on with a key helper, and this app never switches an
         // accessibility service on, so there is no switch.
         REMOTE_BUTTONS("on this TV the remote's app buttons only work through its own home screen, so with it switched off they stop working"),
+        // beta3: R0 would let the switch go ahead with the wizard left on, but another home screen app
+        // claims Home (one the person installed that R0 cannot take, or a vendor home), so it does not.
+        OTHER_HOME("another home screen app claims the Home button on this TV, so the switch is left alone while its setup wizard stays on"),
     }
 
     // Google's own Google TV hardware, by maker and device: Chromecast with Google TV 4K (sabrina)
@@ -92,9 +96,19 @@ object HomeSwitchRisk {
         // (anyBrand) it applies to a candidate list too, since the volunteers who try one are the
         // ones checking R0 on their brand (issue #258, a OnePlus C00 on its candidate list, was
         // blocked WIZARD_WIFI there); every other R0 condition holds, and an exact list keeps its own rule.
-        else -> wizardWifiRisk(profile?.takeUnless { it.isCandidate }, snapshot, wizardWifi,
-            r0 = (profile == null || (anyBrand && profile.isCandidate)) && wizardStaysOnSafely(facts, snapshot, anyBrand))
+        // beta3: where R0 applies and only another home screen app stands in its way (one the person
+        // installed that R0 cannot take, or a vendor home next to tvlauncher), that is the reason,
+        // not the wizard's (OTHER_HOME): without that app the wizard could stay on.
+        else -> {
+            val r0Applies = profile == null || (anyBrand && profile.isCandidate)
+            val blocker = if (r0Applies) r0Blocker(facts, snapshot, anyBrand) else R0Blocker.NOT_THIS_PATH
+            val risk = wizardWifiRisk(profile?.takeUnless { it.isCandidate }, snapshot, wizardWifi, r0 = blocker == null)
+            if (risk != null && blocker == R0Blocker.OTHER_HOME) Risk.OTHER_HOME else risk
+        }
     }
+
+    // beta3: what keeps a TV from R0, the first that applies (null: R0 lets it switch).
+    enum class R0Blocker { NOT_THIS_PATH, BRAND, WIZARD_CLAIMS_HOME, NO_TVLAUNCHER, OTHER_HOME }
 
     fun isXiaomi(f: DeviceFacts): Boolean = XIAOMI_MAKERS.any { it.equals(f.brand, ignoreCase = true) || it.equals(f.manufacturer, ignoreCase = true) }
 
@@ -113,21 +127,50 @@ object HomeSwitchRisk {
     // The wizard is never switched off on this path and the Wi-Fi is never touched, so the Wi-Fi
     // answer does not matter. Manage checks the claimants again on every connect (WizardHome).
     // `anyBrand` (a test build, ANY_BRAND_BUILD) drops the brand test and keeps every other one.
-    fun wizardStaysOnSafely(facts: DeviceFacts, snapshot: Snapshot, anyBrand: Boolean = anyBrandNow): Boolean {
-        if (!anyBrand && !isXiaomi(facts)) return false
-        if (homeWizards(null, snapshot).isNotEmpty()) return false
-        val claimants = snapshot.home.claimants.map { it.component }
+    // beta3 (issue #1119, a MiTV4I with a home screen app the person installed): a claimant may also
+    // be an app the person installed (installedHome). Android caps the HOME priority of an app that
+    // is not a system app at 0, so with tvlauncher off it ties with ours and the set-home preference
+    // decides; on the maintainer's Mi TV, set-home-activity made ours win with such an app present,
+    // across a reboot and after a boot into Live TV. The switch leaves that app installed and on, and
+    // VerifyHome and the focus check roll back if it takes Home anyway (the chooser is not ours either).
+    fun wizardStaysOnSafely(facts: DeviceFacts, snapshot: Snapshot, anyBrand: Boolean = anyBrandNow): Boolean =
+        r0Blocker(facts, snapshot, anyBrand) == null
+
+    fun r0Blocker(facts: DeviceFacts, snapshot: Snapshot, anyBrand: Boolean = anyBrandNow): R0Blocker? {
+        if (!anyBrand && !isXiaomi(facts)) return R0Blocker.BRAND
         fun on(p: PackageName) = snapshot.packages[p]?.enabled.let { it != EnabledState.DISABLED_USER && it != EnabledState.DISABLED }
+        val claimants = snapshot.home.claimants.map { it.component }
+        // A setup wizard among the claimants that is on, by any name (a placeholder that is a wizard too).
+        if (homeWizards(null, snapshot).isNotEmpty() || claimants.any { HomePlaceholder.isPlaceholder(it) && isWizard(it.pkg) && on(it.pkg) })
+            return R0Blocker.WIZARD_CLAIMS_HOME
         val tvlauncher = KnownLaunchers.TVLAUNCHER.pkg
         val launcherState = snapshot.packages[tvlauncher]?.enabled
-        if (claimants.none { it.pkg == tvlauncher } || launcherState == null || !on(tvlauncher)) return false
-        // What Home answers now must be one of the same: nothing, tvlauncher, ours or a placeholder
-        // (a TV whose Home answers to another app the claimants do not list is not this case).
+        if (claimants.none { it.pkg == tvlauncher } || launcherState == null || !on(tvlauncher)) return R0Blocker.NO_TVLAUNCHER
+        // What Home answers now must be one of the same: nothing, tvlauncher, ours or a placeholder (a
+        // TV whose Home answers to another app is not this case). An app the person installed counts
+        // only among the claimants: one Home already answers to is their choice, which stays.
         val resolved = snapshot.home.resolved
-        if (resolved != null && resolved.pkg != tvlauncher && resolved.pkg != SwitchOffRule.OUR_LAUNCHER && !HomePlaceholder.isPlaceholder(resolved)) return false
-        return claimants.all { c ->
-            c.pkg == tvlauncher || c.pkg == SwitchOffRule.OUR_LAUNCHER || (HomePlaceholder.isPlaceholder(c) && !(isWizard(c.pkg) && on(c.pkg)))
+        if (resolved != null && resolved.pkg != tvlauncher && resolved.pkg != SwitchOffRule.OUR_LAUNCHER && !HomePlaceholder.isPlaceholder(resolved))
+            return R0Blocker.OTHER_HOME
+        val accepted = snapshot.home.claimants.all { claimant ->
+            val c = claimant.component
+            c.pkg == tvlauncher || c.pkg == SwitchOffRule.OUR_LAUNCHER || HomePlaceholder.isPlaceholder(c) ||
+                (installedHome(c.pkg, snapshot) && claimant.priority <= 0)
         }
+        return if (accepted) null else R0Blocker.OTHER_HOME
+    }
+
+    // beta3: a home screen app the person installed, by the snapshot's own package info: listed, not
+    // a system app, not a wizard or a vendor home by name. One the snapshot does not list, or lists
+    // as a system app, is not (a vendor home ships as one). The probe falls back to the install path
+    // when it could not read a package's flags, and to "not a system app" when it read neither; a
+    // version code of 0 is that case (its details were not read), so it does not count either. Nor
+    // does an app with an accessibility service in the TV's list: it can catch the Home key itself.
+    fun installedHome(p: PackageName, snapshot: Snapshot): Boolean {
+        val state = snapshot.packages[p] ?: return false
+        val accessibility = snapshot.settings[SettingKey.ENABLED_ACCESSIBILITY].orEmpty().split(':').map { it.trim().substringBefore('/') }
+        return !state.system && state.versionCode > 0 && !isWizard(p) && p.value !in Denylist.vendorHomes && p !in KnownLaunchers.byPackage &&
+            p.value !in accessibility
     }
 
     // Any first-run wizard by name: Google's, a vendor's, AOSP's provision, or one named like setupwraith.

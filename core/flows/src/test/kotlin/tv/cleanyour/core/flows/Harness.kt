@@ -162,14 +162,15 @@ class Harness(val clock: FakeClock = FakeClock(Samples.NOW_MS), val facts: tv.cl
     fun manageDeps(fetcherSources: tv.cleanyour.core.registry.ArtifactFetcher = fetcher, encoder: ConfigEncoder = ConfigEncoder { "{}".encodeToByteArray() },
                    launcherPin: tv.cleanyour.core.trust.LauncherPin = FakeLauncherPin(Samples.launcherArtifact()),
                    themes: tv.cleanyour.core.spec.ThemeSource = this.themes, store: StoreRules = StoreRules.FULL,
-                   updates: UpdateChecker = UpdateChecker { "0.2.0" }, profiles: tv.cleanyour.core.spec.ProfileSource = this.profiles) = ManageDeps(
+                   updates: UpdateChecker = UpdateChecker { "0.2.0" }, profiles: tv.cleanyour.core.spec.ProfileSource = this.profiles,
+                   about: AppAbout = AppAbout("0.2.0", "full", "", "")) = ManageDeps(
         tvs = tvs, sessions = sessions, discovery = discovery, access = access, gate = gate, runner = runner, engine = engine,
         ledger = ledger, prober = prober, profiles = profiles, facts = facts, snapshots = snapshots, documents = documents,
         blobs = blobs, themes = themes, launcherPin = launcherPin, configTransport = configTransport,
         restorePoint = restorePoint, bundleWriter = bundleWriter, registry = registry, fetcher = fetcherSources, inspector = inspector,
         cardDetector = CardAnswerDetector { _, _ -> cardAnswer }, sessionEnd = sessionEnd, homePrefs = HomePrefs(documents),
         appPrefs = AppPrefs(documents), keyInfo = keyInfo, updates = updates, diagnostics = diagnostics,
-        clock = clock, copy = KeyCopy, encoder = encoder, store = store,
+        clock = clock, copy = KeyCopy, encoder = encoder, store = store, appVersion = about.version, about = about,
     )
 
     // A TV this phone already set up, connected, with a stored snapshot.

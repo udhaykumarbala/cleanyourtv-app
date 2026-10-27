@@ -1,0 +1,66 @@
+Clean Your TV: problem report
+App: 0.4.6-beta2 (full)
+Phone: Xiaomi 25053PC47I, Android 17
+
+TV
+Brand: Xiaomi
+Manufacturer: xiaomi
+Model: MiTV4I
+Device: magnolia
+Android: 9 (SDK 28)
+Build: Xiaomi/magnolia/magnolia:9/PI/3698:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-10-27
+
+Matching
+Profile: candidate xiaomi-mitv4i-magnolia
+Home switch: blocked WIZARD_STAYS_ON
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: an app you installed (not named) priority 0
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+Apps: 102 system, 15 other
+
+Switched off by this app (4):
+co.sensara.tv.mitv, com.android.camera2, com.android.gallery3d, com.xiaomi.mitv.tvmanager
+
+Diagnostics log (addresses, serial numbers, keys and codes removed)
+Clean Your TV 0.4.6-beta2, Android 37
+1793028050368 I setup: connect start (new TV, manual)
+1793028056401 I setup: connected (allow dialog shown, identity check not needed)
+1793028057005 I setup: probe start
+1793028062659 I setup: probe done in 5652 ms, 116 packages, 21 launchable, profile brand set Xiaomi, tv Xiaomi MiTV4I (magnolia) sdk 28
+1793028063565 I setup: setup wizard and saved Wi-Fi: others_own
+1793028063602 I setup: plan ready, 45 steps, 17 to switch off, level SIMPLE, dock 4, 21 dock candidates
+1793028063603 I setup: home switch blocked WIZARD_STAYS_ON
+1793028085419 I setup: plan ready, 45 steps, 17 to switch off, level CUSTOM, dock 4, 21 dock candidates
+1793028091381 I setup: run running
+1793028154912 I setup: run finished COMPLETED, 0 skipped
+1793114369845 I setup: connect start (new TV, manual)
+1793114369989 I setup: connected (allow dialog not shown, identity check needed)
+1793114380122 I setup: probe start
+1793114382885 I setup: probe done in 2760 ms, 117 packages, 23 launchable, profile brand set Xiaomi, tv Xiaomi MiTV4I (magnolia) sdk 28
+1793114382903 I setup: candidate list xiaomi-mitv4i-magnolia offered
+1793114413810 I setup: candidate list xiaomi-mitv4i-magnolia: trying the test list
+1793114413812 I setup: profile candidate xiaomi-mitv4i-magnolia
+1793114414360 I setup: setup wizard and saved Wi-Fi: others_own
+1793114414402 I setup: plan ready, 18 steps, 4 to switch off, level SIMPLE, dock 4, 22 dock candidates
+1793114414403 I setup: home switch blocked WIZARD_STAYS_ON
+1793114424119 I setup: run running
+1793114453894 I setup: run finished COMPLETED, 0 skipped
+1793114489693 I session: socket connect failed: SocketTimeoutException
+1793114494704 I session: socket connect failed: SocketTimeoutException
+1793114501712 I session: socket connect failed: SocketTimeoutException
+1793114512030 I session: socket connect failed: ConnectException, EHOSTUNREACH (No route to host)
+1793114524348 I session: socket connect failed: ConnectException, EHOSTUNREACH (No route to host)
+1793114536677 I session: socket connect failed: ConnectException, EHOSTUNREACH (No route to host)
+1793114548995 I session: socket connect failed: ConnectException, EHOSTUNREACH (No route to host)
+1793114595802 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793114596731 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793114597283 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793114599724 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)
+1793114601262 I session: socket connect failed: ConnectException, ECONNREFUSED (Connection refused)

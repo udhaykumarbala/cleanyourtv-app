@@ -144,7 +144,8 @@ class AdbProber(
             val path = p.path ?: i?.codePath
             packages[name] = PackageState(
                 enabled = enabledState(p.name in off, i?.enabled),
-                system = i?.flags?.contains("SYSTEM") ?: SYSTEM_PATHS.any { path?.startsWith(it) == true },
+                // Review of beta3: a flags line that came back empty says nothing, so the install path decides.
+                system = i?.flags?.takeIf { it.isNotEmpty() }?.contains("SYSTEM") ?: SYSTEM_PATHS.any { path?.startsWith(it) == true },
                 versionCode = i?.versionCode ?: 0,
                 signer = signers[name],
                 persistent = i?.flags?.contains("PERSISTENT") == true,

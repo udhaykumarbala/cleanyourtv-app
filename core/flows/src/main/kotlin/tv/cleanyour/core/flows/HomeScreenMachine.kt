@@ -16,6 +16,8 @@ import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.TclGoogleTv
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.Looks
+import tv.cleanyour.core.spec.ProfileResolution
+import tv.cleanyour.core.spec.resolveFor
 import tv.cleanyour.core.spec.StyleId
 
 // M2 Home screen: the dock (S3b sheet), the look (theme picker), "Use the TV's own home screen"
@@ -34,6 +36,8 @@ data class AppChoice(val pkg: PackageName, val name: String)
 // wizard has to stay on (HomeSwitchRisk) and WIZARD_WIFI needs a list first.
 // `setupAgain`: running Setup again can add it (nothing blocks it, or the block can change).
 // `helpAddTv`: a list for this TV is what is missing; "Help add this TV" makes its report.
+// `earlier` (beta3): an earlier Setup decided it, with another version or list (HomeDecision.earlier),
+// so the screen says that instead of a reason that may no longer hold, and offers Setup again.
 data class NotOnTv(
     val reason: HomeBlock?,
     val brand: String,
@@ -41,6 +45,7 @@ data class NotOnTv(
     val unlisted: Boolean = false,
     val setupAgain: Boolean = false,
     val helpAddTv: Boolean = false,
+    val earlier: Boolean = false,
 )
 
 // 0.4.0: a picture of the Picture row: a gallery picture by id, with its file for the thumbnail
@@ -323,9 +328,21 @@ class HomeScreenMachine(
     // why, as for issue #8, instead of offering a dock and a look for it.
     private suspend fun notOnTv(tv: tv.cleanyour.core.model.Tv, snap: tv.cleanyour.core.model.Snapshot?): NotOnTv? {
         if (tv.launcher != null || snap == null) return null
-        val reason = attempt { d.homeDecisions.load(tvId) }.getOrNull()?.block?.let { b -> HomeBlock.entries.firstOrNull { it.name == b } }
+        val decision = attempt { d.homeDecisions.load(tvId) }.getOrNull()
+        val reason = decision?.block?.let { b -> HomeBlock.entries.firstOrNull { it.name == b } }
         if (Launcher.pkg in snap.packages && reason != HomeBlock.HOME_CHANGED) return null
-        val unlisted = tv.profileId == null
+        // beta3 (issues #701, #1273): a block an earlier Setup decided, with an earlier version of
+        // the app or another list than the TV resolves to now, may not hold any more: Setup again
+        // decides it with this version. The TV's own facts (it refuses other home screens, its
+        // Android is too old, its family boot-loops, it is Google's casting hardware, its remote's
+        // app buttons need its home screen) and a home screen the person changed do not change with
+        // the app, so those keep their line and their own next step.
+        val now = attempt { d.profiles.resolveFor(snap) }.getOrNull()
+        val earlier = reason != null && reason !in KEEPS_ITS_LINE &&
+            decision?.earlier(d.about.version, now, tv.profileId) == true
+        val unlisted = tv.profileId == null && (!earlier || now !is ProfileResolution.Exact)
+        if (earlier) return NotOnTv(reason = reason, brand = LogCodes.clean(snap.facts.brand, 40).ifEmpty { tv.nickname },
+            unlisted = unlisted, setupAgain = true, earlier = true)
         val setupAgain = when (reason) {
             null, HomeBlock.NONE, HomeBlock.WIZARD_WIFI_UNKNOWN -> true
             // Issue #8: the person can make the TV's own home screen Home again, and on a TV an exact
@@ -334,6 +351,8 @@ class HomeScreenMachine(
             // Forgetting and adding the network again makes the TV's own Wi-Fi settings the owner; on a
             // TV no exact profile knows the wizard still has to stay on (HomeSwitchRisk), so not there.
             HomeBlock.WIZARD_WIFI -> !unlisted
+            // beta3: with that other home screen app removed, Setup can switch.
+            HomeBlock.OTHER_HOME -> true
             else -> false
         }
         val needsList = reason == HomeBlock.UNKNOWN_HOME || reason == HomeBlock.WIZARD_STAYS_ON || (reason == HomeBlock.WIZARD_WIFI && unlisted)
@@ -398,6 +417,10 @@ class HomeScreenMachine(
     }
 
     companion object {
+        // beta3: the blocks an earlier Setup's decision keeps across app versions (notOnTv).
+        val KEEPS_ITS_LINE: Set<HomeBlock> = setOf(HomeBlock.TV_REFUSES, HomeBlock.OLD_ANDROID, HomeBlock.BOOT_LOOP, HomeBlock.CASTING,
+            HomeBlock.REMOTE_BUTTONS, HomeBlock.HOME_CHANGED)
+
         // Launcher 2.4 (versionCode 5) added Launcher settings on the TV (RF-LAUNCHER-240 F16).
         const val FIRST_WITH_TV_SETTINGS = 5L
         const val DEFAULT_LOOK = "default"

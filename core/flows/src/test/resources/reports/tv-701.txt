@@ -1,0 +1,98 @@
+Clean Your TV: TV report
+App: 0.4.6-beta2 (full)
+Phone: Xiaomi 2506BPN68G, Android 17
+
+TV
+Brand: TCL
+Manufacturer: TCL
+Model: Percee TV
+Device: tcl_eu
+Android: 8.0.0 (SDK 26)
+Build: TCL/tcl_eu/tcl_eu:8.0.0/OTT1.180130.001/yangkx08252231:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-10-27
+
+Matching
+Profile: exact tcl-50dp660
+Home switch: blocked WIZARD_STAYS_ON
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 0
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+System apps (111)
+Switched off by this app (11):
+android.autoinstalls.config.tcl.device, com.android.printspooler,
+com.google.android.feedback,
+com.google.android.leanbacklauncher.recommendations,
+com.google.android.onetimeinitializer,
+com.google.android.partnersetup, com.google.android.play.games,
+com.google.android.syncadapters.calendar,
+com.google.android.tv.bugreportsender,
+com.google.android.tvrecommendations, com.tcl.esticker
+
+On, enabled (2):
+com.android.vending, com.google.android.videos
+
+On, default (98):
+android, com.android.ListenNetStateService, com.android.backupconfirm,
+com.android.bluetooth,
+com.android.boot.fallbackhome, com.android.captiveportallogin,
+com.android.certinstaller,
+com.android.companiondevicemanager, com.android.cts.ctsshim,
+com.android.cts.priv.ctsshim,
+com.android.defcontainer, com.android.dreams.basic,
+com.android.externalstorage,
+com.android.htmlviewer, com.android.inputdevices, com.android.keychain,
+com.android.location.fused,
+com.android.pacprocessor, com.android.providers.calendar,
+com.android.providers.contacts,
+com.android.providers.downloads, com.android.providers.media,
+com.android.providers.settings,
+com.android.providers.tv, com.android.providers.userdictionary,
+com.android.proxyhandler,
+com.android.sharedstoragebackup, com.android.shell,
+com.android.statementservice,
+com.android.systemui, com.android.tv.settings, com.android.vpndialogs,
+com.android.wallpaperbackup,
+com.example.copydatatotv, com.example.tvcapture,
+com.google.android.apps.mediashell,
+com.google.android.backdrop, com.google.android.backuptransport,
+com.google.android.boot.appsplashscreen, com.google.android.ext.services,
+com.google.android.ext.shared, com.google.android.gms,
+com.google.android.gms.policy_sidecar_o,
+com.google.android.gsf, com.google.android.gsf.notouch,
+com.google.android.inputmethod.latin,
+com.google.android.inputmethod.pinyin, com.google.android.katniss,
+com.google.android.leanbacklauncher, com.google.android.marvin.talkback,
+com.google.android.music,
+com.google.android.packageinstaller, com.google.android.speech.pumpkin,
+com.google.android.sss,
+com.google.android.sss.authbridge,
+com.google.android.syncadapters.contacts, com.google.android.tts,
+com.google.android.tungsten.setupwraith,
+com.google.android.tv.frameworkpackagestubs,
+com.google.android.tv.remote.service, com.google.android.tvlauncher,
+com.google.android.tvtutorials,
+com.google.android.webview, com.google.android.youtube.tv,
+com.iqt.iqqijni.tv.gp.pro,
+com.mediatek.agent, com.mediatek.dmagent, com.mediatek.partner.netflix,
+com.mediatek.tunerservice,
+com.mediatek.wifi, com.netflix.ninja, com.tcl.MultiScreenInteraction_TV,
+com.tcl.appmarket2,
+com.tcl.audioplayer, com.tcl.autopair, com.tcl.eletronicpolicy,
+com.tcl.factory.view,
+com.tcl.imageplayer, com.tcl.initsetup, com.tcl.inputmethod.international,
+com.tcl.m,
+com.tcl.partnercustomizer, com.tcl.pvr.pvrplayer, com.tcl.rc.ota,
+com.tcl.settings,
+com.tcl.smartalexa, com.tcl.sourcemananger, com.tcl.tv, com.tcl.tvinput,
+com.tcl.tvpassthrough,
+com.tcl.tvweishi, com.tcl.ui_mediaCenter, com.tcl.versionUpdateApp,
+com.tcl.videoplayer,
+com.tcl.virtualkey, com.tcl.xian.StartandroidService, mtktvapi.agent,
+tv.wuaki.apptv
+
+Other apps: 6 (not named)

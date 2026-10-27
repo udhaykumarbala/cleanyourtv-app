@@ -42,6 +42,7 @@ import tv.cleanyour.core.registry.FetchFailure
 import tv.cleanyour.core.spec.DecodeResult
 import tv.cleanyour.core.spec.LauncherConfigCodec
 import tv.cleanyour.core.spec.LauncherConfigDoc
+import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.testing.fixtures.FakeThemeSource
 import tv.cleanyour.core.spec.Theme
 import tv.cleanyour.core.registry.IndexState
@@ -394,6 +395,23 @@ class ManageMachinesTest {
         assertNull(h.gate.cached(tv.id))
         m.dispatch(AppSettingsIntent.CheckUpdates); settle()
         assertEquals(UpdateCheck.Available("0.2.0"), m.state.value.update)
+    }
+
+    // beta2 QA: after Stop and undo, then OK, the chip stayed on "Working"; and the Restore point row
+    // showed the latest read of the TV while the Restore point page (and Undo everything) use the
+    // first one, from before any change.
+    @Test fun theChipFollowsTheRunAndTheRestorePointIsTheFirstRead() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = h.knownTv()   // its stored snapshot is the baseline, at NOW_MS
+        h.snapshots.save(Samples.snapshot(reason = SnapshotReason.MANUAL, takenAtMs = Samples.NOW_MS + 3_600_000))
+        val m = ManageMachine(h.manageDeps(), backgroundScope, null)
+        settle()
+        assertEquals(Samples.NOW_MS, assertNotNull(m.state.value.current).restorePointAtMs)
+        val plan = h.plan(listOf(Op.Disable(adPkg)))
+        h.engine.emit(tv.id, RunState.RollingBack(plan, 0)); settle()
+        assertEquals(ChipState.WORKING, assertNotNull(m.state.value.current).chip)
+        h.engine.emit(tv.id, RunState.Finished(plan, RunStatus.ROLLED_BACK, emptyList(), null)); settle()
+        assertEquals(ChipState.CONNECTED, assertNotNull(m.state.value.current).chip)
     }
 
     @Test fun manageShowsTheTvAndOpensSections() = runTest(timeout = 30.seconds) {
@@ -918,6 +936,7 @@ class ManageMachinesTest {
     @Test fun withoutTheNewHomeScreenTheScreenSaysWhyAndSendsNothing() = runTest(timeout = 30.seconds) {
         val h = Harness()
         val tv = h.knownTv().copy(profileId = null).also { h.tvs.upsert(it) }   // the miTv snapshot has no com.gathin.tvhome
+        h.profiles.resolver = { _, _ -> ProfileResolution.None(emptyList()) }   // still no list for it
         HomeDecisions(h.documents).save(tv.id, HomeDecision(false, "WIZARD_STAYS_ON"))
         val previous = h.planner.respond
         h.planner.respond = { r, snap -> if (r is PlanRequest.ApplyTheme) PlanResult.Refused(listOf("the new home screen is not installed")) else previous(r, snap) }
@@ -973,6 +992,8 @@ class ManageMachinesTest {
         val listed = h.knownTv()   // exact profile xiaomi-mitv-axso0
         suspend fun notOnTv(decision: HomeDecision?, profileId: String? = listed.profileId): NotOnTv? {
             h.tvs.upsert(listed.copy(profileId = profileId))
+            // The list the TV resolves to now is the one the record kept (an earlier decision: below).
+            h.profiles.resolver = { _, all -> all.firstOrNull { it.id == profileId }?.let { ProfileResolution.Exact(it) } ?: ProfileResolution.None(emptyList()) }
             if (decision != null) HomeDecisions(h.documents).save(listed.id, decision) else h.documents.delete("tvs/${listed.id.value}/decision.txt")
             return HomeScreenMachine(h.manageDeps(), backgroundScope, listed.id).also { settle() }.state.value.notOnTv
         }
@@ -987,6 +1008,8 @@ class ManageMachinesTest {
         // choice, and on a TV with an exact list Setup then offers the switch.
         assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", setupAgain = true), notOnTv(HomeDecision(false, "HOME_CHANGED")))
         assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null))
+        // beta3: another home screen app claims Home; with it removed, Setup can switch. No list is missing.
+        assertEquals(NotOnTv(HomeBlock.OTHER_HOME, "Xiaomi", unlisted = true, setupAgain = true), notOnTv(HomeDecision(false, "OTHER_HOME"), profileId = null))
         // Planned, but the launcher is gone since (removed): Setup again adds it. No decision (a TV set
         // up before 0.3.2): the same.
         assertEquals(NotOnTv(null, "Xiaomi", setupAgain = true), notOnTv(HomeDecision(true)))

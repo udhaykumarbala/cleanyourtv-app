@@ -63,7 +63,7 @@ class ReportFlowsTest {
         val m = h.setup(backgroundScope)
         toFound(h, m)
         assertEquals(listOf("setup: home switch planned"), h.logLines.filter { it.startsWith("setup: home switch") })
-        assertEquals(HomeDecision(true), HomeDecisions(h.documents).load(Samples.miTvId()))
+        assertEquals(HomeDecision(true, profile = "exact xiaomi-mitv-axso0"), HomeDecisions(h.documents).load(Samples.miTvId()))
         // A Keep replans: the same decision is not logged again.
         m.dispatch(SetupIntent.Keep(adPkg, keep = true)); settle()
         assertEquals(1, h.logLines.count { it.startsWith("setup: home switch") })
