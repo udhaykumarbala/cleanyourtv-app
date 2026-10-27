@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/udhaykumarbala/cleanyourtv-app/releases/latest"><img src="https://img.shields.io/github/v/release/udhaykumarbala/cleanyourtv-app?style=flat&color=E8A84C&labelColor=15181e&label=download%20APK" alt="Download the latest APK"></a>
+  <a href="https://github.com/TonyBinheWu/cleanyourtv-app/releases/latest"><img src="https://img.shields.io/github/v/release/TonyBinheWu/cleanyourtv-app?style=flat&color=E8A84C&labelColor=15181e&label=multilingual%20APK" alt="Download the latest multilingual APK"></a>
   <img src="https://img.shields.io/badge/TVs-131%20models%20%C2%B7%2046%20brands-E8A84C?style=flat&labelColor=15181e" alt="131 TV models from 46 brands">
   <img src="https://img.shields.io/badge/phone-Android%209%2B-E8A84C?style=flat&labelColor=15181e" alt="Android 9 or newer">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-E8A84C?style=flat&labelColor=15181e" alt="MIT licence"></a>
@@ -12,6 +12,7 @@
 <h3 align="center">A community-built phone app for <a href="https://github.com/Gathin23/cleanyourtv">Clean Your TV</a>.<br>Anyone can clean up their TV: no laptop, no coding agent, no cables.</h3>
 
 <p align="center">
+  <a href="https://github.com/TonyBinheWu/cleanyourtv-app/releases/latest"><b>Download Multilingual APK</b></a> ·
   <a href="https://github.com/udhaykumarbala/cleanyourtv-app/releases/latest"><b>Download</b></a> ·
   <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/udhaykumarbala/cleanyourtv-app"><b>Get it with Obtainium</b></a> ·
   <a href="#how-it-works"><b>How it works</b></a> ·
@@ -23,6 +24,32 @@
 <p align="center">
   <img src="docs/images/connect-analyse-clean-hd.gif" width="800" alt="Three steps, phone and TV side by side. 1 Connect: the app finds the TV and the TV asks to allow the phone. 2 Analyse: the phone reads the TV and shows 22 things to switch off while the TV is untouched. 3 Clean: the phone shows Making it clean while the TV shows a lantern scanning the old cards and drawing them into a soft black hole, and the TV ends on its new home screen.">
 </p>
+
+## 多國語言版 APP 下載 / Multilingual APK
+
+原始手機 App 由 [udhaykumarbala](https://github.com/udhaykumarbala/cleanyourtv-app) 開發。
+此分支由 TonyBinheWu 加入多國語言支援；[PR #271](https://github.com/udhaykumarbala/cleanyourtv-app/pull/271)
+已提交原作者，目前尚未合併。
+
+**[直接下載多國語言版 APK 0.4.0](https://github.com/TonyBinheWu/cleanyourtv-app/releases/download/multilingual-0.4.0/cleanyourtv-multilingual-0.4.0.apk)**
+
+[最新版本、更新與安裝說明 / Latest releases and installation notes](https://github.com/TonyBinheWu/cleanyourtv-app/releases/latest)
+
+由 TonyBinheWu 發布的社群多國語言版本，支援下列 16 種語言，適用於 Android 9 以上。
+已安裝本 Fork 的多國語言版可直接更新；原作者版或不同簽章的 Debug 版無法直接覆蓋，
+切換前請先閱讀 Release 的簽章與還原點備份說明。
+
+Community multilingual build published by TonyBinheWu, supporting the 16 languages below on
+Android 9 or newer. See the release notes for installation, signing differences and updates.
+
+## Languages
+
+English · 繁體中文 · 日本語 · 한국어 · 简体中文 · ไทย · Tiếng Việt · Deutsch
+
+हिन्दी · Español · Français · العربية الفصحى · বাংলা · Русский · Português · Bahasa Indonesia
+
+The app follows your phone's language. On Android 13 or newer you can choose an app language in
+**Settings > Apps > Clean Your TV > Language**. See [language support](docs/LOCALIZATION.md).
 
 ## How it works
 
@@ -144,8 +171,8 @@ eaf7af3867bb29ff4bb038854842c93f42ffe4198a087e611cb18f925201cd65
 ```
 
 ```bash
-sha256sum cleanyourtv-0.2.0.apk                 # compare with the release notes
-apksigner verify --print-certs cleanyourtv-0.2.0.apk
+sha256sum cleanyourtv-multilingual-0.4.0.apk                 # compare with the release notes
+apksigner verify --print-certs cleanyourtv-multilingual-0.4.0.apk
 ```
 
 Android refuses an update signed by any other key, so after the first install every update is

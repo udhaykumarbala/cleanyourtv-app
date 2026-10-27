@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">おはようございます</string>
+    <string name="cyt_tv_good_afternoon">こんにちは</string>
+    <string name="cyt_tv_good_evening">こんばんは</string>
+    <string name="cyt_tv_good_night">おやすみ</string>
+    <string name="cyt_tv_am">午前</string>
+    <string name="cyt_tv_pm">午後</string>
+    <string name="cyt_tv_inputs">入力</string>
+    <string name="cyt_tv_wifi">ホーム Wi-Fi</string>
+    <string name="cyt_tv_settings">設定</string>
+</resources>

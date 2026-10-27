@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">صباح الخير</string>
+    <string name="cyt_tv_good_afternoon">مساء الخير</string>
+    <string name="cyt_tv_good_evening">مساء الخير</string>
+    <string name="cyt_tv_good_night">تصبح على خير</string>
+    <string name="cyt_tv_am">ص</string>
+    <string name="cyt_tv_pm">م</string>
+    <string name="cyt_tv_inputs">المدخلات</string>
+    <string name="cyt_tv_wifi">واي فاي منزلي</string>
+    <string name="cyt_tv_settings">الإعدادات</string>
+</resources>

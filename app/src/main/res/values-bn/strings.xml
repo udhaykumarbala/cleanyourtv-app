@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">একটি টিভি সেট আপ করা হচ্ছে</string>
+    <string name="app_channel_setup_description">ফোনটি আপনার টিভিতে কিছু পরিবর্তন করার সময় অগ্রগতি দেখায় এবং কখন টিভি দেখতে হবে তা আপনাকে বলে৷</string>
+    <string name="app_restore_read_failed">পুনরুদ্ধার পয়েন্ট পড়তে কিছু ভুল হয়েছে</string>
+</resources>

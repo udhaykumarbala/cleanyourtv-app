@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">শুভ সকাল</string>
+    <string name="cyt_tv_good_afternoon">শুভ বিকাল</string>
+    <string name="cyt_tv_good_evening">শুভ সন্ধ্যা</string>
+    <string name="cyt_tv_good_night">শুভ রাত্রি</string>
+    <string name="cyt_tv_am">AM</string>
+    <string name="cyt_tv_pm">PM</string>
+    <string name="cyt_tv_inputs">ইনপুট</string>
+    <string name="cyt_tv_wifi">হোম ওয়াই-ফাই</string>
+    <string name="cyt_tv_settings">সেটিংস</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">TV 설정하기</string>
+    <string name="app_channel_setup_description">휴대전화가 TV의 내용을 변경하는 동안 진행 상황을 표시하고 언제 TV를 봐야 하는지 알려줍니다.</string>
+    <string name="app_restore_read_failed">복원 지점을 읽는 동안 문제가 발생했습니다.</string>
+</resources>

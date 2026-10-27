@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">สวัสดีตอนเช้า</string>
+    <string name="cyt_tv_good_afternoon">สวัสดีตอนบ่าย</string>
+    <string name="cyt_tv_good_evening">สวัสดีตอนเย็น</string>
+    <string name="cyt_tv_good_night">ราตรีสวัสดิ์</string>
+    <string name="cyt_tv_am">AM</string>
+    <string name="cyt_tv_pm">PM</string>
+    <string name="cyt_tv_inputs">อินพุต</string>
+    <string name="cyt_tv_wifi">Wi-Fi ที่บ้าน</string>
+    <string name="cyt_tv_settings">การตั้งค่า</string>
+</resources>

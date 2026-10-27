@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">正在設定電視</string>
+    <string name="app_channel_setup_description">顯示手機修改電視設定的進度，並在需要查看電視畫面時通知你。</string>
+    <string name="app_restore_read_failed">讀取還原點時發生錯誤</string>
+</resources>

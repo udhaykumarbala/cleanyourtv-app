@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">좋은 아침이에요</string>
+    <string name="cyt_tv_good_afternoon">안녕하세요</string>
+    <string name="cyt_tv_good_evening">안녕하세요</string>
+    <string name="cyt_tv_good_night">잘자요</string>
+    <string name="cyt_tv_am">오전</string>
+    <string name="cyt_tv_pm">오후</string>
+    <string name="cyt_tv_inputs">입력</string>
+    <string name="cyt_tv_wifi">홈 Wi-Fi</string>
+    <string name="cyt_tv_settings">설정</string>
+</resources>

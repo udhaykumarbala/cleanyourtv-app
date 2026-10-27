@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">Chào buổi sáng</string>
+    <string name="cyt_tv_good_afternoon">Chào buổi chiều</string>
+    <string name="cyt_tv_good_evening">Chào buổi tối</string>
+    <string name="cyt_tv_good_night">Chúc ngủ ngon</string>
+    <string name="cyt_tv_am">SA</string>
+    <string name="cyt_tv_pm">CH</string>
+    <string name="cyt_tv_inputs">Đầu vào</string>
+    <string name="cyt_tv_wifi">Wi-Fi gia đình</string>
+    <string name="cyt_tv_settings">Cài đặt</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">テレビのセットアップ</string>
+    <string name="app_channel_setup_description">スマートフォンがテレビの内容を変更する間の進行状況を表示し、いつテレビを見るべきかを知らせます。</string>
+    <string name="app_restore_read_failed">復元ポイントの読み取り中に問題が発生しました</string>
+</resources>

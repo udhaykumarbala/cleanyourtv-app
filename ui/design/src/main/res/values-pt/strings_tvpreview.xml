@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">Bom dia</string>
+    <string name="cyt_tv_good_afternoon">Boa tarde</string>
+    <string name="cyt_tv_good_evening">Boa noite</string>
+    <string name="cyt_tv_good_night">Boa noite</string>
+    <string name="cyt_tv_am">AM</string>
+    <string name="cyt_tv_pm">PM</string>
+    <string name="cyt_tv_inputs">Entradas</string>
+    <string name="cyt_tv_wifi">Wi-Fi doméstico</string>
+    <string name="cyt_tv_settings">Configurações</string>
+</resources>

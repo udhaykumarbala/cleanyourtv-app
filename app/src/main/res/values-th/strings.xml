@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">การตั้งค่าทีวี</string>
+    <string name="app_channel_setup_description">แสดงความคืบหน้าในขณะที่โทรศัพท์เปลี่ยนแปลงสิ่งต่างๆ บนทีวี และบอกคุณเมื่อต้องดูทีวี</string>
+    <string name="app_restore_read_failed">มีบางอย่างผิดพลาดในการอ่านจุดคืนค่า</string>
+</resources>

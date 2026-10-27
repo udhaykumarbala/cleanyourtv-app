@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">Selamat pagi</string>
+    <string name="cyt_tv_good_afternoon">Selamat siang</string>
+    <string name="cyt_tv_good_evening">Selamat malam</string>
+    <string name="cyt_tv_good_night">Selamat malam</string>
+    <string name="cyt_tv_am">AM</string>
+    <string name="cyt_tv_pm">PM</string>
+    <string name="cyt_tv_inputs">Masukan</string>
+    <string name="cyt_tv_wifi">Wi-Fi Rumah</string>
+    <string name="cyt_tv_settings">Pengaturan</string>
+</resources>

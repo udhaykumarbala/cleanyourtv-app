@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="cyt_tv_good_morning">早安</string>
+    <string name="cyt_tv_good_afternoon">下午好</string>
+    <string name="cyt_tv_good_evening">晚上好</string>
+    <string name="cyt_tv_good_night">晚安</string>
+    <string name="cyt_tv_am">上午</string>
+    <string name="cyt_tv_pm">下午</string>
+    <string name="cyt_tv_inputs">輸入來源</string>
+    <string name="cyt_tv_wifi">家庭 Wi-Fi</string>
+    <string name="cyt_tv_settings">設置</string>
+</resources>

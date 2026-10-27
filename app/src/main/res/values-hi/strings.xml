@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_channel_setup_name">टीवी स्थापित करना</string>
+    <string name="app_channel_setup_description">जब फ़ोन आपके टीवी पर चीज़ें बदलता है तो प्रगति दिखाता है, और आपको बताता है कि टीवी कब देखना है।</string>
+    <string name="app_restore_read_failed">पुनर्स्थापना बिंदु को पढ़ते समय कुछ गलत हो गया</string>
+</resources>
