@@ -57,17 +57,22 @@ data class HomeDecision(val planned: Boolean, val block: String? = null, val alr
     }
 
     // A block decided by another version of the app, or with another list than the TV resolves to
-    // now (`now`); a decision that names no list is compared with the exact list the TV record
-    // kept from the same Setup (`recordProfileId`, null for a brand set or none).
-    fun earlier(app: String, now: ProfileResolution?, recordProfileId: String?): Boolean {
-        if (block == null) return false
-        if (this.app != null && this.app != app) return true
-        val nowLabel = LogCodes.profile(now)
-        return if (profile != null) profile != nowLabel
-            else (now as? ProfileResolution.Exact)?.profile?.id != recordProfileId
+    // now (`now`). beta3 always writes app=, so a decision without it is from 0.4.6-beta2 or older
+    // (beta3 QA: a 0.4.5 UNKNOWN_HOME on a TV with no list was never told as earlier). The TV's own
+    // reasons (KEEPS_ITS_LINE) do not change with the app.
+    fun earlier(app: String, now: ProfileResolution?): Boolean {
+        val b = block ?: return false
+        if (HomeBlock.entries.firstOrNull { it.name == b } in KEEPS_ITS_LINE) return false
+        if (this.app == null || this.app != app) return true
+        return profile != LogCodes.profile(now)
     }
 
     companion object {
+        // The blocks that come from the TV's own facts or the person's choice: an app update does not
+        // change them, so an earlier Setup's decision keeps its line and next step.
+        val KEEPS_ITS_LINE: Set<HomeBlock> = setOf(HomeBlock.TV_REFUSES, HomeBlock.OLD_ANDROID, HomeBlock.BOOT_LOOP, HomeBlock.CASTING,
+            HomeBlock.REMOTE_BUTTONS, HomeBlock.HOME_CHANGED)
+
         fun of(block: HomeBlock, planHasSwitch: Boolean, alreadyOn: Boolean, app: String? = null, profile: String? = null): HomeDecision = when {
             block != HomeBlock.NONE -> HomeDecision(false, block.name, app = app, profile = profile)
             planHasSwitch -> HomeDecision(true, app = app, profile = profile)

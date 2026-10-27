@@ -937,7 +937,8 @@ class ManageMachinesTest {
         val h = Harness()
         val tv = h.knownTv().copy(profileId = null).also { h.tvs.upsert(it) }   // the miTv snapshot has no com.gathin.tvhome
         h.profiles.resolver = { _, _ -> ProfileResolution.None(emptyList()) }   // still no list for it
-        HomeDecisions(h.documents).save(tv.id, HomeDecision(false, "WIZARD_STAYS_ON"))
+        // Decided by this version with no list (beta3 writes both; one without is an earlier Setup's).
+        HomeDecisions(h.documents).save(tv.id, HomeDecision(false, "WIZARD_STAYS_ON", app = "0.2.0", profile = "none"))
         val previous = h.planner.respond
         h.planner.respond = { r, snap -> if (r is PlanRequest.ApplyTheme) PlanResult.Refused(listOf("the new home screen is not installed")) else previous(r, snap) }
         val m = HomeScreenMachine(h.manageDeps(encoder = ConfigEncoder.Codec), backgroundScope, tv.id)
@@ -990,7 +991,10 @@ class ManageMachinesTest {
     @Test fun theReasonAndTheNextStepFollowTheStoredDecision() = runTest(timeout = 30.seconds) {
         val h = Harness()
         val listed = h.knownTv()   // exact profile xiaomi-mitv-axso0
-        suspend fun notOnTv(decision: HomeDecision?, profileId: String? = listed.profileId): NotOnTv? {
+        // `decision` as this version (the harness's 0.2.0) made it with the list the TV resolves to now,
+        // unless `earlier`: then as a file from 0.4.6-beta2 or older (no app= line).
+        suspend fun notOnTv(given: HomeDecision?, profileId: String? = listed.profileId, earlier: Boolean = false): NotOnTv? {
+            val decision = if (earlier) given else given?.copy(app = "0.2.0", profile = profileId?.let { "exact $it" } ?: "none")
             h.tvs.upsert(listed.copy(profileId = profileId))
             // The list the TV resolves to now is the one the record kept (an earlier decision: below).
             h.profiles.resolver = { _, all -> all.firstOrNull { it.id == profileId }?.let { ProfileResolution.Exact(it) } ?: ProfileResolution.None(emptyList()) }
@@ -1010,6 +1014,13 @@ class ManageMachinesTest {
         assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null))
         // beta3: another home screen app claims Home; with it removed, Setup can switch. No list is missing.
         assertEquals(NotOnTv(HomeBlock.OTHER_HOME, "Xiaomi", unlisted = true, setupAgain = true), notOnTv(HomeDecision(false, "OTHER_HOME"), profileId = null))
+        // beta3 QA: a block kept by 0.4.6-beta2 or older (no app= line) is an earlier Setup's, on a TV
+        // with no list too: Run Setup again, not Help add this TV. The TV's own reasons keep theirs.
+        assertEquals(NotOnTv(HomeBlock.UNKNOWN_HOME, "Xiaomi", unlisted = true, setupAgain = true, earlier = true),
+            notOnTv(HomeDecision(false, "UNKNOWN_HOME"), profileId = null, earlier = true))
+        assertEquals(NotOnTv(HomeBlock.WIZARD_WIFI, "Xiaomi", setupAgain = true, earlier = true), notOnTv(HomeDecision(false, "WIZARD_WIFI"), earlier = true))
+        assertEquals(NotOnTv(HomeBlock.TV_REFUSES, "Xiaomi"), notOnTv(HomeDecision(false, "TV_REFUSES"), earlier = true))
+        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null, earlier = true))
         // Planned, but the launcher is gone since (removed): Setup again adds it. No decision (a TV set
         // up before 0.3.2): the same.
         assertEquals(NotOnTv(null, "Xiaomi", setupAgain = true), notOnTv(HomeDecision(true)))

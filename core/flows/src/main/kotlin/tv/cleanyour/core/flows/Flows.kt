@@ -53,7 +53,10 @@ enum class StopCase { HOME_SETUPWRAITH, HOME_OTHER_LAUNCHER, HOME_UNKNOWN, HOME_
     HOME_SETTINGS_OPEN }   // issue #629: the home check rolled back because a Settings page was open on the TV
 data class StopCard(val case: StopCase, val title: String, val body: String, val primary: String, val secondary: String?, val planId: PlanId?,
     val tertiary: String? = null)   // W8 addition: S4d and S4e have three buttons
-data class DoneSummary(val switchedOff: Int, val homeScreenOn: Boolean, val restorePointAtMs: Long, val skipped: List<String>, val restartRecommended: Boolean)
+// `restorePointAtMs`: the restore point Undo everything goes back to, the TV as it was before this
+// app first changed it; `restorePointEarlier` (beta3 QA): it is from an earlier run, not this one.
+data class DoneSummary(val switchedOff: Int, val homeScreenOn: Boolean, val restorePointAtMs: Long, val skipped: List<String>, val restartRecommended: Boolean,
+                       val restorePointEarlier: Boolean = false)
 sealed interface RestartState { data class Restarting(val sinceMs: Long) : RestartState; data class Back(val afterMs: Long) : RestartState
     data class NotBack(val afterMs: Long) : RestartState }
 sealed interface SetupIntent { data object Start : SetupIntent; data class PickTv(val host: String) : SetupIntent; data class EnterAddress(val ip: String) : SetupIntent

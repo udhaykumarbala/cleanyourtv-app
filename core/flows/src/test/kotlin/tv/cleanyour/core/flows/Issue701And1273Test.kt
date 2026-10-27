@@ -1,5 +1,6 @@
 package tv.cleanyour.core.flows
 
+import app.cash.turbine.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -10,6 +11,7 @@ import tv.cleanyour.core.planner.HomeSwitchRisk
 import tv.cleanyour.core.probe.SavedWifi
 import tv.cleanyour.core.spec.BundledFactsTable
 import tv.cleanyour.core.spec.BundledProfileSource
+import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.testing.fixtures.FakeConfigTransport
 import tv.cleanyour.testing.fixtures.FakeIdGen
 import kotlin.test.Test
@@ -129,6 +131,32 @@ class Issue701And1273Test {
             HomeDecisions(h.documents).save(tv.id, HomeDecision(false, "WIZARD_STAYS_ON", app = "0.4.5", profile = "brand set TCL"))
             val older = TvReport.compact(assertNotNull(ProblemReports.input(deps, tv.id)))
             assertTrue("Home switch: blocked WIZARD_STAYS_ON (from an earlier Setup: 0.4.5, brand set TCL)\n" in older, older)
+        }
+    }
+
+    // beta3 QA (qa/beta3-smoke/s2-earlier-decision): the decision file 0.4.5 kept on the emulator TV,
+    // which has no list of its own, and the same with the R0 case WIZARD_STAYS_ON. Both are an
+    // earlier Setup's: the Home screen page offers Run Setup again, not Help add this TV, and the
+    // report says so.
+    @Test fun aDecisionFileFrom045OnATvWithNoListIsAnEarlierSetups() = runTest(timeout = 60.seconds) {
+        val qa = checkNotNull(javaClass.getResourceAsStream("/decisions/decision-045.txt")).readBytes()
+        assertEquals("home=blocked:UNKNOWN_HOME", qa.decodeToString().trim())
+        for (file in listOf(qa, "home=blocked:WIZARD_STAYS_ON\n".encodeToByteArray())) {
+            val h = Harness()
+            val tv = h.knownTv().copy(profileId = null).also { h.tvs.upsert(it) }
+            h.profiles.resolver = { _, _ -> ProfileResolution.None(emptyList()) }
+            h.documents.write("tvs/${tv.id.value}/decision.txt", file)
+            val deps = h.manageDeps(about = about)
+            val n = assertNotNull(HomeScreenMachine(deps, backgroundScope, tv.id).also { settle() }.state.value.notOnTv)
+            assertTrue(n.earlier && n.setupAgain && !n.helpAddTv, "${file.decodeToString().trim()}: $n")
+            val m = HomeScreenMachine(deps, backgroundScope, tv.id).also { settle() }
+            m.effects.test {
+                m.dispatch(HomeScreenIntent.RunSetupAgain); settle()
+                assertEquals(listOf<ManageEffect>(ManageEffect.Navigate("setup/${tv.id.value}")), drain())
+            }
+            val input = assertNotNull(ProblemReports.input(deps, tv.id))
+            assertTrue(input.homeEarlier)
+            assertTrue("(from an earlier Setup)\n" in TvReport.compact(input))
         }
     }
 

@@ -307,8 +307,9 @@ private fun running(lines: List<NarrationLine>, percent: Int, thumbnail: ByteArr
 private fun checkState(thumbnail: ByteArray?, deadlineAheadMs: Long = 84_000, homeCheck: Boolean? = null, s: GuardedSection = section) =
     SetupState.Check(tvId, RunState.AwaitingConfirm(fullPlan, s, NOW + deadlineAheadMs, homeCheck, thumbnail), thumbnail, dock)
 
-private fun done(off: Int = 23, home: Boolean = true, skipped: List<String> = emptyList(), recommended: Boolean = false, restart: RestartState? = null) =
-    SetupState.Done(tvId, DoneSummary(off, home, NOW, skipped, recommended), restart)
+private fun done(off: Int = 23, home: Boolean = true, skipped: List<String> = emptyList(), recommended: Boolean = false, restart: RestartState? = null,
+                 restoreEarlier: Boolean = false) =
+    SetupState.Done(tvId, DoneSummary(off, home, if (restoreEarlier) NOW - 36_000_000 else NOW, skipped, recommended, restoreEarlier), restart)
 
 private val narration = listOf(
     NarrationLine("Restore point saved", NarrationState.DONE),
@@ -583,6 +584,8 @@ object SetupShots {
         // S5 Done and the restart flow (D24, UX 4.8)
         Shot("done_home_on") { Setup(done()) },
         Shot("done_restart_recommended") { Setup(done(recommended = true)) },
+        // beta3 QA: a later run names the first restore point, the one Undo everything goes back to.
+        Shot("done_restore_point_earlier") { Setup(done(restoreEarlier = true)) },
         Shot("done_without_home") { Setup(done(off = 16, home = false)) },
         Shot("done_skipped_one") { Setup(done(off = 22, skipped = listOf("Play Games"))) },
         Shot("done_skipped_many") { Setup(done(off = 20, skipped = listOf("Play Games", "Mi Cast", "Mi Home"))) },

@@ -338,8 +338,7 @@ class HomeScreenMachine(
         // app buttons need its home screen) and a home screen the person changed do not change with
         // the app, so those keep their line and their own next step.
         val now = attempt { d.profiles.resolveFor(snap) }.getOrNull()
-        val earlier = reason != null && reason !in KEEPS_ITS_LINE &&
-            decision?.earlier(d.about.version, now, tv.profileId) == true
+        val earlier = reason != null && decision?.earlier(d.about.version, now) == true
         val unlisted = tv.profileId == null && (!earlier || now !is ProfileResolution.Exact)
         if (earlier) return NotOnTv(reason = reason, brand = LogCodes.clean(snap.facts.brand, 40).ifEmpty { tv.nickname },
             unlisted = unlisted, setupAgain = true, earlier = true)
@@ -417,9 +416,6 @@ class HomeScreenMachine(
     }
 
     companion object {
-        // beta3: the blocks an earlier Setup's decision keeps across app versions (notOnTv).
-        val KEEPS_ITS_LINE: Set<HomeBlock> = setOf(HomeBlock.TV_REFUSES, HomeBlock.OLD_ANDROID, HomeBlock.BOOT_LOOP, HomeBlock.CASTING,
-            HomeBlock.REMOTE_BUTTONS, HomeBlock.HOME_CHANGED)
 
         // Launcher 2.4 (versionCode 5) added Launcher settings on the TV (RF-LAUNCHER-240 F16).
         const val FIRST_WITH_TV_SETTINGS = 5L

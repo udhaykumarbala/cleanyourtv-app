@@ -205,7 +205,7 @@ object ProblemReports {
         return TvReportInput(
             about = d.about, snapshot = snap, profile = profile, home = home,
             switchedOffByApp = attempt { d.ledger.switchedOffByUs(tv.id).toSet() }.getOrDefault(emptySet()),
-            homeEarlier = home?.earlier(d.about.version, profile, tv.profileId) == true,
+            homeEarlier = home?.earlier(d.about.version, profile) == true,
         )
     }
 

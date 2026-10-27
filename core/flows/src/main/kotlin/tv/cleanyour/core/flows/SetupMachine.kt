@@ -250,6 +250,8 @@ class SetupMachine(
     private var deviceFacts: DeviceFacts? = null
     private var resolution: ProfileResolution? = null
     private var snapshot: Snapshot? = null
+    // beta3 QA: this session's probe read the TV before any change (its restore point is new).
+    private var probedBaseline = false
     private var allowShown = false
     private var doorTv: FoundTv? = null
     private var knownTv: Tv? = null
@@ -700,6 +702,7 @@ class SetupMachine(
             deviceFacts = facts
             val baseline = deps.snapshots.baseline(tvId)
             val snap = deps.prober.snapshot(s, if (baseline == null) SnapshotReason.BASELINE else SnapshotReason.MANUAL) { st -> send(Ev.Stage(tvId, st)) }
+            probedBaseline = baseline == null
             deps.snapshots.save(snap)
             snapshot = snap
             // Issue #114: resolved with the Home the snapshot read, as the planner and the engine's
@@ -1187,7 +1190,11 @@ class SetupMachine(
         val skippedNames = skipped.filter { it.index !in kept }.mapNotNull { (it.op as? Op.Disable)?.pkg }.map { nameOfPkg(it) }
         val p = profile()
         val recommended = p == null || Quirk.HOME_TAKEOVER_SETUPWRAITH in p.quirks || p.tested?.rebootTested != true
-        val restorePointAt = deps.snapshots.latest(tvId)?.takenAtMs ?: deps.clock.nowMs()
+        // beta3 QA: the restore point Undo everything goes back to is the first read (the baseline),
+        // so Done names that one, and says when it is from an earlier run.
+        val baseline = deps.snapshots.baseline(tvId)
+        val restorePointAt = (baseline ?: deps.snapshots.latest(tvId))?.takenAtMs ?: deps.clock.nowMs()
+        val restorePointEarlier = baseline != null && !probedBaseline
         val launcher = deps.launcherPin.bundled()
         // D15: the digest of the config.json this run pushed, so Manage can warn when it drifts.
         val pushed = plan?.let { pl -> deps.ledger.changes(tvId).lastOrNull { c -> c.planId == pl.id && (c.op as? Op.PushAsset)?.dest?.let { d -> d.dir == RemoteDir.OVERLAY && d.segments.last() == "config.json" } == true } }
@@ -1235,7 +1242,7 @@ class SetupMachine(
         val homeKept = f?.home?.takeIf { !homeOn && it != HomeOutcome.CONFIRMED && plan?.sections?.isNotEmpty() == true }
         mutableExtras.update { it.copy(doneLines = skippedNames, doneKept = keptNames, doneNothing = off == 0 && !homeOn && !changed, doneNothingWhy = why,
             keepsDebugging = keepsDebugging(tvId), doneHomeKept = homeKept) }
-        send(Ev.ShowDone(tvId, DoneSummary(off, homeOn, restorePointAt, skippedNames, recommended)))
+        send(Ev.ShowDone(tvId, DoneSummary(off, homeOn, restorePointAt, skippedNames, recommended, restorePointEarlier)))
         session?.let { s -> mutableExtras.update { it.copy(restorePointPushed = deps.restorePoint.write(done, s, p)) } }
     }
 

@@ -288,6 +288,8 @@
     <string name="done_home_kept_said_no">The home screen is unchanged: you said the new one didn\'t look right, so the old home screen is back.</string>
     <string name="done_home_kept">The home screen is unchanged: the new one didn\'t take over, so the old home screen is back.</string>
     <string name="done_restore_saved">Restore point saved on this phone ({date})</string>
+    <!-- beta3: a later run; the restore point is the one from the first Setup, which Undo everything goes back to -->
+    <string name="done_restore_earlier">Restore point on this phone (from {date})</string>
     <string name="done_debug_note">Debugging on the TV switches off when you tap Finish</string>
     <string name="done_debug_kept">Debugging on the TV stays on, as you chose</string>
     <string name="done_skipped">{name} wouldn\'t switch off; it\'s harmless.</string>

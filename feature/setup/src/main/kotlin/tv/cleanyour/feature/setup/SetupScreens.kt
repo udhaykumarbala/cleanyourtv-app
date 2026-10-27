@@ -694,7 +694,8 @@ fun DoneScreen(state: SetupState.Done, extras: SetupExtras, actions: SetupAction
             }), Modifier.padding(top = 8.dp))
         }
         Column(Modifier.padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            CheckLine(msg(R.string.done_restore_saved, "date" to dateTime(s.restorePointAtMs, locale)))
+            // beta3 QA: a later run names the restore point Undo everything goes back to, the first one.
+            CheckLine(msg(if (s.restorePointEarlier) R.string.done_restore_earlier else R.string.done_restore_saved, "date" to dateTime(s.restorePointAtMs, locale)))
             // D7: with "Keep debugging on" chosen, Finish leaves debugging on, and the line says so.
             CheckLine(
                 stringResource(when {

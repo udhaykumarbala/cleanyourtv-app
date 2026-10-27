@@ -390,6 +390,25 @@ class SetupMachineTest {
         assertEquals(2, done.switchedOff)
     }
 
+    // beta3 QA: Done named the newest read as the restore point ("saved at 22:47") while Undo everything
+    // goes back to the first one (12:31). Done now names the first one, and says when it is from an
+    // earlier run.
+    @Test fun doneNamesTheRestorePointUndoGoesBackTo() = runTest(timeout = 30.seconds) {
+        for (earlier in listOf(false, true)) {
+            val h = Harness()
+            h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+            val first = Samples.NOW_MS - 36_000_000
+            if (earlier) h.snapshots.save(Samples.snapshot(reason = SnapshotReason.BASELINE, takenAtMs = first))
+            h.engine.onStart = { p -> finish(p, RunStatus.COMPLETED) }
+            val m = h.setup(backgroundScope)
+            toFound(h, m)
+            m.dispatch(SetupIntent.MakeItClean); settle()
+            val done = assertIs<SetupState.Done>(m.state.value, "$earlier: ${m.state.value}").summary
+            assertEquals(earlier, done.restorePointEarlier)
+            assertEquals(if (earlier) first else Samples.NOW_MS, done.restorePointAtMs)
+        }
+    }
+
     // "OK" keeps the old home screen: Done counts only what stayed switched off (not the TV's own
     // home screen, which step R switched back on), says the home screen is unchanged and why.
     @Test fun timedOutOkEndsOnAnHonestDone() = runTest(timeout = 30.seconds) {
