@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:setup. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+  Le stringhe che contengono un segno di percentuale sono segnate formatted="false", come nell'originale.
+-->
+<resources>
+
+    <!-- Parole dei pulsanti -->
+    <string name="action_back">Indietro</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Fatto</string>
+    <string name="action_undo">Annulla</string>
+
+    <!-- Richiesta delle credenziali (D17) -->
+    <string name="gate_title">Conferma che sei tu</string>
+    <string name="gate_subtitle">Prima di cambiare qualcosa su {tv}</string>
+    <string name="gate_negative">Annulla</string>
+    <string name="gate_failed">Non siamo riusciti a confermare che sei tu, quindi non è stato cambiato nulla.</string>
+
+    <!-- Notifiche (D18, D16) -->
+    <string name="notify_channel_name">Configurazione di una TV</string>
+    <string name="notify_channel_description">Mostra l\'avanzamento mentre il telefono modifica la TV e ti avvisa quando è il momento di guardare lo schermo.</string>
+    <string name="notify_progress" formatted="false">Configurazione di {tv}, {percent}%</string>
+    <string name="notify_look">Guarda la TV. Tocca per rispondere.</string>
+    <string name="notify_rationale">Ti facciamo vibrare quando è il momento di guardare la TV. Consenti le notifiche, così funziona anche con il telefono in tasca.</string>
+    <string name="notify_rationale_allow">Consenti le notifiche</string>
+    <string name="notify_rationale_skip">Non ora</string>
+
+    <!-- Da S2d a S3: lettura -->
+    <string name="probing_line">Leggo cosa c\'è sulla TV...</string>
+    <string name="probing_progress_cd">Lettura di cosa c\'è sulla TV</string>
+
+    <!-- Arresto: lettura fallita -->
+    <string name="stop_probe_failed_title">Non siamo riusciti a leggere cosa c\'è sulla TV</string>
+    <string name="stop_probe_failed_body">La TV ha smesso di rispondere mentre la leggevamo. Non è stato cambiato nulla. Controlla che sia ancora accesa, poi riprova.</string>
+    <string name="stop_probe_failed_primary">Riprova</string>
+    <string name="stop_probe_failed_secondary">Indietro</string>
+    <string name="stop_probe_failed_tertiary">Mostra i dettagli</string>
+    <string name="stop_plan_refused_title">Non siamo riusciti a fare un piano sicuro per questa TV</string>
+    <string name="stop_plan_refused_body">La TV ha risposto, ma quello che abbiamo trovato non rientra in un piano di cui siamo sicuri, quindi ci siamo fermati prima di fare qualsiasi cosa. Non è stato cambiato nulla. Segnala un problema ci manda il motivo, così possiamo risolverlo.</string>
+
+    <!-- S3 Cosa abbiamo trovato -->
+    <string name="found_title">{count, plural, =0 {Niente da disattivare. Vuoi la nuova schermata Home?} one {Abbiamo trovato un elemento da disattivare} other {Abbiamo trovato # elementi da disattivare}}</string>
+    <string name="found_headline">{count, plural, =0 {Niente da disattivare. Vuoi la nuova schermata Home?} one {elemento da disattivare} other {elementi da disattivare}}</string>
+    <string name="found_overline">Abbiamo trovato</string>
+    <string name="found_zero_body">Questa TV è già in ordine.</string>
+    <string name="found_group_ads">Pubblicità e righe sponsorizzate</string>
+    <string name="found_group_tracking">Tracciamento e analisi</string>
+    <string name="found_group_nobody">App che nessuno ha chiesto</string>
+    <string name="found_group_brand">Extra di {brand}</string>
+    <string name="found_group_shop">Negozio e modalità demo</string>
+    <string name="found_group_needed">Necessari per la nuova schermata Home</string>
+    <string name="found_group_count_cd">{group}: {count, plural, one {# elemento} other {# elementi}}</string>
+    <string name="found_see_list">Vedi l\'elenco</string>
+    <string name="found_keep_intro">Teniamo tutto quello che usi:</string>
+    <string name="found_keep_paragraph">Teniamo tutto quello che usi: {apps}, {fixed}.</string>
+    <string name="found_keep_paragraph_no_apps">Teniamo tutto quello che usi: {fixed}.</string>
+    <string name="found_keep_fixed">TV in diretta e HDMI, il telecomando, la tastiera, Chromecast, l\'assistente vocale e gli aggiornamenti del software</string>
+    <string name="found_home_row">Schermata Home: {dock}</string>
+    <!-- Il dock con le righe sotto: le app del dock, poi quante altre sono nelle righe -->
+    <string name="found_home_row_rows">Schermata Home: {dock}, più {count, plural, one {# app} other {# app}} sotto</string>
+    <string name="found_home_row_cd">Dock della schermata Home: {dock}</string>
+    <string name="found_home_change">Cambia</string>
+    <!-- Un dock vuoto: la riga nomina la nuova schermata Home (titolo della scheda dock UX 2) invece di un elenco vuoto -->
+    <string name="found_home_row_empty">La tua nuova schermata Home</string>
+    <string name="found_safety">Prima si salva un punto di ripristino, così si può rimettere tutto a posto.</string>
+    <string name="found_make_clean">Ripulisci la TV</string>
+    <string name="found_customise">Personalizza</string>
+    <!-- D36 (RF-LAUNCHER-240 F1): il piano sostituisce un'app della schermata Home firmata con un'altra chiave -->
+    <string name="found_replaces_launcher">Sostituisce l\'app della schermata Home già presente su questa TV. Aspetto, ordine delle app, impostazioni e risposte delle schede ripartono da zero.</string>
+    <string name="found_tcl_remote_keys">Sulle TCL con Google TV, i tasti Impostazioni (ingranaggio), Netflix e YouTube del telecomando smettono di funzionare con la nuova schermata Home. Per riaverli, scegli Usa la schermata Home della TV in Gestione.</string>
+    <string name="found_no_lock">Nessun blocco schermo su questo telefono, quindi non possiamo controllare che sia davvero tu.</string>
+    <!-- Modello sconosciuto (nessun profilo) -->
+    <string name="found_unknown_title">{count, plural, =0 {Non abbiamo trovato nulla di cui siamo sicuri} one {Abbiamo trovato un elemento di cui siamo sicuri} other {Abbiamo trovato # elementi di cui siamo sicuri}}</string>
+    <string name="found_unknown_headline">{count, plural, =0 {Non abbiamo trovato nulla di cui siamo sicuri} one {elemento di cui siamo sicuri} other {elementi di cui siamo sicuri}}</string>
+    <string name="found_unknown_body">Non conosciamo ancora questa TV esatta, quindi siamo prudenti. Dopo che l\'avrai usata per un po\', in Personalizza si può disattivare di più.</string>
+    <string name="found_help_add_tv">Aiutaci ad aggiungere questa TV</string>
+    <!-- La TV rifiuta altre schermate Home (UX 4.6), mostrato al posto della riga della schermata Home -->
+    <string name="stop_tv_refuses_home_title">La nuova schermata Home non è possibile su questa TV</string>
+    <string name="stop_tv_refuses_home_body">{brand} consente solo la propria. Disattiviamo comunque pubblicità e tracciamento, che è gran parte del vantaggio.</string>
+    <string name="found_home_old_android">La nuova schermata Home richiede Android 8 o successivo, quindi questa TV tiene la propria. Disattiviamo comunque pubblicità e tracciamento, che è gran parte del vantaggio.</string>
+    <string name="found_home_changed">La schermata Home di questa TV era già stata cambiata, da un\'altra app o da una modifica precedente, quindi la lasciamo com\'è. Disattiviamo comunque pubblicità e tracciamento.</string>
+    <string name="found_home_unknown_stock">Non conosciamo abbastanza bene la schermata Home di questa TV per sostituirla in sicurezza, quindi resta. Disattiviamo comunque pubblicità e tracciamento.</string>
+    <!-- RF-SAFETY-250: i cambi di schermata Home saltati in partenza per sicurezza, mostrati al posto della riga della schermata Home -->
+    <string name="found_home_wizard_wifi">Il Wi-Fi di questa TV è stato salvato dalla sua procedura guidata di configurazione. La nuova schermata Home richiede che la procedura sia disattivata, e questo farebbe dimenticare il Wi-Fi; con la procedura lasciata attiva la TV può andare in crash. Per questo tiene la propria schermata Home. Disattiviamo comunque pubblicità e tracciamento. Per cambiarla più avanti, dimentica e riaggiungi la rete in Impostazioni, oppure usa un cavo, poi esegui di nuovo la configurazione.</string>
+    <string name="found_home_wizard_wifi_unlisted">Il Wi-Fi di questa TV è stato salvato dalla sua procedura guidata di configurazione, e non conosciamo ancora abbastanza bene questa TV per disattivarla in sicurezza. Con la procedura lasciata attiva, una nuova schermata Home può mandare in crash la TV, quindi tiene la propria. Disattiviamo comunque pubblicità e tracciamento.</string>
+    <string name="found_home_wizard_wifi_unknown">Non siamo riusciti a controllare chi ha salvato il Wi-Fi di questa TV. La nuova schermata Home richiede che la procedura guidata sia disattivata, e questo potrebbe far dimenticare il Wi-Fi; con la procedura lasciata attiva la TV può andare in crash. Per questo tiene la propria schermata Home. Disattiviamo comunque pubblicità e tracciamento.</string>
+    <string name="found_home_casting">Su questo dispositivo Google la nuova schermata Home richiede che la procedura guidata sia disattivata, e senza di essa la trasmissione dai telefoni smette di funzionare a ogni riavvio. Per questo tiene la propria schermata Home. Disattiviamo comunque pubblicità e tracciamento.</string>
+    <string name="found_home_boot_loop">Su questa famiglia di TV la procedura guidata torna attiva a ogni riavvio, e con la schermata Home della TV disattivata questo può impedire l\'avvio della TV. Per questo tiene la propria schermata Home. Disattiviamo comunque pubblicità e tracciamento.</string>
+    <string name="found_home_wizard_stays_on">Non conosciamo abbastanza bene questa TV per disattivarne la procedura guidata, e con la procedura attiva e la schermata Home della TV disattivata la TV può andare in crash. Per questo tiene la propria schermata Home. Disattiviamo comunque pubblicità e tracciamento.</string>
+
+    <!-- S3a Foglio Personalizza -->
+    <string name="customise_title">Personalizza</string>
+    <string name="customise_live">{total, plural, other {{off} di # disattivati}}</string>
+    <string name="customise_nothing_deleted">Non viene cancellato nulla; \"disattivato\" vuol dire addormentato.</string>
+    <string name="customise_show_fewer">Mostra meno</string>
+    <string name="customise_group_voice">Assistente vocale</string>
+    <string name="customise_group_cast">Chromecast</string>
+    <string name="customise_group_updates">Aggiornamenti del software</string>
+    <string name="customise_group_streaming">App di streaming che non usi</string>
+    <string name="customise_group_brand_features">Funzioni di {brand}</string>
+    <string name="customise_updates_note">Lasciati attivi perché la TV continui a ricevere le correzioni di sicurezza. Disattivarli ferma anche i promemoria di aggiornamento.</string>
+    <string name="customise_wizard_name">Procedura guidata di configurazione</string>
+    <string name="customise_wizard_line">Disattiva la procedura guidata del primo avvio, così la nuova schermata Home può prendere il comando</string>
+    <string name="customise_wizard_note">La riattiviamo se annulli o se ripristini la TV.</string>
+    <string name="customise_protected_title">Queste le teniamo</string>
+    <string name="customise_protected_pill">Protetto</string>
+    <string name="customise_protected_why_title">Perché lo teniamo</string>
+    <string name="customise_group_home">Schermata Home</string>
+    <string name="customise_dock_row">Dock: {names}</string>
+    <string name="customise_dock_row_rows">Dock: {names}, più {count, plural, one {# app} other {# app}} {rows, plural, one {nella riga sotto} other {nelle righe sotto}}</string>
+    <string name="customise_dock_row_empty">Dock</string>
+    <string name="customise_look_row">Aspetto: {theme}</string>
+    <!-- 0.4.0: l'aspetto e le sue app per riga, quando non è quello proprio dell'aspetto -->
+    <string name="customise_look_row_count">Aspetto: {theme}, {count, plural, one {# app per riga} other {# app per riga}}</string>
+    <!-- look2: il ritaglio della foto nel passaggio Aspetto della configurazione, sotto Usa questo ritaglio (la configurazione non ha Mettila sulla TV) -->
+    <string name="look_photo_after">Per ora non viene inviato nulla. Va alla TV quando tocchi Ripulisci la TV.</string>
+    <!-- RFC-CURTAIN-1: solo Personalizzato; la TV mostra l'avanzamento mentre il telefono lavora -->
+    <string name="customise_group_tv">Sulla TV</string>
+    <string name="customise_show_on_tv">Mostra l\'avanzamento sulla TV</string>
+    <string name="customise_show_on_tv_note">La TV mostra ogni passaggio, poi la nuova schermata Home</string>
+    <string name="customise_group_afterwards">Dopo</string>
+    <string name="customise_keep_debugging">Tieni acceso il debug</string>
+    <string name="customise_keep_debugging_warning">Altri sul tuo Wi-Fi potrebbero chiedere di collegarsi</string>
+    <string name="customise_group_commands">Mostra i comandi</string>
+    <string name="customise_commands_intro">Ogni comando che eseguiremmo, in ordine.</string>
+    <string name="customise_copy_commands">Copia come comandi</string>
+    <string name="customise_commands_copied">Copiato</string>
+    <string name="customise_snackbar_kept">{name} verrà tenuto.</string>
+    <string name="customise_snackbar_off">{name} verrà disattivato.</string>
+
+    <!-- Temi (selettore dei temi S3a) -->
+    <string name="theme_default">Predefinito</string>
+    <string name="theme_aurora">Aurora</string>
+    <string name="theme_six_columns">Sei colonne</string>
+    <string name="theme_card_cd">{name}. {description}</string>
+    <string name="theme_card_selected_cd">{name}, selezionato. {description}</string>
+
+    <!-- S3b Il tuo dock (foglio) -->
+    <string name="dock_title">Il tuo dock</string>
+    <string name="dock_body">Fino a {count, spellout} lungo il bordo inferiore. Trascina un\'app dai puntini per cambiare l\'ordine.</string>
+
+    <!-- S4a Pulizia in corso -->
+    <string name="working_title">Pulizia in corso</string>
+    <string name="working_step_restore_active">Salvataggio di un punto di ripristino...</string>
+    <string name="working_step_restore_done">Punto di ripristino salvato</string>
+    <string name="working_group_ads">Pubblicità</string>
+    <string name="working_group_tracking">Tracciamento</string>
+    <string name="working_group_nobody">App che nessuno ha chiesto</string>
+    <string name="working_group_brand">Extra di {brand}</string>
+    <string name="working_group_shop">Negozio e modalità demo</string>
+    <string name="working_step_group_active">{total, plural, other {{group}: {done} di #...}}</string>
+    <string name="working_step_group_done">{count, plural, other {{group} disattivati (#)}}</string>
+    <string name="working_step_install_active">Installazione della nuova schermata Home</string>
+    <string name="working_step_install_done">Nuova schermata Home installata</string>
+    <string name="working_step_replace_active">Sostituzione dell\'app della schermata Home</string>
+    <string name="working_step_replace_done">App della schermata Home sostituita</string>
+    <string name="working_step_home_active">Passaggio alla nuova Home</string>
+    <string name="working_step_home_done">Nuova Home attiva</string>
+    <string name="working_step_done_cd">{step}, completato</string>
+    <string name="working_thumbnail_caption">In diretta dalla TV</string>
+    <string name="working_thumbnail_cd">In diretta dalla TV</string>
+    <string name="working_keep_on">Tieni accesa la TV. Puoi posare il telefono; vibrerà quando è il momento di guardare la TV.</string>
+    <string name="working_stop">Ferma e annulla</string>
+    <string name="working_putting_back">Rimetto la vecchia schermata Home...</string>
+    <string name="working_stopping">Mi fermo e annullo quello che abbiamo fatto...</string>
+
+    <!-- S4b Lo vedi? -->
+    <string name="check_overline">Guarda la TV</string>
+    <string name="check_title">Lo vedi?</string>
+    <string name="check_thumbnail_cd">{count, plural, =0 {La TV mostra la nuova schermata Home con il dock vuoto} one {La TV mostra la nuova schermata Home con un\'app nel dock} other {La TV mostra la nuova schermata Home con # app nel dock}}</string>
+    <string name="check_dock_sentence">La nuova schermata Home, con {dock} lungo il bordo inferiore.</string>
+    <string name="check_dock_sentence_empty">La nuova schermata Home.</string>
+    <string name="check_press_home">Premi Home sul telecomando una volta.</string>
+    <string name="check_live_ok">Home apre la nuova schermata</string>
+    <string name="check_live_pending_cd">Non ancora controllato</string>
+    <string name="check_live_done_cd">Controllato</string>
+    <string name="check_countdown_text">Se non ci rispondi, rimettiamo da soli la vecchia schermata Home. Non c\'è niente di cui preoccuparsi.</string>
+    <string name="check_thumbnail_note">Se non riesci a vedere la TV, l\'immagine qui sopra è quello che mostra adesso.</string>
+    <string name="check_no_thumbnail_note">Non siamo riusciti a ottenere un\'immagine; guarda la TV.</string>
+    <string name="check_yes">Sì, la vedo</string>
+    <string name="check_no">No, rimettila com\'era</string>
+
+    <!-- S4c Fermato: la vecchia schermata Home è tornata (UX 4.7) -->
+    <string name="stop_show_details">Mostra i dettagli</string>
+    <string name="stop_report">Segnala un problema</string>
+    <string name="stop_home_wait_hint">Dagli qualche secondo.</string>
+    <string name="stop_home_setupwraith_title">La vecchia schermata Home è tornata</string>
+    <string name="stop_home_setupwraith_body">La procedura guidata del primo avvio di questa TV tiene stretto il tasto Home. Su questo modello la nuova schermata Home funziona solo se anche la procedura è disattivata. È sicuro per l\'uso di tutti i giorni; la riattiviamo se annulli o prima di un ripristino di fabbrica.</string>
+    <string name="stop_home_setupwraith_primary">Riprova con la procedura disattivata</string>
+    <string name="stop_home_setupwraith_secondary">Lascia la vecchia schermata Home</string>
+    <!-- D3: la procedura guidata ha salvato il Wi-Fi della TV (o la TV non ha saputo dirlo), quindi non viene mai disattivata. -->
+    <string name="stop_home_setupwraith_wifi_body">Il Wi-Fi della tua TV è stato salvato dalla sua procedura guidata di configurazione, quindi disattivarla lo farebbe dimenticare. Usa un cavo, oppure dimentica e riaggiungi la rete in Impostazioni, poi riprova.</string>
+    <string name="stop_home_setupwraith_wifi_primary">Riprova</string>
+    <!-- RF-LAUNCHER-240 F6: la TV non ha saputo dire chi ha salvato il suo Wi-Fi, quindi la procedura guidata è rimasta attiva. -->
+    <string name="stop_home_setupwraith_wifi_unknown_body">Non siamo riusciti a controllare chi ha salvato il Wi-Fi di questa TV, quindi abbiamo lasciato attiva la sua procedura guidata per tenere al sicuro il Wi-Fi.</string>
+    <string name="stop_home_other_launcher_title">La vecchia schermata Home è tornata</string>
+    <string name="stop_home_other_launcher_body">Un\'altra app per la schermata Home, {launcher}, comanda la Home. Non disattiviamo le app che non conosciamo. Scegli quale vuoi.</string>
+    <string name="stop_home_other_launcher_primary">Usa la nuova schermata Home</string>
+    <string name="stop_home_other_launcher_secondary">Tieni {launcher}</string>
+    <string name="stop_home_unknown_title">La vecchia schermata Home è tornata</string>
+    <string name="stop_home_unknown_body">Non siamo riusciti a far prendere il comando alla nuova schermata Home su questa TV, quindi abbiamo rimesso a posto. Tutto il resto di quello che abbiamo fatto resta. Puoi riprovare da Gestione, oppure mandarci un rapporto così guardiamo questo modello.</string>
+    <string name="stop_home_unknown_primary">Segnala un problema</string>
+    <string name="stop_home_unknown_secondary">OK</string>
+    <string name="stop_home_user_said_no_title">La vecchia schermata Home è tornata</string>
+    <string name="stop_home_user_said_no_body">Rimessa a posto. C\'era qualcosa che non andava, o volevi solo guardare prima?</string>
+    <string name="stop_home_user_said_no_primary">Riprova</string>
+    <string name="stop_home_user_said_no_secondary">Qualcosa non andava</string>
+    <string name="stop_home_timed_out_title">La vecchia schermata Home è tornata</string>
+    <string name="stop_home_timed_out_body">Rimetto la vecchia schermata Home... Fatto. La TV è com\'era. Puoi riprovare da Gestione.</string>
+    <string name="stop_home_timed_out_primary">OK</string>
+    <string name="stop_home_timed_out_secondary">Riprova</string>
+
+    <!-- Arresto: annullato -->
+    <string name="stop_step_failed_title">Ci siamo fermati</string>
+    <string name="stop_step_failed_body">{total, plural, other {Un passaggio non ha funzionato, quindi ci siamo fermati dopo aver disattivato {done} di #. Nient\'altro è stato cambiato.}}</string>
+    <string name="stop_undone_title">Abbiamo annullato quello che avevamo fatto</string>
+    <string name="stop_undone_body">La TV è com\'era. Puoi riprovare da Gestione.</string>
+    <string name="stop_undone_primary">OK</string>
+    <string name="stop_undone_secondary">Mostra i dettagli</string>
+
+    <!-- S4d Fermato: connessione persa a metà del piano (UX 4.14) -->
+    <string name="stop_connection_lost_title">La TV ha smesso di rispondere</string>
+    <string name="stop_connection_lost_body">{total, plural, one {La TV ha smesso di rispondere dopo che abbiamo disattivato {done} di # elemento. Di solito torna in pochi secondi.} other {La TV ha smesso di rispondere dopo che abbiamo disattivato {done} di # elementi. Di solito torna in pochi secondi.}}</string>
+    <string name="stop_connection_lost_reconnecting">Ricollegamento in corso...</string>
+    <string name="stop_connection_lost_back">Di nuovo qui. Continuiamo?</string>
+    <string name="stop_connection_lost_primary">Continua con il resto</string>
+    <string name="stop_connection_lost_secondary">Fermati qui</string>
+    <string name="stop_connection_lost_tertiary">Annulla quello che abbiamo fatto</string>
+    <string name="stop_connection_lost_suspect">Abbiamo riattivato \"{name}\", sembra gestire il Wi-Fi su questa TV. Andiamo avanti senza.</string>
+    <string name="stop_connection_lost_gone_body">La TV non risponde ancora. Controlla che sia accesa e sullo stesso Wi-Fi di questo telefono.</string>
+    <string name="stop_connection_lost_keep_trying">Continua a provare</string>
+
+    <!-- S4e Ripresa dopo la morte del processo (UX 4.9, 4.14) -->
+    <string name="stop_resume_title">Eravamo a metà della configurazione di {tv}</string>
+    <string name="stop_resume_body">{total, plural, one {{done} di # elemento è disattivato; la schermata Home non è ancora stata cambiata. Continuiamo?} other {{done} di # elementi sono disattivati; la schermata Home non è ancora stata cambiata. Continuiamo?}}</string>
+    <string name="stop_resume_primary">Continua</string>
+    <string name="stop_resume_secondary">Annulla quello che abbiamo fatto</string>
+    <string name="stop_resume_tertiary">Lascia così</string>
+    <string name="stop_resume_home_title">Abbiamo rimesso la vecchia schermata Home</string>
+    <string name="stop_resume_home_body">Per sicurezza abbiamo rimesso la vecchia schermata Home. Riproviamo il cambio?</string>
+    <string name="stop_resume_home_primary">Riprova il cambio</string>
+    <string name="stop_resume_home_secondary">Lascia così</string>
+    <string name="stop_resume_change_title">Eravamo a metà di una modifica su {tv}</string>
+    <string name="stop_resume_change_body">Si è fermata prima di finire. Continuiamo con il resto, oppure annulliamo quello che abbiamo fatto?</string>
+    <string name="stop_reconnect_home_body">Ricollegati alla TV per rimettere la vecchia schermata Home. Lo faremo appena {tv} risponde.</string>
+
+    <!-- Arresto: installazione fallita (UX 4.14) -->
+    <string name="stop_install_failed_title">Non è stato possibile installare la nuova schermata Home</string>
+    <string name="stop_install_failed_body">Alla TV manca spazio: {free, plural, other {# MB}} liberi, {needed, plural, other {# MB}} necessari. Abbiamo svuotato le cache e riprovato. Ancora niente. La pulizia è fatta; prova la schermata Home più tardi da Gestione, dopo aver liberato spazio in Impostazioni > Archiviazione.</string>
+    <string name="stop_install_failed_generic_body">La TV non ha accettato la nuova schermata Home. La pulizia è fatta; puoi riprovare la schermata Home più tardi da Gestione.</string>
+    <string name="stop_install_failed_primary">OK</string>
+    <string name="stop_install_failed_secondary">Mostra i dettagli</string>
+
+    <!-- Arresto: la TV non è tornata (UX 4.8) -->
+    <string name="stop_not_back_title">La TV non è tornata</string>
+    <string name="stop_not_back_body">Se la TV è bloccata sul logo: tieni premuto per 10 secondi il tasto di accensione sulla TV stessa (non sul telecomando), poi riaccendila. Se mostra una schermata che dice \"Impossibile caricare il sistema Android\", scegli Riprova. Non scegliere il ripristino di fabbrica; non serve.</string>
+    <string name="stop_not_back_auto">Appena la TV torna sul Wi-Fi ci ricolleghiamo e rimettiamo da soli la vecchia schermata Home, così puoi decidere con calma cosa fare.</string>
+    <string name="stop_not_back_primary">È di nuovo accesa</string>
+    <string name="stop_not_back_secondary">Aiutami</string>
+
+    <!-- S5 Fatto -->
+    <string name="done_title">La tua TV è pronta</string>
+    <string name="done_title_nothing">Non è stato cambiato nulla</string>
+    <string name="done_body_nothing">Non c\'era più niente da disattivare, quindi la TV è com\'era.</string>
+    <string name="done_body_nothing_kept">Tutto quello che abbiamo provato a disattivare è rimasto attivo, quindi la TV è com\'era.</string>
+    <string name="done_body_nothing_stopped">La configurazione si è fermata prima di cambiare qualcosa, quindi la TV è com\'era.</string>
+    <string name="done_body_nothing_unknown">Non eravamo sicuri di nulla su questa TV, quindi è com\'era. Aiutaci ad aggiungere questa TV da Gestione, e una versione successiva potrà fare di più.</string>
+    <string name="done_hero_cd">Una schermata Home pulita con un segno di spunta di vetro</string>
+    <string name="done_body">{count, plural, =0 {Nuova schermata Home attiva. Si può rimettere tutto a posto.} one {# elemento disattivato. Nuova schermata Home attiva. Si può rimettere tutto a posto.} other {# elementi disattivati. Nuova schermata Home attiva. Si può rimettere tutto a posto.}}</string>
+    <string name="done_body_no_home">{count, plural, one {# elemento disattivato. Si può rimettere tutto a posto.} other {# elementi disattivati. Si può rimettere tutto a posto.}}</string>
+    <string name="done_body_partial">{total, plural, other {{done} di # disattivati; la schermata Home non è cambiata. Si può rimettere tutto a posto.}}</string>
+    <string name="done_body_partial_home_on">{total, plural, other {{done} di # disattivati. Nuova schermata Home attiva. Si può rimettere tutto a posto.}}</string>
+    <string name="done_restore_saved">Punto di ripristino salvato su questo telefono ({date})</string>
+    <string name="done_debug_note">Il debug sulla TV si spegne quando tocchi Fine</string>
+    <string name="done_skipped">{name} non si è disattivato; è innocuo.</string>
+    <!-- RF-LAUNCHER-250 F1 (testo del proprietario): una disattivazione rifiutata dalla TV perché l'app gestisce gli ingressi della TV, in Fatto e in Gestione -->
+    <string name="kept_tv_input">{name}. Tenuto: gestisce gli ingressi HDMI e il sintonizzatore della TV.</string>
+    <string name="done_skipped_many">{count, plural, one {# elemento non si è disattivato; è innocuo.} other {# elementi non si sono disattivati; sono innocui.}}</string>
+    <string name="done_mibox_usb">La tua porta USB è di nuovo alimentata.</string>
+    <string name="done_add_card_title">Aggiungi una scheda alla schermata Home</string>
+    <!-- Facoltativo, mai un passaggio della configurazione: la nuova schermata Home parte con le schede dei moduli disattivate (RFC-CARDS-1) -->
+    <string name="done_add_card_body">Facoltativo. Puoi aggiungere schede più tardi in Gestione.</string>
+    <string name="done_note_title">Salva una nota di ripristino per la famiglia</string>
+    <string name="done_finish">Fine</string>
+    <string name="done_finishing">Spengo il debug...</string>
+    <string name="done_finished">Spengo il debug... fatto.</string>
+
+    <!-- Scheda e flusso di riavvio S5 (D24, UX 4.8) -->
+    <string name="restart_card_title">Riavvia la TV per controllare che tutto resti</string>
+    <string name="restart_card_recommended">2 minuti, consigliato</string>
+    <string name="restart_card_optional">Facoltativo</string>
+    <string name="restart_button">Riavvia</string>
+    <string name="restart_getting_ready">{seconds, plural, other {Preparazione... # s}}</string>
+    <string name="restart_intro">Riavvio della TV. Di solito ci vuole circa un minuto. Stiamo controllando.</string>
+    <string name="restart_progress_off">TV spenta...</string>
+    <string name="restart_progress_starting">Avvio in corso...</string>
+    <string name="restart_progress_found">Trovata alle {time}...</string>
+    <string name="restart_progress_home">La schermata Home è quella nuova.</string>
+    <string name="restart_progress_good">Tutto a posto.</string>
+    <string name="restart_came_back">{count, plural, one {# elemento si è riattivato dopo il riavvio; disattivato di nuovo.} other {# elementi si sono riattivati dopo il riavvio; disattivati di nuovo.}}</string>
+    <string name="restart_slow">Ci vuole più del solito. Alcune TV sono lente a ricollegarsi al Wi-Fi. Se la TV mostra solo il logo, aspetta altri due minuti.</string>
+    <string name="restart_back_safe">La TV è tornata. Per sicurezza abbiamo ripristinato la vecchia schermata Home. Vuoi riprovare quella nuova con la procedura guidata disattivata?</string>
+    <string name="restart_back_try">Riprova con la procedura disattivata</string>
+    <string name="restart_back_leave">Lascia così</string>
+
+
+    <!-- Fermarsi e annullare chiedono prima (Confirmations): una domanda, una frase calma, il verbo e una via d'uscita -->
+    <string name="confirm_stop_title">Fermarsi adesso?</string>
+    <string name="confirm_stop_body">Ci fermiamo qui e rimettiamo a posto ciò che abbiamo cambiato finora. La TV resta al sicuro.</string>
+    <string name="confirm_stop_button">Ferma e annulla</string>
+    <string name="confirm_keep_going">Continua</string>
+    <string name="confirm_stop_here_title">Fermarsi qui?</string>
+    <string name="confirm_stop_here_body">Teniamo quello che è già fatto e non cambiamo altro. La TV resta al sicuro.</string>
+    <string name="confirm_stop_here_button">Fermati qui</string>
+    <string name="confirm_undo_title">Annullare le modifiche sulla TV?</string>
+    <string name="confirm_undo_body">Rimettiamo a posto tutto quello che ha fatto questa modifica, così la TV torna com\'era prima. Non viene cancellato nulla.</string>
+    <string name="confirm_undo_button">Annulla le modifiche</string>
+    <!-- Versione di prova: la scheda prima del piano quando l'elenco di questa TV è un candidato (fatto da rapporti, non ancora provato). -->
+    <string name="candidate_overline">Versione di prova</string>
+    <string name="candidate_title">L\'elenco di questa TV è nuovo</string>
+    <string name="candidate_body">Abbiamo preparato un elenco per questa TV da rapporti dello stesso modello, ma nessuno l\'ha ancora provato. Quello che disattiva è elencato nel piano come al solito, e puoi rimettere tutto a posto da Punto di ripristino.</string>
+    <string name="candidate_ask_issue">Se lo provi, raccontaci nella segnalazione {issue} come è andata dopo qualche giorno:</string>
+    <string name="candidate_ask">Se lo provi, raccontaci nella tua segnalazione come è andata dopo qualche giorno:</string>
+    <string name="candidate_check_wifi">Wi-Fi dopo un riavvio</string>
+    <string name="candidate_check_remote">Ogni tasto del telecomando, anche Ingresso e voce</string>
+    <string name="candidate_check_hdmi">Ogni ingresso HDMI</string>
+    <string name="candidate_check_live_tv">TV in diretta</string>
+    <string name="candidate_check_casting">Trasmissione da un telefono</string>
+    <string name="candidate_try">Prova l\'elenco di prova</string>
+    <string name="candidate_careful">Resta prudente, come nella 0.3.4</string>
+    <string name="candidate_careful_note">Prudente vuol dire solo ciò di cui siamo sicuri per le TV di questa marca, come nella versione 0.3.4.</string>
+</resources>
