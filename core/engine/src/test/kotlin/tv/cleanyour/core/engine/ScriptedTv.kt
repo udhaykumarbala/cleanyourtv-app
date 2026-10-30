@@ -28,6 +28,9 @@ import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.SnapshotReason
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.ops.ThemeProviderLines
+import tv.cleanyour.core.probe.InstalledApk
+import tv.cleanyour.core.probe.InstalledApkReader
+import tv.cleanyour.core.probe.ProbeException
 import tv.cleanyour.core.probe.ProbeStage
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.session.BootOutcome
@@ -312,11 +315,13 @@ class ScriptedTv(initial: Snapshot = Samples.miTvSnapshot()) : TvSession {
 }
 
 // A prober over the scripted TV's model (W4's parsers are not needed to test the engine).
-class ScriptedProber(private val tv: ScriptedTv) : Prober {
+class ScriptedProber(private val tv: ScriptedTv) : Prober, InstalledApkReader {
     val calls = mutableListOf<String>()
     var screenshotFails = false
     var screenshotOkCount = Int.MAX_VALUE   // after this many successes, screenshots fail
     var installedShaOverride: Sha256? = null  // what the D40 hash of an installed APK reads, when set
+    var installedShaUnreadable = false        // the D40 hash reads nothing (RFC-INSTALL-1)
+    var installedApkState: InstalledApk? = null   // what the second read says; null: it throws a ProbeException
     private var screenshots = 0
     override suspend fun facts(session: TvSession): DeviceFacts = tv.facts
     override suspend fun snapshot(session: TvSession, reason: SnapshotReason, onStage: (ProbeStage) -> Unit): Snapshot {
@@ -327,11 +332,15 @@ class ScriptedProber(private val tv: ScriptedTv) : Prober {
     override suspend fun homeFocus(session: TvSession): Component? { calls += "homeFocus"; tv.exec(ShellLine0.focus, ExecSpec.Default); return tv.focus }
     override suspend fun screenshot(session: TvSession): ByteArray? { calls += "screenshot"; screenshots++; return if (screenshotFails || screenshots > screenshotOkCount) null else tv.screenshot }
     override suspend fun fileSha256(session: TvSession, path: RemotePath): Sha256? = tv.files[path.absolute]?.let { sha256Of(it) }
-    override suspend fun installedSha256(session: TvSession, pkg: PackageName): Sha256? { calls += "installedSha256 ${pkg.value}"; installedShaOverride?.let { return it }; return tv.installed[pkg] ?: tv.packages[pkg]?.let { Sha256("9".repeat(64)) } }
+    override suspend fun installedSha256(session: TvSession, pkg: PackageName): Sha256? { calls += "installedSha256 ${pkg.value}"; if (installedShaUnreadable) return null; installedShaOverride?.let { return it }; return tv.installed[pkg] ?: tv.packages[pkg]?.let { Sha256("9".repeat(64)) } }
     override suspend fun freeDataMb(session: TvSession): Int = 900
     override suspend fun installRefusal(session: TvSession, noopApk: BlobRef): Boolean = false
     override suspend fun watchdogAlive(session: TvSession, token: RunToken): Boolean = token.value in tv.watchdogs
     override suspend fun bootId(session: TvSession): String = "boot-1"
+    override suspend fun installedApk(session: TvSession, pkg: PackageName): InstalledApk {
+        calls += "installedApk ${pkg.value}"
+        return installedApkState ?: throw ProbeException(ProbeStage.LAUNCHER, "the script stopped before users")
+    }
 }
 
 // The probe's own fixed lines, so the scripted session logs them like any other command.
