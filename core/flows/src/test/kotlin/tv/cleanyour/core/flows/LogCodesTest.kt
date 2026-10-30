@@ -65,12 +65,26 @@ class LogCodesTest {
             LogCodes.withDetail(ProbeException(ProbeStage.FACTS, "getprop has no ro.product.manufacturer")))
         // The scrubber masks any six-digit number as a code, as it does in every TV text.
         assertEquals("probe_failed(packages): output over [code] bytes", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "output over 524288 bytes")))
-        assertEquals("probe_failed(packages): exit 1", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "exit 1: denied for 192.168.1.20")))
+        assertEquals("probe_failed(packages): exit 1: other", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "exit 1: denied for 192.168.1.20")))
         assertEquals("probe_failed(packages): unexpected line", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "unexpected line: serial 0123456789ABCDEF")))
         val long = LogCodes.probeDetail(ProbeException(ProbeStage.FACTS, "the script stopped before " + "gms and ".repeat(40)))!!
         assertEquals(LogCodes.PROBE_DETAIL_MAX, long.length)
         assertEquals("nonzero_exit(1)", LogCodes.withDetail(AdbException(AdbError.NonZeroExit(1, "x"))))
         assertEquals("unexpected", LogCodes.withDetail(IllegalStateException("192.168.1.20")))
+    }
+
+    // 0.4.8 (issue #1543, beta4: "pm list packages -f" exit 255 five times): a command's exit names the kind of the TV's
+    // answer in fixed words, never the answer (no address, serial or package name).
+    @Test fun aProbeExitNamesTheKindOfTheTvsAnswer() {
+        fun line(stderr: String) = LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "exit 255: $stderr"))
+        assertEquals("probe_failed(packages): exit 255: Broken pipe", line("Failure calling service package: Broken pipe (32)"))
+        assertEquals("probe_failed(packages): exit 255: can't find service", line("cmd: Can't find service: package"))
+        assertEquals("probe_failed(packages): exit 255: SecurityException", line("java.lang.SecurityException: Shell does not have permission for user 0"))
+        assertEquals("probe_failed(packages): exit 255: DeadObjectException", line("android.os.DeadObjectException at 192.168.1.20"))
+        assertEquals("probe_failed(packages): exit 255: not found", line("/system/bin/sh: pm: not found"))
+        assertEquals("probe_failed(packages): exit 255: other", line("Error: serial 0123456789ABCDEF busy at 192.168.1.20"))
+        assertEquals("probe_failed(packages): exit 255", line(""))
+        assertEquals("probe_failed(packages): exit 255", LogCodes.withDetail(ProbeException(ProbeStage.PACKAGES, "exit 255")))
     }
 
     @Test fun opsAreNamedByKindAndTarget() {

@@ -53,10 +53,32 @@ object LogCodes {
     // ro.product.model", "output over 524288 bytes", "the script stopped before gms"). Where it goes
     // on to quote the TV after a colon (stderr, an odd line), only the fixed part before it is kept.
     // Cleaned like any TV text and cut to PROBE_DETAIL_MAX; null for any other error.
+    // 0.4.8 (issue #1543, beta4: "pm list packages -f" exit 255 five times, and the log said only "exit 255"): a
+    // command's exit ("exit N: <stderr>", AdbProber.check) gets the kind of the TV's answer in fixed words
+    // (stderrKind), never the answer itself.
     fun probeDetail(t: Throwable): String? {
         val detail = (t as? ProbeException)?.detail ?: return null
-        return clean(detail.substringBefore(": "), PROBE_DETAIL_MAX).takeIf { it.isNotEmpty() }
+        val fixed = detail.substringBefore(": ")
+        val kind = if (EXIT.matches(fixed) && ": " in detail) stderrKind(detail.substringAfter(": ")) else null
+        return clean(fixed + (kind?.let { ": $it" } ?: ""), PROBE_DETAIL_MAX).takeIf { it.isNotEmpty() }
     }
+
+    // The kind of a command's stderr in fixed words; "other" for anything else, null when it said nothing. The
+    // Android words most seen when a shell command fails on a TV; the TV's own text (addresses, serials, package
+    // names) never reaches a log.
+    fun stderrKind(stderr: String): String? {
+        if (stderr.isBlank()) return null
+        return STDERR_KINDS.firstOrNull { it.second.containsMatchIn(stderr) }?.first ?: "other"
+    }
+
+    private val EXIT = Regex("exit -?\\d{1,4}")
+    private val STDERR_KINDS = listOf(
+        "Broken pipe" to Regex("(?i)broken pipe"),
+        "can't find service" to Regex("(?i)can.?t find service"),
+        "SecurityException" to Regex("SecurityException"),
+        "DeadObjectException" to Regex("DeadObjectException"),
+        "not found" to Regex("(?i)not found"),
+    )
 
     // of(t), then a probe failure's detail after a colon.
     fun withDetail(t: Throwable): String = of(t) + (probeDetail(t)?.let { ": $it" } ?: "")

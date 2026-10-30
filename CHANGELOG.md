@@ -56,6 +56,9 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   no longer left out because Android keeps a stand-in home screen in it.
 - The debugging step's search for a TV that moved no longer skips a TV it saw earlier while
   debugging was off: it checks that TV's port again.
+- When reading the TV fails because a command on it fails, the log (and so a problem report) now
+  says what kind of answer the TV gave, in fixed words ("Broken pipe", "can't find service",
+  "SecurityException", "not found" or "other"), never the TV's own text (#1543).
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
