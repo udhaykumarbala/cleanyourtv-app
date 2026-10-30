@@ -22,6 +22,8 @@ import tv.cleanyour.core.planner.PlanResult
 import tv.cleanyour.core.planner.Planner
 import tv.cleanyour.core.probe.AccessibilityNow
 import tv.cleanyour.core.probe.AccessibilityRead
+import tv.cleanyour.core.probe.LaunchableApps
+import tv.cleanyour.core.probe.ProbeException
 import tv.cleanyour.core.probe.ProbeStage
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.session.TvSession
@@ -49,7 +51,9 @@ class FakeProber(
     @Volatile var bootIdValue: String = "fake-boot-1",
     // 0.4.8: the helper's two settings now (AccessibilityRead); null: those of snapshotFor's MANUAL read.
     @Volatile var accessibilityNow: AccessibilityNow? = null,
-) : Prober, AccessibilityRead {
+    // 0.4.8: the apps a launcher would show (LaunchableApps); null: the TV cannot say (ProbeException).
+    @Volatile var launchableApps: Set<PackageName>? = null,
+) : Prober, AccessibilityRead, LaunchableApps {
     val fileHashes = ConcurrentHashMap<String, Sha256>()
     val installedHashes = ConcurrentHashMap<PackageName, Sha256>()
     val liveWatchdogs: MutableSet<RunToken> = ConcurrentHashMap.newKeySet()
@@ -70,6 +74,10 @@ class FakeProber(
     override suspend fun installRefusal(session: TvSession, noopApk: BlobRef): Boolean { calls += "installRefusal"; return refusesInstall }
     override suspend fun watchdogAlive(session: TvSession, token: RunToken): Boolean { calls += "watchdogAlive"; return token in liveWatchdogs }
     override suspend fun bootId(session: TvSession): String { calls += "bootId"; return bootIdValue }
+    override suspend fun launchable(session: TvSession): Set<PackageName> {
+        calls += "launchable"
+        return launchableApps ?: throw ProbeException(ProbeStage.LAUNCHER, "no answer")
+    }
     override suspend fun accessibility(session: TvSession): AccessibilityNow {
         calls += "accessibility"
         return accessibilityNow ?: snapshotFor(SnapshotReason.MANUAL).settings.let {

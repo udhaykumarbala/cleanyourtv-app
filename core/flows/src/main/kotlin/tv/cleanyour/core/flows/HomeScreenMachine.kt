@@ -16,6 +16,7 @@ import tv.cleanyour.core.planner.HomeHelper
 import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.TclGoogleTv
+import tv.cleanyour.core.probe.LaunchableApps
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.Looks
 import tv.cleanyour.core.spec.ProfileResolution
@@ -307,7 +308,12 @@ class HomeScreenMachine(
         val lookId = choice?.lookOn(today)
         // The stored snapshot cannot say which apps are launchable, so the rule without that
         // answer applies: never a home screen, a provider or a system-only package.
-        val apps = (snap?.let { DockCandidates.of(it, null, profile, d.facts) } ?: emptySet())
+        // 0.4.8 (issue #2742): that rule hid launchable system apps (the Play Store, a media player, the cast app) and
+        // offered user apps with nothing to open (our TV curtain, token services). With the TV connected, the apps a
+        // launcher would show are asked, as Setup's dock sheet does; the rule stays for a TV that is not connected or
+        // could not say.
+        val launchable = d.access.live(tvId)?.let { s -> (d.prober as? LaunchableApps)?.let { q -> attempt { q.launchable(s) }.getOrNull() } }
+        val apps = (snap?.let { DockCandidates.of(it, launchable, profile, d.facts) } ?: emptySet())
             .map { AppChoice(it, d.nameOf(it, packages[it]?.label)) }.sortedBy { it.name.lowercase() }
         // The dock as the TV shows it: an app no longer there (gone, switched off) is skipped and the
         // later ones move up a slot, as the launcher does. 0.4.0: at the saved apps in a row, else the

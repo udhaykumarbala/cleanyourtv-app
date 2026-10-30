@@ -50,6 +50,10 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 - On a TV the app knows by its brand only (a brand set, or no list), the new home screen's dock now
   has the TV's Live TV app again when you did not pick the dock yourself (#1902). TVs with their own
   list are unchanged.
+- Manage's dock list offers the apps the TV's home screen would show (#2742). It hid apps such as
+  the Play Store, a media player or the cast app, and offered apps with nothing to open, such as the
+  app's own TV curtain. With the TV connected it asks the TV, as Setup does; the TV's Settings app is
+  no longer left out because Android keeps a stand-in home screen in it.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
