@@ -57,6 +57,9 @@ class PlanRunner(
     suspend fun freshSnapshot(session: TvSession): Snapshot =
         prober.snapshot(session, SnapshotReason.MANUAL).also { snapshots.save(it) }
 
+    // A read of the TV that is not stored: a check, not a new base for plans (SessionEnd reads adb_enabled back).
+    suspend fun readSnapshot(session: TvSession): Snapshot = prober.snapshot(session, SnapshotReason.MANUAL)
+
     suspend fun plan(tv: Tv, request: PlanRequest, snapshot: Snapshot): PlanResult =
         planner.plan(request, snapshot, facts, ledger.changes(tv.id))
 

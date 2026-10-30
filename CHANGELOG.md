@@ -20,6 +20,10 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   with the same care as the saved one (on another network only the key the TV already allowed, so no
   Allow prompt on someone else's TV), and saves it once your TV answers there. A different TV at that
   address ends nothing; the step says the TV doesn't answer there.
+- After Finish switched debugging off, the TV's record could still say it was on, so the debugging
+  step did not say "It's off because we switched it off". When the TV's port still answers after the
+  switch, the app now asks the TV itself (the key it already allowed and the debugging setting) and
+  records what the TV says.
 
 ## 0.4.7 (2026-10-30)
 

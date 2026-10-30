@@ -206,6 +206,14 @@ It is saved in place of the saved addresses only once this TV answers there; a d
 it and the wait goes on. `ReachCheck.typed` is its row in "What the app sees"; the log says only that
 an address was typed, never which.
 
+0.4.8, the debugging state after Finish (the beta4 follow-up): `SessionEnd.switchOff` recorded "on"
+whenever port 5555 still answered after debug_off, and the Android emulator's own process listens on
+5555 whatever the TV's adbd does, so the record said "on" and the sheet never said why debugging is
+off. A port that stays open is now asked with `openKnown` (6 s) and an unstored read of adb_enabled
+(`PlanRunner.readSnapshot`, the snapshot's settings read): on when this TV answers with it not 0 or an
+adbd there refuses only the key, off when nothing answers as an adbd or it reads 0, unknown when the
+read fails or a different TV answers.
+
 ## RFC-INSTALL-1: the streamed install is for user 0, and an unreadable APK says why
 
 Twenty reports from 0.3.x to 0.4.7-beta4, all Google TVs on Android 11 and 12 (Sony BRAVIA VH2 and
