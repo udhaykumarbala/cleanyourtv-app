@@ -290,9 +290,12 @@ class TvAccess(
         }
     }
 
-    // RFC-RECONNECT-1: the TV at an address it was not saved at, or null. Each host is tried once per search, when it
-    // is found with port 5555 open or not yet probed; openKnown refuses a TV that has not allowed this phone (no
-    // dialog) and any other TV (WrongTv), so only this TV can answer.
+    // RFC-RECONNECT-1: the TV at an address it was not saved at, or null. Each host is tried once per search: probed
+    // unless it is found with port 5555 open; openKnown refuses a TV that has not allowed this phone (no dialog) and
+    // any other TV (WrongTv), so only this TV can answer.
+    // 0.4.8: a host found with port 5555 closed is probed too. The shared search (SharedDiscovery) hands a late
+    // collector each TV as it was last seen, so a TV seen while its debugging was off kept "closed" after it was
+    // switched back on, and this search skipped it, round after round.
     private suspend fun moved(tv: Tv, saved: Set<String>): Pair<Endpoint, TvSession>? {
         val tried = HashSet<String>()
         var hit: Pair<Endpoint, TvSession>? = null
@@ -300,7 +303,7 @@ class TvAccess(
         withTimeoutOrNull(searchMs) {
             discovery.discover().firstOrNull { e ->
                 val found = when (e) { is DiscoveryEvent.Found -> e.tv; is DiscoveryEvent.Updated -> e.tv; else -> null }
-                if (found == null || found.host in saved || found.port5555Open == false || found.host in tried) return@firstOrNull false
+                if (found == null || found.host in saved || found.host in tried) return@firstOrNull false
                 tried += found.host
                 if (found.port5555Open != true && !discovery.probe5555(found.host)) return@firstOrNull false
                 val endpoint = Endpoint.PlainTcp(found.host)

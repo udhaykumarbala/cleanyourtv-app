@@ -46,6 +46,23 @@ class MovedTvTest {
         assertEquals(Reach.Idle, h.access.reach.value)
     }
 
+    // 0.4.8: the shared search hands the reconnect search each TV as it was last seen, so a TV seen while its debugging
+    // was off still says port 5555 closed after it was switched on. Such a host is probed, once per round, not skipped.
+    @Test fun aTvLastSeenWithItsPortClosedIsProbedAgain() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = Samples.tv()
+        h.tvs.upsert(tv)
+        h.sessions.register(newHost, h.session)
+        h.discovery.open5555[newHost] = true             // debugging is on again now
+        h.discovery.emit(DiscoveryEvent.Found(found(newHost, open = false)))
+        var result: AccessResult? = null
+        backgroundScope.launch { result = h.access.session(tv.id) }
+        settle(2_100)
+        assertIs<AccessResult.Ok>(result)
+        assertEquals(listOf(Endpoint.PlainTcp(newHost)), h.tvs.tvs.value.single().endpoints)
+        assertTrue(h.sessions.opens.none { it.host == newHost }, "only the known-TV handshake")
+    }
+
     @Test fun anotherTvOnTheNetworkIsNeverConnected() = runTest(timeout = 30.seconds) {
         val h = Harness()
         val tv = Samples.tv()

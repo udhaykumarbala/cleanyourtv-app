@@ -54,6 +54,8 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   the Play Store, a media player or the cast app, and offered apps with nothing to open, such as the
   app's own TV curtain. With the TV connected it asks the TV, as Setup does; the TV's Settings app is
   no longer left out because Android keeps a stand-in home screen in it.
+- The debugging step's search for a TV that moved no longer skips a TV it saw earlier while
+  debugging was off: it checks that TV's port again.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
