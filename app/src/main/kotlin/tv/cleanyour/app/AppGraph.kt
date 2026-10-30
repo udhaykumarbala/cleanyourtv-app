@@ -15,6 +15,7 @@ import tv.cleanyour.android.platform.FileBlobStore
 import tv.cleanyour.android.platform.FileStore
 import tv.cleanyour.android.platform.KeystoreAdbSigner
 import tv.cleanyour.android.platform.NsdDiscovery
+import tv.cleanyour.core.flows.SharedDiscovery
 import tv.cleanyour.android.platform.PackageManagerApkInspector
 import tv.cleanyour.android.platform.PlainSocketFactory
 import tv.cleanyour.core.backup.DefaultTvRestoreFiles
@@ -103,7 +104,8 @@ class AppGraph(context: Context, val appVersion: String = versionOf(context), va
     val dataDir = File(app.filesDir, "v1")               // one root: tv.json and drafts, journal, plans, snapshots (ARCHITECTURE 5.1)
     val documents = FileStore(dataDir)
     val tvs = DocumentTvRepository(documents)
-    val discovery = NsdDiscovery(app)
+    // 0.4.8: one NSD search shared by every screen that looks for TVs (SharedDiscovery).
+    val discovery = SharedDiscovery(NsdDiscovery(app), workScope)
     val credentialGate = AndroidCredentialGate(app, clock)
     val copy = ResourceFlowCopy(app)
     val foreground = AppForeground(false)

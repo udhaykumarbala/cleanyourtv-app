@@ -24,6 +24,8 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   step did not say "It's off because we switched it off". When the TV's port still answers after the
   switch, the app now asks the TV itself (the key it already allowed and the debugging setting) and
   records what the TV says.
+- The debugging step's search for a TV that moved and "Copy connection details" (or Setup's search)
+  no longer run two network searches side by side: the app runs one and shares it.
 
 ## 0.4.7 (2026-10-30)
 

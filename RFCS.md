@@ -214,6 +214,13 @@ off. A port that stays open is now asked with `openKnown` (6 s) and an unstored 
 adbd there refuses only the key, off when nothing answers as an adbd or it reads 0, unknown when the
 read fails or a different TV answers.
 
+0.4.8, one network search (the beta4 follow-up): every `discover()` of `NsdDiscovery` starts its own
+NSD listeners and resolve queue, so the step's search, "Copy connection details" and Setup's search
+ran side by side, resolving and probing everything twice (older Android refuses a second resolve
+while one runs). `SharedDiscovery` (`:core:flows`, around the frozen `Discovery`, wired in AppGraph)
+runs one search while anything collects and stops it with the last collector; a late collector first
+gets every TV found so far as `Found`, then the changes.
+
 ## RFC-INSTALL-1: the streamed install is for user 0, and an unreadable APK says why
 
 Twenty reports from 0.3.x to 0.4.7-beta4, all Google TVs on Android 11 and 12 (Sony BRAVIA VH2 and
