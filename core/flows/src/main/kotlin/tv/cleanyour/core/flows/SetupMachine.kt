@@ -935,11 +935,18 @@ class SetupMachine(
         // row (DockLayers). The draft keeps its whole list (up to 24 apps), so fewer apps in a row
         // never drops the rest of the order.
         val choice = lookChoice(draft)
+        // 0.4.7: the TV's Live TV app (LiveTvKeys, as Manage's LookCarry), not one switched off here.
+        val liveTv = LiveTvKeys.pick(profile(), snap.packages, draft.extraOff)
+        // 0.4.8 (issue #1902, a Vestel set on Android 14 with a brand set): the dock and the look took the Live TV app
+        // from the profile only, which a brand set or an unlisted TV has not, so the default dock had no Live TV tile
+        // though LiveTvKeys found the app. Without a profile they take the one LiveTvKeys found; a profiled TV's stay
+        // its profile's.
+        val live = profile().let { if (it != null) it.liveTv else liveTv }
         val tvLook = LookTv(null, deviceFacts?.ramMb?.takeIf { it > 0 } ?: snap.facts.ramMb.takeIf { it > 0 },
-            snap.hdmi.isNotEmpty() || profile()?.liveTv?.let { it in snap.packages } == true)
+            snap.hdmi.isNotEmpty() || live?.let { it in snap.packages } == true)
         val columns = mutableExtras.value.look?.columns ?: drafts.partsOf(choice, tvLook, autoPick = false).columns
         val theme = mutableExtras.value.look?.legacyThemeId?.let { drafts.theme(it) } ?: choice?.takeUnless { it.isNew }?.lookOn(deps.clock.today())?.let { drafts.theme(it) }
-        val dock = DockLayers.trim(draft.dock ?: deps.dock.pick(profile(), snap.packages.keys, snap.hdmi.isNotEmpty(), profile()?.liveTv, deps.locale()), columns)
+        val dock = DockLayers.trim(draft.dock ?: deps.dock.pick(profile(), snap.packages.keys, snap.hdmi.isNotEmpty(), live, deps.locale()), columns)
         val kept = draft.dock?.let(DockLayers::keep) ?: dock
         val wifi = wizardWifi(s, snap)
         val groups = when (res) {
@@ -987,8 +994,6 @@ class SetupMachine(
         lookContext = LookContext(apps = lookApps, others = candidates.filter { it.pkg !in kept }, mine = mine, new = new, tv = tvLook, cards = cards,
             keyNames = keyNames, dockChosen = draft.dock != null)
         val sheet = mutableExtras.value.look?.let { drafts.refresh(it, lookContext) } ?: drafts.open(choice, lookContext)
-        // 0.4.7: the TV's Live TV app (LiveTvKeys, as Manage's LookCarry), not one switched off here.
-        val liveTv = LiveTvKeys.pick(profile(), snap.packages, draft.extraOff)
         val look = if (!possible && !helper) null else attempt { val (doc, w) = drafts.docOf(sheet, dock, cards, lookContext)
             Look.encode(deps.encoder, deps.blobs, LiveTvKeys.apply(if (helper) HomeHelperKeys.with(doc, helperStock!!.pkg) else doc, liveTv), w) }
             .onFailure { deps.log.line("setup: the look could not be encoded, planned without it") }.getOrNull()

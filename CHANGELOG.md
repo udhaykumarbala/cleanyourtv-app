@@ -47,6 +47,9 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   listed with accessibility on is held, not listed is failed, and listed with accessibility still
   off waits for a later read (Android switches it on about half a minute after the TV starts). The
   confirmation says "Checked: boot_id, Home and the helper's accessibility settings".
+- On a TV the app knows by its brand only (a brand set, or no list), the new home screen's dock now
+  has the TV's Live TV app again when you did not pick the dock yourself (#1902). TVs with their own
+  list are unchanged.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
