@@ -5,7 +5,7 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 ## 0.4.8 (unreleased)
 
 ### The new home screen installs again on Google TVs
-- On Google TVs with Android 11 and 12 (Sony BRAVIA, TCL, Xiaomi, Hisense and others), the home
+- On Google TVs with Android 11 and 12 (Sony BRAVIA, TCL, Xiaomi, Hisense, the TiVo Stream 4K), the home
   screen switch could stop at "Install com.gathin.tvhome" with "got no readable apk", run after run
   (#2743, #1918, #1510 and 17 more). The app was on the TV but not installed for the TV's main
   user, which can happen after it was removed for that user while another user still had it. The app
@@ -26,6 +26,10 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   records what the TV says.
 - The debugging step's search for a TV that moved and "Copy connection details" (or Setup's search)
   no longer run two network searches side by side: the app runs one and shares it.
+
+### Test builds only (not in this release)
+- 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
+  lists, and the new home screen with the setup wizard left on for every brand.
 
 ## 0.4.7 (2026-10-30)
 
