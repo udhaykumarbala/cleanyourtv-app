@@ -102,6 +102,39 @@ class HomeHelperFlowsTest {
         assertTrue(PlanRequest.HomeHelperOff in h.planner.requests, h.planner.requests.toString())
     }
 
+    // 0.4.8 (issue #2825, TCL G06 beta3: HOME_HELPER_OFF_PAUSED_STALE at step 0): Switch off plans from a fresh read
+    // of the TV. Its prior is the whole accessibility list, which had changed since the stored snapshot (restarts).
+    @Test fun switchOffPlansFromWhatTheTvHasNow() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = h.knownTv()
+        h.snapshots.save(Samples.miTvSnapshot().helper("$reader:$service", "1", redirectOverlay))
+        h.prober.snapshotFor = { Samples.miTvSnapshot(reason = it).helper(service, "1", redirectOverlay, at = Samples.NOW_MS + 20) }
+        val planned = mutableListOf<String?>()
+        val previous = h.planner.respond
+        h.planner.respond = { r, snap -> if (r is PlanRequest.HomeHelperOff) planned += snap.settings[SettingKey.ENABLED_ACCESSIBILITY]; previous(r, snap) }
+        val m = HomeScreenMachine(h.manageDeps(homeHelper = true), backgroundScope, tv.id).also { settle() }
+        m.dispatch(HomeScreenIntent.HelperOff); settle(500)
+        assertEquals(listOf<String?>(service), planned)
+    }
+
+    // The same for Undo everything, preview and run: taking our helper out has the list as its prior.
+    @Test fun undoEverythingPlansFromWhatTheTvHasNow() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = h.knownTv()
+        h.snapshots.save(Samples.miTvSnapshot().helper("$reader:$service", "1", redirectOverlay))
+        h.prober.snapshotFor = { Samples.miTvSnapshot(reason = it).helper(service, "1", redirectOverlay, at = Samples.NOW_MS + 20) }
+        val planned = mutableListOf<String?>()
+        h.planner.respond = { r, snap ->
+            if (r is PlanRequest.UndoEverything) planned += snap.settings[SettingKey.ENABLED_ACCESSIBILITY]
+            PlanResult.Ok(h.plan(listOf(Op.AccessibilityRemove(service, HelperLines.SERVICE)), kind = PlanKind.UNDO_EVERYTHING, id = "01FAKEUNDO0000000000000001"))
+        }
+        val m = RestorePointMachine(h.manageDeps(homeHelper = true), backgroundScope, tv.id).also { settle() }
+        m.dispatch(RestorePointIntent.PreviewUndo); settle()
+        m.dispatch(RestorePointIntent.Confirm); settle()
+        m.dispatch(RestorePointIntent.PutEverythingBack); settle()
+        assertEquals(listOf<String?>(service, service), planned)
+    }
+
     // 0.4.7: with the helper chosen the plan is a redirect, so no screen says the TV keeps its own home screen;
     // a helper that did not hold is this run's news, as for the switch.
     @Test fun theHelperIsNotAKeptHomeScreen() {

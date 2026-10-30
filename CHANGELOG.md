@@ -31,6 +31,10 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 - "Check for updates" in Settings works again. It said "Couldn't check for updates" on every phone and
   every version (#818, #2486): the app read GitHub's answer in a way Android does not allow on the
   screen's own thread. It now reads it in the background.
+- Undo everything reads the TV first and plans from what it has now, so a change on the TV since the
+  app last looked no longer stops it as "the TV changed". In test builds, "Switch off" of the Home
+  button helper stopped that way at its first step after the TV had restarted (#2825); it reads the
+  TV first too.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate

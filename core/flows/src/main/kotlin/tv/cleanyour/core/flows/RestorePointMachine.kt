@@ -98,9 +98,12 @@ class RestorePointMachine(
 
     // The inverse is computed from the journals, never from "enable everything disabled", so things
     // the owner switched off before the app stay off (ARCHITECTURE 2.4).
+    // 0.4.8 (issue #2825): the preview and the run plan from a fresh read of the TV, as "Switch off" of the Home button
+    // helper does. Taking our helper out has the whole accessibility list as its prior, which a restart can change
+    // (and an app's state can change too); from a stored snapshot the run paused as stale at that step.
     private suspend fun preview(removeLauncher: Boolean) {
         val changes = d.ledger.changes(tvId)
-        val plan = writer.preview(tvId, PlanRequest.UndoEverything(changes, removeLauncher)) ?: return send(Phase(RestorePhase.Failed))
+        val plan = writer.preview(tvId, PlanRequest.UndoEverything(changes, removeLauncher), fresh = true) ?: return send(Phase(RestorePhase.Failed))
         val tv = d.tv(tvId)
         val profile = tv?.let { d.profileOf(it) }
         val stock = profile?.stockLaunchers?.firstOrNull()?.pkg
@@ -114,7 +117,7 @@ class RestorePointMachine(
 
     private suspend fun undoEverything(p: UndoPreview) {
         send(Phase(RestorePhase.Working("undo", 0, emptyList())))
-        val r = writer.write(tvId, PlanRequest.UndoEverything(d.ledger.changes(tvId), p.removeLauncher)) { b ->
+        val r = writer.write(tvId, PlanRequest.UndoEverything(d.ledger.changes(tvId), p.removeLauncher), fresh = true) { b ->
             if (b is Busy.Working) send(Phase(RestorePhase.Working("undo", b.percent, b.lines)))
         }
         when (r) {

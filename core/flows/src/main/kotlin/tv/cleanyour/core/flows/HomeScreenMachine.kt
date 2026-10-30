@@ -637,8 +637,11 @@ class HomeScreenMachine(
 
     // RFC-HELPER-1: "Switch off" of the Home button helper: our HomeKeyService out of the list, every
     // other service as it was (PLAN 4.4). Switching it on again is Setup's, with its consent.
+    // 0.4.8 (issue #2825): planned from a fresh read of the TV, as UpdateLauncher is. The removal's prior is the
+    // whole accessibility list, and the engine compares it with what the TV has now; a stored snapshot from before
+    // a restart or two had another list, so the run paused at step 0 (HOME_HELPER_OFF_PAUSED_STALE).
     private suspend fun helperOff() {
-        val r = writer.write(tvId, PlanRequest.HomeHelperOff) { send(BusyNow(it)) }
+        val r = writer.write(tvId, PlanRequest.HomeHelperOff, fresh = true) { send(BusyNow(it)) }
         send(BusyNow(null))
         if (r is WriteResult.Done) effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, "", false))
         else if (r !is WriteResult.GateCancelled && r !is WriteResult.NoTv && r !is WriteResult.Paused) effect(ManageEffect.Snackbar(SnackKind.FAILED, "", false))
