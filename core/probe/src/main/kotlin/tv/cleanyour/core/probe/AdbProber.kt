@@ -45,7 +45,7 @@ class AdbProber(
     private val clock: Clock,
     private val signed: Set<PackageName> = SIGNED_PACKAGES,
     private val known: Map<Sha256, Sha256> = emptyMap(),
-) : Prober, LaunchableApps, SavedWifiOwners, InstalledApkReader {
+) : Prober, LaunchableApps, SavedWifiOwners, InstalledApkReader, AccessibilityRead {
 
     private suspend fun run(
         session: TvSession, line: ShellLine, stage: ProbeStage, cap: Int, timeoutMs: Long = 30_000, retry: RetryClass = RetryClass.IDEMPOTENT_READ,
@@ -184,6 +184,13 @@ class AdbProber(
         val r = run(session, ProbeScripts.LAUNCHABLE, ProbeStage.LAUNCHER, 256 * 1024)
         val s = sections(ProbeStage.LAUNCHER, r.stdout, listOf("launcher"))
         return LaunchableParser.parse(s.getValue("").asSequence()) + LaunchableParser.parse(s.getValue("launcher").asSequence())
+    }
+
+    // The SETTINGS stage's script, of which only the secure table's two accessibility keys are kept.
+    override suspend fun accessibility(session: TvSession): AccessibilityNow {
+        val r = run(session, ProbeScripts.SETTINGS, ProbeStage.SETTINGS, 4 * 1024 * 1024)
+        val secure = SettingsListParser.parse(sections(ProbeStage.SETTINGS, r.stdout, listOf("global")).getValue("").asSequence())
+        return AccessibilityNow(secure[SettingKey.ACCESSIBILITY_ENABLED.key], secure[SettingKey.ENABLED_ACCESSIBILITY.key])
     }
 
     override suspend fun savedWifi(session: TvSession): SavedWifi {

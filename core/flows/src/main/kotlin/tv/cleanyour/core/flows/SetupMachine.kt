@@ -1376,18 +1376,21 @@ class SetupMachine(
 
     // 0.4.8 (Restarts): the TV's Home and its boot_id, on a TV this app switched (or gave the helper); the read counts a
     // held or a failed restart against the one before it. Nothing else is read, nothing is written to the TV.
+    // The helper's path reads its two accessibility settings too (Restarts.HelperNow, issues #2061, #1799): a helper not
+    // yet bound is left for a later read.
     private suspend fun countRestart(record: Tv, s: TvSession): RestartRead? {
         val restarts = deps.restarts ?: return null
         val latest = attempt { deps.snapshots.latest(record.id) }.getOrNull()
         val decision = attempt { deps.homeDecisions?.load(record.id) }.getOrNull()
         val path = HomePath.of(record, latest, decision) ?: return null
         val home = attempt { deps.prober.homeNow(s) }.getOrNull()?.takeIf { Restarts.settled(it) } ?: return null
+        val helper = if (path == HomePath.HELPER) Restarts.helperNow(deps.prober, s)?.takeIf { it != Restarts.HelperNow.NOT_YET } ?: return null else null
         val boot = attempt { deps.prober.bootId(s) }.getOrNull() ?: return null
         val build = deps.about?.countLine ?: "unknown"
-        val o = attempt { restarts.observe(record.id, boot, home, path, build, deps.clock.nowMs()) }.getOrNull() ?: return null
+        val o = attempt { restarts.observe(record.id, boot, home, path, build, deps.clock.nowMs(), helperOn = helper != Restarts.HelperNow.NOT_LISTED) }.getOrNull() ?: return null
         when (o.read) {
             RestartRead.HELD -> deps.log.line("setup: restart held (${path.word}), ${o.tally.held} held, ${o.tally.failed} failed")
-            RestartRead.FAILED -> deps.log.line("setup: restart failed (${path.word}): Home does not answer to the new home screen, ${o.tally.held} held, ${o.tally.failed} failed")
+            RestartRead.FAILED -> deps.log.line("setup: restart failed (${path.word}): ${Restarts.failedWhy(helper)}, ${o.tally.held} held, ${o.tally.failed} failed")
             else -> {}
         }
         mutableExtras.update { it.copy(restarts = o.tally) }

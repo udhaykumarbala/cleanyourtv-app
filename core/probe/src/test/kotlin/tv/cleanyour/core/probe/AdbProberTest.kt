@@ -166,6 +166,23 @@ class AdbProberTest {
         assertFailsWith<ProbeException> { prober.launchable(s) }   // the script stopped early: the caller falls back
     }
 
+    // 0.4.8 (issues #2061, #1799): the restart count's helper read, the SETTINGS stage's own script, one call.
+    @Test fun theHelpersTwoSettingsComeFromTheSecureTable() = runBlocking<Unit> {
+        val s = ProbeFixtures.miTvSession()
+        s.recording.on(ProbeScripts.SETTINGS.text, """
+            accessibility_enabled=1
+            enabled_accessibility_services=com.gathin.tvhome/com.gathin.tvhome.HomeKeyService
+            @@cyt@@ global
+            accessibility_enabled=0
+        """.trimIndent() + "\n")
+        assertEquals(AccessibilityNow("1", "com.gathin.tvhome/com.gathin.tvhome.HomeKeyService"), prober.accessibility(s))
+        assertEquals(listOf(ProbeScripts.SETTINGS.text), s.execLines)
+        s.recording.on(ProbeScripts.SETTINGS.text, "@@cyt@@ global\n")
+        assertEquals(AccessibilityNow(null, null), prober.accessibility(s))
+        s.recording.on(ProbeScripts.SETTINGS.text, "accessibility_enabled=1\n")
+        assertFailsWith<ProbeException> { prober.accessibility(s) }   // the script stopped early: nothing is counted
+    }
+
     @Test fun screenshotIsPulledCheckedAndCleanedUp() = runBlocking<Unit> {
         val s = ProbeFixtures.miTvSession()
         s.recording.on(ProbeScripts.SCREENSHOT.text, "")

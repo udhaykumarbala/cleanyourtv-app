@@ -42,6 +42,11 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   the way (a VPN, MIUI, Private DNS). It says debugging is off on the TV, that the app switches it
   off on purpose when setup ends, and how to switch it back on (#2084, #2211, #2430, #2502, #2529,
   #2823, #1915, #2274, #2673). Copy error and Report a problem stay.
+- Test builds: the restart count no longer counts a restart as held when the Home button helper is
+  off (#2061, #1799, #1650, #947). With Home it now reads the helper's two accessibility settings:
+  listed with accessibility on is held, not listed is failed, and listed with accessibility still
+  off waits for a later read (Android switches it on about half a minute after the TV starts). The
+  confirmation says "Checked: boot_id, Home and the helper's accessibility settings".
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate

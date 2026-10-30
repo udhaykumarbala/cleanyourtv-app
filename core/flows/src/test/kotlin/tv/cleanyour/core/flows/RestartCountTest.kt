@@ -21,6 +21,7 @@ import tv.cleanyour.core.model.RemoteDir
 import tv.cleanyour.core.model.RemotePath
 import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.planner.PlanKind
+import tv.cleanyour.core.probe.AccessibilityNow
 import tv.cleanyour.core.store.SnapshotCodec
 import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.PlanResult
@@ -45,6 +46,8 @@ class RestartCountTest {
     private val theirs = HomeResolution(stock, listOf(HomeClaimant(stock, 2), HomeClaimant(Launcher.home, 0)))
     private val launcher = LauncherState(1, Samples.zeroHash, null, null)
     private val build = "0.4.8 (full, test build)"
+    private val helperService = "com.gathin.tvhome/.HomeKeyService"
+    private val talkback = "com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService"
 
     @Test fun aHeldRestartIsCountedOnceAcrossTwoBoots() = runTest(timeout = 30.seconds) {
         val r = Restarts(MemoryDocumentStore())
@@ -177,12 +180,58 @@ class RestartCountTest {
             settings = mapOf(SettingKey.ENABLED_ACCESSIBILITY to "com.gathin.tvhome/.HomeKeyService", SettingKey.ACCESSIBILITY_ENABLED to "1"))
             .let { it.copy(contentHash = SnapshotCodec.hash(it)) })
         h.prober.home = theirs
+        h.prober.accessibilityNow = AccessibilityNow("1", helperService)
         val m = ManageMachine(h.manageDeps(homeHelper = true), backgroundScope, tv.id)
         settle()
         h.prober.bootIdValue = "boot-2"
         m.dispatch(ManageIntent.Select(tv.id)); settle()
         val r = assertNotNull(m.state.value.current?.restarts)
         assertEquals(listOf<Any?>(HomePath.HELPER, 1, 0), listOf(r.path, r.held, r.failed))
+        assertTrue("accessibility" in h.prober.calls)
+    }
+
+    // 0.4.8 (issues #2061, #1799, #1650, #947): Home alone counted the helper held while it was off. Its two settings
+    // are read with Home: listed with accessibility off is not counted yet (Android binds it about 30 s after a boot,
+    // #1622) and a later read in the same boot counts it; not listed is a failed restart.
+    private suspend fun kotlinx.coroutines.test.TestScope.helperTv(h: Harness): ManageMachine {
+        val tv = h.knownTv().copy(launcher = launcher)
+        h.tvs.upsert(tv)
+        h.snapshots.save(Samples.miTvSnapshot().copy(takenAtMs = Samples.NOW_MS + 1,
+            settings = mapOf(SettingKey.ENABLED_ACCESSIBILITY to helperService, SettingKey.ACCESSIBILITY_ENABLED to "1"))
+            .let { it.copy(contentHash = SnapshotCodec.hash(it)) })
+        h.prober.home = theirs
+        h.prober.accessibilityNow = AccessibilityNow("1", helperService)
+        return ManageMachine(h.manageDeps(homeHelper = true), backgroundScope, tv.id).also { settle() }
+    }
+
+    @Test fun aHelperListedButNotBoundYetIsCountedOnceItIsOn() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val m = helperTv(h)
+        val id = assertNotNull(m.state.value.current).id
+        h.prober.bootIdValue = "boot-2"
+        h.prober.accessibilityNow = AccessibilityNow("0", helperService)
+        m.dispatch(ManageIntent.Select(id)); settle()
+        assertEquals(0, Restarts(h.documents).load(id)?.counted, "not counted while accessibility is off")
+        h.prober.accessibilityNow = AccessibilityNow("1", "$talkback:$helperService")
+        m.dispatch(ManageIntent.Select(id)); settle()
+        val r = assertNotNull(m.state.value.current?.restarts)
+        assertEquals(listOf(1, 0), listOf(r.held, r.failed))
+    }
+
+    @Test fun aHelperNoLongerListedIsAFailedRestart() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val m = helperTv(h)
+        val id = assertNotNull(m.state.value.current).id
+        h.prober.bootIdValue = "boot-2"
+        h.prober.accessibilityNow = AccessibilityNow("1", talkback)
+        m.dispatch(ManageIntent.Select(id)); settle()
+        val r = assertNotNull(m.state.value.current?.restarts)
+        assertEquals(listOf(0, 1), listOf(r.held, r.failed))
+        assertTrue(h.logLines.any { it.startsWith("manage: restart failed (helper): the helper is no longer listed") }, h.logLines.toString())
+        // A TV that cannot say counts nothing.
+        assertEquals(Restarts.HelperNow.NOT_YET, Restarts.helperNow(AccessibilityNow(null, helperService)))
+        assertEquals(Restarts.HelperNow.NOT_LISTED, Restarts.helperNow(AccessibilityNow("1", null)))
+        assertEquals(Restarts.HelperNow.ON, Restarts.helperNow(AccessibilityNow("1", helperService)))
     }
 
     // PLAN item 2: the block the issue bot reads, with the title, in a link far under the cap, and nothing the
