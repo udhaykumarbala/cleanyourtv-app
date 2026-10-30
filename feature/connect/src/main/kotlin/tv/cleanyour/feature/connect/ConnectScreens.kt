@@ -271,13 +271,17 @@ fun DoorScreen(state: SetupState.OpenDoor, extras: SetupExtras, actions: SetupAc
 // 0.3.6 (issues #98, #270, #325, #468): the TV's port answered but the connection failed. What may be
 // in the way on the phone's side, and "Copy error" with a short redacted summary for an issue.
 // 0.4.6: "Report a problem" under it opens the GitHub form with that side filled in, no paste.
+// 0.4.8 (issues #2084, #2502, #2823 and six more): a refused connection is the TV's answer, not the phone's: debugging
+// is off on the TV. That card says so and how to switch it back on; Copy error and Report a problem stay.
 @Composable
 internal fun ConnectErrorCard(error: ConnectError, onCopy: (String) -> Unit, modifier: Modifier = Modifier, onReport: (String) -> Unit = {}) {
     var copied by remember(error) { mutableStateOf(false) }
-    val title = stringResource(R.string.door_connect_failed_title)
+    val off = error.debuggingOff
+    val title = stringResource(if (off) R.string.door_connect_refused_title else R.string.door_connect_failed_title)
     StopCard(
         title,
-        msg(R.string.door_connect_failed_body, "kind" to error.kind) + "\n\n" + stringResource(R.string.door_connect_failed_hint),
+        msg(if (off) R.string.door_connect_refused_body else R.string.door_connect_failed_body, "kind" to error.kind) + "\n\n" +
+            stringResource(if (off) R.string.door_connect_refused_hint else R.string.door_connect_failed_hint),
         modifier.padding(top = 20.dp),
         primaryLabel = stringResource(if (copied) R.string.door_error_copied else R.string.door_copy_error),
         onPrimary = { onCopy(error.summary); copied = true },

@@ -148,6 +148,14 @@ object ConnectShots {
             Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) { ConnectErrorCard(tv.cleanyour.core.flows.ConnectError("protocol", "Clean Your TV connection error"), {}) }
         },
 
+        // 0.4.8 (issues #2084, #2502, #2823): the TV refused the connection, so debugging is off on it; the card says
+        // that and how to switch it back on, not that the phone is in the way.
+        Shot("door_connect_refused", height = 1000.dp) {
+            Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
+                ConnectErrorCard(tv.cleanyour.core.flows.ConnectError("refused", "Clean Your TV connection error", debuggingOff = true), {})
+            }
+        },
+
         // S2c Look at the TV (Allow), and the "I don't see it on the TV" sheet before and after 3 retries
         Shot("door_allow") { Connect(door(Families.ATV, DoorPhase.ALLOW, 2, waitedMs = 5_000, fingerprint = FINGERPRINT), waiting) },
         Shot("door_allow_still_waiting") { Connect(door(Families.ATV, DoorPhase.ALLOW, 2, waitedMs = 46_000, fingerprint = FINGERPRINT), waiting) },

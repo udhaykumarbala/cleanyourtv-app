@@ -48,6 +48,20 @@ class ConnectReportTest {
         assertEquals(listOf("The TV answered, but this phone couldn't connect"), reported)
     }
 
+    // 0.4.8 (issues #2084, #2502, #2823): a refused connection says debugging is off on the TV and how to switch it on,
+    // not that the phone is in the way; Copy error and Report a problem stay.
+    @Test fun aRefusedConnectSaysDebuggingIsOffOnTheTv() {
+        val extras = SetupExtras(tvName = "Mi TV 4A", chip = ChipState.WAITING, connectError = ConnectError("refused", "summary", debuggingOff = true))
+        compose.setContent { CytTheme(reducedMotion = true) { ConnectFlow(SetupState.OpenDoor(tv, Families.ATV, 2, DoorPhase.STEPS, null, null, 0), extras, actions, onReturning = {}) } }
+        compose.onNodeWithText("Debugging is off on the TV").performScrollTo()
+        compose.onNodeWithText("then Device Preferences or System, then Developer options", substring = true).performScrollTo()
+        compose.onNodeWithText("MIUI", substring = true).assertDoesNotExist()
+        compose.onNodeWithText("Copy error").performScrollTo()
+        compose.onNodeWithText("Report a problem").performScrollTo().performClick()
+        compose.waitForIdle()
+        assertEquals(listOf("Debugging is off on the TV"), reported)
+    }
+
     @Test fun aTvThatNeedsPairingReportsItsCard() {
         compose.setContent { CytTheme(reducedMotion = true) { ConnectFlow(SetupState.PairingNeeded(tv), SetupExtras(), actions, onReturning = {}) } }
         compose.onNodeWithText("Report a problem").performScrollTo().performClick()

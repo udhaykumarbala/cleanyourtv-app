@@ -712,7 +712,7 @@ class SetupMachine(
         val kind = errorName(error)
         val log = attempt { deps.diagnostics.redactedText() }.getOrDefault("")
         val detail = attempt { deps.connectDetail() }.getOrNull()
-        mutableExtras.update { it.copy(connectError = ConnectError(kind, ConnectErrorSummary.build(deps.about, kind, detail, log))) }
+        mutableExtras.update { it.copy(connectError = ConnectError(kind, ConnectErrorSummary.build(deps.about, kind, detail, log), ConnectError.debuggingOff(kind, detail))) }
     }
 
     private fun onOpenFailed(error: AdbError) {

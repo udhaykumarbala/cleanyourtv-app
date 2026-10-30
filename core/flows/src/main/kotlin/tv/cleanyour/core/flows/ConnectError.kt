@@ -3,7 +3,21 @@ package tv.cleanyour.core.flows
 // 0.3.6 (issues #98, #270, #325, #468): the TV's port answered, but the connection failed. The door
 // shows a card with the likely causes on the phone's side and "Copy error", which puts `summary` on
 // the clipboard so the person can paste it into an issue. `kind` is the log's word (LogCodes).
-data class ConnectError(val kind: String, val summary: String)
+// 0.4.8 (issues #2084, #2211, #2430, #2502, #2529, #2823, #1915, #2274, #2673): `debuggingOff` when the TV turned
+// the connection away (refused, ECONNREFUSED): nothing listens on its debugging port, so debugging is off on the TV,
+// most often because Finish switched it off as planned. The card says that and how to switch it on, not that the
+// phone is in the way.
+data class ConnectError(val kind: String, val summary: String, val debuggingOff: Boolean = false) {
+    companion object {
+        private val ERRNO = Regex("\\bE[A-Z0-9]{2,15} \\(")
+
+        // `detail` is the session's socket reason ("ConnectException, ECONNREFUSED (Connection refused)"). A refusal
+        // with another errno (a firewall's EPERM, say, which Android also reports as a ConnectException) is the
+        // phone's side; one with no errno at all is the TV's.
+        fun debuggingOff(kind: String, detail: String?): Boolean =
+            kind == "refused" && (detail == null || "ECONNREFUSED" in detail || !ERRNO.containsMatchIn(detail))
+    }
+}
 
 // The short text "Copy error" copies: the app and Android version, the error kind with the class
 // and errno reason the session logged, and the last lines of the diagnostics log. The log is

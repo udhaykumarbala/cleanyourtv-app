@@ -38,6 +38,10 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 - When the new home screen did not install, the problem report also said "look not sent:
   PushAsset config.json via provider", which looked like the old look problem (#2486, #2743,
   #2851). It now says "look not sent: the new home screen did not install".
+- When the TV turns the connection away ("refused"), the connect card no longer says the phone is in
+  the way (a VPN, MIUI, Private DNS). It says debugging is off on the TV, that the app switches it
+  off on purpose when setup ends, and how to switch it back on (#2084, #2211, #2430, #2502, #2529,
+  #2823, #1915, #2274, #2673). Copy error and Report a problem stay.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
