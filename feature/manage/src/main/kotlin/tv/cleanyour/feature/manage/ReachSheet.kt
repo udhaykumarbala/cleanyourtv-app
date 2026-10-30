@@ -23,6 +23,7 @@ import tv.cleanyour.core.flows.Reach
 import tv.cleanyour.core.flows.ReachCheck
 import tv.cleanyour.core.flows.Seen
 import tv.cleanyour.core.flows.fingerprintTail
+import tv.cleanyour.ui.design.component.AddressEntry
 import tv.cleanyour.ui.design.component.CytBottomSheet
 import tv.cleanyour.ui.design.component.ListDivider
 import tv.cleanyour.ui.design.component.ListGroup
@@ -34,6 +35,7 @@ import tv.cleanyour.ui.design.component.StepCard
 import tv.cleanyour.ui.design.component.TertiaryButton
 import tv.cleanyour.ui.design.component.TvStatus
 import tv.cleanyour.ui.design.component.TvStatusChip
+import tv.cleanyour.ui.design.component.addressText
 import tv.cleanyour.ui.design.theme.CytTheme
 
 // RFC-REACH-1: "Copy connection details" as the app shows it: collecting (about 10 s), then copied.
@@ -53,15 +55,41 @@ fun reachCase(reach: Reach): String = when (reach) {
 // which case it is (not on Wi-Fi, the Allow prompt, debugging off), and "What the app sees" under
 // "Show details" has the live check, "Copy connection details" and "Report a problem".
 // `onReport` gets the title the person saw, for the prefilled GitHub form (ReportContext).
+// 0.4.8: "Enter the TV's address" turns the sheet into Setup's address entry (S1c, AddressEntry); `onAddress` hands the
+// typed text to the wait (TvAccess.tryAddress) and says whether it is an address on a home network. Back on the step,
+// "What the app sees" has a row for it. Closing the sheet there goes back to the step, not out of the wait.
 @Composable
 fun DebugStepSheet(
     reach: Reach, onCancel: () -> Unit, check: ReachCheck = ReachCheck(), onReport: (String) -> Unit = {},
-    details: DetailsUi = DetailsUi(), onDetails: (share: Boolean) -> Unit = {},
+    details: DetailsUi = DetailsUi(), onDetails: (share: Boolean) -> Unit = {}, onAddress: ((String) -> Boolean)? = null,
 ) {
     if (reach == Reach.Idle) return
-    CytBottomSheet(onCancel) {
-        Column(Modifier.verticalScroll(rememberScrollState())) { DebugStepContent(reach, check, onCancel, onReport, details, onDetails) }
+    var typing by rememberSaveable { mutableStateOf(false) }
+    CytBottomSheet(if (typing) ({ typing = false }) else onCancel) {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+            ReachSheetBody(reach, check, onCancel, onReport, details, onDetails, onAddress, typing) { typing = it }
+        }
     }
+}
+
+// The sheet's content: the step, or its address entry while `typing`.
+@Composable
+internal fun ColumnScope.ReachSheetBody(
+    reach: Reach, check: ReachCheck, onCancel: () -> Unit, onReport: (String) -> Unit, details: DetailsUi,
+    onDetails: (share: Boolean) -> Unit, onAddress: ((String) -> Boolean)?, typing: Boolean, onTyping: (Boolean) -> Unit,
+) {
+    if (typing && onAddress != null) AddressStep(onAddress, onDone = { onTyping(false) })
+    else DebugStepContent(reach, check, onCancel, onReport, details, onDetails, onAddress = onAddress?.let { { onTyping(true) } })
+}
+
+// The debugging step's address entry: Setup's words and field; Connect goes back to the step when the address is one
+// on a home network, and says it is not one otherwise.
+@Composable
+internal fun ColumnScope.AddressStep(onAddress: (String) -> Boolean, onDone: () -> Unit, initial: String = "", initialError: Boolean = false) {
+    var text by rememberSaveable { mutableStateOf(initial) }
+    var error by rememberSaveable { mutableStateOf(initialError) }
+    AddressEntry(text, { text = addressText(it) }, error, onConnect = { if (onAddress(text)) onDone() else error = true })
+    TertiaryButton(stringResource(R.string.action_back), onDone, Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp), quiet = true)
 }
 
 private fun Reach.tvName(): String = when (this) {
@@ -76,6 +104,7 @@ private fun Reach.tvName(): String = when (this) {
 internal fun ColumnScope.DebugStepContent(
     reach: Reach, check: ReachCheck, onCancel: () -> Unit, onReport: (String) -> Unit = {},
     details: DetailsUi = DetailsUi(), onDetails: (share: Boolean) -> Unit = {}, initiallyOpen: Boolean = false,
+    onAddress: (() -> Unit)? = null,
 ) {
     Box(Modifier.fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center) { TvStatusChip(reach.tvName(), TvStatus.WAITING) }
     val title: String
@@ -110,6 +139,9 @@ internal fun ColumnScope.DebugStepContent(
         CheckRows(check)
         DetailsButtons(details, onDetails, Modifier.padding(top = 12.dp))
     }
+    // 0.4.8: the TV may have a new address (the hint and the saved address row say so): type it, as in Setup.
+    if ((open || stuck) && onAddress != null && reach is Reach.NeedsDebugging)
+        TertiaryButton(stringResource(R.string.debugstep_address), onAddress, Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp))
     if (open || stuck) TertiaryButton(stringResource(R.string.debugstep_report), { onReport(title) }, Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp))
     TertiaryButton(stringResource(R.string.action_cancel), onCancel, Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp), quiet = true)
 }
@@ -128,6 +160,10 @@ private fun CheckRows(check: ReachCheck) {
         CheckRow(R.string.debugstep_row_found, check.foundElsewhere, if (check.foundElsewhere == Seen.NO && savedNo) R.string.debugstep_row_found_no else null)
         ListDivider()
         CheckRow(R.string.debugstep_row_allow, check.asksToAllow, if (check.asksToAllow == Seen.YES) R.string.debugstep_row_allow_yes else null)
+        check.typed?.let { typed ->
+            ListDivider()
+            CheckRow(R.string.debugstep_row_typed, typed, if (typed == Seen.NO) R.string.debugstep_row_typed_no else null)
+        }
     }
 }
 

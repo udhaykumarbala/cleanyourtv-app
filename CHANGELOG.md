@@ -14,6 +14,13 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   TV, not installed for the main user, hidden), and the log has one line with the counts behind it.
   The home screen switch still never opens without its launcher.
 
+### Waiting for the TV
+- "Enter the TV's address" on the debugging step now works: with Show details, or after 30 seconds
+  with nothing found, it opens the same address entry as Setup. The app tries that address first,
+  with the same care as the saved one (on another network only the key the TV already allowed, so no
+  Allow prompt on someone else's TV), and saves it once your TV answers there. A different TV at that
+  address ends nothing; the step says the TV doesn't answer there.
+
 ## 0.4.7 (2026-10-30)
 
 ### Home screen

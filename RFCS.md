@@ -194,8 +194,17 @@ has the phone's network kinds (`PhoneNetwork`, read by the app from Connectivity
 ACCESS_NETWORK_STATE only), each saved TV's addresses cut to their last part with port 5555 and the
 known-TV handshake, a fresh 10 s search, the last 40 "access:" lines and the step's state. It keeps
 RFC-RECONNECT-1's rules: `openKnown` only, so no Allow dialog on any TV, and it saves nothing.
-`ManageDeps` gets `phoneNetwork` (with a default). Not done: "Enter the TV's address" on the sheet,
-as the address entry lives in Setup's machine (S1c) and is not reachable from a returning write.
+`ManageDeps` gets `phoneNetwork` (with a default).
+
+0.4.8, "Enter the TV's address" on the sheet (the beta4 follow-up; additive): shown in the debugging-off
+case with "Show details" or the 30 s hint, it turns the sheet into Setup's address entry (S1c, now
+`AddressEntry` in `:ui:design`, the same words and field) and hands the text to
+`TvAccess.tryAddress(tvId, text)`, which takes Setup's rule (`isHomeAddress`) and says no otherwise. The
+wait tries the typed address first from the next round, with a saved address's rules: on a network
+other than the setup's only `openKnown` (no Allow dialog on a stranger's TV), the TvId check always.
+It is saved in place of the saved addresses only once this TV answers there; a different TV there drops
+it and the wait goes on. `ReachCheck.typed` is its row in "What the app sees"; the log says only that
+an address was typed, never which.
 
 ## RFC-INSTALL-1: the streamed install is for user 0, and an unreadable APK says why
 

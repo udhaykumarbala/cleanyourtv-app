@@ -364,4 +364,11 @@
     <string name="cyt_look_file_copy">Copy</string>
     <string name="cyt_look_file_copied">Copied.</string>
     <string name="cyt_photo_after">Nothing is sent yet. Tap Put it on the TV when you\'re ready.</string>
+
+    <!-- S1c Enter the TV's address: Setup's sheet and the debugging step's (AddressEntry) -->
+    <string name="cyt_address_title">Type the TV\'s address</string>
+    <string name="cyt_address_body">On the TV: Settings > Network > your Wi-Fi name shows an address like 192.168.1.50.</string>
+    <string name="cyt_address_field_label">TV address</string>
+    <string name="cyt_address_error">That isn\'t an address on your home network</string>
+    <string name="cyt_address_connect">Connect</string>
 </resources>

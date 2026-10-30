@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import tv.cleanyour.core.discovery.DiscoverySource
 import tv.cleanyour.core.discovery.FoundTv
@@ -49,6 +48,7 @@ import tv.cleanyour.core.flows.StopAction
 import tv.cleanyour.core.flows.StopCase
 import tv.cleanyour.core.flows.fingerprintTail
 import tv.cleanyour.ui.design.component.ActionColumn
+import tv.cleanyour.ui.design.component.AddressEntry
 import tv.cleanyour.ui.design.component.AdbAllowMirror
 import tv.cleanyour.ui.design.component.Banner
 import tv.cleanyour.ui.design.component.BannerTone
@@ -57,7 +57,6 @@ import tv.cleanyour.ui.design.component.ChoiceList
 import tv.cleanyour.ui.design.component.ChoiceOption
 import tv.cleanyour.ui.design.component.CodeMatchCard
 import tv.cleanyour.ui.design.component.CytBottomSheet
-import tv.cleanyour.ui.design.component.CytTextField
 import tv.cleanyour.ui.design.component.CytTopBar
 import tv.cleanyour.ui.design.component.DiscoveryChip
 import tv.cleanyour.ui.design.component.GlassChip
@@ -79,6 +78,7 @@ import tv.cleanyour.ui.design.component.TvMenuArt
 import tv.cleanyour.ui.design.component.TvStatusChip
 import tv.cleanyour.ui.design.component.TvThumbnail
 import tv.cleanyour.ui.design.component.WelcomeIllustration
+import tv.cleanyour.ui.design.component.addressText
 import tv.cleanyour.ui.design.component.rememberEmphasis
 import tv.cleanyour.ui.design.component.rememberPng
 import tv.cleanyour.ui.design.theme.Glow
@@ -470,16 +470,9 @@ internal fun PairingStepsContent() {
 fun AddressSheet(error: Boolean, actions: SetupActions) {
     var text by rememberSaveable { mutableStateOf("") }
     CytBottomSheet({ actions.back() }) {
-        AddressContent(text, { text = it.filter { c -> c.isDigit() || c == '.' }.take(15) }, error, onConnect = { actions.intent(SetupIntent.EnterAddress(text)) })
+        AddressContent(text, { text = addressText(it) }, error, onConnect = { actions.intent(SetupIntent.EnterAddress(text)) })
     }
 }
 
 @Composable
-internal fun AddressContent(text: String, onText: (String) -> Unit, error: Boolean, onConnect: () -> Unit) {
-    SheetHeader(stringResource(R.string.address_title), subtitle = stringResource(R.string.address_body))
-    CytTextField(
-        text, onText, stringResource(R.string.address_field_label), Modifier.padding(top = 16.dp),
-        error = if (error) stringResource(R.string.address_error) else null, keyboardType = KeyboardType.Decimal,
-    )
-    PrimaryButton(stringResource(R.string.address_connect), onConnect, Modifier.padding(top = 16.dp), enabled = text.count { it == '.' } == 3)
-}
+internal fun AddressContent(text: String, onText: (String) -> Unit, error: Boolean, onConnect: () -> Unit) = AddressEntry(text, onText, error, onConnect)

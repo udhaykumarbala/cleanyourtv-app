@@ -36,6 +36,15 @@ sealed interface Reach {
     data class WrongNetwork(val tvId: TvId, val tvName: String) : Reach        // the phone is not on Wi-Fi (RFC-REACH-1)
 }
 
+// The TV the debugging step waits for, or null when it is closed.
+fun Reach.tvIdOrNull(): TvId? = when (this) {
+    is Reach.NeedsDebugging -> tvId
+    is Reach.Connecting -> tvId
+    is Reach.AwaitingAllow -> tvId
+    is Reach.WrongNetwork -> tvId
+    Reach.Idle -> null
+}
+
 // RFC-REACH-1: one answer of "What the app sees" under the debugging step. CHECKING until the first
 // look; UNKNOWN when there is nothing to look at (no Wi-Fi, or no subnet saved for this TV).
 enum class Seen { YES, NO, CHECKING, UNKNOWN }
@@ -50,13 +59,15 @@ data class ReachCheck(
     val asksToAllow: Seen = Seen.NO,            // the TV shows "Allow USB debugging?"
     val switchedOff: Boolean = false,           // the app switched debugging off when it was done, as planned
     val waitedMs: Long = 0,
+    val typed: Seen? = null,                    // port 5555 at the address typed on the sheet; null: none typed
 ) {
     // About 30 s with the saved address closed and nothing found: the sheet adds the restart hint.
     val stuck: Boolean get() = waitedMs >= STUCK_MS && savedAnswers == Seen.NO && foundElsewhere == Seen.NO
 
     // Fixed words for a report's card line; never an address.
     fun summary(): String = "wifi ${w(onWifi)}, same network ${w(sameNetwork)}, 5555 ${w(savedAnswers)}, " +
-        "found elsewhere ${w(foundElsewhere)}, allow asked ${w(asksToAllow)}, waited ${waitedMs / 1000} s"
+        "found elsewhere ${w(foundElsewhere)}, allow asked ${w(asksToAllow)}, " +
+        (typed?.let { "typed address ${w(it)}, " } ?: "") + "waited ${waitedMs / 1000} s"
 
     companion object {
         const val STUCK_MS = 30_000L
@@ -115,8 +126,23 @@ class TvAccess(
 
     fun lastHandshake(tvId: TvId): String? = handshakes[tvId]
     private val cancelGen = MutableStateFlow(0L)
+    // 0.4.8: the address typed on the debugging step ("Enter the TV's address"), for the TV it was typed for.
+    private val typed = MutableStateFlow<Pair<TvId, String>?>(null)
 
     fun cancelWaiting() { cancelGen.value = cancelGen.value + 1 }
+
+    // 0.4.8 (RFC-REACH-1, follow-up): "Enter the TV's address" on the debugging step, with Setup's rule for a typed
+    // address (isHomeAddress, S1c); false when it is not one, so the sheet says so. The wait tries it first from the next
+    // round, with the rules of a saved address: on a network other than the setup's only the known-TV handshake (no Allow
+    // dialog on a stranger's TV), and the TvId check always (D37). It is saved only once this TV answers there; a
+    // different TV at it ends nothing. Never logged: the line says only that an address was typed.
+    fun tryAddress(tvId: TvId, text: String): Boolean {
+        if (!isHomeAddress(text)) return false
+        typed.value = tvId to text.trim()
+        mutableCheck.update { it.copy(typed = Seen.CHECKING) }
+        log.line("access: an address was typed for the TV")
+        return true
+    }
 
     // T7 item 1: AdbTvSession closes its socket 60 s after the last hold, and the engine refuses
     // NOT_CONNECTED on an idle session. The wizard keeps one hold per TV from the connect until Done
@@ -146,6 +172,7 @@ class TvAccess(
         mutableCheck.value = ReachCheck(switchedOff = tv.debugging == DebugState.OFF)
         searchCounts.value = null
         logged.value = null
+        typed.value = null
         try {
             return coroutineScope {
                 // RFC-RECONNECT-1: after one round at the saved addresses, the network is searched beside the polling,
@@ -168,6 +195,7 @@ class TvAccess(
         } finally {
             mutableReach.value = Reach.Idle
             mutableCheck.value = ReachCheck()
+            typed.value = null
         }
     }
 
@@ -198,9 +226,16 @@ class TvAccess(
                     asksToAllow = Seen.NO, waitedMs = waited) }
                 logState(net, same, hosts.size, null, null)
             } else {
-                val open = hosts.firstOrNull { discovery.probe5555(it.host) }
-                mutableCheck.update { it.copy(onWifi = Seen.YES, sameNetwork = same, savedAnswers = if (open != null) Seen.YES else Seen.NO,
-                    foundElsewhere = if (it.foundElsewhere == Seen.UNKNOWN) Seen.CHECKING else it.foundElsewhere, waitedMs = waited) }
+                // 0.4.8: an address typed on the sheet is tried first; the saved ones when it does not answer.
+                val typedHost = typed.value?.takeIf { it.first == tvId }?.second
+                val typedOpen = typedHost?.let { discovery.probe5555(it) }
+                val saved = if (typedOpen == true) null else hosts.firstOrNull { it.host != typedHost && discovery.probe5555(it.host) }
+                val open = if (typedOpen == true && typedHost != null) Endpoint.PlainTcp(typedHost) else saved
+                val isTyped = typedOpen == true && hosts.none { it.host == typedHost }
+                mutableCheck.update { it.copy(onWifi = Seen.YES, sameNetwork = same,
+                    savedAnswers = if (typedOpen == true) it.savedAnswers else if (saved != null) Seen.YES else Seen.NO,
+                    foundElsewhere = if (it.foundElsewhere == Seen.UNKNOWN) Seen.CHECKING else it.foundElsewhere, waitedMs = waited,
+                    typed = typedOpen?.let { o -> if (o) Seen.YES else Seen.NO } ?: it.typed) }
                 var handshake: AdbError? = null
                 if (open != null) {
                     mutableReach.value = Reach.Connecting(tvId, tv.nickname)
@@ -217,15 +252,27 @@ class TvAccess(
                     mutableCheck.update { it.copy(asksToAllow = Seen.NO) }
                     when (r) {
                         is OpenResult.Ok -> {
-                            tvs.upsert(current(tvId, tv).copy(lastSeenAt = clock.nowMs(), debugging = DebugState.ON, lastSubnet = net.subnet ?: tv.lastSubnet))
-                            log.line("access: connected at a saved address${if (same == Seen.NO) ", on a network other than the setup's (saved as the TV's network now)" else ""}")
+                            val now = current(tvId, tv)
+                            // A typed address that answered as this TV replaces the saved ones, as a TV found elsewhere does.
+                            val endpoints = if (isTyped) listOf(open) + now.endpoints.filter { it !is Endpoint.PlainTcp } else now.endpoints
+                            tvs.upsert(now.copy(endpoints = endpoints, lastSeenAt = clock.nowMs(), debugging = DebugState.ON, lastSubnet = net.subnet ?: tv.lastSubnet))
+                            log.line("access: connected at ${if (isTyped) "the address typed on the phone (saved there)" else "a saved address"}" +
+                                if (same == Seen.NO) ", on a network other than the setup's (saved as the TV's network now)" else "")
                             return AccessResult.Ok(r.session)
                         }
                         is OpenResult.Failed -> {
                             handshake = r.error
                             handshakes[tvId] = LogCodes.of(r.error)
+                            // A typed address where a different TV answers was a wrong address: it is dropped and the wait
+                            // goes on at the saved ones.
+                            val wrongTyped = typedOpen == true && r.error is AdbError.Policy.WrongTv
+                            if (wrongTyped) {
+                                typedHost?.let { typed.compareAndSet(tvId to it, null) }
+                                mutableCheck.update { it.copy(typed = Seen.NO) }
+                                log.line("access: a different TV answered at the address typed on the phone")
+                            }
                             when (r.error) {
-                                is AdbError.Policy.WrongTv, AdbError.Transport.NoShellV2, AdbError.Auth.Denied -> if (!elsewhere) {
+                                is AdbError.Policy.WrongTv, AdbError.Transport.NoShellV2, AdbError.Auth.Denied -> if (!elsewhere && !wrongTyped) {
                                     logState(net, same, hosts.size, true, r.error, final = true)
                                     return AccessResult.Failed(r.error)
                                 }
