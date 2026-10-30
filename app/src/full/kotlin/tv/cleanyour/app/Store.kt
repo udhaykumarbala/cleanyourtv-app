@@ -1,10 +1,13 @@
 package tv.cleanyour.app
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import tv.cleanyour.core.flows.StoreRules
 import tv.cleanyour.core.flows.UpdateChecker
 import tv.cleanyour.core.registry.ArtifactFetcher
 import tv.cleanyour.core.registry.FetchException
 import tv.cleanyour.core.registry.HttpFetcher
+import tv.cleanyour.core.registry.getSmall
 import tv.cleanyour.core.trust.DownloadHosts
 
 // The full build (GitHub and F-Droid, STORES-PLAN 1): everything the app did before the store
@@ -27,11 +30,11 @@ object Store : StorePorts {
     // build. When neither gives a tag, the diagnostics log (and so a problem report) says why, for each.
     override fun updateChecker(http: HttpFetcher) = updateChecker(http) { CytLog.i(it) }
 
-    internal fun updateChecker(http: HttpFetcher, log: (String) -> Unit) = UpdateChecker { current ->
-        val (api, apiWhy) = read(http, RELEASES_URL)
+    internal fun updateChecker(http: HttpFetcher, io: CoroutineDispatcher = Dispatchers.IO, log: (String) -> Unit) = UpdateChecker { current ->
+        val (api, apiWhy) = read(http, RELEASES_URL, io)
         val fromApi = api?.let { Regex("\"tag_name\"\\s*:\\s*\"v?([0-9][0-9A-Za-z.]*)\"").find(it)?.groupValues?.get(1) }
         val tag = fromApi ?: run {
-            val (feed, feedWhy) = read(http, FEED_URL)
+            val (feed, feedWhy) = read(http, FEED_URL, io)
             val fromFeed = feed?.let { latestInFeed(it) }
             if (fromFeed == null) log("settings: update check failed: api ${apiWhy ?: "no tag"}, feed ${feedWhy ?: "no tag"}")
             else log("settings: update check used the releases feed (api ${apiWhy ?: "no tag"})")
@@ -42,26 +45,17 @@ object Store : StorePorts {
 
     // A body, or why there is none: the HTTP code, or the fetcher's failure kind and its words (no URL, no
     // address: FetchException messages name only the step, as "TLS failed: SSLHandshakeException").
-    private suspend fun read(http: HttpFetcher, url: String): Pair<String?, String?> = try {
-        val r = http.get(url, null, null)
-        if (r.code != 200) { r.body?.close(); null to "HTTP ${r.code}" }
-        else r.body?.use { bounded(it) }?.let { it to null } ?: (null to "empty body")
+    // 0.4.8 (issues #818, #2486): the body is read off the main thread with the request (getSmall); read here, on
+    // the Settings screen's scope, it failed with NetworkOnMainThreadException on every phone. At most MAX_BODY
+    // bytes, as before.
+    private suspend fun read(http: HttpFetcher, url: String, io: CoroutineDispatcher): Pair<String?, String?> = try {
+        val r = http.getSmall(url, MAX_BODY, io)
+        if (r.code != 200) null to "HTTP ${r.code}"
+        else r.bytes?.decodeToString()?.let { it to null } ?: (null to "empty body")
     } catch (e: FetchException) {
         null to "${e.failure.name.lowercase()} (${e.message})"
     } catch (e: Exception) {
         null to e.javaClass.simpleName
-    }
-
-    // At most MAX_BODY bytes (InputStream.readNBytes needs Android 13).
-    private fun bounded(input: java.io.InputStream): String {
-        val out = java.io.ByteArrayOutputStream()
-        val buf = ByteArray(16 * 1024)
-        while (out.size() < MAX_BODY) {
-            val n = input.read(buf, 0, minOf(buf.size, MAX_BODY - out.size()))
-            if (n < 0) break
-            out.write(buf, 0, n)
-        }
-        return out.toByteArray().decodeToString()
     }
 
     // The newest release in the Atom feed (newest first) whose tag has no hyphen: a test build's tag has one

@@ -32,6 +32,9 @@ import javax.net.ssl.SSLSocketFactory
 //   certificate that does not chain to the system anchors, as with a proxy's user CA) becomes
 //   FetchException(HTTP_ERROR) with no code: the request never reached GitHub.
 // - The returned body disconnects the connection when it is closed; the caller must close it.
+// - The body is the live connection: only the request and the headers run on `io`, so reading the body
+//   blocks on the network wherever the caller is. Read it on an IO dispatcher (getSmall does, for a small
+//   answer); on the phone's main thread Android refuses it (issues #818, #2486).
 class UrlConnectionFetcher(
     private val urlAllowed: (String) -> Boolean = { DownloadHosts.isAllowed(it) },
     private val sslSocketFactory: SSLSocketFactory? = null,   // null: the platform default

@@ -27,6 +27,11 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 - The debugging step's search for a TV that moved and "Copy connection details" (or Setup's search)
   no longer run two network searches side by side: the app runs one and shares it.
 
+### Fixes
+- "Check for updates" in Settings works again. It said "Couldn't check for updates" on every phone and
+  every version (#818, #2486): the app read GitHub's answer in a way Android does not allow on the
+  screen's own thread. It now reads it in the background.
+
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
   lists, and the new home screen with the setup wizard left on for every brand.

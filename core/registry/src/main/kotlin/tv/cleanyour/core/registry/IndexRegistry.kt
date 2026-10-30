@@ -1,5 +1,7 @@
 package tv.cleanyour.core.registry
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -61,6 +63,7 @@ class IndexRegistry(
     private val sources: IndexSources?,
     private val verifier: IndexVerifier = TrustRoots.indexVerifier(),
     private val keysSequenceOf: (ByteArray) -> Long? = KeysFile::peekSequence,
+    private val io: CoroutineDispatcher = Dispatchers.IO,
 ) : Registry {
 
     private val state = MutableStateFlow<IndexState>(IndexState.Empty)
@@ -150,24 +153,12 @@ class IndexRegistry(
                 ?: Checked.Bad(IndexVerdict.Bad(IndexFailure.BAD_KEYS_FILE, "keys file unreadable"))
         }
 
+    // 0.4.8 (issues #818, #2486): read on `io` with the request (getSmall), whatever scope refresh() runs in.
     private suspend fun download(url: String, max: Int): ByteArray {
-        val r = http.get(url, null, null)
-        val body = r.body
-        if (r.code != 200 || body == null) { body?.close(); throw FetchException(FetchFailure.HTTP_ERROR, r.code, "HTTP ${r.code}") }
-        if (r.length != null && r.length > max) { body.close(); throw FetchException(FetchFailure.TOO_LARGE, null, "$url is ${r.length} bytes") }
-        body.use { input ->
-            val out = java.io.ByteArrayOutputStream()
-            val buf = ByteArray(16 * 1024)
-            var total = 0
-            while (true) {
-                val n = input.read(buf)
-                if (n < 0) break
-                total += n
-                if (total > max) throw FetchException(FetchFailure.TOO_LARGE, null, "$url is larger than $max bytes")
-                out.write(buf, 0, n)
-            }
-            return out.toByteArray()
-        }
+        val r = http.getSmall(url, max, io)
+        if (r.cut) throw FetchException(FetchFailure.TOO_LARGE, null, "$url is larger than $max bytes")
+        if (r.code != 200 || r.bytes == null) throw FetchException(FetchFailure.HTTP_ERROR, r.code, "HTTP ${r.code}")
+        return r.bytes
     }
 
     // One document, written atomically, so the four files and the high-water marks never disagree.
