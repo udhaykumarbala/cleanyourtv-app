@@ -35,6 +35,9 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   app last looked no longer stops it as "the TV changed". In test builds, "Switch off" of the Home
   button helper stopped that way at its first step after the TV had restarted (#2825); it reads the
   TV first too.
+- When the new home screen did not install, the problem report also said "look not sent:
+  PushAsset config.json via provider", which looked like the old look problem (#2486, #2743,
+  #2851). It now says "look not sent: the new home screen did not install".
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
