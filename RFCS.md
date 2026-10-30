@@ -196,3 +196,35 @@ known-TV handshake, a fresh 10 s search, the last 40 "access:" lines and the ste
 RFC-RECONNECT-1's rules: `openKnown` only, so no Allow dialog on any TV, and it saves nothing.
 `ManageDeps` gets `phoneNetwork` (with a default). Not done: "Enter the TV's address" on the sheet,
 as the address entry lives in Setup's machine (S1c) and is not reachable from a returning write.
+
+## RFC-INSTALL-1: the streamed install is for user 0, and an unreadable APK says why
+
+Twenty reports from 0.3.x to 0.4.7-beta4, all Google TVs on Android 11 and 12 (Sony BRAVIA VH2 and
+VH22, TCL G05, G07 and G09, Xiaomi jaws, Hisense songshan) and one TiVo Stream 4K, ended "Install
+com.gathin.tvhome: failed: verify: installed apk sha256 <x>, got no readable apk". The package dump
+showed versionCode 9, but `pm path` named no APK, `am start -W` of the launcher failed, its provider
+did not answer and its files folder was never made: a package on the TV that is not installed for
+user 0. `pm uninstall --user 0` leaves a package like that when another Android user still has it,
+and the streamed install, `cmd package install -S` with no user, is "for all users"; on Android 11
+and 12 that installs over such a package without installing it for user 0 again
+(PackageManagerService.updateSettingsInternalLI: "This does not apply to USER_ALL, which here means
+only install on users for which the app is already installed"; Android 13 changed it). The pushed
+install already names `--user 0` (SECURITY 3.2). Change, no frozen signature changes:
+
+- `:adb:wire`: `AdbService.ExecInstall` is spelled `exec:cmd package install --user 0 -S <size>`, the
+  same user as `pm install --user 0`, `pm uninstall --user 0` and `set-home-activity --user 0`. A
+  fresh install no longer reaches other users, so Undo's `pm uninstall --user 0` removes it whole.
+- `:core:probe`: `InstalledApkReader` beside the frozen Prober (like `LaunchableApps`), with one fixed
+  read-only script (`ProbeScripts.installedApkState`, golden file): one `pm path`, then only the count
+  of base.apk lines, the exit code of the hash command, the user in front and the package dump's
+  "User N:" lines leave the TV, never a path or a hash. `InstalledApkParser` reads them as untrusted.
+- `:core:engine`: when the installed APK's hash reads nothing, the install check asks it once, adds
+  the cause in fixed words to the failure ("got no readable apk (on the TV but not installed for user
+  0, installed for 1 other user)") and logs one line with the counts and flags. The check stays a
+  hash check: the extra read never turns a failure into a pass, and the home screen switch is still
+  never opened without its launcher.
+- `:testing:fake-adbd`: the fake models a package that is not installed for user 0 and Android 11 and
+  12's install rule, and takes the new install line.
+
+Not done: a fallback read of the APK through the dump's codePath. It would hash the right file for a
+package that still cannot start for user 0, so it would hide the cause instead of fixing it.

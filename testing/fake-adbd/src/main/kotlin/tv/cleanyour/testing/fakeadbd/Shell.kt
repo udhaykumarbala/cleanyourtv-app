@@ -199,12 +199,12 @@ class FakeShell(private val tv: FakeTv, private val faults: Faults) {
             }
             "path" -> {
                 val pkg = positional.lastOrNull() ?: return ExecOutcome("", 1)
-                tv.packages[pkg]?.let { ExecOutcome("package:${it.path}\n") } ?: ExecOutcome("", 1)
+                tv.packages[pkg]?.takeIf { pkg !in tv.notForUser0 }?.let { ExecOutcome("package:${it.path}\n") } ?: ExecOutcome("", 1)
             }
             "install" -> {
                 val path = positional.lastOrNull() ?: return ExecOutcome("", 1, "Error: must specify an APK\n")
                 val bytes = tv.files[path] ?: return ExecOutcome("", 1, "Failure [INSTALL_FAILED_INVALID_URI: $path does not exist]\n")
-                val result = tv.installApk(bytes)
+                val result = tv.installApk(bytes, forUser0 = rest.getOrNull(rest.indexOf("--user") + 1) == "0" && "--user" in rest)
                 ExecOutcome(result + "\n", if (result.startsWith("Success")) 0 else 1)
             }
             "uninstall" -> {
@@ -272,7 +272,7 @@ class FakeShell(private val tv: FakeTv, private val faults: Faults) {
             } else {
                 val pkg = component.substringBefore('/')
                 val p = tv.packages[pkg]
-                if (p == null || p.state == "disabled-user" || p.state == "disabled") ExecOutcome("Error type 3\nError: Activity class {$component} does not exist.\n", 255)
+                if (p == null || pkg in tv.notForUser0 || p.state == "disabled-user" || p.state == "disabled") ExecOutcome("Error type 3\nError: Activity class {$component} does not exist.\n", 255)
                 else {
                     tv.startedActivities += component
                     if (pkg == "com.gathin.tvhome") tv.mkdir("/sdcard/Android/data/com.gathin.tvhome/files")
@@ -306,7 +306,8 @@ class FakeShell(private val tv: FakeTv, private val faults: Faults) {
             "Packages:\n  Package [${p.name}] (fake):\n    userId=10042\n    pkg=Package{fake ${p.name}}\n    codePath=${p.path.substringBeforeLast('/')}\n" +
                 "    versionCode=${p.versionCode} minSdk=${tv.sdk} targetSdk=${tv.sdk}\n    versionName=1.0\n    flags=$flags\n" +
                 (p.signer?.let { "    signatures=PackageSignatures{fake version:3, signatures:[$it]}\n" } ?: "") +
-                "    User 0: ceDataInode=0 installed=true hidden=false suspended=false stopped=false notLaunched=false enabled=$enabled instant=false virtual=false\n",
+                "    User 0: ceDataInode=0 installed=${p.name !in tv.notForUser0} hidden=false suspended=false stopped=false notLaunched=false enabled=$enabled instant=false virtual=false\n" +
+                (if (p.name in tv.notForUser0) "    User 10: ceDataInode=0 installed=true hidden=false suspended=false stopped=false notLaunched=false enabled=$enabled instant=false virtual=false\n" else ""),
         )
     }
 

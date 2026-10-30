@@ -105,6 +105,32 @@ class SessionTransferTest {
         assertIs<AdbError.Transport.Protocol>(assertFailsWith<AdbException> { s.installStream(b, b.size + 1) }.error)
     }
 
+    // RFC-INSTALL-1 (issues #2743, #1918, #1510 and 17 more): a launcher on the TV but not installed
+    // for user 0, because a second user keeps it. The streamed install names user 0, so it is
+    // installed for user 0 again and `pm path` finds it; "for all users" (the fake keeps Android 11
+    // and 12's rule) would have left it out.
+    @Test fun aStreamedInstallIsForUser0() = runTest {
+        val rig = Rig(this)
+        val s = rig.open()
+        val apk = ByteArray(5_000) { (it * 7).toByte() }
+        val b = blob(apk)
+        val pkg = FakePackage("com.gathin.tvhome", "/data/app/com.gathin.tvhome-1/base.apk", versionCode = 9)
+        rig.tv.apkCatalog[sha256Hex(apk)] = pkg
+        rig.tv.packages[pkg.name] = pkg.copy()
+        rig.tv.notForUser0 += pkg.name
+        assertTrue(rig.tv.sdk <= 32, "a persona with Android 11 and 12's install rule")
+        assertEquals("Success", rig.tv.installApk(apk), "for all users")
+        assertTrue(pkg.name in rig.tv.notForUser0, "for all users leaves user 0 out")
+        assertEquals(1, s.exec(line("pm path com.gathin.tvhome")).exit)
+
+        assertEquals(InstallOutcome.Installed, s.installStream(b, b.size))
+        assertTrue(rig.adbd.events.any { it == "install: Success" })
+        assertTrue(pkg.name !in rig.tv.notForUser0)
+        val path = s.exec(line("pm path com.gathin.tvhome"))
+        assertEquals(0, path.exit)
+        assertEquals("package:/data/app/com.gathin.tvhome-1/base.apk\n", path.stdout)
+    }
+
     @Test fun stalledPushTimesOutOnTheIdleClock() = runTest {
         val rig = Rig(this, faults = Faults().apply { stallPushAfterChunks = 1 })
         val s = rig.open()

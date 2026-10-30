@@ -4,6 +4,16 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 
 ## 0.4.8 (unreleased)
 
+### The new home screen installs again on Google TVs
+- On Google TVs with Android 11 and 12 (Sony BRAVIA, TCL, Xiaomi, Hisense and others), the home
+  screen switch could stop at "Install com.gathin.tvhome" with "got no readable apk", run after run
+  (#2743, #1918, #1510 and 17 more). The app was on the TV but not installed for the TV's main
+  user, which can happen after it was removed for that user while another user still had it. The app
+  now installs it for the main user, the way the copy-and-install route always did, so it can start.
+- If the check still cannot read the installed app, the report says why in plain words (not on the
+  TV, not installed for the main user, hidden), and the log has one line with the counts behind it.
+  The home screen switch still never opens without its launcher.
+
 ### Restarts the app counts
 - On a TV whose home screen the app switched, or whose Home button helper it switched on, each
   connect reads the TV's boot id beside the Home check Manage already does. A restart with the new

@@ -156,7 +156,10 @@ internal class ConnectionCore private constructor(
         is AdbService.ExecInstall -> {
             if ("cmd" !in features) throw protocolError("the TV has no cmd service for a streamed install")
             if (service.size !in 1..MAX_INSTALL_BYTES) throw protocolError("install size out of range")
-            "exec:cmd package install -S ${service.size}"
+            // RFC-INSTALL-1: for user 0, as the pushed install's `pm install --user 0`. Without a user the
+            // install is "for all users", which on Android 11 and 12 installs over a package that is on the
+            // TV but not installed for user 0 without installing it for user 0 again.
+            "exec:cmd package install --user 0 -S ${service.size}"
         }
         AdbService.Ping -> "exec:echo"
     }

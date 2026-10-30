@@ -47,6 +47,8 @@ import tv.cleanyour.core.planner.PlanSummary
 import tv.cleanyour.core.planner.Step
 import tv.cleanyour.core.planner.StockHome
 import tv.cleanyour.core.planner.SwitchOffRule
+import tv.cleanyour.core.probe.InstalledApkReader
+import tv.cleanyour.core.probe.ProbeException
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.session.BootOutcome
 import tv.cleanyour.core.session.ExecResult
@@ -785,8 +787,25 @@ class DefaultEngine(
         }
         val installed = prober.installedSha256(session, pkg)
         if (installed == expected) return Outcome.Ok
-        val got = installed?.hex ?: "no readable apk"
+        val got = installed?.hex ?: "no readable apk${unreadableApk(session, pkg)?.let { " ($it)" }.orEmpty()}"
         return Outcome.Failed(AdbError.Policy.GuardFailed(-1, "installed apk sha256 ${expected.hex}, got $got"), "verify: installed apk sha256 ${expected.hex}, got $got")
+    }
+
+    // RFC-INSTALL-1: twenty reports from Google TVs on Android 11 and 12 ended "got no readable apk"
+    // with nothing to say why. One more read-only call, only on that path: the cause in fixed words
+    // for the failure (the report's step line) and one diagnostics line with the counts, exit codes,
+    // user ids and state flags (no path, no hash). It never turns the failure into a pass. A probe
+    // that cannot say (an older prober, a firmware printing something else) leaves the words as before.
+    private suspend fun unreadableApk(session: TvSession, pkg: PackageName): String? {
+        val reader = prober as? InstalledApkReader ?: return null
+        val state = try {
+            reader.installedApk(session, pkg)
+        } catch (e: ProbeException) {
+            log("engine: install check of ${pkg.value}: its state could not be read (${e.stage.name.lowercase()})")
+            return null
+        }
+        log("engine: install check of ${pkg.value}: ${state.summary()}")
+        return state.why()
     }
 
     // Verify and probe reads: idempotent, so the session may retry them.

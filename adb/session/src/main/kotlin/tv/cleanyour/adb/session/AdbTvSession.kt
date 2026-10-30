@@ -418,7 +418,7 @@ class AdbTvSession internal constructor(
         }
     }
 
-    // exec:cmd package install -S size (D39 ladder step 1); the APK streams from the cache file.
+    // exec:cmd package install --user 0 -S size (D39 ladder step 1, RFC-INSTALL-1); the APK streams from the cache file.
     override suspend fun installStream(apk: BlobRef, size: Long, onProgress: (Long) -> Unit): InstallOutcome {
         val file = blobFile(apk, size)
         return call(RetryClass.NEVER) { conn ->
