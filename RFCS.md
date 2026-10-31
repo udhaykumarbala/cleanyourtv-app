@@ -252,3 +252,13 @@ install already names `--user 0` (SECURITY 3.2). Change, no frozen signature cha
 
 Not done: a fallback read of the APK through the dump's codePath. It would hash the right file for a
 package that still cannot start for user 0, so it would hide the cause instead of fixing it.
+
+0.4.8-beta2, the TV's free storage after a streamed install the TV ended (#3221, #3101, #2851; additive,
+no frozen signature changes): when the launcher's stream ends with a protocol error and the installed
+APK does not hash to it, the engine reads the frozen `Prober.freeDataMb` once (the existing
+`ProbeScripts.FREE_DATA`, `df -k /data`, already in the golden file) and appends " [TV storage: N MB
+free]" to the failure; a read that fails leaves the words as before and logs one line. Its parser
+(`FreeDataParser`) now takes only 1K-block output (the header says so), the busybox row wrapped after
+a long filesystem name, and numbers only. `InstallStorage` (`:core:engine`) holds the words and the
+"clearly low" rule (under 200 MB or under twice the APK), which the stop card uses for its new body.
+One `CopyKey` is added.

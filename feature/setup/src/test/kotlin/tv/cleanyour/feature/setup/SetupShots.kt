@@ -573,6 +573,11 @@ object SetupShots {
             Stopped(home(StopCase.HOME_UNKNOWN, R.string.stop_home_unknown_title, R.string.stop_home_unknown_body,
                 R.string.stop_home_unknown_primary, R.string.stop_home_unknown_secondary), connected.copy(commands = commands))
         },
+        // Issues #3221, #3101, #2851: the TV ended the launcher's install and is low on storage.
+        Shot("stopped_home_low_storage") {
+            Stopped(home(StopCase.HOME_UNKNOWN, R.string.stop_home_unknown_title, R.string.stop_home_low_storage_body,
+                R.string.stop_home_unknown_primary, R.string.stop_home_unknown_secondary, mapOf("free" to 120)), connected.copy(commands = commands))
+        },
         // Issue #629: a Settings page was open on the TV during the check.
         Shot("stopped_home_settings_open") {
             Stopped(home(StopCase.HOME_SETTINGS_OPEN, R.string.stop_home_unknown_title, R.string.stop_home_settings_open_body,

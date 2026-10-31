@@ -17,7 +17,8 @@ import kotlin.test.fail
 class CopyTest {
     private val context = ApplicationProvider.getApplicationContext<android.app.Application>()
     private val sample = mapOf<String, Any>("tv" to "Mi TV 4A", "count" to 3, "done" to 2, "total" to 5, "name" to "PatchWall",
-        "launcher" to "Projectivy", "percent" to 58, "date" to "19 Oct", "room" to "Living room", "step" to 2)
+        "launcher" to "Projectivy", "percent" to 58, "date" to "19 Oct", "room" to "Living room", "step" to 2,
+        "free" to 120)
 
     // Every machine-produced sentence resolves and formats (ICU) with the arguments the flows pass.
     @Test fun everyCopyKeyFormats() {

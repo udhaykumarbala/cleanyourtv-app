@@ -682,10 +682,26 @@ class DefaultEngine(
     private suspend fun streamFailed(run: Run, op: Op.InstallStream, error: AdbError): Outcome = try {
         when (installedApkCheck(run.session, op)) {
             Outcome.Ok -> Outcome.Ok
-            else -> Outcome.Failed(error, "$STREAM_FAILED$error")
+            else -> Outcome.Failed(error, "$STREAM_FAILED$error${storageTag(run.session, op)}")
         }
     } catch (e: AdbException) {
         if (e.error.isLost()) Outcome.Lost(e.error) else Outcome.Failed(error, "$STREAM_FAILED$error")
+    }
+
+    // Issues #3221, #3101 and #2851 (InstallStorage): the free space on /data, read once after the
+    // streamed install failed, as " [TV storage: N MB free]". A read that fails leaves the failure
+    // text as it was, with one line that says so; the read never changes the outcome.
+    private suspend fun storageTag(session: TvSession, op: Op.InstallStream): String {
+        val free = try {
+            prober.freeDataMb(session)
+        } catch (e: ProbeException) {
+            log("engine: streamed install of ${op.pkg.value}: the TV's free storage could not be read (${e.stage.name.lowercase()})")
+            return ""
+        } catch (e: AdbException) {
+            log("engine: streamed install of ${op.pkg.value}: the TV's free storage could not be read (no answer)")
+            return ""
+        }
+        return InstallStorage.tag(free)
     }
 
     // Begin (forced) before the line is sent, Done or Failed before the next Begin.

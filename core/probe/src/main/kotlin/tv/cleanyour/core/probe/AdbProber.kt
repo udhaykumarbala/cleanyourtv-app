@@ -254,13 +254,9 @@ class AdbProber(
         return if (SHA256_RE.matches(h)) Sha256(h) else null
     }
 
-    override suspend fun freeDataMb(session: TvSession): Int {
-        val r = run(session, ProbeScripts.FREE_DATA, ProbeStage.FACTS, 16 * 1024)
-        val row = lines(r.stdout).map { it.trim().split(Regex("\\s+")) }.lastOrNull { it.size >= 6 && it.last() == "/data" }
-            ?: throw ProbeException(ProbeStage.FACTS, "df printed no /data row")
-        val kb = row[3].toLongOrNull() ?: throw ProbeException(ProbeStage.FACTS, "df Available is not a number: ${row[3]}")
-        return (kb / 1024).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
-    }
+    // The Available MB of /data (FreeDataParser: 1K blocks only, numbers only).
+    override suspend fun freeDataMb(session: TvSession): Int =
+        FreeDataParser.parse(lines(run(session, ProbeScripts.FREE_DATA, ProbeStage.FACTS, 16 * 1024).stdout))
 
     override suspend fun installRefusal(session: TvSession, noopApk: BlobRef): Boolean {
         run(session, ProbeScripts.MKDIR_TMP, ProbeStage.LAUNCHER, 4096, retry = RetryClass.IDEMPOTENT_WRITE)

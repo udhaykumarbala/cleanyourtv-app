@@ -20,6 +20,7 @@ import tv.cleanyour.core.discovery.DiscoverySource
 import tv.cleanyour.core.discovery.FoundTv
 import tv.cleanyour.core.engine.Engine
 import tv.cleanyour.core.engine.HomeOutcome
+import tv.cleanyour.core.engine.InstallStorage
 import tv.cleanyour.core.engine.PauseReason
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.engine.RunStatus
@@ -1257,7 +1258,7 @@ class SetupMachine(
     private suspend fun onFinished(tvId: TvId, f: RunState.Finished) {
         lastFinished = f
         mutableExtras.update { it.copy(rollingBack = false, highlightStop = false, reconnect = null) }
-        if (f.home == HomeOutcome.VERIFY_FAILED) logHomeSwitchFailure(f.plan)
+        val switchFailure = if (f.home == HomeOutcome.VERIFY_FAILED) logHomeSwitchFailure(f.plan) else null
         // 0.4.7: a look the TV refused is named in the log with the TV's answer, never only counted as a skip.
         attempt { RunLines.lookSkipped(f, deps.ledger) }.getOrNull()?.let { deps.log.line("setup: $it") }
         when {
@@ -1269,7 +1270,7 @@ class SetupMachine(
             f.status == RunStatus.ABANDONED && f.home == HomeOutcome.CONNECTION_LOST && f.plan.steps.isEmpty() ->
                 send(Ev.Stop(tvId, homePutBackCard(f.plan.id)))
             f.status == RunStatus.ABANDONED -> effect(SetupEffect.Navigate("manage/${tvId.value}"))
-            f.home != null && f.home != HomeOutcome.CONFIRMED -> send(Ev.Stop(tvId, homeCard(f, switchedOffSoFar(f.plan))))
+            f.home != null && f.home != HomeOutcome.CONFIRMED -> send(Ev.Stop(tvId, homeCard(f, switchedOffSoFar(f.plan), switchFailure)))
             // 0.4.7-beta1 QA: the engine finishes a confirmed section with no HomeOutcome (null; only a rolled back
             // one carries its outcome, and that went to the card above), so a run that got here with a section held
             // its switch or its helper. Before, Done never said "New home screen on" and the TV record never got
@@ -1810,7 +1811,15 @@ class SetupMachine(
     private suspend fun switchedOffSoFar(plan: Plan): Int =
         (earlierRuns + plan.id).distinct().flatMap { id -> attempt { deps.ledger.disabledBy(id) }.getOrDefault(emptySet()) }.toSet().size
 
-    private fun homeCard(f: RunState.Finished, off: Int = 0): StopCard {
+    // `failure`: the step the switch stopped at, when it ended VERIFY_FAILED (logHomeSwitchFailure).
+    private fun homeCard(f: RunState.Finished, off: Int = 0, failure: LastFailure? = null): StopCard {
+        // Issues #3221, #3101, #2851: the TV ended the launcher's install and is clearly low on
+        // storage. The switch never opened, so neither the wizard nor another home screen app was
+        // the cause; the card says to free some space.
+        lowStorageMb(failure)?.let { free ->
+            wifiCard = false
+            return card(StopCase.HOME_UNKNOWN, f.plan.id, args = mapOf("free" to free), body = CopyKey.STOP_HOME_LOW_STORAGE_BODY)
+        }
         val other = otherLauncherName()
         // Issue #375: "Try with the wizard off" is never offered. The planner switches the wizard off
         // only inside the home screen switch, on a profile with the wizard quirk, and then this run
@@ -1852,6 +1861,14 @@ class SetupMachine(
         // card says how many things are still off and that the home screen is as it was.
         if (case == StopCase.HOME_TIMED_OUT && off > 0) return card(case, f.plan.id, args = mapOf("launcher" to (other ?: ""), "count" to off), body = CopyKey.STOP_HOME_TIMED_OUT_BODY_OFF)
         return card(case, f.plan.id, args = mapOf("launcher" to (other ?: "")))
+    }
+
+    // The free MB the launcher's failed install named (InstallStorage), when that is clearly low for its APK.
+    private fun lowStorageMb(failure: LastFailure?): Int? {
+        val op = failure?.op as? Op.InstallStream ?: return null
+        if (op.pkg != Launcher.pkg) return null
+        val free = InstallStorage.freeMbIn(failure.stderrHead) ?: return null
+        return free.takeIf { InstallStorage.low(it, op.blob.size) }
     }
 
     private fun wraithClaims(): Boolean {
@@ -1898,11 +1915,12 @@ class SetupMachine(
 
     // Issue #338: the step the home screen switch stopped at, with its exit code and the head of the
     // TV's answer, the way a pause line names its step (0.3.2 B3).
-    private suspend fun logHomeSwitchFailure(plan: Plan) {
-        val failed = attempt { deps.ledger.homeSwitchFailure(plan) }.getOrNull() ?: return
+    private suspend fun logHomeSwitchFailure(plan: Plan): LastFailure? {
+        val failed = attempt { deps.ledger.homeSwitchFailure(plan) }.getOrNull() ?: return null
         val code = failed.exit?.let { "exit $it" } ?: "failed"
         val head = LogCodes.clean(failed.stderrHead, 160).takeIf { it.isNotEmpty() }?.let { ": $it" }.orEmpty()
         deps.log.line("setup: home switch stopped at ${LogCodes.op(failed.op)}: $code$head")
+        return failed
     }
 
     private fun runLabel(r: RunState): String = RunLines.label(r)

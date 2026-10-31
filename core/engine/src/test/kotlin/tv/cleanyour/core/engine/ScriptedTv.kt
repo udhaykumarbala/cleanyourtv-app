@@ -322,6 +322,7 @@ class ScriptedProber(private val tv: ScriptedTv) : Prober, InstalledApkReader {
     var installedShaOverride: Sha256? = null  // what the D40 hash of an installed APK reads, when set
     var installedShaUnreadable = false        // the D40 hash reads nothing (RFC-INSTALL-1)
     var installedApkState: InstalledApk? = null   // what the second read says; null: it throws a ProbeException
+    var freeMb: Int? = 900                        // the free MB on /data; null: the read throws a ProbeException
     private var screenshots = 0
     override suspend fun facts(session: TvSession): DeviceFacts = tv.facts
     override suspend fun snapshot(session: TvSession, reason: SnapshotReason, onStage: (ProbeStage) -> Unit): Snapshot {
@@ -333,7 +334,7 @@ class ScriptedProber(private val tv: ScriptedTv) : Prober, InstalledApkReader {
     override suspend fun screenshot(session: TvSession): ByteArray? { calls += "screenshot"; screenshots++; return if (screenshotFails || screenshots > screenshotOkCount) null else tv.screenshot }
     override suspend fun fileSha256(session: TvSession, path: RemotePath): Sha256? = tv.files[path.absolute]?.let { sha256Of(it) }
     override suspend fun installedSha256(session: TvSession, pkg: PackageName): Sha256? { calls += "installedSha256 ${pkg.value}"; if (installedShaUnreadable) return null; installedShaOverride?.let { return it }; return tv.installed[pkg] ?: tv.packages[pkg]?.let { Sha256("9".repeat(64)) } }
-    override suspend fun freeDataMb(session: TvSession): Int = 900
+    override suspend fun freeDataMb(session: TvSession): Int { calls += "freeDataMb"; return freeMb ?: throw ProbeException(ProbeStage.FACTS, "df printed no /data row") }
     override suspend fun installRefusal(session: TvSession, noopApk: BlobRef): Boolean = false
     override suspend fun watchdogAlive(session: TvSession, token: RunToken): Boolean = token.value in tv.watchdogs
     override suspend fun bootId(session: TvSession): String = "boot-1"
