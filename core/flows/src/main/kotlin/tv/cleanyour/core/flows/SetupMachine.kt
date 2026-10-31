@@ -53,6 +53,7 @@ import tv.cleanyour.core.model.WizardDraft
 import tv.cleanyour.core.planner.Choices
 import tv.cleanyour.core.planner.DefaultPlanner
 import tv.cleanyour.core.planner.FireOs
+import tv.cleanyour.core.planner.GoogleTvSettingsKey
 import tv.cleanyour.core.planner.HomeSwitchRisk
 import tv.cleanyour.core.planner.TclGoogleTv
 import tv.cleanyour.core.planner.TclChina
@@ -149,6 +150,7 @@ data class SetupExtras(
     val homeBlock: HomeBlock = HomeBlock.NONE,   // why the switch is not offered, for S3's line (RF-PROFILES-63 P1, P2)
     val fireTv: Boolean = false,                 // issue #2: a Fire OS set, so S3's TV_REFUSES line names Fire TV, not the panel's brand
     val tclRemoteKeys: Boolean = false,          // issue #275: a TCL Google TV, so S3 says which remote buttons the new home screen loses
+    val googleTvSettingsKey: Boolean = false,    // issue #3059: another Google TV, so S3 says the remote's Settings button may stop working
     val connectError: ConnectError? = null,      // 0.3.6: the TV's port answered, the connection failed; the door's card and "Copy error"
     val staleNotice: Boolean = false,            // the TV changed under the plan; a new plan is shown
     val finishing: Finishing? = null,            // D7 "Switching debugging off... done."
@@ -863,7 +865,7 @@ class SetupMachine(
         val f = deviceFacts ?: return HomeBlock.NONE
         val p = profile()
         val fireOs = p?.platform == Platform.FIRE_OS || FireOs.isFireOs(f, snap)
-        mutableExtras.update { it.copy(fireTv = fireOs, tclRemoteKeys = TclGoogleTv.applies(f, snap)) }
+        mutableExtras.update { it.copy(fireTv = fireOs, tclRemoteKeys = TclGoogleTv.applies(f, snap), googleTvSettingsKey = GoogleTvSettingsKey.applies(f, snap)) }
         // Already ours (a re-run): there is no switch to skip, as in the planner's takeover.
         // 0.3.4 (issues #171, #187, #220): Home may answer to our package name with another key on
         // it (CleanYourTV's tool for computers installs its launcher under the same name). That is not

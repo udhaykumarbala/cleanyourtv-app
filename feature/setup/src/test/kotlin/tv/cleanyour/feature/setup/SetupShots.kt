@@ -440,6 +440,9 @@ object SetupShots {
         Shot("found_replaces_launcher") { Setup(found(fullPlan.copy(summary = fullPlan.summary.copy(replacesLauncher = true)))) },
         // Issue #275: a TCL Google TV, whose remote's gear, Netflix and YouTube buttons need Google TV's home.
         Shot("found_tcl_remote_keys") { Setup(found(), connected.copy(tvName = "TCL 55C755", tclRemoteKeys = true)) },
+        // Issue #3059: another Google TV, whose remote's Settings (gear) button may need Google TV's home.
+        // Taller, so the banner under the home screen row is in the picture.
+        Shot("found_google_tv_settings_key", 1100.dp) { Setup(found(), connected.copy(tvName = "Xiaomi MiTV-MOEU0", googleTvSettingsKey = true)) },
         // RFC-HELPER-1 (test build): the Home button helper chosen on a casting TV: the redirect's outcome, never "keeps its own".
         // #251: a Google TV cleaned before, nothing left to switch off: Customise still offers the helper.
         Shot("found_zero_kept_helper_offer") { Setup(found(zeroPlan.copy(summary = zeroPlan.summary.copy(homeScreenPossible = false))), connected.copy(tvName = "Google TV Streamer", brand = "Google", homePossible = false, homeBlock = HomeBlock.WIZARD_STAYS_ON, helperOffer = true)) },

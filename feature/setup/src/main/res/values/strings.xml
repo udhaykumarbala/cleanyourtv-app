@@ -82,6 +82,8 @@
     <!-- D36 (RF-LAUNCHER-240 F1): the plan replaces a home screen app signed with another key -->
     <string name="found_replaces_launcher">Replaces the home screen app already on this TV. Its look, app order, settings and card answers start fresh.</string>
     <string name="found_tcl_remote_keys">On TCL Google TV, the remote\'s Settings (gear), Netflix and YouTube buttons stop working with the new home screen. To get them back, choose Use the TV\'s own home screen on the Home screen page.</string>
+    <!-- Issue #3059: a Google TV of another brand than TCL, whose remote's Settings button may stop working -->
+    <string name="found_google_tv_settings_key">On Google TV, the remote\'s Settings (gear) button opens Google TV\'s own settings panel, which on many TVs also has the picture and sound settings for the input you\'re watching. With the new home screen it may stop working. To get it back, choose Use the TV\'s own home screen on the Home screen page.</string>
     <string name="found_no_lock">No screen lock on this phone, so we can\'t double-check it\'s you.</string>
     <!-- Unknown model (no profile) -->
     <string name="found_unknown_title">{count, plural, =0 {We didn\'t find anything we\'re sure about} one {We found one thing we\'re sure about} other {We found # things we\'re sure about}}</string>

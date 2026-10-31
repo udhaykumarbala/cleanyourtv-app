@@ -12,6 +12,7 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.ops.HomePlaceholder
 import tv.cleanyour.core.planner.FireOs
+import tv.cleanyour.core.planner.GoogleTvSettingsKey
 import tv.cleanyour.core.planner.HomeHelper
 import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.core.planner.PlanRequest
@@ -80,6 +81,7 @@ data class HomeScreenState(
     val tvSideSettings: Boolean = false,                // the TV's launcher has Launcher settings of its own (2.4, versionCode 5, and later)
     val notOnTv: NotOnTv? = null,                       // 0.3.3 D2: the new home screen is not on this TV; no dock or look rows
     val tclRemoteKeys: Boolean = false,                 // issue #275: a TCL Google TV, whose remote's gear, Netflix and YouTube buttons need its own home screen
+    val googleTvSettingsKey: Boolean = false,           // issue #3059: another Google TV, whose remote's Settings button may need its own home screen
     val endedLook: String? = null,                      // 0.4.0: the name of a dated look that has ended and is still on the TV
     val pictureId: String? = null,                      // 0.4.0: the saved picture choice (HomeChoice.picture)
     val pictures: List<PictureOption> = emptyList(),    // 0.4.0: the gallery of the Picture row
@@ -346,6 +348,7 @@ class HomeScreenMachine(
             homeScreenOurs = tv.launcher != null, columns = columns, updateTo = updateTo(tv, packages),
             tvSideSettings = (packages[Launcher.pkg]?.versionCode ?: 0) >= FIRST_WITH_TV_SETTINGS,
             notOnTv = notOnTv(tv, snap), tclRemoteKeys = snap != null && TclGoogleTv.applies(snap.facts, snap),
+            googleTvSettingsKey = snap != null && GoogleTvSettingsKey.applies(snap.facts, snap),
             endedLook = ended, pictureId = pictureId, pictures = pictureOptions(),
             ownPicture = own, ownDim = choice?.dim ?: OwnPicture.DEFAULT_DIM,
             waitingApps = waiting, earlierPicture = earlierLook?.photo?.ref, sent = sentPreview, sentStyle = drafts.styleOf(choice, tvLook),

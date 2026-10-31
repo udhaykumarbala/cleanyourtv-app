@@ -74,6 +74,11 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   to uninstall them, then run Setup again. It said another app was in charge of Home, and trying
   again with those apps still installed stopped the same way. The TV's own home screen still goes
   back as before.
+- On Google TVs of every brand other than TCL, What we found and Manage, Home screen now say before
+  the switch that the remote's Settings (gear) button opens Google TV's own settings panel (on many
+  TVs with the picture and sound settings of the input you're watching), that it may stop working
+  with the new home screen, and that Use the TV's own home screen brings it back (#3059). TCL Google
+  TVs keep their own warning, and nothing about the plan changes.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate

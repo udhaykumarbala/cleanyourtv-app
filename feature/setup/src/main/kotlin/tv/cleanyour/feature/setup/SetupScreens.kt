@@ -322,6 +322,9 @@ fun FoundScreen(
             // screen, so the person hears it before the switch, with the way back.
             // With the Home button helper the TV's own home screen stays Home, so they keep working.
             if (extras.tclRemoteKeys && !extras.helperOn) Banner(stringResource(R.string.found_tcl_remote_keys), BannerTone.INFO, Modifier.padding(top = 12.dp))
+            // Issue #3059: on other Google TVs the remote's Settings (gear) button opens Google TV's
+            // own settings panel, often with the input's picture and sound settings.
+            if (extras.googleTvSettingsKey && !extras.helperOn) Banner(stringResource(R.string.found_google_tv_settings_key), BannerTone.INFO, Modifier.padding(top = 12.dp))
         }
         if (extras.noScreenLock && !nothingToDo) Body(stringResource(R.string.found_no_lock), Modifier.padding(start = 4.dp, top = 12.dp))
         Gap(8.dp)

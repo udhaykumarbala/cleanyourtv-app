@@ -63,4 +63,21 @@ class PlatformFactsTest {
         assertFalse(TclGoogleTv.applies(facts.copy(brand = "TCL", manufacturer = "TCL"), null), "without a snapshot")
         assertFalse(TclGoogleTv.applies(facts.copy(brand = "Sony", manufacturer = "Sony"), gtv), "another maker's Google TV")
     }
+
+    // Issue #3059: every other Google TV hears about the remote's Settings (gear) button; TCL keeps its own warning.
+    @Test fun googleTvSettingsKeyOnEveryGoogleTvButTcl() {
+        val launcherx = Component(TclGoogleTv.GOOGLE_TV_HOME, ".home.HomeActivity")
+        val gtv = tv.copy(home = HomeResolution(launcherx, listOf(HomeClaimant(launcherx, 2))))
+        val installed = tv.copy(packages = tv.packages + (launcherx.pkg to tv.packages.values.first()))
+        val claimant = tv.copy(home = HomeResolution(null, listOf(HomeClaimant(launcherx, 2))))
+        assertTrue(GoogleTvSettingsKey.applies(facts.copy(brand = "Sony", manufacturer = "Sony"), gtv), "a Sony Google TV")
+        assertTrue(GoogleTvSettingsKey.applies(facts.copy(brand = "Xiaomi", manufacturer = "Xiaomi"), installed), "a Xiaomi Google TV, launcherx installed")
+        assertTrue(GoogleTvSettingsKey.applies(facts.copy(brand = "Philips", manufacturer = "TP Vision"), claimant), "a Philips Google TV, launcherx claiming Home")
+        assertFalse(GoogleTvSettingsKey.applies(facts.copy(brand = "TCL", manufacturer = "TCL"), gtv), "a TCL Google TV has its own warning")
+        assertFalse(GoogleTvSettingsKey.applies(facts.copy(brand = "Roku", manufacturer = "tcl"), installed), "TCL as the maker")
+        assertFalse(GoogleTvSettingsKey.applies(facts.copy(brand = "TCL", manufacturer = "Sharp"), gtv), "TCL as the brand")
+        assertFalse(GoogleTvSettingsKey.applies(facts.copy(brand = "Sony", manufacturer = "Sony"), tv), "an Android TV with the older home screen")
+        assertFalse(GoogleTvSettingsKey.applies(facts, tv), "the reference Xiaomi")
+        assertFalse(GoogleTvSettingsKey.applies(facts.copy(brand = "Sony", manufacturer = "Sony"), null), "without a snapshot")
+    }
 }

@@ -57,9 +57,24 @@ object TclGoogleTv {
     const val BRAND = "tcl"
     val GOOGLE_TV_HOME = PackageName("com.google.android.apps.tv.launcherx")
 
-    fun applies(facts: DeviceFacts, snapshot: Snapshot?): Boolean {
-        if (!BRAND.equals(facts.brand.trim(), ignoreCase = true) && !BRAND.equals(facts.manufacturer.trim(), ignoreCase = true)) return false
+    fun isTcl(facts: DeviceFacts): Boolean =
+        BRAND.equals(facts.brand.trim(), ignoreCase = true) || BRAND.equals(facts.manufacturer.trim(), ignoreCase = true)
+
+    // Google TV's home screen (launcherx) installed or answering Home.
+    fun hasGoogleTvHome(snapshot: Snapshot?): Boolean {
         val s = snapshot ?: return false
         return GOOGLE_TV_HOME in s.packages || s.home.resolved?.pkg == GOOGLE_TV_HOME || s.home.claimants.any { it.component.pkg == GOOGLE_TV_HOME }
     }
+
+    fun applies(facts: DeviceFacts, snapshot: Snapshot?): Boolean = isTcl(facts) && hasGoogleTvHome(snapshot)
+}
+
+// Every other Google TV set (issue #3059, Xiaomi MiTV-MOEU0 on Android 14): Google TV's own home
+// screen answers the remote's Settings (gear) button with its settings panel, which on many TVs
+// holds the picture and sound settings of the input being watched, so with the new home screen it
+// may stop working. The same test as TclGoogleTv without the brand, and never on a TCL set, which
+// keeps its own warning. Only a warning before the switch; it never changes what is planned.
+object GoogleTvSettingsKey {
+    fun applies(facts: DeviceFacts, snapshot: Snapshot?): Boolean =
+        !TclGoogleTv.isTcl(facts) && TclGoogleTv.hasGoogleTvHome(snapshot)
 }
