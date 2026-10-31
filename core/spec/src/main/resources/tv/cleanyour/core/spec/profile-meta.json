@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "upstreamCommit": "b06ab21",
+  "upstreamCommit": "0cb195a",
   "profiles": {
     "aipro2k": {
       "match": { "models": [], "devices": ["dongnae"], "brand": "Expressluck", "sdkMin": 34, "sdkMax": 34, "fingerprintPrefix": null },
@@ -947,7 +947,8 @@
         "Background services that are not needed": { "category": "brand", "ask": false },
         "Google TV ad, preload and tracking services": { "category": "ads", "ask": false },
         "Unused on a television": { "category": "preloads", "ask": false },
-        "Launcher phase only. Google TV's setup wizard also claims android.intent.category.HOME (priority 1,": { "category": "home", "ask": false }
+        "Launcher phase only. Google TV's setup wizard also claims android.intent.category.HOME (priority 1,": { "category": "home", "ask": false },
+        "75U75N owner's choices, all reversible: apps that unit's owner does not use": { "category": "preloads", "ask": true }
       },
       "packages": {
         "com.vt.hishow": { "category": "preloads", "ask": false },
@@ -1213,7 +1214,8 @@
         "India-specific preloads (never asked for)": { "category": "preloads", "ask": false },
         "Telemetry and feedback": { "category": "tracking", "ask": false },
         "Ambient screensaver (replaced by the ClockDream screensaver in launcher/)": { "category": "screensaver", "ask": true },
-        "Stock home recommendation rows; disable after the new launcher owns Home": { "category": "ads", "ask": false }
+        "Stock home recommendation rows; disable after the new launcher owns Home": { "category": "ads", "ask": false },
+        "Also disabled on Unit 2 (Motorola)": { "category": "preloads", "ask": true }
       },
       "packages": {
         "com.smartdevice.leanbacklauncher.customizer": { "category": "ads", "ask": true },
@@ -2980,6 +2982,27 @@
         "com.android.providers.calendar": { "category": "other", "ask": true },
         "com.android.adservices.api": { "category": "tracking", "ask": false },
         "com.android.ondevicepersonalization.services": { "category": "tracking", "ask": false }
+      }
+    },
+    "strong-leap-s3": {
+      "match": { "models": ["4K Google TV Box"], "devices": ["YDA"], "brand": "SkyworthDigital", "sdkMin": 34, "sdkMax": 34, "fingerprintPrefix": null },
+      "platform": "GOOGLE_TV",
+      "stockLaunchers": ["com.google.android.apps.tv.launcherx"],
+      "liveTv": null,
+      "setupWraith": "com.google.android.tungsten.setupwraith",
+      "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
+      "neverDisable": ["com.sdt.globalkey", "com.sdt.vendor", "com.mft.rcupair", "com.mft.frontpanelledsservice", "com.sdt.ota", "com.sdt.upgrade", "com.google.android.tv.dfuservice", "com.google.android.tv.remote.service", "com.google.android.apps.tv.dreamx", "com.sdt.deviceinfo", "com.sdt.customization"],
+      "suggestedDock": [],
+      "tested": { "by": "enricoottavoita (PR #1917)", "firmware": "UKG3.260128.001.C3.0.12_20260904", "daysLivedWith": 7, "rebootTested": true },
+      "groups": {
+        "Privacy Sandbox / ads framework": { "category": "ads", "ask": false },
+        "Vendor test, QA and feedback": { "category": "demo", "ask": false },
+        "Google extras": { "category": "preloads", "ask": false },
+        "Only to let a replacement launcher take Home: disable launcherx only after the replacement survived a reboot": { "category": "home", "ask": false }
+      },
+      "packages": {
+        "com.amlogic.voicesubtitle": { "category": "accessibility", "ask": true },
+        "com.android.tv.feedbackconsent": { "category": "tracking", "ask": false }
       }
     },
     "tcl-40s5400a": {

@@ -24,8 +24,8 @@ class ProfilesTest {
     private fun profile(folder: String) = DebloatTxtParser.parse(examples.first { it.folder == folder }.debloatTxt, folder)
 
     @Test fun everyConvertedUpstreamExampleParsesWithCuratedMetadata() {
-        assertEquals(316, upstream.size)
-        assertEquals(173, examples.size)
+        assertEquals(324, upstream.size)
+        assertEquals(174, examples.size)
         for (e in examples) {
             val profile = DebloatTxtParser.parse(e.debloatTxt, e.folder)
             assertEquals(e.folder, profile.id)
@@ -53,7 +53,7 @@ class ProfilesTest {
         val (bundle, problems) = ProfileConverter.convert(
             File(Fixtures.upstreamDir, "examples"),
             File(Fixtures.repoRoot, "core/spec/src/main/resources/tv/cleanyour/core/spec/profile-meta.json"),
-            "b06ab21",
+            "0cb195a",
             unconverted,
         )
         assertEquals(emptyList(), problems)
@@ -65,7 +65,7 @@ class ProfilesTest {
     @Test fun theUnconvertedListIsPinnedToTheSubmodule() {
         val meta = ProfileMeta.decode(File(Fixtures.repoRoot, "core/spec/src/main/resources/tv/cleanyour/core/spec/profile-meta.json").readText())
         assertEquals(upstream.map { it.folder }.filter { it !in meta.profiles }.toSet(), unconverted)
-        assertEquals(143, unconverted.size)
+        assertEquals(150, unconverted.size)
         val listed = unconvertedFile.readLines().filter { it.isNotBlank() && !it.startsWith("#") }
         assertEquals(listed.sorted(), listed, "one folder per line, sorted")
         assertTrue('\u2014' !in unconvertedFile.readText() && "-".repeat(2) !in unconvertedFile.readText())
@@ -327,6 +327,9 @@ class ProfilesTest {
             // The BYINTEK T5 Max is the Wanbo X5 Pro stick sold under another name: the brand decides.
             facts("4K Google TV Stick", "YYT", "BYINTEK", 34, manufacturer = "SkyworthDigital") to "byintek-t5-max",
             facts("4K Google TV Stick", "YYT", "SkyworthDigital", 34) to "wanbo-x5-pro",
+            // The Strong LEAP-S3 box (YDA board) is sold as Strong and as Thomson; the maker, SkyworthDigital, decides.
+            facts("4K Google TV Box", "YDA", "Strong", 34, manufacturer = "SkyworthDigital") to "strong-leap-s3",   // #399, #693, #813
+            facts("4K Google TV Box", "YDA", "Thomson", 34, manufacturer = "SkyworthDigital") to "strong-leap-s3",   // #601
             facts("Smart TV", "unknown", "TCL", 30) to null,
             // The shipped tcl-65c725 and tcl-g05-google-tv still match the family name alone and tie;
             // the earlier id order stands until the resolver policy (ruling 1). tcl-43c645 is parked.
@@ -519,7 +522,7 @@ class ProfilesTest {
     @Test fun bundledProfilesEqualAFreshParse() {
         // Test build: the candidate lists (CandidatesTest) come after the upstream profiles.
         val bundle = BundledProfileSource.bundled.let { b -> b.copy(profiles = b.profiles.filter { !it.isCandidate }) }
-        assertEquals("b06ab21", bundle.upstreamCommit)
+        assertEquals("0cb195a", bundle.upstreamCommit)
         assertEquals(examples.map { it.folder }, bundle.profiles.map { it.id })
         for (e in examples) assertEquals(DebloatTxtParser.parse(e.debloatTxt, e.folder), bundle.profiles.first { it.id == e.folder }, e.folder)
         assertEquals(SureSetGenerator.generate(bundle.profiles, BundledFactsTable.bundled), bundle.sureSets)
