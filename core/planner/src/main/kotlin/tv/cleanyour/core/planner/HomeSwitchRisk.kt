@@ -144,11 +144,15 @@ object HomeSwitchRisk {
         // and #2925 (0.4.8-beta1, Home path R0), two testers on two phones, no failure. "MI" is a fengmi (Formovie)
         // brand string, not XIAOMI_MAKERS, so only this model and set.
         Graduated(setOf("MI"), 28..28, models = setOf("MiProjM05"), devices = setOf("eva"), why = "MI MiProjM05 projector, Android 9 (0.4.8)"),
+        // Strong LEAP-S1 (LAS, SkyworthDigital) on Android 14: #1471 (0.4.7-beta1) and #3716 (0.4.8-beta1), the box of the MECOOL row.
+        Graduated(setOf("Strong"), 34..34, models = setOf("LEAP-S1"), devices = setOf("LAS"), why = "Strong LEAP-S1, Android 14 (0.4.8)"),
+        // Toshiba Smart TV (hamamatsucho, Hisense) on Android 11: #2092 (0.4.7-beta3) and #3724 (0.4.8-beta1).
+        Graduated(setOf("Toshiba"), 30..30, devices = setOf("hamamatsucho"), why = "Toshiba hamamatsucho, Android 11 (0.4.8)"),
         // Not graduated in 0.4.7 (research/release-0.4.7/confirmations.md, R0-GRADUATION.md): TCL on Android 11 and
         // realme on Android 14 (a tester's home screen did not hold: #1799, #2061, #2082; #2126); Kogan on Android 11
         // (#881, #138: #138 is listed against it in R0-GRADUATION.md, and Changhong boards failed under realme (#2126)
-        // and TD Systems (#577) on Android 14); and SHARP on Android 11 and 14, Hisense on Android 11, Strong, THOMSON and
-        // google on Android 14, whose count was met with Home button helper confirmations
+        // and TD Systems (#577) on Android 14); and SHARP on Android 11 and 14, Hisense on Android 11, Strong (other than the
+        // LEAP-S1, from 0.4.8), THOMSON and google on Android 14, whose count was met with Home button helper confirmations
         // (and, for SHARP on Android 11, #17's own launcher app) but has under 2 for R0.
     )
 

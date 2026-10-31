@@ -2,13 +2,15 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
-## 0.4.8 (unreleased)
+## 0.4.8 (2026-11-03)
 
-### The new home screen reaches two more TVs in the release
-- The Xiaomi MiTV-MOEU1 on Android 14 (#3099, #3312) and the MI MiProjM05 projector on Android 9
-  (#1647, #2925) get the new home screen with the setup wizard left on, after two testers each said
-  it stayed after a restart. Only these models: other Android 14 Xiaomi models and other MI
-  projectors keep their home screen until their own testers confirm it.
+### The new home screen reaches four more TVs in the release
+- The Xiaomi MiTV-MOEU1 on Android 14 (#3099, #3312), the MI MiProjM05 projector on Android 9
+  (#1647, #2925), the Strong LEAP-S1 box on Android 14 (#1471, #3716) and the Toshiba Smart TV
+  (hamamatsucho) on Android 11 (#2092, #3724) get the new home screen with the setup wizard left on,
+  after two testers each said it stayed after a restart. Only these models: other Android 14 Xiaomi
+  models, other MI projectors, other Strong boxes and other Toshiba sets keep their home screen until
+  their own testers confirm it.
 
 ### The new home screen installs again on Google TVs
 - On Google TVs with Android 11 and 12 (Sony BRAVIA, TCL, Xiaomi, Hisense, the TiVo Stream 4K), the home
@@ -81,8 +83,9 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   TVs keep their own warning, and nothing about the plan changes.
 
 ### Test builds only (not in this release)
-- 0.4.8-beta1 and 0.4.8-beta2 have the switches of the 0.4.7 test builds on: the Home button helper,
-  the candidate lists, and the new home screen with the setup wizard left on for every brand.
+- 0.4.8-beta1 and 0.4.8-beta2 had the switches of the 0.4.7 test builds on: the Home button helper,
+  the candidate lists, and the new home screen with the setup wizard left on for every brand. They stay
+  in test builds; 0.4.8 has them off.
 
 ## 0.4.7 (2026-10-30)
 
