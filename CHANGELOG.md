@@ -63,6 +63,11 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   the app now reads how much space the TV has left and the report's step line says it ("[TV storage:
   312 MB free]"). When the TV is clearly low on space (under 200 MB, or under twice the size of the
   app), the card says so and asks you to free some space on the TV, then run Setup again.
+- When the switch stopped because Android showed its "which home screen?" chooser (#3301, #3305), the
+  card now names the home screen apps you installed that answer Home beside the new one and asks you
+  to uninstall them, then run Setup again. It said another app was in charge of Home, and trying
+  again with those apps still installed stopped the same way. The TV's own home screen still goes
+  back as before.
 
 ### Test builds only (not in this release)
 - 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate

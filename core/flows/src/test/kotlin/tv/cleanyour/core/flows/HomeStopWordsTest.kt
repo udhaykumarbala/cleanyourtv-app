@@ -7,7 +7,14 @@ import tv.cleanyour.core.engine.HomeOutcome
 import tv.cleanyour.core.engine.JournalRecord
 import tv.cleanyour.core.engine.RunStatus
 import tv.cleanyour.core.model.BlobRef
+import tv.cleanyour.core.model.Component
+import tv.cleanyour.core.model.EnabledState
+import tv.cleanyour.core.model.HomeClaimant
 import tv.cleanyour.core.model.Op
+import tv.cleanyour.core.model.PackageName
+import tv.cleanyour.core.model.PackageState
+import tv.cleanyour.core.model.Prior
+import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.testing.fixtures.Samples
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -75,5 +82,59 @@ class HomeStopWordsTest {
             assertEquals(StopCase.HOME_UNKNOWN, card.case, "free $free")
             assertEquals("STOP_HOME_UNKNOWN_BODY{launcher=}", card.body, "free $free")
         }
+    }
+
+    private val projectivy = Component(PackageName("com.spocky.projengmenu"), ".ui.home.MainActivity")
+    private val wolf = Component(PackageName("com.wolf.firelauncher"), ".screens.launcher.LauncherActivity")
+    private val factory = Component(PackageName("com.duokan.factorytest"), ".FactoryLauncher")
+
+    // Issues #3301, #3305 (Xiaomi MiTV-MOOQ0, Android 10): two home screen apps the person installed
+    // claim Home beside ours, so set-home-activity left Android's chooser in charge and the check read
+    // it. The card names them (the label when the app has one, else the package name).
+    private fun chooser(h: Harness, verify: String) {
+        h.prober.snapshotFor = { r ->
+            Samples.miTvSnapshot(reason = r).let { s ->
+                s.copy(
+                    home = s.home.copy(claimants = s.home.claimants + listOf(HomeClaimant(Launcher.home, 0), HomeClaimant(projectivy, 0), HomeClaimant(wolf, 0), HomeClaimant(factory, 0))),
+                    packages = s.packages + mapOf(
+                        projectivy.pkg to PackageState(EnabledState.ENABLED, false, 1, null, false, false, "Projectivy Launcher", false),
+                        wolf.pkg to PackageState(EnabledState.ENABLED, false, 1, null, false, false, null, false),
+                        factory.pkg to PackageState(EnabledState.ENABLED, true, 1, null, false, false, null, false),
+                    ),
+                )
+            }
+        }
+        h.setupPlan = h.plan(listOf(Op.Disable(adPkg)), takeover = true)
+        val setHome = h.setupPlan.steps.single { it.op is Op.SetHome }
+        h.engine.onStart = { p ->
+            h.journal.append(JournalRecord.Begin(p.id, setHome.index, setHome.op, emptyList(), Prior(), Samples.NOW_MS))
+            h.journal.append(JournalRecord.Failed(p.id, setHome.index, null, verify, ""))
+            h.journal.append(JournalRecord.Rollback(p.id, p.sections.single().from))
+            finish(p, RunStatus.COMPLETED_WITH_SKIPS, HomeOutcome.VERIFY_FAILED)
+        }
+    }
+
+    @Test fun issue3305TheChooserCardNamesTheOtherHomeScreenApps() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        chooser(h, "verify: expected ${Launcher.home.flat}, got android/com.android.internal.app.ResolverActivity")
+        val card = stopCard(h)
+        // The case and its buttons as before (the first other app is still the one "Keep" names).
+        assertEquals(StopCase.HOME_OTHER_LAUNCHER, card.case)
+        assertTrue(card.body.startsWith("STOP_HOME_CHOOSER_BODY{"), card.body)
+        assertTrue("count=2" in card.body && "names=Projectivy Launcher, com.wolf.firelauncher" in card.body, card.body)
+        assertTrue(card.primary.startsWith("STOP_HOME_OTHER_LAUNCHER_PRIMARY"), card.primary)
+        // The person's apps never reach the log.
+        assertTrue(h.logLines.none { "Projectivy" in it || "projengmenu" in it || "firelauncher" in it }, h.logLines.joinToString("\n"))
+    }
+
+    // A check that read something else is not the chooser: the card keeps its words.
+    @Test fun anotherVerifyKeepsTheWords() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        chooser(h, "verify: expected ${Launcher.home.flat}, got ${projectivy.flat}")
+        val card = stopCard(h)
+        assertEquals(StopCase.HOME_OTHER_LAUNCHER, card.case)
+        assertTrue(card.body.startsWith("STOP_HOME_OTHER_LAUNCHER_BODY"), card.body)
     }
 }

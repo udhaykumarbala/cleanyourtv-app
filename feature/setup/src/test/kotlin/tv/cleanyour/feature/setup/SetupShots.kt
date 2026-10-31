@@ -578,6 +578,12 @@ object SetupShots {
             Stopped(home(StopCase.HOME_UNKNOWN, R.string.stop_home_unknown_title, R.string.stop_home_low_storage_body,
                 R.string.stop_home_unknown_primary, R.string.stop_home_unknown_secondary, mapOf("free" to 120)), connected.copy(commands = commands))
         },
+        // Issues #3301, #3305: home screen apps the person installed left Android's chooser in charge.
+        Shot("stopped_home_chooser") {
+            Stopped(home(StopCase.HOME_OTHER_LAUNCHER, R.string.stop_home_other_launcher_title, R.string.stop_home_chooser_body,
+                R.string.stop_home_other_launcher_primary, R.string.stop_home_other_launcher_secondary,
+                mapOf("launcher" to "Projectivy Launcher", "names" to "Projectivy Launcher, com.wolf.firelauncher", "count" to 2)), connected.copy(commands = commands))
+        },
         // Issue #629: a Settings page was open on the TV during the check.
         Shot("stopped_home_settings_open") {
             Stopped(home(StopCase.HOME_SETTINGS_OPEN, R.string.stop_home_unknown_title, R.string.stop_home_settings_open_body,

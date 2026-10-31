@@ -87,6 +87,7 @@ import tv.cleanyour.core.store.BlobStore
 import tv.cleanyour.core.store.Clock
 import tv.cleanyour.core.store.DocumentStore
 import tv.cleanyour.core.store.GatePass
+import tv.cleanyour.core.ops.HomePlaceholder
 import tv.cleanyour.core.ops.Transfer
 import tv.cleanyour.core.store.SnapshotStore
 import tv.cleanyour.core.store.TvRepository
@@ -1860,6 +1861,14 @@ class SetupMachine(
         // QA of 0.4.5: "Your TV is as it was" only when nothing stayed switched off; otherwise the
         // card says how many things are still off and that the home screen is as it was.
         if (case == StopCase.HOME_TIMED_OUT && off > 0) return card(case, f.plan.id, args = mapOf("launcher" to (other ?: ""), "count" to off), body = CopyKey.STOP_HOME_TIMED_OUT_BODY_OFF)
+        // Issues #3301, #3305: Home answered with Android's chooser because home screen apps the person
+        // installed tie with ours; the card names them and says what to do. Only the words change:
+        // the run rolled back as before, and the buttons are the case's own.
+        if (case == StopCase.HOME_OTHER_LAUNCHER || case == StopCase.HOME_UNKNOWN) {
+            val theirs = chooserApps(failure)
+            if (theirs.isNotEmpty()) return card(case, f.plan.id, body = CopyKey.STOP_HOME_CHOOSER_BODY,
+                args = mapOf("launcher" to (other ?: ""), "names" to theirs.joinToString(", "), "count" to theirs.size))
+        }
         return card(case, f.plan.id, args = mapOf("launcher" to (other ?: "")))
     }
 
@@ -1869,6 +1878,21 @@ class SetupMachine(
         if (op.pkg != Launcher.pkg) return null
         val free = InstallStorage.freeMbIn(failure.stderrHead) ?: return null
         return free.takeIf { InstallStorage.low(it, op.blob.size) }
+    }
+
+    // The home screen apps the person installed that claim Home, when the switch's check read the
+    // chooser: not ours, not the TV's own, not a system app and not a placeholder (HomePlaceholder).
+    // Each by its label when the app has one, else its package name. Never logged: the person's
+    // apps stay out of the log and the report.
+    private fun chooserApps(failure: LastFailure?): List<String> {
+        if (failure == null || (failure.op !is Op.SetHome && failure.op !is Op.VerifyHome)) return emptyList()
+        if (!failure.stderrHead.endsWith("got $HOME_CHOOSER")) return emptyList()
+        val s = snapshot ?: return emptyList()
+        val stock = profile()?.stockLaunchers?.map { it.pkg }.orEmpty().toSet()
+        return s.home.claimants.map { it.component }
+            .filter { c -> c.pkg != Launcher.pkg && c.pkg !in stock && s.packages[c.pkg]?.system != true && !HomePlaceholder.isPlaceholder(c) }
+            .map { it.pkg }.distinct()
+            .map { pkg -> s.packages[pkg]?.label?.trim()?.takeIf { it.isNotEmpty() } ?: pkg.value }
     }
 
     private fun wraithClaims(): Boolean {
@@ -1997,6 +2021,9 @@ class SetupMachine(
         }
     }
 }
+
+// What the home check reads when Android's chooser answers Home (issues #3301, #3305).
+private const val HOME_CHOOSER = "android/com.android.internal.app.ResolverActivity"
 
 // The TV's settings apps (issue #629), as the engine's home check names them.
 private val SETTINGS_PACKAGES = setOf("com.android.tv.settings", "com.android.settings")

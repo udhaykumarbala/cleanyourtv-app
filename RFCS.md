@@ -261,4 +261,6 @@ free]" to the failure; a read that fails leaves the words as before and logs one
 (`FreeDataParser`) now takes only 1K-block output (the header says so), the busybox row wrapped after
 a long filesystem name, and numbers only. `InstallStorage` (`:core:engine`) holds the words and the
 "clearly low" rule (under 200 MB or under twice the APK), which the stop card uses for its new body.
-One `CopyKey` is added.
+The chooser card of #3301 and #3305 is words only: `SetupMachine` reads the check's "got
+android/com.android.internal.app.ResolverActivity" from the journal and names the Home claimants the
+person installed on the card (never in the log or the report). Two `CopyKey`s are added.
