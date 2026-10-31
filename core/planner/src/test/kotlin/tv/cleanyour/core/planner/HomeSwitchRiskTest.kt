@@ -591,11 +591,13 @@ class HomeSwitchRiskTest {
             Row(setOf("Homatics"), 34..34, emptySet(), emptySet(), emptySet()),
             Row(setOf("MECOOL"), 34..34, emptySet(), emptySet(), emptySet()),
             Row(setOf("Sony"), 26..26, emptySet(), emptySet(), emptySet()),
+            Row(setOf("Xiaomi", "Redmi"), 34..34, setOf("MiTV-MOEU1"), emptySet(), emptySet()),
+            Row(setOf("MI"), 28..28, setOf("MiProjM05"), setOf("eva"), emptySet()),
         ), HomeSwitchRisk.GRADUATED.map { Row(it.makers, it.sdks, it.models, it.devices, it.excludedDevices) })
         for (g in HomeSwitchRisk.GRADUATED) {
             assertTrue(g.makers.isNotEmpty() && !g.sdks.isEmpty() && g.sdks.first >= 26 && g.why.isNotBlank(), g.toString())
-            // A 0.4.7 row is one Android version: a new version needs its own confirmations.
-            if ("(0.4.7)" in g.why) assertEquals(g.sdks.first, g.sdks.last, g.toString())
+            // A 0.4.7 or 0.4.8 row is one Android version: a new version needs its own confirmations.
+            if ("(0.4.7)" in g.why || "(0.4.8)" in g.why) assertEquals(g.sdks.first, g.sdks.last, g.toString())
         }
         // A brand with no row is BRAND, whatever its version.
         val philips = axso1.copy(brand = "Philips", manufacturer = "TPV", device = "unknown")
@@ -618,6 +620,8 @@ class HomeSwitchRiskTest {
         "#2396" to graduatedTv("LEAP-S1", "LAS", 34, "MECOOL/HP4035-Mecool/LAS:14/UKG3.240613.001/C1.4.1_20251218:user/release-keys", "MECOOL", "SkyworthDigital"),
         "#2522" to graduatedTv("4K Android TV Box", "YYC", 34, "MECOOL/HP4414-MECOOL/YYC:14/UKG3.250115.001/C1.2.7_20250822:user/release-keys", "MECOOL", "SkyworthDigital"),
         "#1219 #1585" to graduatedTv("BRAVIA 4K GB ATV3", "BRAVIA_ATV3_4K", 26, "Sony/BRAVIA_ATV3_4K_EU/BRAVIA_ATV3_4K:8.0.0/OPR2.170623.027.S34/665751:user/release-keys", "Sony", "Sony"),
+        "#3099 #3312" to reported("MiTV-MOEU1", "lalaland", 34, "Xiaomi/lalaland/lalaland:14/UKN1.240806.017/V816.0.25.12.1.UOEMBTV:user/release-keys"),
+        "#1647 #2925" to graduatedTv("MiProjM05", "eva", 28, "MI/eva/eva:9/PQ3B.190705.003/4185:user/release-keys", "MI", "fengmi"),
     )
     // The two Android 8 sets reported tvlauncher at priority 0, the others at 2.
     private fun confirmedTv(f: DeviceFacts, extra: List<HomeClaimant> = emptyList(), home: Component? = tvlauncher): Snapshot =
@@ -700,6 +704,10 @@ class HomeSwitchRiskTest {
             Triple("Xiaomi 14, another model (#884, the helper)", reported("MiTV-MOOR2", "venom", 34, "Xiaomi/venom/venom:14/1:user/release-keys"), scope),
             Triple("Xiaomi 12 (#1273 failed)", reported("MIBOX4", "oneday", 31, "Xiaomi/oneday/oneday:12/1:user/release-keys"), scope),
             Triple("Xiaomi 13, the MZTU1's model", reported("MiTV-MZTU1", "stepup", 33, "Xiaomi/stepup/stepup:13/1:user/release-keys"), scope),
+            Triple("Xiaomi 14, the MOEU0 beside the MOEU1", reported("MiTV-MOEU0", "ladybird", 34, "Xiaomi/ladybird/ladybird:14/1:user/release-keys"), scope),
+            Triple("Xiaomi 13, the MOEU1's model", reported("MiTV-MOEU1", "lalaland", 33, "Xiaomi/lalaland/lalaland:13/1:user/release-keys"), scope),
+            Triple("MI on 9, another fengmi projector", graduatedTv("MiProjM02", "almond", 28, "MI/almond/almond:9/1:user/release-keys", "MI", "fengmi"), scope),
+            Triple("MI MiProjM05 on 11", graduatedTv("MiProjM05", "eva", 30, "MI/eva/eva:11/1:user/release-keys", "MI", "fengmi"), scope),
         )
         for ((why, f, blocker) in off) {
             assertTrue(!HomeSwitchRisk.graduated(f), why)

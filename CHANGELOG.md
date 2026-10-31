@@ -4,6 +4,12 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 
 ## 0.4.8 (unreleased)
 
+### The new home screen reaches two more TVs in the release
+- The Xiaomi MiTV-MOEU1 on Android 14 (#3099, #3312) and the MI MiProjM05 projector on Android 9
+  (#1647, #2925) get the new home screen with the setup wizard left on, after two testers each said
+  it stayed after a restart. Only these models: other Android 14 Xiaomi models and other MI
+  projectors keep their home screen until their own testers confirm it.
+
 ### The new home screen installs again on Google TVs
 - On Google TVs with Android 11 and 12 (Sony BRAVIA, TCL, Xiaomi, Hisense, the TiVo Stream 4K), the home
   screen switch could stop at "Install com.gathin.tvhome" with "got no readable apk", run after run
