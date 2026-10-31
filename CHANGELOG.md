@@ -81,8 +81,8 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   TVs keep their own warning, and nothing about the plan changes.
 
 ### Test builds only (not in this release)
-- 0.4.8-beta1 has the switches of the 0.4.7 test builds on: the Home button helper, the candidate
-  lists, and the new home screen with the setup wizard left on for every brand.
+- 0.4.8-beta1 and 0.4.8-beta2 have the switches of the 0.4.7 test builds on: the Home button helper,
+  the candidate lists, and the new home screen with the setup wizard left on for every brand.
 
 ## 0.4.7 (2026-10-30)
 
