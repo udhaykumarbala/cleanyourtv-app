@@ -350,8 +350,17 @@ object HomeSwitchRisk {
         val homeWizards = homeWizards(profile, snapshot)
         if (profile == null) {
             if (r0) return null
+            // 0.5.0 (issue #4077, a RockChip box no list knows, Google's wizard not on it): AOSP's first-run
+            // app (com.android.provision) claimed Home at 1 under tvlauncher (2), so with tvlauncher off it
+            // took Home, the switch rolled back and "Use the new home screen" ran into the same wall.
+            // Without a list a first-run app of any name (isWizard) that claims Home and is on counts as
+            // the setup wizard does: the switch never switches it off. As in homeWizards, one the snapshot
+            // does not list counts, the safe side.
+            val firstRunClaims = snapshot.home.claimants.map { it.component.pkg }.any { p ->
+                isWizard(p) && snapshot.packages[p]?.enabled.let { it != EnabledState.DISABLED_USER && it != EnabledState.DISABLED }
+            }
             val wizard = snapshot.packages.keys.firstOrNull { it.value in Denylist.setupWizards && on(it) }
-                ?: return if (homeWizards.isEmpty()) null else Risk.WIZARD_STAYS_ON
+                ?: return if (homeWizards.isEmpty() && !firstRunClaims) null else Risk.WIZARD_STAYS_ON
             return if (wizardWifi == WizardWifi.OWNER && on(wizard)) Risk.WIZARD_WIFI else Risk.WIZARD_STAYS_ON
         }
         val allowed = profile.setupWraith?.takeIf { Denylist.isWizardAllowed(it, profile) }
