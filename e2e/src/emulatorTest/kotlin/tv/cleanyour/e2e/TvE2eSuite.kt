@@ -13,6 +13,7 @@ import tv.cleanyour.e2e.scenarios.S07RebootAndReconnect
 import tv.cleanyour.e2e.scenarios.S08DebugOff
 import tv.cleanyour.e2e.scenarios.S09CurtainSetup
 import tv.cleanyour.e2e.scenarios.S10HomeHelper
+import tv.cleanyour.e2e.scenarios.S11SettingsPush
 
 // The TV e2e scenarios of PRODUCT-SPEC 7.1 in the order one emulator session runs them. Order
 // matters: S07 reboots the TV and S08 switches debugging off for good, so both come last.
@@ -26,6 +27,7 @@ import tv.cleanyour.e2e.scenarios.S10HomeHelper
     S04PushAndInstall::class,
     S05TakeoverWithCrashingLauncher::class,
     S06ThemePush::class,
+    S11SettingsPush::class,   // 0.5.0 Make it yours: the settings document without the wallpaper step
     S09CurtainSetup::class,   // RFC-CURTAIN-1; before the reboot and debug_off, which end the session's TV
     S10HomeHelper::class,     // RFC-HELPER-1 (test build): the Home button helper
     S07RebootAndReconnect::class,
