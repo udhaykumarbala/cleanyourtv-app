@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.ZoneId
 import tv.cleanyour.core.model.BlobRef
 import tv.cleanyour.core.model.PackageName
+import tv.cleanyour.core.spec.WidgetsSettings
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.GlowChoice
 import tv.cleanyour.core.spec.LauncherConfigDoc
@@ -40,6 +41,8 @@ internal data class LookContext(
     // 0.4.7: the dock is the person's own or from before 0.4.7 (HomeChoice.dockChosen), so the bytes
     // keep fill_dock false; false, a dock the app picked, lets the TV fill free spaces (Look.docOf).
     val dockChosen: Boolean = true,
+    // 0.5.0: the TV's Widgets as its file has them, for the previews (LookPreview.withWidgets); null draws the look's own.
+    val widgets: WidgetsSettings? = null,
 ) {
     val dock: List<PackageName> get() = pushDock ?: apps.map { it.pkg }
 }
@@ -367,6 +370,7 @@ internal class LookDrafts(
         runCatching {
             val now = Instant.ofEpochMilli(clock.nowMs()).atZone(ZoneId.systemDefault())
             LookPreview.of(it, wallpaper, ctx.apps, ctx.others, now.toLocalDate(), now.hour * 60 + now.minute, ctx.tv.hasInputs)
+                .let { p -> ctx.widgets?.let { w -> p.withWidgets(w) } ?: p }
         }.getOrNull()
     }
 
@@ -408,9 +412,10 @@ internal class LookDrafts(
     }
 
     // A saved choice's preview (the Home page's Look row) from the bytes it sends.
-    fun previewOf(choice: HomeChoice, dock: List<AppChoice>, others: List<AppChoice>, cards: Boolean, mine: BlobRef?, tv: LookTv): LookPreview? =
+    fun previewOf(choice: HomeChoice, dock: List<AppChoice>, others: List<AppChoice>, cards: Boolean, mine: BlobRef?, tv: LookTv,
+        widgets: WidgetsSettings? = null): LookPreview? =
         runCatching { docOf(choice, dock.map { it.pkg }, cards, mine, tv) }.getOrNull()?.let { (doc, wallpaper) ->
-            previewOf(runCatching { encoder.encode(doc) }.getOrNull(), wallpaper, LookContext(dock, others, tv = tv))
+            previewOf(runCatching { encoder.encode(doc) }.getOrNull(), wallpaper, LookContext(dock, others, tv = tv, widgets = widgets))
         }
 
     // A saved choice's style and picture as the Home page's Look row names them.

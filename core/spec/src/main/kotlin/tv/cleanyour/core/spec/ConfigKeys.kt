@@ -19,6 +19,14 @@ import tv.cleanyour.core.spec.ConfigKeyType.STRING_LIST
 // home_long_press_home and power_on_home_always came with b06ab21, after the v3.0.0 tag, under the
 // same versionCode 9: a TV on the v3.0.0 release ignores them, which no versionCode can tell.
 //
+// 0.5.0: launcher 3.3 (d7b0d4a5, versionCode 12), bundled since 0.4.9-beta1, reads 11 more keys: v3.1.0
+// (versionCode 10) added inputs_connected_only, v3.2.0 (11) open_on_start_network_wait, icon_only_vpn,
+// library_excluded_apps, game_day and seasonal_skin, v3.3.0 (12) open_on_start_on_wake, back_opens_clock,
+// glow_snap and clock_format, and d7b0d4a5 (still 12) inputs_cec_state_only. The vendored v30 reader is that
+// launcher now. The top bar's look and the header rows (icon_only_buttons, icon_only_inputs, top_menu,
+// wifi_status_color, show_greeting, date_below_clock, header_white, wifi_status_warnings) moved from LOOK to
+// WIDGETS, with reorder_button and library_button from APPS: the Widgets page is their one home.
+//
 // `owner` null: no section writes the key; the document keeps it as the TV has it.
 enum class ConfigKeyType {
     BOOL,          // Config.bool: a JSON true or false
@@ -42,6 +50,9 @@ object ConfigKeys {
     const val V26 = 7L
     const val V27 = LookGates.FIRST_27_VERSION_CODE
     const val V30 = LookGates.FIRST_30_VERSION_CODE
+    const val V31 = 10L
+    const val V32 = 11L
+    const val V33 = 12L
 
     private fun key(name: String, type: ConfigKeyType, since: Long, owner: SettingsSection?, min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) =
         ConfigKey(name, type, since, owner, min, max)
@@ -51,6 +62,7 @@ object ConfigKeys {
         key("fill_dock", BOOL, V24, SettingsSection.DOCK),
         key("hidden_apps", STRING_LIST, V20, SettingsSection.APPS),
         key("library_apps", STRING_LIST, V27, null),
+        key("library_excluded_apps", STRING_LIST, V32, null),
         key("live_tv_package", STRING, V20, SettingsSection.INPUTS),
         key("live_tv_action", STRING, V20, null),
         key("live_tv_input_id", STRING, V26, null),
@@ -68,34 +80,40 @@ object ConfigKeys {
         key("rows_below_dock", INT, V20, SettingsSection.DOCK, 0, 3),
         key("animations", BOOL, V24, SettingsSection.LOOK),
         key("advanced_effects", BOOL, V24, SettingsSection.LOOK),
-        key("shamsi_date", BOOL, V20, SettingsSection.TOP_BAR),
-        key("lunar_date", BOOL, V30, SettingsSection.TOP_BAR),
-        key("lunar_utc_offset", INT, V30, SettingsSection.TOP_BAR, -1, 14),
-        key("greeting_name", STRING, V24, SettingsSection.TOP_BAR),
+        key("shamsi_date", BOOL, V20, SettingsSection.WIDGETS),
+        key("lunar_date", BOOL, V30, SettingsSection.WIDGETS),
+        key("lunar_utc_offset", INT, V30, SettingsSection.WIDGETS, -1, 14),
+        key("greeting_name", STRING, V24, SettingsSection.WIDGETS),
         key("module_cards", BOOL, V20, SettingsSection.CARDS),
         key("reduced_motion", BOOL, V23, SettingsSection.LOOK),
         key("boot_to_live_tv", BOOL, V26, SettingsSection.START_UP),
-        key("open_on_start_choice", BOOL, V30, null),
+        key("open_on_start_choice", BOOL, V30, SettingsSection.START_UP),
+        key("open_on_start_network_wait", INT, V32, null, 0, 600),
+        key("open_on_start_on_wake", BOOL, V33, null),
         key("dock_title", BOOL, V24, SettingsSection.LOOK),
         key("dock_row", BOOL, V24, SettingsSection.LOOK),
-        key("top_menu", BOOL, V27, SettingsSection.LOOK),
-        key("launcher_settings_button", BOOL, V27, SettingsSection.TOP_BAR),
-        key("reorder_button", BOOL, V24, SettingsSection.APPS),
-        key("show_network_pill", BOOL, V26, SettingsSection.TOP_BAR),
-        key("show_inputs_pill", BOOL, V26, SettingsSection.TOP_BAR),
-        key("icon_only_buttons", BOOL, V26, SettingsSection.LOOK),
-        key("icon_only_inputs", BOOL, V27, SettingsSection.LOOK),
-        key("library_button", BOOL, V26, SettingsSection.APPS),
+        key("top_menu", BOOL, V27, SettingsSection.WIDGETS),
+        key("launcher_settings_button", BOOL, V27, SettingsSection.WIDGETS),
+        key("reorder_button", BOOL, V24, SettingsSection.WIDGETS),
+        key("show_network_pill", BOOL, V26, SettingsSection.WIDGETS),
+        key("show_inputs_pill", BOOL, V26, SettingsSection.WIDGETS),
+        key("icon_only_buttons", BOOL, V26, SettingsSection.WIDGETS),
+        key("icon_only_inputs", BOOL, V27, SettingsSection.WIDGETS),
+        key("icon_only_vpn", BOOL, V32, SettingsSection.WIDGETS),
+        key("back_opens_clock", BOOL, V33, null),
+        key("glow_snap", BOOL, V33, null),
+        key("library_button", BOOL, V26, SettingsSection.WIDGETS),
         key("show_library_pill", BOOL, V30, SettingsSection.APPS),
-        key("wifi_label_width", INT, V26, SettingsSection.TOP_BAR, 0, 300),
+        key("wifi_label_width", INT, V26, SettingsSection.WIDGETS, 0, 300),
         key("always_show_names", BOOL, V26, SettingsSection.LOOK),
         key("wallpaper_true_color", BOOL, V26, null),
         key("focus_overshoot", BOOL, V26, SettingsSection.LOOK),
         key("wallpaper_captions", BOOL, V26, SettingsSection.WALLPAPER),
         key("tile_menu", BOOL, V27, SettingsSection.APPS),
-        key("vpn_app", STRING, V20, SettingsSection.TOP_BAR),
+        key("vpn_app", STRING, V20, SettingsSection.WIDGETS),
         key("show_home_settings_shortcut", BOOL, V20, null),
-        key("show_stats", BOOL, V24, SettingsSection.TOP_BAR),
+        key("show_stats", BOOL, V24, SettingsSection.WIDGETS),
+        key("game_day", STRING, V32, null),
         key("app_library", BOOL, V24, SettingsSection.APPS),
         key("app_library_selection", BOOL, V27, null),
         key("library_ok_opens", BOOL, V30, null),
@@ -120,22 +138,25 @@ object ConfigKeys {
         key("power_on_home", BOOL, V30, null),
         key("home_long_press_home", BOOL, V30, null),
         key("power_on_home_always", BOOL, V30, null),
+        key("inputs_connected_only", BOOL, V31, null),
+        key("inputs_cec_state_only", BOOL, V33, null),
+        key("clock_format", STRING, V33, SettingsSection.WIDGETS),
         key("dock_glass", BOOL, V26, SettingsSection.LOOK),
         key("dock_even_padding", BOOL, V27, SettingsSection.LOOK),
         key("dock_band", BOOL, V30, SettingsSection.LOOK),
         key("cinematic_dots", BOOL, V27, null),
         key("cinematic_white_focus", BOOL, V27, SettingsSection.LOOK),
-        key("wifi_status_color", BOOL, V27, SettingsSection.LOOK),
+        key("wifi_status_color", BOOL, V27, SettingsSection.WIDGETS),
         key("cinematic_art", INT, V27, SettingsSection.LOOK, 0, 100),
         key("cinematic_scrim", INT, V27, SettingsSection.LOOK, 0, 100),
         key("wallpaper_moods", OBJECT, V27, null),
-        key("wifi_status_warnings", BOOL, V30, SettingsSection.LOOK),
-        key("date_below_clock", BOOL, V30, SettingsSection.LOOK),
-        key("vpn_pill", BOOL, V30, SettingsSection.TOP_BAR),
+        key("wifi_status_warnings", BOOL, V30, SettingsSection.WIDGETS),
+        key("date_below_clock", BOOL, V30, SettingsSection.WIDGETS),
+        key("vpn_pill", BOOL, V30, SettingsSection.WIDGETS),
         key("locale", STRING, V30, null),
-        key("top_bar_apps", STRING_LIST, V30, SettingsSection.TOP_BAR),
-        key("show_greeting", BOOL, V30, SettingsSection.LOOK),
-        key("header_white", BOOL, V30, SettingsSection.LOOK),
+        key("top_bar_apps", STRING_LIST, V30, SettingsSection.WIDGETS),
+        key("show_greeting", BOOL, V30, SettingsSection.WIDGETS),
+        key("header_white", BOOL, V30, SettingsSection.WIDGETS),
         key("clock_wallpaper", BOOL, V30, SettingsSection.SCREENSAVER),
         key("clock_wallpaper_dim", INT, V30, SettingsSection.SCREENSAVER, 0, 90),
         key("clock_glow", BOOL, V30, SettingsSection.SCREENSAVER),
@@ -150,6 +171,7 @@ object ConfigKeys {
         key("wallpaper_order", STRING, V26, null),
         key("festival", STRING, V24, SettingsSection.LOOK),
         key("festival_until", STRING, V24, SettingsSection.LOOK),
+        key("seasonal_skin", STRING, V32, null),
         key("greeting", STRING, V24, SettingsSection.LOOK),
         key("accent_color", STRING, V24, SettingsSection.LOOK),
         key("race_calendar", RACES, V25, null),

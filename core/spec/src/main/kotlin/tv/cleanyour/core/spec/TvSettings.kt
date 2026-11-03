@@ -21,7 +21,7 @@ import tv.cleanyour.core.model.PackageName
 //                                          scratch; no file, or one the launcher ignores whole, is empty.
 //                                          versionCode: the TV's launcher, null when not known (bundled)
 //   TvSettings.of(doc, versionCode)        the same from a doc
-//   topBar, withTopBar(TopBarSettings)            Clock and top bar
+//   widgets, withWidgets(WidgetsSettings)         Widgets (0.5.0: was Clock and top bar)
 //   apps, withApps(AppsSettings)                  Apps
 //   screensaver, withScreensaver(...)             Screensaver
 //   startUp, withStartUp(StartUpSettings)         When the TV starts
@@ -87,20 +87,35 @@ class TvSettings private constructor(private val keys: Map<String, JsonElement>,
         return TvSettings(out, versionCode)
     }
 
-    val topBar: TopBarSettings get() = TopBarSettings(
+    // 0.5.0: the look push on this document. `built`'s keys of `sections` go in as withSections writes them, and
+    // its keys of `standIn` (WIDGETS: the buttons' look and the header rows a look still builds) only where the
+    // document has none, so the TV's own value wins: a look push never changes what the Widgets page set, and a
+    // TV with no file still gets the look's buttons, as before 0.5.0.
+    fun withLook(built: LauncherConfigDoc, sections: Set<SettingsSection>, standIn: Set<SettingsSection>): TvSettings {
+        val b = keysOf(built)
+        val s = withSections(docOf(b.filterKeys { ConfigKeys.of(it)?.owner !in standIn }), sections)
+        val out = LinkedHashMap(s.keys)
+        for ((k, v) in b) if (ConfigKeys.of(k)?.owner in standIn && k !in out) out[k] = v
+        return TvSettings(out, versionCode)
+    }
+
+    val widgets: WidgetsSettings get() = WidgetsSettings(
         showInputsPill = bool("show_inputs_pill"), showNetworkPill = bool("show_network_pill"),
         launcherSettingsButton = bool("launcher_settings_button"), greetingName = string("greeting_name"),
         shamsiDate = bool("shamsi_date"), lunarDate = bool("lunar_date"), lunarUtcOffset = int("lunar_utc_offset"),
         showStats = bool("show_stats"), vpnPill = bool("vpn_pill"), vpnApp = string("vpn_app"),
         topBarApps = packages("top_bar_apps"), wifiLabelWidth = int("wifi_label_width"),
+        showGreeting = bool("show_greeting"), dateBelowClock = bool("date_below_clock"), headerWhite = bool("header_white"),
+        clockFormat = clockFormat("clock_format"), topMenu = bool("top_menu"), iconOnlyButtons = bool("icon_only_buttons"),
+        iconOnlyInputs = bool("icon_only_inputs"), iconOnlyVpn = bool("icon_only_vpn"), wifiStatusColor = bool("wifi_status_color"),
+        wifiStatusWarnings = bool("wifi_status_warnings"), reorderButton = bool("reorder_button"), libraryButton = bool("library_button"),
     )
 
-    fun withTopBar(t: TopBarSettings): TvSettings = edit(SettingsSection.TOP_BAR, topBar.json(), t.json())
+    fun withWidgets(t: WidgetsSettings): TvSettings = edit(SettingsSection.WIDGETS, widgets.json(), t.json())
 
     val apps: AppsSettings get() = AppsSettings(
-        tileMenu = bool("tile_menu"), appLibrary = bool("app_library"), libraryButton = bool("library_button"),
+        tileMenu = bool("tile_menu"), appLibrary = bool("app_library"),
         showLibraryPill = bool("show_library_pill"), hiddenApps = packages("hidden_apps"), appLabels = labels("app_labels"),
-        reorderButton = bool("reorder_button"),
     )
 
     fun withApps(a: AppsSettings): TvSettings = edit(SettingsSection.APPS, apps.json(), a.json())
@@ -112,13 +127,26 @@ class TvSettings private constructor(private val keys: Map<String, JsonElement>,
 
     fun withScreensaver(s: ScreensaverSettings): TvSettings = edit(SettingsSection.SCREENSAVER, screensaver.json(), s.json())
 
-    val startUp: StartUpSettings get() = StartUpSettings(bootToLiveTv = bool("boot_to_live_tv"))
+    val startUp: StartUpSettings get() = StartUpSettings(bootToLiveTv = bool("boot_to_live_tv"), openOnStartChoice = bool("open_on_start_choice"))
 
     fun withStartUp(s: StartUpSettings): TvSettings = edit(SettingsSection.START_UP, startUp.json(), s.json())
 
     val wallpaper: WallpaperSettings get() = WallpaperSettings(captions = bool("wallpaper_captions"))
 
     fun withWallpaper(w: WallpaperSettings): TvSettings = edit(SettingsSection.WALLPAPER, wallpaper.json(), w.json())
+
+    // 0.5.0 Make it yours: the keys whose value differs between this document and `other` (one has it and the
+    // other not, or both with other values), every section's.
+    fun changedKeys(other: TvSettings): Set<String> = (keys.keys + other.keys.keys).filterTo(LinkedHashSet()) { keys[it] != other.keys[it] }
+
+    // 0.5.0 Make it yours: this document with `names` as `from` has them (a name `from` has not goes). A send
+    // starts from the TV's file as it is then and takes only the keys the person changed (changedKeys), so a
+    // key another push set since the page was read stays.
+    fun withKeysOf(from: TvSettings, names: Set<String>): TvSettings {
+        val out = LinkedHashMap(keys)
+        for (k in names) { val v = from.keys[k]; if (v == null) out.remove(k) else out[k] = v }
+        return TvSettings(out, versionCode)
+    }
 
     // The keys of `section` whose value differs between `before` and `after`; null removes the key.
     private fun edit(section: SettingsSection, before: Map<String, JsonElement?>, after: Map<String, JsonElement?>): TvSettings {
@@ -138,6 +166,9 @@ class TvSettings private constructor(private val keys: Map<String, JsonElement>,
         val k = ConfigKeys.of(key)!!
         return LauncherKeys.intValue(keys[key])?.takeIf { it in k.min..k.max }
     }
+
+    // clock_format (3.3): "12", "24" or "system"; the launcher treats any other string as the TV's own (ClockFormat).
+    private fun clockFormat(key: String): String? = string(key)?.takeIf { it in ClockFormats.ALL }
 
     private fun string(key: String): String? = (keys[key] as? JsonPrimitive)?.takeIf { it.isString }?.content?.javaTrim()
 
@@ -162,18 +193,19 @@ enum class SettingsSection {
     CARDS,         // Cards and modules: module_cards (Cards)
     HOME_HELPER,   // the Home button helper's redirect and key filter (HomeHelperKeys)
     INPUTS,        // Inputs and Live TV: live_tv_package (LiveTvKeys)
-    APPS,          // Apps: the App library, hidden apps, tile names, moving apps
-    TOP_BAR,       // Clock and top bar
+    APPS,          // Apps: the App library, hidden apps, tile names, moving apps with the remote
+    WIDGETS,       // Widgets (0.5.0, was Clock and top bar): the clock, under it, the buttons and their look
     SCREENSAVER,   // the clock screensaver
     START_UP,      // When the TV starts
     WALLPAPER,     // Wallpapers
 }
 
-// Clock and top bar. The top bar's look (icon_only_buttons, icon_only_inputs, top_menu,
-// wifi_status_color) and the header rows of More options (show_greeting, date_below_clock,
-// header_white, wifi_status_warnings) are LOOK's: every look push writes them (LookKeys.build), so
-// they are not here; moving one is its owner in ConfigKeys and LookKeys.build no longer writing it.
-data class TopBarSettings(
+// Widgets (0.5.0, was Clock and top bar): the TV's places at the top of Home and what is in them. The clock
+// (greeting, name, date under it, brighter date, 12 or 24 hours), under the clock (second date, TV health),
+// the buttons (which show, their look, the Wi-Fi and VPN buttons, what Settings opens). 0.5.0 moved the
+// top bar's look and the header rows here from LOOK, and reorder_button and library_button from APPS, so
+// a look push no longer changes them on a TV whose file has them (LookCarry.merge).
+data class WidgetsSettings(
     val showInputsPill: Boolean? = null,          // show_inputs_pill (2.6): the Inputs pill
     val showNetworkPill: Boolean? = null,         // show_network_pill (2.6): the Wi-Fi or Ethernet pill
     val launcherSettingsButton: Boolean? = null,  // launcher_settings_button (2.7): Launcher settings instead of TV Settings
@@ -186,13 +218,38 @@ data class TopBarSettings(
     val vpnApp: String? = null,                   // vpn_app (2.0): the VPN app's package, "" for none
     val topBarApps: List<PackageName>? = null,    // top_bar_apps (3.0): round app buttons; they also leave the grid
     val wifiLabelWidth: Int? = null,              // wifi_label_width (2.6): 0 to 300 dp of network name on a round Wi-Fi button
+    val showGreeting: Boolean? = null,            // show_greeting (3.0): the greeting above the clock
+    val dateBelowClock: Boolean? = null,          // date_below_clock (3.0): the date under the clock, not beside it
+    val headerWhite: Boolean? = null,             // header_white (3.0): the date full white
+    val clockFormat: String? = null,              // clock_format (3.3): "12", "24" or "system"
+    val topMenu: Boolean? = null,                 // top_menu (2.7): one gear button with a menu
+    val iconOnlyButtons: Boolean? = null,         // icon_only_buttons (2.6): round buttons
+    val iconOnlyInputs: Boolean? = null,          // icon_only_inputs (2.7): a round Inputs button too
+    val iconOnlyVpn: Boolean? = null,             // icon_only_vpn (3.2): with vpn_pill, a round lock button
+    val wifiStatusColor: Boolean? = null,         // wifi_status_color (2.7): the Wi-Fi icon green while online
+    val wifiStatusWarnings: Boolean? = null,      // wifi_status_warnings (3.0): orange without internet, red offline
+    val reorderButton: Boolean? = null,           // reorder_button (2.4): the move button in the top bar
+    val libraryButton: Boolean? = null,           // library_button (2.6): the library as a top bar button
 ) {
     companion object {
-        // config.xml at b06ab21 (ConfigKeysTest reads it).
-        val DEFAULTS = TopBarSettings(showInputsPill = true, showNetworkPill = true, launcherSettingsButton = false,
+        // config.xml at d7b0d4a5 (ConfigKeysTest reads it).
+        val DEFAULTS = WidgetsSettings(showInputsPill = true, showNetworkPill = true, launcherSettingsButton = false,
             greetingName = "", shamsiDate = false, lunarDate = false, lunarUtcOffset = -1, showStats = false, vpnPill = false,
-            vpnApp = "", topBarApps = emptyList(), wifiLabelWidth = 0)
+            vpnApp = "", topBarApps = emptyList(), wifiLabelWidth = 0, showGreeting = true, dateBelowClock = false, headerWhite = false,
+            clockFormat = ClockFormats.SYSTEM, topMenu = false, iconOnlyButtons = false, iconOnlyInputs = false, iconOnlyVpn = false,
+            wifiStatusColor = false, wifiStatusWarnings = false, reorderButton = false, libraryButton = false)
     }
+
+    // Every value of this, else the launcher's own (DEFAULTS): what the TV shows.
+    fun orDefaults(): WidgetsSettings = WidgetsSettings(
+        showInputsPill ?: DEFAULTS.showInputsPill, showNetworkPill ?: DEFAULTS.showNetworkPill, launcherSettingsButton ?: DEFAULTS.launcherSettingsButton,
+        greetingName ?: DEFAULTS.greetingName, shamsiDate ?: DEFAULTS.shamsiDate, lunarDate ?: DEFAULTS.lunarDate, lunarUtcOffset ?: DEFAULTS.lunarUtcOffset,
+        showStats ?: DEFAULTS.showStats, vpnPill ?: DEFAULTS.vpnPill, vpnApp ?: DEFAULTS.vpnApp, topBarApps ?: DEFAULTS.topBarApps,
+        wifiLabelWidth ?: DEFAULTS.wifiLabelWidth, showGreeting ?: DEFAULTS.showGreeting, dateBelowClock ?: DEFAULTS.dateBelowClock,
+        headerWhite ?: DEFAULTS.headerWhite, clockFormat ?: DEFAULTS.clockFormat, topMenu ?: DEFAULTS.topMenu, iconOnlyButtons ?: DEFAULTS.iconOnlyButtons,
+        iconOnlyInputs ?: DEFAULTS.iconOnlyInputs, iconOnlyVpn ?: DEFAULTS.iconOnlyVpn, wifiStatusColor ?: DEFAULTS.wifiStatusColor,
+        wifiStatusWarnings ?: DEFAULTS.wifiStatusWarnings, reorderButton ?: DEFAULTS.reorderButton, libraryButton ?: DEFAULTS.libraryButton,
+    )
 
     internal fun json(): Map<String, JsonElement?> = linkedMapOf(
         "show_inputs_pill" to showInputsPill.element(), "show_network_pill" to showNetworkPill.element(),
@@ -200,31 +257,45 @@ data class TopBarSettings(
         "shamsi_date" to shamsiDate.element(), "lunar_date" to lunarDate.element(), "lunar_utc_offset" to lunarUtcOffset.element("lunar_utc_offset"),
         "show_stats" to showStats.element(), "vpn_pill" to vpnPill.element(), "vpn_app" to vpnApp.element(),
         "top_bar_apps" to topBarApps.element(), "wifi_label_width" to wifiLabelWidth.element("wifi_label_width"),
+        "show_greeting" to showGreeting.element(), "date_below_clock" to dateBelowClock.element(), "header_white" to headerWhite.element(),
+        "clock_format" to clockFormat?.takeIf { it in ClockFormats.ALL }.element(), "top_menu" to topMenu.element(),
+        "icon_only_buttons" to iconOnlyButtons.element(), "icon_only_inputs" to iconOnlyInputs.element(), "icon_only_vpn" to iconOnlyVpn.element(),
+        "wifi_status_color" to wifiStatusColor.element(), "wifi_status_warnings" to wifiStatusWarnings.element(),
+        "reorder_button" to reorderButton.element(), "library_button" to libraryButton.element(),
     )
+}
+
+// clock_format's values (launcher 3.3, ClockFormat): "12" and "24" set the launcher's clocks whatever the TV
+// says; "system" (the default) follows the TV.
+object ClockFormats {
+    const val SYSTEM = "system"
+    const val H12 = "12"
+    const val H24 = "24"
+    val ALL: Set<String> = setOf(SYSTEM, H12, H24)
 }
 
 // Apps.
 data class AppsSettings(
-    val tileMenu: Boolean? = null,                     // tile_menu (2.7): hold OK opens Move, Remove from Home, App info
+    val tileMenu: Boolean? = null,                     // tile_menu (2.7): hold OK opens Move, Remove from Home, App info (on by default since 3.3)
     val appLibrary: Boolean? = null,                   // app_library (2.4)
-    val libraryButton: Boolean? = null,                // library_button (2.6): the library as a top bar button
     val showLibraryPill: Boolean? = null,              // show_library_pill (3.0): the pill after the last row
     val hiddenApps: List<PackageName>? = null,         // hidden_apps (2.0): off the grid, and out of the dock
     val appLabels: Map<PackageName, String>? = null,   // app_labels (2.5): a tile's own name
-    val reorderButton: Boolean? = null,                // reorder_button (2.4): the move button in the top bar
 ) {
     companion object {
-        // config.xml at b06ab21 (ConfigKeysTest reads it).
-        val DEFAULTS = AppsSettings(tileMenu = false, appLibrary = false, libraryButton = false, showLibraryPill = true,
-            hiddenApps = ConfigCodecImpl.BUILT_IN.hiddenApps.map(::PackageName), appLabels = emptyMap(), reorderButton = false)
+        // config.xml at d7b0d4a5 (ConfigKeysTest reads it).
+        val DEFAULTS = AppsSettings(tileMenu = true, appLibrary = false, showLibraryPill = true,
+            hiddenApps = ConfigCodecImpl.BUILT_IN.hiddenApps.map(::PackageName), appLabels = emptyMap())
     }
 
+    fun orDefaults(): AppsSettings = AppsSettings(tileMenu ?: DEFAULTS.tileMenu, appLibrary ?: DEFAULTS.appLibrary,
+        showLibraryPill ?: DEFAULTS.showLibraryPill, hiddenApps ?: DEFAULTS.hiddenApps, appLabels ?: DEFAULTS.appLabels)
+
     internal fun json(): Map<String, JsonElement?> = linkedMapOf(
-        "tile_menu" to tileMenu.element(), "app_library" to appLibrary.element(), "library_button" to libraryButton.element(),
+        "tile_menu" to tileMenu.element(), "app_library" to appLibrary.element(),
         "show_library_pill" to showLibraryPill.element(), "hidden_apps" to hiddenApps.element(),
         "app_labels" to appLabels?.mapNotNull { (p, label) -> label.javaTrim().takeIf { it.isNotEmpty() }?.let { "${p.value}=$it" } }
             ?.let { l -> JsonArray(l.map { JsonPrimitive(it) }) },
-        "reorder_button" to reorderButton.element(),
     )
 }
 
@@ -240,6 +311,9 @@ data class ScreensaverSettings(
         val DEFAULTS = ScreensaverSettings(idleMinutes = 0, clockWallpaper = false, clockWallpaperDim = 50, clockGlow = true)
     }
 
+    fun orDefaults(): ScreensaverSettings = ScreensaverSettings(idleMinutes ?: DEFAULTS.idleMinutes, clockWallpaper ?: DEFAULTS.clockWallpaper,
+        clockWallpaperDim ?: DEFAULTS.clockWallpaperDim, clockGlow ?: DEFAULTS.clockGlow)
+
     internal fun json(): Map<String, JsonElement?> = linkedMapOf(
         "home_idle_clock_minutes" to idleMinutes.element("home_idle_clock_minutes"), "clock_wallpaper" to clockWallpaper.element(),
         "clock_wallpaper_dim" to clockWallpaperDim.element("clock_wallpaper_dim"), "clock_glow" to clockGlow.element(),
@@ -248,11 +322,15 @@ data class ScreensaverSettings(
 
 // When the TV starts.
 data class StartUpSettings(
-    val bootToLiveTv: Boolean? = null,   // boot_to_live_tv (2.6): Live TV the first time Home comes up after power-on
+    val bootToLiveTv: Boolean? = null,        // boot_to_live_tv (2.6): Live TV the first time Home comes up after power-on
+    val openOnStartChoice: Boolean? = null,   // open_on_start_choice (3.0): an app picked in Launcher settings on the TV opens instead
 ) {
-    companion object { val DEFAULTS = StartUpSettings(bootToLiveTv = false) }
+    companion object { val DEFAULTS = StartUpSettings(bootToLiveTv = false, openOnStartChoice = false) }
 
-    internal fun json(): Map<String, JsonElement?> = linkedMapOf("boot_to_live_tv" to bootToLiveTv.element())
+    fun orDefaults(): StartUpSettings = StartUpSettings(bootToLiveTv ?: DEFAULTS.bootToLiveTv, openOnStartChoice ?: DEFAULTS.openOnStartChoice)
+
+    internal fun json(): Map<String, JsonElement?> = linkedMapOf("boot_to_live_tv" to bootToLiveTv.element(),
+        "open_on_start_choice" to openOnStartChoice.element())
 }
 
 // Wallpapers.
@@ -260,6 +338,8 @@ data class WallpaperSettings(
     val captions: Boolean? = null,   // wallpaper_captions (2.6): each rotating picture's name from captions.txt
 ) {
     companion object { val DEFAULTS = WallpaperSettings(captions = false) }
+
+    fun orDefaults(): WallpaperSettings = WallpaperSettings(captions ?: DEFAULTS.captions)
 
     internal fun json(): Map<String, JsonElement?> = linkedMapOf("wallpaper_captions" to captions.element())
 }

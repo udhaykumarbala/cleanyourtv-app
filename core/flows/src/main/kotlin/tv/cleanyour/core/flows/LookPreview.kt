@@ -14,6 +14,7 @@ import tv.cleanyour.core.spec.LauncherKeys
 import tv.cleanyour.core.spec.LookExtrasKeys
 import tv.cleanyour.core.spec.TilesChoice
 import tv.cleanyour.core.spec.Movement
+import tv.cleanyour.core.spec.WidgetsSettings
 
 // 0.4.0: the phone's picture of the TV's home screen for the Look sheet's choice, read back from
 // the config.json bytes the push would send: encoded, then decoded and filled in with the
@@ -194,6 +195,23 @@ data class LookPreview(
         private val BUILT_IN_GREETINGS = mapOf("diwali" to "Happy Diwali", "dussehra" to "Happy Dussehra")
     }
 }
+
+// 0.5.0: the preview with the TV's Widgets as its file has them (null: not in the file, so the look's own value
+// stands in, as LookCarry.merge sends it): the buttons' look, the green Wi-Fi, the Inputs button, the greeting,
+// and the date's place and brightness. The hub passes its draft, so a change shows before it is sent.
+fun LookPreview.withWidgets(w: WidgetsSettings): LookPreview = copy(
+    buttons = when {
+        w.topMenu ?: (buttons == PreviewButtons.MENU) -> PreviewButtons.MENU
+        w.iconOnlyButtons ?: (buttons == PreviewButtons.ROUND) -> PreviewButtons.ROUND
+        else -> PreviewButtons.LABELLED
+    },
+    roundInputs = w.iconOnlyInputs ?: roundInputs,
+    wifiGreen = w.wifiStatusColor ?: wifiGreen,
+    inputs = inputs && w.showInputsPill != false,
+    greetingShown = w.showGreeting ?: greetingShown,
+    dateBelow = w.dateBelowClock ?: dateBelow,
+    brightDate = w.headerWhite ?: brightDate,
+)
 
 // look2: the glow (ambient_glow and glow_style), the dock band (dock_glass and dock_opacity, NONE
 // without the dock row) and the buttons at the top (icon_only_buttons and top_menu), as drawn.

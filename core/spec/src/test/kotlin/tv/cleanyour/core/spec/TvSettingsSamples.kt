@@ -13,10 +13,9 @@ import tv.cleanyour.core.spec.ConfigKeyType.INT
 import tv.cleanyour.core.spec.ConfigKeyType.STRING
 import tv.cleanyour.core.spec.ConfigKeyType.STRING_LIST
 import tv.cleanyour.core.spec.SettingsSection.APPS
-import tv.cleanyour.core.spec.SettingsSection.LOOK
 import tv.cleanyour.core.spec.SettingsSection.SCREENSAVER
 import tv.cleanyour.core.spec.SettingsSection.START_UP
-import tv.cleanyour.core.spec.SettingsSection.TOP_BAR
+import tv.cleanyour.core.spec.SettingsSection.WIDGETS
 import tv.cleanyour.core.spec.SettingsSection.WALLPAPER
 import kotlin.random.Random
 
@@ -24,29 +23,32 @@ import kotlin.random.Random
 // reads (valid values, values the launcher ignores, keys no launcher reads), random section values,
 // and random look pushes.
 object TvSettingsSamples {
-    // The 0.5.0 keys of the brief: type, owner, and the range of an integer (Config.java at b06ab21).
+    // The 0.5.0 keys of the brief: type, owner, and the range of an integer (Config.java at d7b0d4a5).
     val BRIEF: Map<String, Triple<ConfigKeyType, SettingsSection?, Pair<Int, Int>?>> = linkedMapOf(
-        "show_inputs_pill" to Triple(BOOL, TOP_BAR, null), "show_network_pill" to Triple(BOOL, TOP_BAR, null),
-        "reorder_button" to Triple(BOOL, APPS, null), "library_button" to Triple(BOOL, APPS, null),
-        "show_library_pill" to Triple(BOOL, APPS, null), "launcher_settings_button" to Triple(BOOL, TOP_BAR, null),
-        "greeting_name" to Triple(STRING, TOP_BAR, null), "show_greeting" to Triple(BOOL, LOOK, null),
-        "date_below_clock" to Triple(BOOL, LOOK, null), "header_white" to Triple(BOOL, LOOK, null),
-        "shamsi_date" to Triple(BOOL, TOP_BAR, null), "lunar_date" to Triple(BOOL, TOP_BAR, null),
-        "lunar_utc_offset" to Triple(INT, TOP_BAR, -1 to 14), "show_stats" to Triple(BOOL, TOP_BAR, null),
-        "vpn_pill" to Triple(BOOL, TOP_BAR, null), "vpn_app" to Triple(STRING, TOP_BAR, null),
-        "top_bar_apps" to Triple(STRING_LIST, TOP_BAR, null), "wifi_status_color" to Triple(BOOL, LOOK, null),
-        "wifi_status_warnings" to Triple(BOOL, LOOK, null), "icon_only_buttons" to Triple(BOOL, LOOK, null),
-        "icon_only_inputs" to Triple(BOOL, LOOK, null), "wifi_label_width" to Triple(INT, TOP_BAR, 0 to 300),
-        "top_menu" to Triple(BOOL, LOOK, null), "tile_menu" to Triple(BOOL, APPS, null),
+        "show_inputs_pill" to Triple(BOOL, WIDGETS, null), "show_network_pill" to Triple(BOOL, WIDGETS, null),
+        "reorder_button" to Triple(BOOL, WIDGETS, null), "library_button" to Triple(BOOL, WIDGETS, null),
+        "show_library_pill" to Triple(BOOL, APPS, null), "launcher_settings_button" to Triple(BOOL, WIDGETS, null),
+        "greeting_name" to Triple(STRING, WIDGETS, null), "show_greeting" to Triple(BOOL, WIDGETS, null),
+        "date_below_clock" to Triple(BOOL, WIDGETS, null), "header_white" to Triple(BOOL, WIDGETS, null),
+        "shamsi_date" to Triple(BOOL, WIDGETS, null), "lunar_date" to Triple(BOOL, WIDGETS, null),
+        "lunar_utc_offset" to Triple(INT, WIDGETS, -1 to 14), "show_stats" to Triple(BOOL, WIDGETS, null),
+        "vpn_pill" to Triple(BOOL, WIDGETS, null), "vpn_app" to Triple(STRING, WIDGETS, null),
+        "top_bar_apps" to Triple(STRING_LIST, WIDGETS, null), "wifi_status_color" to Triple(BOOL, WIDGETS, null),
+        "wifi_status_warnings" to Triple(BOOL, WIDGETS, null), "icon_only_buttons" to Triple(BOOL, WIDGETS, null),
+        "icon_only_inputs" to Triple(BOOL, WIDGETS, null), "wifi_label_width" to Triple(INT, WIDGETS, 0 to 300),
+        "top_menu" to Triple(BOOL, WIDGETS, null), "tile_menu" to Triple(BOOL, APPS, null),
         "app_library" to Triple(BOOL, APPS, null), "hidden_apps" to Triple(STRING_LIST, APPS, null),
         "app_labels" to Triple(STRING_LIST, APPS, null), "boot_to_live_tv" to Triple(BOOL, START_UP, null),
         "home_idle_clock_minutes" to Triple(INT, SCREENSAVER, 0 to 1440), "clock_wallpaper" to Triple(BOOL, SCREENSAVER, null),
         "clock_wallpaper_dim" to Triple(INT, SCREENSAVER, 0 to 90), "clock_glow" to Triple(BOOL, SCREENSAVER, null),
         "wallpaper_captions" to Triple(BOOL, WALLPAPER, null),
+        // 0.5.0 with launcher 3.3: the clock's 12 or 24 hours, the round VPN button, an app at start.
+        "clock_format" to Triple(STRING, WIDGETS, null), "icon_only_vpn" to Triple(BOOL, WIDGETS, null),
+        "open_on_start_choice" to Triple(BOOL, START_UP, null),
     )
 
     // The sections with a typed value of their own in TvSettings.
-    val TYPED: List<SettingsSection> = listOf(TOP_BAR, APPS, SCREENSAVER, START_UP, WALLPAPER)
+    val TYPED: List<SettingsSection> = listOf(WIDGETS, APPS, SCREENSAVER, START_UP, WALLPAPER)
 
     val apps: List<PackageName> = (listOf("com.netflix.ninja", "com.google.android.youtube.tv", "com.amazon.amazonvideo.livingroom",
         "com.mediatek.wwtv.tvcenter", "com.mitv.gallery") + List(10) { "com.example.app$it" }).map(::PackageName)
@@ -118,22 +120,24 @@ object TvSettingsSamples {
     private fun bool(rnd: Random): Boolean? = maybe(rnd) { rnd.nextBoolean() }
     private fun some(rnd: Random): List<PackageName> = apps.shuffled(rnd).take(rnd.nextInt(0, 4))
 
-    fun topBar(rnd: Random) = TopBarSettings(bool(rnd), bool(rnd), bool(rnd), maybe(rnd) { listOf("", "Asha", "Ana María").random(rnd) },
+    fun widgets(rnd: Random) = WidgetsSettings(bool(rnd), bool(rnd), bool(rnd), maybe(rnd) { listOf("", "Asha", "Ana María").random(rnd) },
         bool(rnd), bool(rnd), maybe(rnd) { rnd.nextInt(-1, 15) }, bool(rnd), bool(rnd), maybe(rnd) { listOf("", "com.example.vpn").random(rnd) },
-        maybe(rnd) { some(rnd) }, maybe(rnd) { rnd.nextInt(0, 301) })
+        maybe(rnd) { some(rnd) }, maybe(rnd) { rnd.nextInt(0, 301) }, showGreeting = bool(rnd), dateBelowClock = bool(rnd), headerWhite = bool(rnd),
+        clockFormat = maybe(rnd) { ClockFormats.ALL.random(rnd) }, topMenu = bool(rnd), iconOnlyButtons = bool(rnd), iconOnlyInputs = bool(rnd),
+        iconOnlyVpn = bool(rnd), wifiStatusColor = bool(rnd), wifiStatusWarnings = bool(rnd), reorderButton = bool(rnd), libraryButton = bool(rnd))
 
-    fun apps(rnd: Random) = AppsSettings(bool(rnd), bool(rnd), bool(rnd), bool(rnd), maybe(rnd) { some(rnd) },
-        maybe(rnd) { some(rnd).associateWith { "Name ${it.value.length}" } }, bool(rnd))
+    fun apps(rnd: Random) = AppsSettings(bool(rnd), bool(rnd), bool(rnd), maybe(rnd) { some(rnd) },
+        maybe(rnd) { some(rnd).associateWith { "Name ${it.value.length}" } })
 
     fun screensaver(rnd: Random) = ScreensaverSettings(maybe(rnd) { rnd.nextInt(0, 1441) }, bool(rnd), maybe(rnd) { rnd.nextInt(0, 91) }, bool(rnd))
 
-    fun startUp(rnd: Random) = StartUpSettings(bool(rnd))
+    fun startUp(rnd: Random) = StartUpSettings(bool(rnd), bool(rnd))
 
     fun wallpaper(rnd: Random) = WallpaperSettings(bool(rnd))
 
     // A typed section push: the new value, and the document with it.
     fun edit(s: TvSettings, section: SettingsSection, rnd: Random): Pair<Any, TvSettings> = when (section) {
-        TOP_BAR -> topBar(rnd).let { it to s.withTopBar(it) }
+        WIDGETS -> widgets(rnd).let { it to s.withWidgets(it) }
         APPS -> apps(rnd).let { it to s.withApps(it) }
         SCREENSAVER -> screensaver(rnd).let { it to s.withScreensaver(it) }
         START_UP -> startUp(rnd).let { it to s.withStartUp(it) }
@@ -142,13 +146,19 @@ object TvSettingsSamples {
     }
 
     fun typed(s: TvSettings, section: SettingsSection): Any = when (section) {
-        TOP_BAR -> s.topBar
+        WIDGETS -> s.widgets
         APPS -> s.apps
         SCREENSAVER -> s.screensaver
         START_UP -> s.startUp
         WALLPAPER -> s.wallpaper
         else -> error("$section has no typed value")
     }
+
+    // A look push on a document, as LookCarry.merge makes it: LOOK_PUSH from the look, the Widgets keys the look
+    // builds only where the document has none (LookCarry.LOOK_STAND_IN).
+    val STAND_IN: Set<SettingsSection> = setOf(WIDGETS)
+
+    fun pushLook(s: TvSettings, look: LauncherConfigDoc): TvSettings = s.withLook(look, TvSettings.LOOK_PUSH, STAND_IN)
 
     // A look push as LookKeys.build makes it, over the look2 cross product, the pictures, apps in a row,
     // docks and the 3.0 switches.

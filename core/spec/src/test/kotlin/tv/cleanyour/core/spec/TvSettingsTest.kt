@@ -39,18 +39,37 @@ class TvSettingsTest {
     }
 
     // The same for the look push (Look, Dock, Cards and modules, Setup): LookKeys.build's doc goes in
-    // whole for LOOK_PUSH, and every key of the other sections stays.
+    // whole for LOOK_PUSH, and every key of the other sections stays. 0.5.0: the Widgets keys a look still
+    // builds stand in only where the TV's file has none, so a key the file has is never changed by a look.
     @Test fun aLookPushKeepsEveryOtherSectionsKeys() {
         val rnd = Random(501)
         val specs = LookInputs.cross().toList()
+        val standIn = TvSettingsSamples.STAND_IN
         repeat(2000) { n ->
             val before = TvSettings.seed(TvSettingsSamples.file(rnd), null)
             val built = TvSettingsSamples.look(rnd, specs)
-            val after = before.withSections(built, TvSettings.LOOK_PUSH)
-            assertEquals(outside(keys(before), TvSettings.LOOK_PUSH), outside(keys(after), TvSettings.LOOK_PUSH), "case $n")
-            assertEquals(flat(built), inside(keys(after), TvSettings.LOOK_PUSH), "case $n: the look's own keys are the look's")
-            for (section in TvSettingsSamples.TYPED) assertEquals(TvSettingsSamples.typed(before, section), TvSettingsSamples.typed(after, section))
+            val after = TvSettingsSamples.pushLook(before, built)
+            assertEquals(outside(keys(before), TvSettings.LOOK_PUSH + standIn), outside(keys(after), TvSettings.LOOK_PUSH + standIn), "case $n")
+            assertEquals(inside(flat(built), TvSettings.LOOK_PUSH), inside(keys(after), TvSettings.LOOK_PUSH), "case $n: the look's own keys are the look's")
+            val w = inside(keys(before), standIn) + inside(flat(built), standIn).filterKeys { it !in keys(before) }
+            assertEquals(w, inside(keys(after), standIn), "case $n: the TV's Widgets keys win, the look's stand in")
+            for (section in TvSettingsSamples.TYPED - standIn) assertEquals(TvSettingsSamples.typed(before, section), TvSettingsSamples.typed(after, section))
         }
+    }
+
+    // 0.5.0: a Widgets value the person set (any key in the file) is never changed by a later look push,
+    // while a TV with no file still gets the look's buttons.
+    @Test fun aLookPushNeverChangesWhatWidgetsSet() {
+        val glass = LookKeys.build(LookKeys.spec(StyleId.GLASS), LookInputs.pictures.first().second, 6, TvSettingsSamples.apps.take(6), cards = false)
+        assertEquals(JsonPrimitive(true), flat(glass)["icon_only_buttons"], "Glass builds round buttons")
+        val fresh = TvSettingsSamples.pushLook(TvSettings.seed(null, null), glass)
+        assertEquals(true, fresh.widgets.iconOnlyButtons, "no file: the look's buttons stand in")
+        val set = TvSettings.seed(null, null).withWidgets(WidgetsSettings(iconOnlyButtons = false, showGreeting = false, clockFormat = "24"))
+        val pushed = TvSettingsSamples.pushLook(TvSettings.seed(set.encode(), null), glass)
+        assertEquals(false, pushed.widgets.iconOnlyButtons)
+        assertEquals(false, pushed.widgets.showGreeting)
+        assertEquals("24", pushed.widgets.clockFormat)
+        assertEquals(true, pushed.widgets.iconOnlyInputs, "a key the file has not still comes from the look")
     }
 
     // Pushes one after another: each keeps what the others sent.
@@ -63,7 +82,7 @@ class TvSettingsTest {
         repeat(300) {
             if (rnd.nextInt(4) == 0) {
                 look = TvSettingsSamples.look(rnd, specs)
-                s = s.withSections(look!!, TvSettings.LOOK_PUSH)
+                s = TvSettingsSamples.pushLook(s, look!!)
             } else {
                 val section = TvSettingsSamples.TYPED.random(rnd)
                 val (value, next) = TvSettingsSamples.edit(s, section, rnd)
@@ -71,8 +90,14 @@ class TvSettingsTest {
                 s = next
             }
             s = TvSettings.seed(s.encode(), null)   // the TV has it, and the next push starts from what it has
-            for ((section, value) in sent) assertEquals(value, TvSettingsSamples.typed(s, section))
-            look?.let { assertEquals(flat(it), inside(keys(s), TvSettings.LOOK_PUSH)) }
+            for ((section, value) in sent) {
+                if (section == SettingsSection.WIDGETS) {
+                    // A key the push left out of the file may come from a later look (a stand-in); a key it set stays.
+                    val now = s.widgets.json()
+                    for ((k, v) in (value as WidgetsSettings).json()) if (v != null) assertEquals(v, now[k], k)
+                } else assertEquals(value, TvSettingsSamples.typed(s, section))
+            }
+            look?.let { assertEquals(inside(flat(it), TvSettings.LOOK_PUSH), inside(keys(s), TvSettings.LOOK_PUSH)) }
         }
     }
 
@@ -94,25 +119,36 @@ class TvSettingsTest {
     @Test fun everyTypedFieldRoundTrips() {
         val apps = TvSettingsSamples.apps
         val one = listOf<Pair<String, (TvSettings) -> TvSettings>>(
-            "show_inputs_pill" to { it.withTopBar(it.topBar.copy(showInputsPill = false)) },
-            "show_network_pill" to { it.withTopBar(it.topBar.copy(showNetworkPill = false)) },
-            "launcher_settings_button" to { it.withTopBar(it.topBar.copy(launcherSettingsButton = true)) },
-            "greeting_name" to { it.withTopBar(it.topBar.copy(greetingName = "Ana María")) },
-            "shamsi_date" to { it.withTopBar(it.topBar.copy(shamsiDate = true)) },
-            "lunar_date" to { it.withTopBar(it.topBar.copy(lunarDate = true)) },
-            "lunar_utc_offset" to { it.withTopBar(it.topBar.copy(lunarUtcOffset = 7)) },
-            "show_stats" to { it.withTopBar(it.topBar.copy(showStats = true)) },
-            "vpn_pill" to { it.withTopBar(it.topBar.copy(vpnPill = true)) },
-            "vpn_app" to { it.withTopBar(it.topBar.copy(vpnApp = "com.example.vpn")) },
-            "top_bar_apps" to { it.withTopBar(it.topBar.copy(topBarApps = apps.take(2))) },
-            "wifi_label_width" to { it.withTopBar(it.topBar.copy(wifiLabelWidth = 120)) },
-            "tile_menu" to { it.withApps(it.apps.copy(tileMenu = true)) },
+            "show_inputs_pill" to { it.withWidgets(it.widgets.copy(showInputsPill = false)) },
+            "show_network_pill" to { it.withWidgets(it.widgets.copy(showNetworkPill = false)) },
+            "launcher_settings_button" to { it.withWidgets(it.widgets.copy(launcherSettingsButton = true)) },
+            "greeting_name" to { it.withWidgets(it.widgets.copy(greetingName = "Ana María")) },
+            "shamsi_date" to { it.withWidgets(it.widgets.copy(shamsiDate = true)) },
+            "lunar_date" to { it.withWidgets(it.widgets.copy(lunarDate = true)) },
+            "lunar_utc_offset" to { it.withWidgets(it.widgets.copy(lunarUtcOffset = 7)) },
+            "show_stats" to { it.withWidgets(it.widgets.copy(showStats = true)) },
+            "vpn_pill" to { it.withWidgets(it.widgets.copy(vpnPill = true)) },
+            "vpn_app" to { it.withWidgets(it.widgets.copy(vpnApp = "com.example.vpn")) },
+            "top_bar_apps" to { it.withWidgets(it.widgets.copy(topBarApps = apps.take(2))) },
+            "wifi_label_width" to { it.withWidgets(it.widgets.copy(wifiLabelWidth = 120)) },
+            "tile_menu" to { it.withApps(it.apps.copy(tileMenu = false)) },
             "app_library" to { it.withApps(it.apps.copy(appLibrary = true)) },
-            "library_button" to { it.withApps(it.apps.copy(libraryButton = true)) },
+            "library_button" to { it.withWidgets(it.widgets.copy(libraryButton = true)) },
             "show_library_pill" to { it.withApps(it.apps.copy(showLibraryPill = false)) },
             "hidden_apps" to { it.withApps(it.apps.copy(hiddenApps = apps.drop(5).take(3))) },
             "app_labels" to { it.withApps(it.apps.copy(appLabels = mapOf(apps[0] to "Films", apps[1] to "Videos = fun"))) },
-            "reorder_button" to { it.withApps(it.apps.copy(reorderButton = true)) },
+            "reorder_button" to { it.withWidgets(it.widgets.copy(reorderButton = true)) },
+            "show_greeting" to { it.withWidgets(it.widgets.copy(showGreeting = false)) },
+            "date_below_clock" to { it.withWidgets(it.widgets.copy(dateBelowClock = true)) },
+            "header_white" to { it.withWidgets(it.widgets.copy(headerWhite = true)) },
+            "clock_format" to { it.withWidgets(it.widgets.copy(clockFormat = "24")) },
+            "top_menu" to { it.withWidgets(it.widgets.copy(topMenu = true)) },
+            "icon_only_buttons" to { it.withWidgets(it.widgets.copy(iconOnlyButtons = true)) },
+            "icon_only_inputs" to { it.withWidgets(it.widgets.copy(iconOnlyInputs = true)) },
+            "icon_only_vpn" to { it.withWidgets(it.widgets.copy(iconOnlyVpn = true)) },
+            "wifi_status_color" to { it.withWidgets(it.widgets.copy(wifiStatusColor = true)) },
+            "wifi_status_warnings" to { it.withWidgets(it.widgets.copy(wifiStatusWarnings = true)) },
+            "open_on_start_choice" to { it.withStartUp(StartUpSettings(openOnStartChoice = true)) },
             "home_idle_clock_minutes" to { it.withScreensaver(it.screensaver.copy(idleMinutes = 10)) },
             "clock_wallpaper" to { it.withScreensaver(it.screensaver.copy(clockWallpaper = true)) },
             "clock_wallpaper_dim" to { it.withScreensaver(it.screensaver.copy(clockWallpaperDim = 70)) },
@@ -140,26 +176,26 @@ class TvSettingsTest {
         val file = "{\"show_inputs_pill\": \"no\", \"greeting_name\": \"Asha\", \"wifi_label_width\": 900, \"hidden_apps\": [\"com.mitv.gallery\", \"  \"]}"
             .encodeToByteArray()
         val s = TvSettings.seed(file, null)
-        assertEquals(TopBarSettings(greetingName = "Asha"), s.topBar, "values the launcher ignores read as not set")
+        assertEquals(WidgetsSettings(greetingName = "Asha"), s.widgets, "values the launcher ignores read as not set")
         assertEquals(listOf(PackageName("com.mitv.gallery")), s.apps.hiddenApps)
-        assertEquals(s.encode().decodeToString(), s.withTopBar(s.topBar).withApps(s.apps).encode().decodeToString())
-        val t = s.withTopBar(s.topBar.copy(showStats = true))
+        assertEquals(s.encode().decodeToString(), s.withWidgets(s.widgets).withApps(s.apps).encode().decodeToString())
+        val t = s.withWidgets(s.widgets.copy(showStats = true))
         assertEquals(JsonPrimitive("no"), keys(t)["show_inputs_pill"], "not changed, so as the file had it")
         assertEquals(JsonPrimitive(900), keys(t)["wifi_label_width"])
-        val u = s.withTopBar(TopBarSettings(greetingName = "  Ana ", lunarUtcOffset = 40, wifiLabelWidth = -5, showInputsPill = true))
-        assertEquals(TopBarSettings(greetingName = "Ana", lunarUtcOffset = 14, wifiLabelWidth = 0, showInputsPill = true), u.topBar)
+        val u = s.withWidgets(WidgetsSettings(greetingName = "  Ana ", lunarUtcOffset = 40, wifiLabelWidth = -5, showInputsPill = true))
+        assertEquals(WidgetsSettings(greetingName = "Ana", lunarUtcOffset = 14, wifiLabelWidth = 0, showInputsPill = true), u.widgets)
         val v = s.withApps(s.apps.copy(appLabels = mapOf(PackageName("com.netflix.ninja") to "  ")))
         assertEquals(emptyMap(), v.apps.appLabels, "a blank name is no name")
-        assertEquals(TopBarSettings(), s.withTopBar(TopBarSettings()).topBar)
-        assertEquals(null, keys(s.withTopBar(TopBarSettings()))["greeting_name"], "null takes a key it changed out")
-        assertEquals(JsonPrimitive("no"), keys(s.withTopBar(TopBarSettings()))["show_inputs_pill"], "already null, so as the file had it")
+        assertEquals(WidgetsSettings(), s.withWidgets(WidgetsSettings()).widgets)
+        assertEquals(null, keys(s.withWidgets(WidgetsSettings()))["greeting_name"], "null takes a key it changed out")
+        assertEquals(JsonPrimitive("no"), keys(s.withWidgets(WidgetsSettings()))["show_inputs_pill"], "already null, so as the file had it")
     }
 
     // Launcher version awareness: a TV gets only the keys its launcher reads (ConfigKeys.since); not
     // known is the bundled launcher, which reads them all; a key no launcher we know reads is kept.
     @Test fun aTvGetsOnlyTheKeysItsLauncherReads() {
         val file = TvSettingsSamples.everyKey()
-        for (vc in listOf(1L, 2L, 4L, 5L, 6L, 7L, 8L, 9L, 12L)) {
+        for (vc in listOf(1L, 2L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L)) {
             val want = ConfigKeys.ALL.filter { it.since <= vc }.map { it.name }.toSet() + "zz_future_key"
             assertEquals(want, flat(TvSettings.seed(file, vc).encode()).keys, "versionCode $vc")
         }
@@ -169,13 +205,13 @@ class TvSettingsTest {
         val look = LookKeys.build(LookKeys.spec(StyleId.GLASS), LookInputs.pictures.first().second, 6, TvSettingsSamples.apps.take(6), cards = true,
             LookExtras(oneRow = true, hideGreeting = true, dateBelow = true, brightDate = true, wifiWarnings = true, tiles = TilesChoice.ICONS))
         assertTrue(flat(look).keys.any { ConfigKeys.of(it)!!.since == ConfigKeys.V30 }, "the look has 3.0 keys")
-        val sent = flat(on27.withSections(look, TvSettings.LOOK_PUSH).withTopBar(TopBarSettings(vpnPill = true, lunarDate = true, showStats = true))
+        val sent = flat(TvSettingsSamples.pushLook(on27, look).withWidgets(WidgetsSettings(vpnPill = true, lunarDate = true, showStats = true))
             .withScreensaver(ScreensaverSettings(clockGlow = false)).encode())
-        assertEquals(emptyList(), sent.keys.filter { ConfigKeys.of(it)?.since == ConfigKeys.V30 })
+        assertEquals(emptyList(), sent.keys.filter { (ConfigKeys.of(it)?.since ?: 0) >= ConfigKeys.V30 })
         assertEquals(JsonPrimitive(true), sent["show_stats"])
         // The document still holds them, so the same TV after its update gets them.
-        assertEquals(TopBarSettings(vpnPill = true, lunarDate = true, showStats = true), on27.withTopBar(TopBarSettings(vpnPill = true,
-            lunarDate = true, showStats = true)).topBar)
+        assertEquals(WidgetsSettings(vpnPill = true, lunarDate = true, showStats = true), on27.withWidgets(WidgetsSettings(vpnPill = true,
+            lunarDate = true, showStats = true)).widgets)
     }
 
     // The document starts from the TV's file: none, or one the launcher ignores whole, is empty.

@@ -23,6 +23,8 @@ import tv.cleanyour.core.spec.Looks
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.spec.resolveFor
 import tv.cleanyour.core.spec.StyleId
+import tv.cleanyour.core.spec.TvSettings
+import tv.cleanyour.core.spec.WidgetsSettings
 
 // M2 Home screen: the dock (S3b sheet), the look (theme picker), "Use the TV's own home screen"
 // with its preview, the drift banner (D15: the overlay digest re-read on every connect; "Restore
@@ -177,6 +179,7 @@ class HomeScreenMachine(
     private var earlier: EarlierLook.Saved? = null
     private var cards: Boolean = Cards.MANAGE_DEFAULT
     private var keyNames = false
+    private var widgets: WidgetsSettings? = null   // 0.5.0: the TV's Widgets as its file has them, for the previews
     private var kept: LookDraft? = null      // the draft of a send in flight, or of one that failed (OpenLook reopens it)
     private var sending = false              // one send per UseLook
 
@@ -235,7 +238,7 @@ class HomeScreenMachine(
             apps = dock, others = state.apps.filter { it.pkg !in inDock },
             mine = state.ownPicture?.let { LookPicture.Of(it, state.ownDim) }, new = state.newPicture?.let { LookPicture.Of(it, state.newDim) },
             earlier = earlier, sent = saved, tv = lookTv(state), cards = cards, keyNames = keyNames, tvChanged = state.drift,
-            pushDock = saved?.dock, dockChosen = saved?.dockChosen ?: true,
+            pushDock = saved?.dock, dockChosen = saved?.dockChosen ?: true, widgets = widgets,
         )
     }
 
@@ -335,8 +338,11 @@ class HomeScreenMachine(
         val cardsNow = attempt { Cards.current(d, tvId, choice, snap?.launcherOverlay) }.getOrNull() ?: Cards.MANAGE_DEFAULT
         val earlierLook = attempt { EarlierLook.load(d.documents, d.blobs, tvId) }.getOrNull()
         val keys = attempt { d.appPrefs.load() }.getOrNull()?.lookKeyNames ?: false
+        // 0.5.0: the Widgets the TV's file holds, which the previews draw over the look's own (LookPreview.withWidgets).
+        val seed = attempt { SettingsSeed.overlay(d, tvId, snap) }.getOrElse { snap?.launcherOverlay }
+        widgets = TvSettings.seed(seed, versionCode).widgets
         val inDock = (dock + waiting).map { it.pkg }.toSet()
-        val sentPreview = choice?.let { drafts.previewOf(it, dock + waiting, apps.filter { a -> a.pkg !in inDock }, cardsNow, own, tvLook) }
+        val sentPreview = choice?.let { drafts.previewOf(it, dock + waiting, apps.filter { a -> a.pkg !in inDock }, cardsNow, own, tvLook, widgets) }
         val pictureId = if (choice?.isNew == true) choice.picture else choice?.picture?.takeUnless { Looks.dated(lookId) }
         val ended = if (choice?.isNew == true) choice.picture?.takeIf { drafts.datedPicture(it) && drafts.pictureOptions().none { o -> o.id == it } }
             ?.let { id -> drafts.gallery().firstOrNull { it.id == id }?.name ?: id }

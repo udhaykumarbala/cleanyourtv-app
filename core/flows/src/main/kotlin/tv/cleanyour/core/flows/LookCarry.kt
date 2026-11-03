@@ -8,6 +8,7 @@ import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.spec.LauncherConfigCodec
 import tv.cleanyour.core.spec.LauncherConfigDoc
 import tv.cleanyour.core.spec.LiveTvKeys
+import tv.cleanyour.core.spec.SettingsSection
 import tv.cleanyour.core.spec.TvSettings
 import tv.cleanyour.core.store.DocumentStore
 
@@ -20,8 +21,13 @@ import tv.cleanyour.core.store.DocumentStore
 // 0.5.0 F0: the look goes into the TV's settings document (TvSettings), seeded from the config.json
 // the TV has now (SettingsSeed), and the push sends the whole document: the look push writes its own
 // sections (TvSettings.LOOK_PUSH) and keeps every key of the others, less the keys the TV's launcher
-// does not read. With no file on the TV that is the 0.4.8 bytes.
+// does not read. With no file on the TV that is the 0.4.8 bytes. 0.5.0: the Widgets keys a look builds only
+// stand in where the TV's document has none (LOOK_STAND_IN).
 internal object LookCarry {
+    // 0.5.0: the sections a look still builds keys for but no longer owns (the buttons' look and the header rows,
+    // now the Widgets page's): they stand in only where the TV's document has none (TvSettings.withLook).
+    val LOOK_STAND_IN: Set<SettingsSection> = setOf(SettingsSection.WIDGETS)
+
     suspend fun of(d: ManageDeps, tvId: TvId): (LauncherConfigDoc) -> LauncherConfigDoc {
         val helper = HomeHelperFlows.carry(d, tvId)
         val snap = attempt { d.snapshots.latest(tvId) }.getOrNull()
@@ -41,7 +47,7 @@ internal object LookCarry {
     // grid, as in 0.4.8. An empty list, or any other, is the person's (or a theme's) and only loses the
     // placed apps.
     fun merge(settings: TvSettings, built: LauncherConfigDoc, liveTv: PackageName?, helper: (LauncherConfigDoc) -> LauncherConfigDoc): LauncherConfigDoc {
-        val doc = settings.withSections(built.copy(hiddenApps = null), TvSettings.LOOK_PUSH).doc
+        val doc = settings.withLook(built.copy(hiddenApps = null), TvSettings.LOOK_PUSH, LOOK_STAND_IN).doc
         val launcherList = LauncherConfigCodec.builtInDefaults.hiddenApps
         val ruleMade = doc.hiddenApps?.let { l -> l.isNotEmpty() && l.size < launcherList.size && l.all { it.value in launcherList } } == true
         val hidden = if (doc.hiddenApps == null || ruleMade) built.hiddenApps else doc.hiddenApps

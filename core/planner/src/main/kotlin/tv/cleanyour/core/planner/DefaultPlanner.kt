@@ -100,6 +100,7 @@ class DefaultPlanner(
             is PlanRequest.SwitchOff -> { d.switchOff(request.pkgs); PlanKind.SWITCH_OFF }
             is PlanRequest.Leftovers -> { d.leftovers(request.expectedDisabled); PlanKind.LEFTOVERS }
             is PlanRequest.ApplyTheme -> { d.applyTheme(request.config, request.wallpaper); PlanKind.THEME }
+            is PlanRequest.ApplySettings -> { d.applySettings(request.config); PlanKind.THEME }
             is PlanRequest.AddModule -> { d.addModule(request); PlanKind.ADD_MODULE }
             is PlanRequest.RemoveModule -> { d.removeModule(request.pkg); PlanKind.REMOVE_MODULE }
             is PlanRequest.UseStockHome -> { d.useStockHome(request.stock, null); PlanKind.USE_STOCK_HOME }
@@ -761,6 +762,14 @@ class DefaultPlanner(
             look(config, wallpaper, overlayGone = false, pushPolicy = FailurePolicy.STOP_AND_ROLLBACK, route = themeRoute(state(launcher.pkg)?.versionCode))
         }
 
+        // 0.5.0 Make it yours: the TV's settings document (TvSettings) as config.json, with the same steps, priors
+        // and failure policy as ApplyTheme but no wallpaper step: the picture on the TV stays as it is.
+        fun applySettings(config: BlobRef) {
+            if (!installed(launcher.pkg)) { refuse("the new home screen is not installed"); return }
+            look(config, null, overlayGone = false, pushPolicy = FailurePolicy.STOP_AND_ROLLBACK, route = themeRoute(state(launcher.pkg)?.versionCode),
+                keepWallpaper = true)
+        }
+
         // RFC-THEME-1 (issues #1279, #1649, #1094, #1290): the look goes through the launcher's ThemeProvider where
         // the TV has `content write` (Android 10 and later) and the launcher has the provider (2.5, versionCode 6,
         // and later); a versionCode not read (0 or none) is the launcher this app bundles, the LookGates rule. Else
@@ -775,9 +784,12 @@ class DefaultPlanner(
         // both pushes record that the files were absent and Undo everything removes them again.
         // Otherwise the config prior is the overlay the probe read and the wallpaper's is unknown.
         // `pushPolicy` is the pushes' failure policy; the other steps always CONTINUE.
-        fun look(config: BlobRef, wallpaper: BlobRef?, overlayGone: Boolean, pushPolicy: FailurePolicy, route: FileRoute = FileRoute.SYNC) {
+        // `keepWallpaper` (0.5.0): no wallpaper step at all, so the TV's picture stays (ApplySettings).
+        fun look(config: BlobRef, wallpaper: BlobRef?, overlayGone: Boolean, pushPolicy: FailurePolicy, route: FileRoute = FileRoute.SYNC,
+            keepWallpaper: Boolean = false) {
             val ops = try {
                 configTransport.writePlanSteps(config, wallpaper, route)
+                    .filterNot { keepWallpaper && it is Op.RemoveFile }   // the only RemoveFile: the wallpaper, when none is sent
             } catch (e: IllegalArgumentException) {
                 refuse("the look cannot be sent to the TV: ${e.message}"); return
             }

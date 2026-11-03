@@ -12,18 +12,21 @@ import kotlin.test.assertTrue
 class ConfigKeysTest {
     private fun reader(version: String) = File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/$version/Config.java").readText()
 
-    // The keys a reader takes, found as LauncherConfigCodecTest.everyKeyALauncherReadsIsKnown finds them.
+    // The keys a reader takes, found as LauncherConfigCodecTest.everyKeyALauncherReadsIsKnown finds them, a key read
+    // through a String constant of Config (3.3's CLOCK_FORMAT_KEY) as its literal.
     private fun keys(version: String): Set<String> {
         val text = reader(version)
-        return (Regex("\\((?:json|o), \"([a-z_0-9]+)\"").findAll(text) +
-            Regex("\\b(?:json|o)\\.(?:opt\\w*|get\\w*|has|isNull)\\(\"([a-z_0-9]+)\"").findAll(text)).map { it.groupValues[1] }.toSet()
+        val constants = Regex("static final String ([A-Z_0-9]+) = \"([a-z_0-9]+)\";").findAll(text).associate { it.groupValues[1] to it.groupValues[2] }
+        return (Regex("\\((?:json|o), \"([a-z_0-9]+)\"").findAll(text).map { it.groupValues[1] } +
+            Regex("\\b(?:json|o)\\.(?:opt\\w*|get\\w*|has|isNull)\\(\"([a-z_0-9]+)\"").findAll(text).map { it.groupValues[1] } +
+            Regex("\\((?:json|o), ([A-Z_0-9]+)[,)]").findAll(text).mapNotNull { constants[it.groupValues[1]] }).toSet()
     }
 
     @Test fun theTableIsEveryKeyLauncher30Reads() {
         val names = ConfigKeys.ALL.map { it.name }
         assertEquals(names.size, names.toSet().size, "a key twice")
         assertEquals(keys("v30"), names.toSet())
-        val codec = ConfigCodecImpl.MODELLED + ConfigCodecImpl.CARRIED_27 + ConfigCodecImpl.CARRIED_30 + ConfigCodecImpl.CARRIED_READ
+        val codec = ConfigCodecImpl.MODELLED + ConfigCodecImpl.CARRIED_27 + ConfigCodecImpl.CARRIED_30 + ConfigCodecImpl.CARRIED_33 + ConfigCodecImpl.CARRIED_READ
         assertEquals(codec, names.toSet(), "the codec knows the same keys")
     }
 
@@ -34,7 +37,7 @@ class ConfigKeysTest {
             assertEquals(k.name in v20, k.since <= ConfigKeys.V20, "${k.name} and 2.0")
             assertEquals(k.name in v25, k.since <= ConfigKeys.V25, "${k.name} and 2.5")
             assertEquals(k.name in v27, k.since <= ConfigKeys.V27, "${k.name} and 2.7")
-            assertTrue(k.since in ConfigKeys.V20..ConfigKeys.V30, k.name)
+            assertTrue(k.since in ConfigKeys.V20..ConfigKeys.V33, k.name)
         }
         assertEquals(LookGates.FIRST_27_VERSION_CODE, ConfigKeys.V27)
         assertEquals(LookGates.FIRST_30_VERSION_CODE, ConfigKeys.V30)
@@ -52,6 +55,12 @@ class ConfigKeysTest {
             "wallpaper_true_color", "focus_overshoot", "wallpaper_captions", "handle_view_inputs", "stock_home_redirect", "ambient_glow",
             "app_glow", "home_idle_clock_minutes", "key_filter", "dock_glass", "glow_style", "dock_opacity", "wallpaper_order"),
             since(ConfigKeys.V26))
+        // 0.5.0, launcher 3.3 (the tags' Config.java): v3.1.0 (10) one key, v3.2.0 (11) five, v3.3.0 (12) four, and
+        // inputs_cec_state_only after the tag at d7b0d4a5, still 12. The codec carries all eleven (CARRIED_33).
+        assertEquals(setOf("inputs_connected_only"), since(ConfigKeys.V31))
+        assertEquals(setOf("open_on_start_network_wait", "icon_only_vpn", "library_excluded_apps", "game_day", "seasonal_skin"), since(ConfigKeys.V32))
+        assertEquals(setOf("open_on_start_on_wake", "back_opens_clock", "glow_snap", "clock_format", "inputs_cec_state_only"), since(ConfigKeys.V33))
+        assertEquals(ConfigCodecImpl.CARRIED_33, (since(ConfigKeys.V31) + since(ConfigKeys.V32) + since(ConfigKeys.V33)))
     }
 
     // The helper each key goes through in 3.0's Config.load, and the range of each integer.
@@ -62,7 +71,7 @@ class ConfigKeysTest {
             val found = when (k.type) {
                 ConfigKeyType.BOOL -> Regex("bool\\(json, \"$n\"")
                 ConfigKeyType.INT -> Regex("integer\\(json, \"$n\", [^,]+, ${k.min}, ${k.max}\\)")
-                ConfigKeyType.STRING -> Regex("string\\(json, \"$n\"")
+                ConfigKeyType.STRING -> Regex(if (k.name == "clock_format") "string\\(json, CLOCK_FORMAT_KEY" else "string\\((?:json|o), \"$n\"")
                 ConfigKeyType.COLOR -> Regex("color\\(json, \"$n\"")
                 ConfigKeyType.STRING_LIST -> Regex("stringList\\(json, \"$n\"")
                 ConfigKeyType.INT_LIST -> Regex("intArray\\(json, \"$n\"")
@@ -80,7 +89,7 @@ class ConfigKeysTest {
             val k = ConfigKeys.of(name) ?: error("$name is not a key launcher 3.0 reads")
             assertEquals(want, Triple(k.type, k.owner, if (k.type == ConfigKeyType.INT) k.min to k.max else null), name)
         }
-        assertEquals(33, TvSettingsSamples.BRIEF.size)
+        assertEquals(36, TvSettingsSamples.BRIEF.size)
     }
 
     // Each section's typed value covers exactly the keys it owns (TvSettings.edit checks it on every
@@ -92,18 +101,20 @@ class ConfigKeysTest {
         fun s(k: String) = xml.getValue(k) as String
         @Suppress("UNCHECKED_CAST")
         fun l(k: String) = (xml.getValue(k) as Array<String>).toList()
-        assertEquals(TopBarSettings(b("show_inputs_pill"), b("show_network_pill"), b("launcher_settings_button"), s("greeting_name"),
+        assertEquals(WidgetsSettings(b("show_inputs_pill"), b("show_network_pill"), b("launcher_settings_button"), s("greeting_name"),
             b("shamsi_date"), b("lunar_date"), -1, b("show_stats"), b("vpn_pill"), s("vpn_app"), l("top_bar_apps").map(::PackageName),
-            i("wifi_label_width")), TopBarSettings.DEFAULTS)
-        assertEquals(AppsSettings(b("tile_menu"), b("app_library"), b("library_button"), b("show_library_pill"),
-            l("hidden_apps").map(::PackageName), l("app_labels").associate { PackageName(it.substringBefore('=')) to it.substringAfter('=') },
-            b("reorder_button")), AppsSettings.DEFAULTS)
+            i("wifi_label_width"), b("show_greeting"), b("date_below_clock"), b("header_white"), s("clock_format"), b("top_menu"),
+            b("icon_only_buttons"), b("icon_only_inputs"), b("icon_only_vpn"), b("wifi_status_color"), b("wifi_status_warnings"),
+            b("reorder_button"), b("library_button")), WidgetsSettings.DEFAULTS)
+        assertEquals(AppsSettings(b("tile_menu"), b("app_library"), b("show_library_pill"),
+            l("hidden_apps").map(::PackageName), l("app_labels").associate { PackageName(it.substringBefore('=')) to it.substringAfter('=') }),
+            AppsSettings.DEFAULTS)
         assertEquals(ScreensaverSettings(i("home_idle_clock_minutes"), b("clock_wallpaper"), i("clock_wallpaper_dim"), b("clock_glow")),
             ScreensaverSettings.DEFAULTS)
-        assertEquals(StartUpSettings(b("boot_to_live_tv")), StartUpSettings.DEFAULTS)
+        assertEquals(StartUpSettings(b("boot_to_live_tv"), b("open_on_start_choice")), StartUpSettings.DEFAULTS)
         assertEquals(WallpaperSettings(b("wallpaper_captions")), WallpaperSettings.DEFAULTS)
         val empty = TvSettings.seed(null, null)
-        empty.withTopBar(TopBarSettings.DEFAULTS).withApps(AppsSettings.DEFAULTS).withScreensaver(ScreensaverSettings.DEFAULTS)
+        empty.withWidgets(WidgetsSettings.DEFAULTS).withApps(AppsSettings.DEFAULTS).withScreensaver(ScreensaverSettings.DEFAULTS)
             .withStartUp(StartUpSettings.DEFAULTS).withWallpaper(WallpaperSettings.DEFAULTS).let { s ->
                 for (section in TvSettingsSamples.TYPED) assertEquals(ConfigKeys.owned(section).toSet(), s.section(section).keys, "$section")
             }
@@ -128,7 +139,8 @@ class ConfigKeysTest {
             theme.doc.hiddenApps?.let { assertEquals(ConfigCodecImpl.BUILT_IN.hiddenApps, it.map { p -> p.value }, theme.id) }
             written += TvSettingsSamples.flat(doc.copy(hiddenApps = null)).keys
         }
-        val stray = written.filter { ConfigKeys.of(it)?.owner !in look }
+        // 0.5.0: the Widgets keys a look still builds only stand in where the TV's file has none (LookCarry.merge).
+        val stray = written.filter { ConfigKeys.of(it)?.owner !in look + TvSettingsSamples.STAND_IN }
         assertEquals(emptyList(), stray, "keys a look push writes that another section owns")
         // Everything LOOK owns is a key a look writes, or the festival's greeting a theme may set.
         assertEquals(setOf("greeting"), ConfigKeys.owned(SettingsSection.LOOK).toSet() - written)
