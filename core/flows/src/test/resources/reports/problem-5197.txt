@@ -1,0 +1,38 @@
+Clean Your TV: problem report
+App: 0.4.7 (full)
+Phone: Xiaomi 2511FPC34G, Android 16
+
+What happened
+Screen: Home screen
+Card: TV keeps its own home screen. The dock and the look belong to the new home screen, and it isn't on this TV. (HOME_BLOCKED_VENDOR_HOME)
+Step: finished COMPLETED, 0 skipped
+
+TV
+Brand: Sony
+Manufacturer: Sony
+Model: BRAVIA 4K GB ATV3
+Device: BRAVIA_ATV3_4K
+Android: 9 (SDK 28)
+Build: Sony/BRAVIA_ATV3_4K_BR/BRAVIA_ATV3_4K:9/PTT1.190515.001.S54/672201:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-11-02
+
+Matching
+Profile: exact sony-xbr-65x900f
+Home switch: blocked VENDOR_HOME
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/com.sony.dtv.settings.system.FallbackHome priority -1000
+
+Apps: 166 system, 6 other
+
+Switched off by this app (18):
+android.autoinstalls.config.sony.bravia, com.google.android.feedback,
+com.google.android.tv.bugreportsender, com.google.android.tvrecommendations, com.qterics.da.product,
+com.sony.dtv.bivlinfo, com.sony.dtv.customersupport, com.sony.dtv.da.service, com.sony.dtv.demomode,
+com.sony.dtv.demosupport, com.sony.dtv.imanual, com.sony.dtv.multiscreendemo,
+com.sony.dtv.osat.music, com.sony.dtv.smarthelp, com.sony.dtv.smartmediaapp,
+com.sony.dtv.sonybugreportsys, com.sony.dtv.sonyselect, tv.samba.ssm

@@ -2,6 +2,18 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## 0.5.0 (unreleased)
+
+- Sony BRAVIA VH21: the release keeps the TV's own home screen, because upstream now keeps its setup wizard
+  on (Wi-Fi and casting need it); test builds offer the Home button helper there instead.
+- Sony BRAVIA on Android 9: the TV Settings placeholder these sets name with Sony's class
+  (com.sony.dtv.settings.system.FallbackHome) is Android's own, not a system service of its own, so the
+  tested lists of the BRAVIA 4K GB and 4K GB ATV3 switch the home screen again (it was held back with "a
+  system service on this TV also answers the Home button"). Sets without a tested list, like the 2K GB
+  ATV3, keep their own home screen in the release because of the setup wizard, as before that block.
+- The TV report names the new home screen's own other accessibility services, so a report shows whether
+  the service that keeps the Home button helper out is one of them.
+
 ## 0.4.9-beta1 (test build)
 
 A GitHub pre-release for testers, made from 0.4.8 (2026-11-03). It installs over 0.4.8 and every

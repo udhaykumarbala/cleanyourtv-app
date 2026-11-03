@@ -152,6 +152,8 @@ data class RestartFacts(val path: HomePath, val tally: RestartTally, val lookRou
 
 object TvReport {
     private val DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC)
+    // An entry of the new home screen's own package named in the report: a component, nothing else, and short.
+    private val OWN_ENTRY = Regex("^[A-Za-z0-9_.]+/[A-Za-z0-9_.$]{1,120}$")
 
     // B1 "Help add this TV": the whole TV report, system packages included, one per line. Share sends it.
     fun text(input: TvReportInput): String = buildString {
@@ -236,6 +238,11 @@ object TvReport {
             listed -> "${entries.size} (the new home screen's Home button helper, $others other, not named)"
             else -> "${entries.size} (not named)"
         })
+        // 0.5.0 (issues #3075, #3287, #5468): an entry Customise counts as another service (S3) may be one of the
+        // new home screen's own (its InputKeyService). Those are not the person's apps, so they are named, in the
+        // form the TV lists them; every other entry stays a count.
+        val launcherOwn = tv.cleanyour.core.ops.HelperLines.others(list).filter { it.startsWith(tv.cleanyour.core.ops.HelperLines.PKG + "/") && OWN_ENTRY.matches(it) }
+        if (launcherOwn.isNotEmpty()) appendLine("The new home screen's other services listed: ${launcherOwn.joinToString(", ")}")
         appendLine("Home button helper: " + when {
             listed && on == "1" -> "listed, accessibility on"
             listed -> "listed, accessibility off"

@@ -225,8 +225,14 @@ object HomeSwitchRisk {
     // com.realtek.menu, a vendor's own) blocks R0. HomePlaceholder.isPlaceholder stays as it is for
     // its other callers (Setup's card, Done, the check after the switch), which only ask whether a
     // HOME answer is a home screen.
+    // 0.5.0 (issues #5168, #5197, #2741, #5264): Sony's Android 9 sets name TV Settings' own FallbackHome
+    // by the source package Sony builds that app from (com.sony.dtv.settings.system.FallbackHome, -1000).
+    // It is the same placeholder in the same package, Android's TV Settings, not a service of its own, and
+    // the exact lists of these sets switched with it before beta4 and held (#1567, #5869). Only that one
+    // class: another maker's class in TV Settings (KTC's, #937) has no such evidence and still blocks.
     val AOSP_FALLBACK_HOMES: Set<Component> = setOf(
         Component(PackageName("com.android.tv.settings"), ".system.FallbackHome"),
+        Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.system.FallbackHome"),
         Component(PackageName("com.android.settings"), ".FallbackHome"),
     )
     val VENDOR_PLACEHOLDERS: Set<PackageName> =
