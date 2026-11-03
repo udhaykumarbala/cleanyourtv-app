@@ -254,6 +254,7 @@ nvidia-shield-tv-2019	com.nvidia.tegraprofiler.security	purpose not documented b
 ok-ai-pont-ikebukuro	(groups)	b06ab21, batch 5: switched off on the second unit (Nikkei DVB91NK, same device and firmware) and reboot-checked; partner setup (telemetry) and the print spooler (one of the six reviewed packages) are default-off rows, the other Android extras and the USB file and photo players stay ask rows (2.7 bump rule)
 oneplus-tv-cebu	(header)	the Kept on purpose names (TV inputs, Live TV, remote service, hot keys, the Netflix key, Assistant, updaters, factory apps) are never-disable
 oneplus-tv-cebu	(match)	the Android 10 build the list was made on (issue #1243); the Android 11 Cebu sets wait for their own list (upstream PR #1605)
+oneplus-tv-cebu	com.heytap.tv.remotecontrolinspect	d7b0d4a: added in the telemetry group from the Android 11 unit; named for the remote control (safety rule 8), so an ask row
 oneplus-tv-cebu	com.heytap.tv.remotediagnosing	part of the remote service, which this app never switches off (why it was parked); never-disable, on an ask row
 oneplus-tv-cebu	com.mediatek.android.leanbacklauncher.partnercustomizer	a kept line in the list (the stock home's Inputs and Wi-Fi icons need it); never-disable
 oneplus-tv-cebu	com.oneplus.tv.launcher	OnePlus's own home page, which this app never switches off (why it was parked); never-disable, on an ask row
@@ -262,6 +263,7 @@ oneplus-tv-dosa	com.google.android.boot.appsplashscreen	a boot-time component an
 oneplus-tv-dosa	com.google.android.leanbacklauncher.partnercustomizer	never-disable as on oneplus-tv-y1: on this MediaTek Android TV 11 platform it provides the tvlauncher widget com.mediatek.tv.service needs after a reboot, and this header does not say the set was rebooted
 oneplus-tv-dosa	com.oneplus.oobe.tv	OnePlus first-run setup, which this app never switches off; never-disable, on an ask row
 oneplus-tv-dosa	com.oneplus.tv.launcher	OnePlus's own home page, which this app never switches off; never-disable, on an ask row
+oneplus-tv-dubai	com.heytap.tv.remotediagnosing	d7b0d4a: added in the telemetry group from the second unit; part of the remote service, which this app never switches off (as on oneplus-tv-cebu); never-disable, on an ask row
 oneplus-tv-y1	(header)	the Kept on purpose names (Assistant, Chromecast) and the Live TV app are in the curated never-disable list
 oneplus-tv-y1	(match)	the same Skyworth device shibuya as panasonic-th-40hs550k; the brand OnePlus from the header's vendor fingerprint keeps them apart; confirm the brand string with getprop (a wrong one fails closed)
 oneplus-tv-y1	com.android.providers.calendar	calendar storage for apps is an ask row, as on hisense-u75-hengshan and panasonic-4ktv-jup

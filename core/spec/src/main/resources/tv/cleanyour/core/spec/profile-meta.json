@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "upstreamCommit": "b06ab21",
+  "upstreamCommit": "d7b0d4a",
   "profiles": {
     "aipro2k": {
       "match": { "models": [], "devices": ["dongnae"], "brand": "Expressluck", "sdkMin": 34, "sdkMax": 34, "fingerprintPrefix": null },
@@ -127,7 +127,8 @@
         "Preloaded Amazon apps and services not used": { "category": "preloads", "ask": false },
         "Alexa extras (voice search itself stays on)": { "category": "voice", "ask": true },
         "Streaming apps not used (kept: Netflix, Prime Video, Disney+, Apple TV, DirecTV, Crunchyroll, YouTube)": { "category": "streaming", "ask": true },
-        "Added 2026-10-19 from the Insignia and Toshiba Fire OS 7 lists in this repo": { "category": "brand", "ask": false }
+        "Added 2026-10-19 from the Insignia and Toshiba Fire OS 7 lists in this repo": { "category": "brand", "ask": false },
+        "Added 2026-11-01 from the second unit, also disabled in other Fire OS lists here. Their role is not documented;": { "category": "other", "ask": true }
       },
       "packages": {
         "com.amazon.hedwig": { "category": "ads", "ask": true },
@@ -752,7 +753,8 @@
         "Tutorials": { "category": "preloads", "ask": false },
         "Alexa (personal choice; vizzini comes back at every boot, see the header)": { "category": "voice", "ask": true },
         "Casting (personal choice)": { "category": "casting", "ask": true },
-        "Preloaded apps (personal choice)": { "category": "preloads", "ask": true }
+        "Preloaded apps (personal choice)": { "category": "preloads", "ask": true },
+        "Popups and promos (tested on 65U65SFC)": { "category": "ads", "ask": true }
       },
       "packages": {
         "com.amazon.tv.acr": { "category": "tracking", "ask": false },
@@ -918,7 +920,8 @@
         "Store/hotel demo mode and the first-time setup flow (setup already complete)": { "category": "demo", "ask": false },
         "Streaming apps and voice, off by choice (comment out any you use)": { "category": "streaming", "ask": true },
         "Hisense device assistant: a cleaner with a boot receiver (cache clean, \"turbo mode\")": { "category": "brand", "ask": false },
-        "Google TV setup wizard. Its RecoveryActivity claims HOME and beats the new launcher once": { "category": "home", "ask": false }
+        "Google TV setup wizard. Its RecoveryActivity claims HOME and beats the new launcher once": { "category": "home", "ask": false },
+        "Hisense content feeds (second unit, US firmware)": { "category": "ads", "ask": true }
       },
       "packages": {
         "com.google.android.syncadapters.calendar": { "category": "other", "ask": false },
@@ -947,7 +950,8 @@
         "Background services that are not needed": { "category": "brand", "ask": false },
         "Google TV ad, preload and tracking services": { "category": "ads", "ask": false },
         "Unused on a television": { "category": "preloads", "ask": false },
-        "Launcher phase only. Google TV's setup wizard also claims android.intent.category.HOME (priority 1,": { "category": "home", "ask": false }
+        "Launcher phase only. Google TV's setup wizard also claims android.intent.category.HOME (priority 1,": { "category": "home", "ask": false },
+        "75U75N owner's choices, all reversible: apps that unit's owner does not use": { "category": "preloads", "ask": true }
       },
       "packages": {
         "com.vt.hishow": { "category": "preloads", "ask": false },
@@ -1188,7 +1192,8 @@
         "Google partner setup and store plumbing": { "category": "tracking", "ask": false },
         "Preloaded services": { "category": "other", "ask": true },
         "Karaoke": { "category": "preloads", "ask": true },
-        "Preloaded apps not used on this set; comment out anything you use": { "category": "streaming", "ask": true }
+        "Preloaded apps not used on this set; comment out anything you use": { "category": "streaming", "ask": true },
+        "Privacy Sandbox and telemetry": { "category": "tracking", "ask": true }
       },
       "packages": {
         "com.google.android.videos": { "category": "streaming", "ask": true },
@@ -1213,7 +1218,8 @@
         "India-specific preloads (never asked for)": { "category": "preloads", "ask": false },
         "Telemetry and feedback": { "category": "tracking", "ask": false },
         "Ambient screensaver (replaced by the ClockDream screensaver in launcher/)": { "category": "screensaver", "ask": true },
-        "Stock home recommendation rows; disable after the new launcher owns Home": { "category": "ads", "ask": false }
+        "Stock home recommendation rows; disable after the new launcher owns Home": { "category": "ads", "ask": false },
+        "Also disabled on Unit 2 (Motorola)": { "category": "preloads", "ask": true }
       },
       "packages": {
         "com.smartdevice.leanbacklauncher.customizer": { "category": "ads", "ask": true },
@@ -1508,7 +1514,8 @@
         "com.heytap.tv.camera": { "category": "preloads", "ask": true },
         "com.heytap.tv.btspeaker": { "category": "brand", "ask": true },
         "com.jio.web.androidtv": { "category": "preloads", "ask": true },
-        "com.google.android.play.games": { "category": "preloads", "ask": false }
+        "com.google.android.play.games": { "category": "preloads", "ask": false },
+        "com.heytap.tv.remotecontrolinspect": { "category": "other", "ask": true }
       }
     },
     "oneplus-tv-dosa": {
@@ -1544,7 +1551,7 @@
       "liveTv": "com.heytap.tv.livetv",
       "setupWraith": null,
       "quirks": [],
-      "neverDisable": ["com.heytap.optvfactory", "com.oneplus.tv.factory", "com.heytap.oprcupgradeservice"],
+      "neverDisable": ["com.heytap.optvfactory", "com.oneplus.tv.factory", "com.heytap.oprcupgradeservice", "com.heytap.tv.remotediagnosing"],
       "suggestedDock": [],
       "tested": { "by": null, "firmware": "UTT1.240928.001", "daysLivedWith": null, "rebootTested": false },
       "groups": {
@@ -1554,7 +1561,8 @@
         "Stock Google TV launcher and its recommendation service, replaced by launcher/": { "category": "home", "ask": false }
       },
       "packages": {
-        "com.google.android.tvrecommendations": { "category": "ads", "ask": false }
+        "com.google.android.tvrecommendations": { "category": "ads", "ask": false },
+        "com.heytap.tv.remotediagnosing": { "category": "other", "ask": true }
       }
     },
     "oneplus-tv-y1": {
@@ -1744,7 +1752,7 @@
       "suggestedDock": [],
       "tested": { "by": "Juan Caceres", "firmware": "RTM2.210929.098", "daysLivedWith": null, "rebootTested": true },
       "groups": {
-        "TPV / Philips telemetry": { "category": "tracking", "ask": false },
+        "FIFTH UNIT (Italy): Philips 43PUS7406/12, Android TV 11, RTM2.210929.098.": { "category": "tracking", "ask": false },
         "Philips content, store and demo": { "category": "ads", "ask": false },
         "Google recommendations, ambient mode and casting": { "category": "ads", "ask": false },
         "Google apps this owner does not use": { "category": "preloads", "ask": true },
@@ -1908,7 +1916,10 @@
       "groups": {
         "Batch 1: vendor analytics, retail demo, auto-installs and apps the owner does not use.": { "category": "preloads", "ask": true },
         "Batch 2: background services that run all day and that this owner does not use (about 100 MB of RAM back).": { "category": "brand", "ask": true },
-        "Stock home last, after the new launcher is installed. The Wi-Fi network was forgotten and added again first,": { "category": "home", "ask": false }
+        "Broadcast TV, only on a set that never uses the tuner. The last three need TVINPUT_ALLOW=1 (see the header).": { "category": "home", "ask": false },
+        "Batch 3, from the second set (TA5). That owner kept Netflix and Prime Video from batch 1 (comment them out": { "category": "tracking", "ask": true },
+        "Off on the TA5 set by choice / no tuner in use; uncomment only if that fits your TV.": { "category": "brand", "ask": true },
+        "On the 55OLED718 set HBO Max stuttered with io.mimi.sdk.service off (README.md); keep both if an app stutters.": { "category": "brand", "ask": true }
       },
       "packages": {
         "org.droidtv.candeebug": { "category": "tracking", "ask": false },
@@ -2327,18 +2338,15 @@
         "Skyworth telemetry, ads, recommendation rows": { "category": "tracking", "ask": false },
         "Google feedback": { "category": "tracking", "ask": false },
         "Google TV setup wizard: RecoveryActivity claims Home with priority 1.": { "category": "home", "ask": false },
-        "Preloaded / unused apps (user opted out)": { "category": "preloads", "ask": false }
+        "Preloaded / unused apps (user opted out)": { "category": "preloads", "ask": false },
+        "com.smartdevice.dailymanage  (Daily Manage; kept, see the note on the app button above)": { "category": "tracking", "ask": false },
+        "com.smartdevice.myapp  (Daily Key; kept, see the note on the app button above)": { "category": "tracking", "ask": false }
       },
       "packages": {
         "com.smartdevice.recommendation": { "category": "ads", "ask": false },
         "com.smartdevice.leanbacklauncher.customizer": { "category": "other", "ask": true },
         "com.Smartdevice.emanual": { "category": "preloads", "ask": false },
         "com.google.android.youtube.tvmusic": { "category": "streaming", "ask": true }
-      },
-      "leftOut": {
-        "com.smartdevice.dailymanage": "issue #1378: this list switched it off and the remote's custom (Daily) button stopped working; the owner found it is one of the three packages that handle that button and got the button back by switching them on again",
-        "com.smartdevice.dailyshortcut": "issue #1378: the owner names it as one of the three packages that handle the remote's custom (Daily) button; the other Skyworth lists keep it on as the quick menu and global button receiver",
-        "com.smartdevice.myapp": "issue #1378: this list switched it off and the remote's custom (Daily) button stopped working; the owner found it is one of the three packages that handle that button and got the button back by switching them on again"
       }
     },
     "skyworth-swtv-24na-4k-nf": {
@@ -2541,12 +2549,11 @@
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "telemetry and remote support": { "category": "tracking", "ask": false },
-        "Sony ads, promos and recommendation rows": { "category": "ads", "ask": false },
+        "Sony ads, promos, help and recommendation rows": { "category": "ads", "ask": false },
         "demo / shop mode": { "category": "demo", "ask": false },
         "voice assistant (off by choice; the remote's mic button stops working)": { "category": "voice", "ask": true },
         "preloaded apps (off by choice)": { "category": "streaming", "ask": true },
-        "always-running services, off by choice to free memory (~120 MB together)": { "category": "other", "ask": true },
-        "Google TV setup wizard: with launcherx disabled its RecoveryActivity (HOME priority 1) outranks": { "category": "home", "ask": false }
+        "always-running services, off by choice to free memory (~120 MB together)": { "category": "other", "ask": true }
       },
       "packages": {
         "com.google.android.play.games": { "category": "preloads", "ask": false },
@@ -3218,7 +3225,8 @@
         "Retail demo / hotel mode": { "category": "demo", "ask": false },
         "Preloaded apps and services": { "category": "preloads", "ask": false },
         "Needed for a custom launcher. Disable only AFTER the new launcher is installed.": { "category": "home", "ask": false },
-        "Disabled by choice on this TV (unused streaming apps): comment out the ones you watch": { "category": "streaming", "ask": true }
+        "Disabled by choice on this TV (unused streaming apps): comment out the ones you watch": { "category": "streaming", "ask": true },
+        "Extras, disabled on the 55C655 unit (Italy)": { "category": "preloads", "ask": true }
       },
       "packages": {
         "com.tcl.ttvs": { "category": "updates", "ask": true },
@@ -3422,7 +3430,13 @@
       "tested": { "by": "Eddy Sangalli (PR #179)", "firmware": "PPR1.180610.011 AP08 (V8-R851T02-LF1V660)", "daysLivedWith": null, "rebootTested": true },
       "groups": {
         "TCL analytics (telemetry)": { "category": "tracking", "ask": false },
-        "Content pushed to the home screen at boot": { "category": "ads", "ask": false }
+        "Content pushed to the home screen at boot": { "category": "ads", "ask": false },
+        "com.tcl.usercenter (account sign-in nags) and com.tcl.useragreement (one-time ToS screen) and": { "category": "other", "ask": true },
+        "Added on the second unit: content/promo apps the first unit's notes left untested or untouched": { "category": "ads", "ask": true },
+        "Preloaded apps (second unit)": { "category": "preloads", "ask": true },
+        "Background service (second unit)": { "category": "brand", "ask": true },
+        "Off by choice (second unit's owner picked YouTube, Netflix, Prime Video, Globoplay and both": { "category": "voice", "ask": true },
+        "Second pass, applied after the launcher. The launcher's Clock screensaver replaces Ambient Mode:": { "category": "screensaver", "ask": true }
       },
       "packages": {}
     },
@@ -3586,7 +3600,9 @@
         "TCL promo, push messages, help/demo apps and log capture": { "category": "ads", "ask": false },
         "Duplicate webviews on this firmware (com.google.android.webview is the active one)": { "category": "other", "ask": true },
         "Mediatek casting/telemetry leftovers": { "category": "other", "ask": true },
-        "Google storefront and extras": { "category": "preloads", "ask": false }
+        "Google storefront and extras": { "category": "preloads", "ask": false },
+        "On the AS36 set and the French AS34 set, not on the first one. Disabled on both (one day on AS36, three on": { "category": "ads", "ask": true },
+        "Google extras, disabled on the third unit (three days, reboots included)": { "category": "tracking", "ask": true }
       },
       "packages": {
         "com.tcl.dashboard": { "category": "brand", "ask": true },
@@ -4055,7 +4071,7 @@
       "suggestedDock": [],
       "tested": { "by": "swordfish6975 (PR #303)", "firmware": "UKG3.260128.001.C3.3.5_20260723", "daysLivedWith": null, "rebootTested": false },
       "groups": {
-        "Telemetry and remote management": { "category": "tracking", "ask": false },
+        "Telemetry, partner setup and remote management": { "category": "tracking", "ask": false },
         "Ads and personalization": { "category": "ads", "ask": false },
         "Factory test apps": { "category": "demo", "ask": true },
         "Unused on a projector stick": { "category": "preloads", "ask": false },
@@ -4293,7 +4309,8 @@
         "(com.android.providers.tv, the TV content provider, stays enabled: the repo never disables it)": { "category": "other", "ask": true },
         "Accounts, backup and printing plumbing (second set; nothing on a TV uses these)": { "category": "other", "ask": true },
         "Screensavers (second set; that stick runs always-on with its own home screen)": { "category": "screensaver", "ask": true },
-        "Xiaomi extras (third set)": { "category": "brand", "ask": true }
+        "Xiaomi extras (third set)": { "category": "brand", "ask": true },
+        "partnercustomizer answers the remote's shortcut buttons (Netflix, Prime Video, Input) and, on many Xiaomi": { "category": "brand", "ask": true }
       },
       "packages": {
         "tv.alphonso.alphonso_eula": { "category": "ads", "ask": false },
@@ -4504,7 +4521,10 @@
         "Xiaomi + Google telemetry and attribution": { "category": "tracking", "ask": false },
         "PatchWall, content rows, promos, auto-installs": { "category": "ads", "ask": false },
         "Xiaomi update service (re-enable to check for firmware updates)": { "category": "updates", "ask": true },
-        "Preloaded apps": { "category": "preloads", "ask": false }
+        "Preloaded apps": { "category": "preloads", "ask": false },
+        "Privacy Sandbox ad APIs, on-device personalisation and federated learning": { "category": "tracking", "ask": true },
+        "Health Connect, which nothing on a stick uses": { "category": "preloads", "ask": true },
+        "Contacts and calendar sync, unused on a stick": { "category": "other", "ask": true }
       },
       "packages": {
         "com.netflix.ninja": { "category": "streaming", "ask": true },
@@ -4743,7 +4763,9 @@
         "Heavy screensavers. REASSIGN THE SCREENSAVER FIRST (e.g. the launcher's ClockDream via": { "category": "screensaver", "ask": true },
         "Xiaomi \"TV Manager\" rocket-cleaner app": { "category": "brand", "ask": true },
         "Preinstalled Google apps that reinstall freely from Play whenever wanted": { "category": "preloads", "ask": true },
-        "Xiaomi media leftovers and accessibility suite. The gallery doubles as the photo screensaver,": { "category": "preloads", "ask": true }
+        "Xiaomi media leftovers and accessibility suite. The gallery doubles as the photo screensaver,": { "category": "preloads", "ask": true },
+        "Second unit extras (Mi TV 4S, 2026-10-31)": { "category": "ads", "ask": true },
+        "AOSP colour screensaver; reassign the screensaver first, as with the two above": { "category": "screensaver", "ask": true }
       },
       "packages": {
         "com.xiaomi.floatingframe": { "category": "brand", "ask": false },

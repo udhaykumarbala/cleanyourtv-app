@@ -26,8 +26,8 @@ class CandidatesTest {
         "aurzen-boomair", "haier-android-tv-nippori", "sharp-aquos-tve19a", "smarttech-apollo-premium4k", "xiaomi-mitv4i-magnolia",
     )
 
-    private fun without() = ProfileConverter.convert(examples, meta, "b06ab21", unconverted)
-    private fun with() = ProfileConverter.convert(examples, meta, "b06ab21", unconverted, candidateDir, candidateMeta)
+    private fun without() = ProfileConverter.convert(examples, meta, "d7b0d4a", unconverted)
+    private fun with() = ProfileConverter.convert(examples, meta, "d7b0d4a", unconverted, candidateDir, candidateMeta)
 
     private fun facts(brand: String, model: String, device: String, sdk: Int) = DeviceFacts(
         brand = brand, manufacturer = brand, model = model, device = device, serialLast4 = "0000", sdk = sdk, release = "x",
@@ -85,7 +85,7 @@ class CandidatesTest {
             fun entry(candidate: Boolean) = """{"match":{"models":["X"],"brand":"B","sdkMin":30,"sdkMax":30},"platform":"ANDROID_TV",
                 "tested":{"by":"candidate, issue #1","candidate":$candidate},"groups":{"T":{"category":"tracking"}}}"""
             File(dir, "m.json").writeText("""{"schema":1,"profiles":{"sony-bravia-4k-ur2":${entry(true)},"untested":${entry(false)},"gone":${entry(true)},"$parked":${entry(true)}}}""")
-            val (bundle, problems) = ProfileConverter.convert(examples, meta, "b06ab21", unconverted, dir, File(dir, "m.json"))
+            val (bundle, problems) = ProfileConverter.convert(examples, meta, "d7b0d4a", unconverted, dir, File(dir, "m.json"))
             assertEquals(
                 setOf(
                     "candidate gone: in candidate-meta.json but no debloat.txt",
