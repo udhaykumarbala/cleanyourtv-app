@@ -121,6 +121,9 @@ object HomeSwitchRisk {
         // "My" on Android 11, model "Android TV": a brand string the board makers print for several shop brands
         // (#864's is a Cecotec), so only the three sets the testers have: yeoksam (#673, 0.4.6-beta2), shandao (#864,
         // 0.4.6-beta2, and #2367, 0.4.7-beta3) and tokyo (#1546, 0.4.7-beta1). Four testers, no failure.
+        // 0.5.0 review: the row matches the maker too, so Toshiba's shandao (maker My) is in it. #5952 (Toshiba, 0.4.8
+        // release, R0) held; #1782 (Toshiba, the same firmware as #2367) wrote that the old home screen came back, but
+        // that the home screen never changed at all, with no report from after the switch, so the row stays as it is.
         Graduated(setOf("My"), 30..30, devices = setOf("yeoksam", "shandao", "tokyo"), why = "My Android TV (yeoksam, shandao, tokyo), Android 11 (0.4.7)"),
         // Hisense on Android 9: the HiSmart 4K ATV4 (xinhaoshan) in #1388 (0.4.6-beta2) and #2814 (0.4.7-beta3, Home
         // path R0), two testers on two phones. Its FallbackHome (com.android.boot.fallbackhome) is one R0 takes.
@@ -148,12 +151,42 @@ object HomeSwitchRisk {
         Graduated(setOf("Strong"), 34..34, models = setOf("LEAP-S1"), devices = setOf("LAS"), why = "Strong LEAP-S1, Android 14 (0.4.8)"),
         // Toshiba Smart TV (hamamatsucho, Hisense) on Android 11: #2092 (0.4.7-beta3) and #3724 (0.4.8-beta1).
         Graduated(setOf("Toshiba"), 30..30, devices = setOf("hamamatsucho"), why = "Toshiba hamamatsucho, Android 11 (0.4.8)"),
+        // 0.5.0 rows, from research/release-0.4.7/confirmations.json (2026-11-03), R0 confirmations only, no failure.
+        // SHARP on Android 11: the AQUOS_TVE19A (sindang) in #852 (0.4.6-beta2), the AQUOS-TVE19G (ewha) in #3915 and the
+        // SHARP 2K SMART TV (shinagawa, made by Skyworth) in #4128 (0.4.8-beta2): three testers on three models and two
+        // makers, so by the brand, as the 0.4.7 rows of a brand confirmed on more than one model (OnePlus, MECOOL). The
+        // AQUOS-TVX19A (ebisu, #1268) never switched: Sharp's rcota app claims Home there, and OTHER_HOME keeps it out.
+        Graduated(setOf("SHARP"), 30..30, why = "SHARP, Android 11 (0.5.0)"),
+        // Hisense on Android 11: the HiSmart 2K ATV4 in #346 (0.4.6-beta2) and the HiSmart TV in #4338 (0.4.8-beta2), both
+        // on the hamamatsucho board, so only those two models on that set, as the Toshiba row of the same board. By model
+        // too, so the Toshiba sets on it (maker Hisense, model Smart TV) stay the Toshiba row's.
+        Graduated(setOf("Hisense"), 30..30, models = setOf("HiSmart 2K ATV4", "HiSmart TV"), devices = setOf("hamamatsucho"),
+            why = "Hisense HiSmart hamamatsucho, Android 11 (0.5.0)"),
+        // JVC on Android 11: the 4K SMART TV (zhongshan, made by KTC) in #3839 (0.4.8-beta1) and the EU 4K Android TV
+        // (bangbae, made by MTC) in #5844 (0.4.8-beta2): two models and two makers, so by the brand, as in 0.4.7. Both boards
+        // also held under R0 for other brands on Android 11 (PHILCO #1175; MarQ #1039, Polaroid #1841). The zhongshan board
+        // failed on Android 14 (#451), which this row does not cover.
+        Graduated(setOf("JVC"), 30..30, why = "JVC, Android 11 (0.5.0)"),
+        // Philips on Android 11: the TPM191E (PH9M_EA_5599, TP Vision) in #1409 (0.4.6-beta2) and the PHILIPS 4K TV (sindap,
+        // made by Funai) in #4814 (0.4.8-beta2): two models and two makers, so by the brand, as in 0.4.7. The Philips sets
+        // with an exact list keep it: R0 is only for a TV no list knows.
+        Graduated(setOf("Philips"), 30..30, why = "Philips, Android 11 (0.5.0)"),
+        // realme on Android 11, the SW4H_FF board only (owner): the realme Smart TV (made by Skyworth) in #4679 and #5752
+        // (0.4.8-beta2), the same model and build (#6098, 0.4.9-beta1, a third). The SANSUI SW4H on the related board failed
+        // once (#639, 0.4.7-beta1, an app the person installed took Home) and held on 0.4.7-beta3 (#2317); it is not in this
+        // row. realme on Android 14 keeps its failure (#2126).
+        Graduated(setOf("realme"), 30..30, models = setOf("realme Smart TV"), devices = setOf("SW4H_FF"), why = "realme Smart TV (SW4H_FF), Android 11 (0.5.0)"),
+        // THOMSON_KODAK PATH_7XPRO (LEDTV32HD, made by SPPL) on Android 9: #2149 (0.4.7-beta3) and #5767 (0.4.8-beta2), the
+        // same model and build (#5951 a third; #6125, a PATH_UHDXANDROID, one of its own), so only this model and set, as
+        // the MiProjM05 row. "THOMSON" is another brand string (its Android 14 sets have no R0 confirmation).
+        Graduated(setOf("THOMSON_KODAK"), 28..28, models = setOf("PATH_7XPRO"), devices = setOf("LEDTV32HD"), why = "THOMSON_KODAK PATH_7XPRO, Android 9 (0.5.0)"),
         // Not graduated in 0.4.7 (research/release-0.4.7/confirmations.md, R0-GRADUATION.md): TCL on Android 11 and
         // realme on Android 14 (a tester's home screen did not hold: #1799, #2061, #2082; #2126); Kogan on Android 11
         // (#881, #138: #138 is listed against it in R0-GRADUATION.md, and Changhong boards failed under realme (#2126)
-        // and TD Systems (#577) on Android 14); and SHARP on Android 11 and 14, Hisense on Android 11, Strong (other than the
-        // LEAP-S1, from 0.4.8), THOMSON and google on Android 14, whose count was met with Home button helper confirmations
-        // (and, for SHARP on Android 11, #17's own launcher app) but has under 2 for R0.
+        // and TD Systems (#577) on Android 14); and SHARP on Android 11 (from 0.5.0) and 14, Hisense on Android 11 (the two
+        // hamamatsucho models from 0.5.0), Strong (other than the LEAP-S1, from 0.4.8), THOMSON and google on Android 14,
+        // whose count was met with Home button helper confirmations (and, for SHARP on Android 11, #17's own launcher app)
+        // but has under 2 for R0. Kogan on Android 11 still waits in 0.5.0.
     )
 
     // The release's R0 scope: a graduated entry covers the TV.
