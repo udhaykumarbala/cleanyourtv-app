@@ -540,7 +540,7 @@ class HomeScreenMachine(
             val chosen = if (keptNew) LookPicture.MINE_ID else pictureId
             d.homePrefs.save(tvId, saved.withTheme(themeId, kept, cards, picture = if (keepSaved) saved.picture else chosen,
                 dim = if (keepSaved) saved.dim else if (chosen == LookPicture.MINE_ID) dim else null, columns = override, dockChosen = chosenDock))
-            rememberPushedLook(d, tvId, look.digest)
+            rememberPushedLook(d, tvId, look)
             send(Drift(false))
             effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, "", false))
             load()
@@ -569,7 +569,7 @@ class HomeScreenMachine(
         send(BusyNow(null))
         if (r is WriteResult.Done) {
             d.homePrefs.save(tvId, choice.copy(dock = DockLayers.keep(dock), cards = cards))
-            rememberPushedLook(d, tvId, look.digest)
+            rememberPushedLook(d, tvId, look)
             send(Drift(false))
             effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, "", false))
             load()
@@ -617,7 +617,7 @@ class HomeScreenMachine(
             val next = drafts.choiceOf(draft, before, kept, cards, picture, dim, dockChosen = before?.dockChosen ?: true)
             attempt { EarlierLook.remember(d.documents, tvId, EarlierLook.firstLook(before, kept), next, keptNew, oldPhoto) }
             d.homePrefs.save(tvId, next)
-            rememberPushedLook(d, tvId, look.digest)
+            rememberPushedLook(d, tvId, look)
             if (photo != null) staged = null
             this.kept = null
             send(LookResult(true))

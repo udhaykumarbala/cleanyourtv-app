@@ -206,7 +206,7 @@ class ModulesMachine(
 
     private suspend fun keepCardsOn(pushed: Pair<Look, HomeChoice>) {
         d.homePrefs.save(tvId, pushed.second)
-        rememberPushedLook(d, tvId, pushed.first.digest)
+        rememberPushedLook(d, tvId, pushed.first)
     }
 
     // UX 5.4: new permissions in an update need consent again.
