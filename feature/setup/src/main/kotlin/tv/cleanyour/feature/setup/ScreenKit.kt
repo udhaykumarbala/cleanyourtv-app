@@ -50,7 +50,7 @@ fun ChipState.toTvStatus(): TvStatus = when (this) {
 fun StopCase.primaryActs(): Boolean = when (this) {
     StopCase.WRONG_NETWORK, StopCase.IDENTITY_CHANGED, StopCase.TV_NOT_SUPPORTED,
     StopCase.TV_REFUSES_HOME, StopCase.PAIRING_NEEDED, StopCase.HOME_TIMED_OUT,
-    StopCase.INSTALL_FAILED, StopCase.UNDONE, StopCase.HOME_SETUPWRAITH,
+    StopCase.INSTALL_FAILED, StopCase.UNDONE, StopCase.HOME_SETUPWRAITH, StopCase.HOME_OTHER_KEY,
     -> false
     else -> true
 }
@@ -59,7 +59,7 @@ fun StopCase.primaryActs(): Boolean = when (this) {
 // "Stop here" puts the TV's own home screen back when a home section is open, "Try again" retakes
 // Home. "Leave it as is", "Keep {launcher}", "Show details", Back and OK do not write.
 fun StopCase.secondaryActs(): Boolean = when (this) {
-    StopCase.CONNECTION_LOST, StopCase.STEP_FAILED, StopCase.RESUME_AFTER_DEATH, StopCase.HOME_TIMED_OUT, StopCase.HOME_SETUPWRAITH -> true
+    StopCase.CONNECTION_LOST, StopCase.STEP_FAILED, StopCase.RESUME_AFTER_DEATH, StopCase.HOME_TIMED_OUT, StopCase.HOME_SETUPWRAITH, StopCase.HOME_OTHER_KEY -> true
     else -> false
 }
 
