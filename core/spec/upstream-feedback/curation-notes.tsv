@@ -161,6 +161,8 @@ hisense-e5q-pro	(match)	device MT9653 and the brand only: the header calls VIDAA
 hisense-e5q-pro	com.hisense.usbupgrade	not a package line here; the header keeps it with the other updaters so firmware updates still arrive, so it is never-disable
 hisense-e5q-pro	com.jamdeo.tv.fte	the first-run wizard; run again after a factory reset, and it may own the Wi-Fi saved at setup (vidda-mt9653 checked its own unit), so it is an ask row
 hisense-e5q-pro	com.vt.ambiencephoto	the ambience-photo screensaver; screensavers are ask rows
+hisense-fire-tv-aftcibfbd1	(groups)	d7b0d4a, the 65U65SFC unit (reboot-checked twice): its five telemetry lines are default-off; the new Popups and promos group is a provisional ask row; the Alexa, Luna and Gallery lines join ask groups; easyupgrade is a Software updates row (D22)
+hisense-fire-tv-aftcibfbd1	com.amazon.tv.ffsprovisioneeclient	d7b0d4a: added to Tutorials from the 65U65SFC unit; the frustration-free setup client is an ask row, as on the three Amazon Fire TV lists
 hisense-hg9	(match)	brand inferred, confirm with getprop: Hisense; a wrong guess fails closed (the profile never matches)
 hisense-hg9	com.google.android.tungsten.setupwraith	the header says it re-enables the stock launcher, so it goes with the home screen switch (with the Wi-Fi guard)
 hisense-hg9	com.hisense.app.logreport	the header calls it persistent; the app skips persistent packages on the TV itself
@@ -255,15 +257,18 @@ nvidia-shield-tv-2019	com.nvidia.tegraprofiler.security	purpose not documented b
 ok-ai-pont-ikebukuro	(groups)	b06ab21, batch 5: switched off on the second unit (Nikkei DVB91NK, same device and firmware) and reboot-checked; partner setup (telemetry) and the print spooler (one of the six reviewed packages) are default-off rows, the other Android extras and the USB file and photo players stay ask rows (2.7 bump rule)
 oneplus-tv-cebu	(header)	the Kept on purpose names (TV inputs, Live TV, remote service, hot keys, the Netflix key, Assistant, updaters, factory apps) are never-disable
 oneplus-tv-cebu	(match)	the Android 10 build the list was made on (issue #1243); the Android 11 Cebu sets wait for their own list (upstream PR #1605)
+oneplus-tv-cebu	com.heytap.rom.service	d7b0d4a: added from the Android 11 unit (RTM8), which this Android 10 profile does not match; ask row until a Cebu on Android 10 is tested with it off
 oneplus-tv-cebu	com.heytap.tv.remotecontrolinspect	d7b0d4a: added in the telemetry group from the Android 11 unit; named for the remote control (safety rule 8), so an ask row
 oneplus-tv-cebu	com.heytap.tv.remotediagnosing	part of the remote service, which this app never switches off (why it was parked); never-disable, on an ask row
 oneplus-tv-cebu	com.mediatek.android.leanbacklauncher.partnercustomizer	a kept line in the list (the stock home's Inputs and Wi-Fi icons need it); never-disable
 oneplus-tv-cebu	com.oneplus.tv.launcher	OnePlus's own home page, which this app never switches off (why it was parked); never-disable, on an ask row
+oneplus-tv-cebu	com.oneplus.tv.screensaver	d7b0d4a: added from the Android 11 unit, which this profile does not match; a screensaver, ask row
 oneplus-tv-dosa	(header)	the Kept on purpose names (TV inputs, remote service, hot keys, settings, updaters, Assistant, Chromecast, factory apps) are never-disable
 oneplus-tv-dosa	com.google.android.boot.appsplashscreen	a boot-time component and the header does not say the set was rebooted with it off; ask row, as on oneplus-tv-y1
 oneplus-tv-dosa	com.google.android.leanbacklauncher.partnercustomizer	never-disable as on oneplus-tv-y1: on this MediaTek Android TV 11 platform it provides the tvlauncher widget com.mediatek.tv.service needs after a reboot, and this header does not say the set was rebooted
 oneplus-tv-dosa	com.oneplus.oobe.tv	OnePlus first-run setup, which this app never switches off; never-disable, on an ask row
 oneplus-tv-dosa	com.oneplus.tv.launcher	OnePlus's own home page, which this app never switches off; never-disable, on an ask row
+oneplus-tv-dubai	(groups)	d7b0d4a: the lines marked second unit come from an Android TV 11 D00 (RTM1), which this Google TV 14 profile does not match; they are ask rows until a Google TV 14 unit is tested with them off
 oneplus-tv-dubai	com.heytap.tv.remotediagnosing	d7b0d4a: added in the telemetry group from the second unit; part of the remote service, which this app never switches off (as on oneplus-tv-cebu); never-disable, on an ask row
 oneplus-tv-y1	(header)	the Kept on purpose names (Assistant, Chromecast) and the Live TV app are in the curated never-disable list
 oneplus-tv-y1	(match)	the same Skyworth device shibuya as panasonic-th-40hs550k; the brand OnePlus from the header's vendor fingerprint keeps them apart; confirm the brand string with getprop (a wrong one fails closed)
@@ -415,6 +420,7 @@ sony-bravia-vu3	(launcher)	the clean-up only (HomeSwitchRisk REMOTE_BUTTONS): wi
 sony-bravia-vu3	com.google.android.apps.tv.launcherx	stays on: the remote's app buttons go through it
 sony-bravia-vu3	com.google.android.tungsten.setupwraith	only the home screen switch would switch it off, and the switch is refused here, so phone casting (which reads its credentials from it) keeps working
 sony-bravia-vu31	com.google.android.marvin.talkback	in the owner's off by choice group; accessibility is an ask row
+sony-bravia-vu31	com.google.android.tts	d7b0d4a: off by the owner's choice on the fourth VU31; text to speech feeds TalkBack, so it is an accessibility ask row (and denylisted)
 sony-kd-55x8509c	(launcher)	Android 7.0 (SDK 24): the clean-up applies, but the launcher needs SDK 26 and will not install here
 sony-kd-55x8509c	com.google.android.inputmethod.japanese	ask row: keyboards are never default-off, as on sony-kd-65x9300d and sony-xbr-65x900f (RF-PROFILES-63 P7)
 sony-kd-55x85j	com.google.android.apps.tv.dreamx	in the list's home section; it is the Ambient screensaver, so it is a screensaver ask row
@@ -489,6 +495,7 @@ tcl-beyondtv-rt2851	com.tcl.appmarket2	TCL's app store, carries a package instal
 tcl-beyondtv-rt2851	com.tcl.keyhelp	remote-key help; tcl-43ep660 and tcl-beyondtv2 keep it as load-bearing, so it is an ask row
 tcl-beyondtv-rt2851	com.tcl.tvweishi	carries a package installer service, and the header says install the launcher first; ask row
 tcl-beyondtv-rt2851	com.tcl.useragreement	tcl-55s470g and tcl-c755 keep it (setup screens); ask row
+tcl-beyondtv2-latin-america	(groups)	d7b0d4a, the second unit (same fingerprint, reboot-checked): its new groups are provisional ask rows; voice, casting, streaming, TalkBack and text to speech get the matching ask categories; the header's DO NOT DISABLE paragraph no longer names usercenter, useragreement, copydatatotv, katniss, pumpkin and mediashell, and now names pvr.pvrplayer, showmode, UpdatePeripheral, the TCL webview, sss.authbridge and systemuioverlay
 tcl-beyondtv2-latin-america	(match)	the device is BeyondTV as on the other BeyondTV sets; the BeyondTV2 fingerprint keeps this two-package list to its own product
 tcl-c755-google-tv	(match)	G08 sold outside the US (product G08_4K_GB); the fingerprint prefix leaves the US G08 on tcl-qm6k-google-tv
 tcl-c755-google-tv	com.tcl.channelplus	TCL Live registers a TV input (tcl-g07 header); TV inputs are never default-off, so it is an ask row
@@ -540,11 +547,14 @@ tcl-q10g-pro	com.tcl.ffeducation	an ask row: tcl-ak30a5's header at b06ab21 warn
 tcl-q10g-pro	com.tcl.ffkaraoke	an ask row: tcl-ak30a5's header at b06ab21 warns that the TCL China stock desktop (com.tcl.cyberui) hands its kids and music rows to these apps, which are dead with them off; the stock desktop stays Home on TCL China
 tcl-q10g-pro	com.tcl.xian.StartandroidService	a Software updates row (D22): tcl-g03-google-tv's header at b06ab21 says TCL's updater gets the device number through it, and with it off the network update check fails
 tcl-qm6k-google-tv	com.tcl.channelplus	TCL Live registers a TV input (tcl-g07 header); TV inputs are never default-off, so it is an ask row here too and leaves the TCL sure set (0.2.0 safety review)
+tcl-uniontv-latin-america	com.google.android.leanbacklauncher.partnercustomizer	d7b0d4a: added from the 32S6500S unit; the fallback stock home's partner helper is an ask row, as on the other lists that name it
 tcl-uniontv-latin-america	com.tcl.appmarket2	TCL's app store, carries a package installer service (tcl-beyondtv-rt2851 header); ask row
 tcl-uniontv-latin-america	com.tcl.common.terminalmanagerplus	device management that watches installs; tcl-beyondtv2 and the Thomson list keep it; ask row
 tcl-uniontv-latin-america	com.tcl.copydatatotv	tcl-beyondtv2 and the Thomson list keep it; ask row
+tcl-uniontv-latin-america	com.tcl.dashboard	d7b0d4a: added from the RT41KA unit (TCL HOME tile); other TCL lists keep it for the inputs or the gear button, so an ask row, as there
 tcl-uniontv-latin-america	com.tcl.partnercustomizer	ask row: the header says the remote T key (its TKey activity) was not tested, and the Thomson and Hitachi TCL builds keep it for key handling (RF-PROFILES-63 P5)
 tcl-uniontv-latin-america	com.tcl.tvweishi	carries a package installer service; ask row
+tcl-uniontv-latin-america	com.tcl.useragreement	d7b0d4a: added from the 32S6500S unit; the TCL terms screen is an ask row, as on the other TCL Android 9 and 11 lists (tcl-beyondtv-rt2851, thomson-32he5800)
 telesystem-ont2hd	(match)	model ONT2HD (one product, an SDMC set-top box) from the header, which gives no device codename
 telesystem-ont2hd	(match)	brand inferred, confirm with getprop: Telesystem; a wrong guess fails closed (the profile never matches)
 telesystem-ont2hd	com.google.android.videos	the Google TV app holds purchased films; ask row (streaming)
@@ -600,6 +610,7 @@ vu-premium-fhd-43-hamamatsucho	fusion.android.tv.demo	ask row: on MediaTek MTC b
 wanbo-x5-pro	(match)	the header gives the manufacturer SkyworthDigital (the projector's Google TV stick); the profile matches on it
 wanbo-x5-pro	com.amlogic.voicesubtitle	a voice subtitle overlay, an accessibility aid; ask row
 wanbo-x5-pro	com.google.android.tungsten.setupwraith	the header reports it deleted the Wi-Fi saved at setup; the takeover's Wi-Fi guard skips it then
+wanbo-x5-pro	com.sdt.customization	d7b0d4a: the second unit (five days, reboots) switched it off and the header no longer keeps it, so it leaves never-disable; Skyworth's partner customization and home channels, an ask row rather than default-off
 wanbo-x5-pro	com.sdt.producttest	factory test apps; other brands keep their factory menus, so the group is an ask row
 xgimi-mogo-2	(header)	the header says the XGIMI hardware and input services were all left enabled, as on xgimi-horizon-s-pro: its keep list (keystone, autofocus, HDMI input and player, Bluetooth remote, keys, sound mode, setup wizard)
 xgimi-mogo-2	(match)	device xgimiapollo alone: the model MoGo names a projector family
@@ -648,10 +659,12 @@ xiaomi-mitv-axso2	com.google.android.marvin.talkback	listed under Android extras
 xiaomi-mitv-axso2	com.google.android.tvrecommendations	default-off as listed; the header notes the Google sign-in notice then has nowhere to show
 xiaomi-mitv-ayfr0	(match)	Android 14 only (UKG3.250107.001, the tested build); the Android 11 sticks (RTT0.211222.001) keep the Xiaomi brand set until a list is tested there
 xiaomi-mitv-ayfr0	com.amazon.amazonvideo.livingroom	a streaming app the owner did not use; ask row
+xiaomi-mitv-ayfr0	com.google.android.backdrop	d7b0d4a: added to Preloaded apps; Ambient mode is a screensaver, ask row (the Mi screensaver stays)
 xiaomi-mitv-ayfr0	com.google.android.marvin.talkback	accessibility: ask row (safety rule 8)
 xiaomi-mitv-ayfr0	com.google.android.youtube.tvmusic	a streaming app the owner did not use; ask row
 xiaomi-mitv-ayfr0	com.mitv.videoplayer	Mi cast plays through it (xiaomi-mi-box-s); ask row
 xiaomi-mitv-ayfr0	com.netflix.ninja	a streaming app the owner did not use; ask row
+xiaomi-mitv-ayfr0	com.netflix.tokenmanager	d7b0d4a: Netflix's sign-in helper, which upstream switches off with Netflix; Netflix is an ask row here, so the helper is one too
 xiaomi-mitv-mffu0	(header)	the header's not-touched list (TV player, settings, Menu-button panel, Bluetooth remote, the only keyboard, account, media browser, updater, TV inputs) is in the curated never-disable list
 xiaomi-mitv-mffu0	(header)	rebooted with the list applied except com.xiaomi.tv.gallery, which was added last
 xiaomi-mitv-mffu0	(launcher)	the stock home is the HyperOS PatchWall (com.mitv.tvhome); the header says no sideloaded launcher can become Home on this firmware, so Setup gives the clean-up only and PatchWall stays never-disable
@@ -660,6 +673,7 @@ xiaomi-mitv-mffu0	com.mitv.alarmcenter	reminders and alarms set with XiaoAI voic
 xiaomi-mitv-mffu0	com.xiaomi.gamecenter.sdk.service.mibox	Xiaomi store games may need it for sign-in, so it is an ask row as on xiaomi-mitv-astp1
 xiaomi-mitv-mooq0	(launcher)	the remote's Input button sends KEYCODE_MEDIA_RECORD (the header, upstream #243 and #1368), which only the stock home answers; after the home screen switch it does nothing until the launcher's key helper takes it, and the app never switches an accessibility service on (issues #697, #1098, #1976). No package of the list is the cause; the Inputs pill on the new home screen reaches HDMI and Live TV
 xiaomi-mitv-mooq0	com.duokan.factorytest	the factory test app answers Home at priority 0, as the new home screen does; the list switches it off before the stock home (since issue #1944 the app does too, HomePlaceholder.FACTORY_HOMES_OFF), and it is never a home screen to go back to
+xiaomi-mitv-mooq0	com.xiaomi.tvqs.overseas	d7b0d4a: added from the Q1 75 unit (#1520, one session); its role is contested (the quick settings panel on the Mi Box S 2nd gen, never-disable on xiaomi-mitv-ayfr0), so an ask row
 xiaomi-mitv-mosr4	fusion.android.tv.demo	ask row: on MediaTek MTC builds this retail display app also handles the Input key and remote pairing (hitachi-65qledsm20), and this header did not check either with it off (RF-PROFILES-63 P6)
 xiaomi-mitv-mssp1	(groups)	b06ab21, the verified extras: switched off on the same MSSP1 unit and reboot-checked with an empty crash log, so the two telemetry uploaders and the partner auto-installer are default-off rows; the screensavers, TV Manager, the Google apps and the media and accessibility rows stay ask rows (2.7 bump rule)
 xiaomi-mitv-mssp1	com.google.android.marvin.talkback	b06ab21 lists TalkBack with the media leftovers; an accessibility ask row, and the denylist never switches it off

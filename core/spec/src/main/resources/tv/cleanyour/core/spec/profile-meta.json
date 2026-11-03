@@ -760,7 +760,8 @@
         "com.amazon.tv.acr": { "category": "tracking", "ask": false },
         "com.amazon.tv.democontent.provider": { "category": "demo", "ask": false },
         "com.amazon.tv.ftvambient": { "category": "screensaver", "ask": true },
-        "com.amazon.hedwig": { "category": "ads", "ask": true }
+        "com.amazon.hedwig": { "category": "ads", "ask": true },
+        "com.amazon.tv.ffsprovisioneeclient": { "category": "other", "ask": true }
       }
     },
     "hisense-hg9": {
@@ -1515,7 +1516,9 @@
         "com.heytap.tv.btspeaker": { "category": "brand", "ask": true },
         "com.jio.web.androidtv": { "category": "preloads", "ask": true },
         "com.google.android.play.games": { "category": "preloads", "ask": false },
-        "com.heytap.tv.remotecontrolinspect": { "category": "other", "ask": true }
+        "com.heytap.tv.remotecontrolinspect": { "category": "other", "ask": true },
+        "com.heytap.rom.service": { "category": "tracking", "ask": true },
+        "com.oneplus.tv.screensaver": { "category": "screensaver", "ask": true }
       }
     },
     "oneplus-tv-dosa": {
@@ -1562,7 +1565,10 @@
       },
       "packages": {
         "com.google.android.tvrecommendations": { "category": "ads", "ask": false },
-        "com.heytap.tv.remotediagnosing": { "category": "other", "ask": true }
+        "com.heytap.tv.remotediagnosing": { "category": "other", "ask": true },
+        "com.jio.web.androidtv": { "category": "preloads", "ask": true },
+        "com.oneplus.tv.userguide": { "category": "preloads", "ask": true },
+        "com.google.android.play.games": { "category": "preloads", "ask": true }
       }
     },
     "oneplus-tv-y1": {
@@ -2747,7 +2753,8 @@
         "com.google.android.syncadapters.calendar": { "category": "other", "ask": false },
         "android.autoinstalls.config.google.gtvpai": { "category": "ads", "ask": false },
         "com.analiti.fastest.android": { "category": "preloads", "ask": true },
-        "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true }
+        "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true },
+        "com.google.android.tts": { "category": "accessibility", "ask": true }
       }
     },
     "sony-kd-43x80l": {
@@ -3438,7 +3445,14 @@
         "Off by choice (second unit's owner picked YouTube, Netflix, Prime Video, Globoplay and both": { "category": "voice", "ask": true },
         "Second pass, applied after the launcher. The launcher's Clock screensaver replaces Ambient Mode:": { "category": "screensaver", "ask": true }
       },
-      "packages": {}
+      "packages": {
+        "com.google.android.apps.mediashell": { "category": "casting", "ask": true },
+        "com.google.android.youtube.tvmusic": { "category": "streaming", "ask": true },
+        "com.google.android.videos": { "category": "streaming", "ask": true },
+        "com.google.android.tts": { "category": "accessibility", "ask": true },
+        "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true },
+        "com.google.android.speech.pumpkin": { "category": "voice", "ask": true }
+      }
     },
     "tcl-c755-google-tv": {
       "match": { "models": ["Smart TV Pro"], "devices": ["G08"], "brand": "TCL", "sdkMin": 34, "sdkMax": 34, "fingerprintPrefix": "TCL/G08_4K_GB/" },
@@ -3787,7 +3801,10 @@
         "com.android.gallery3d": { "category": "preloads", "ask": false },
         "com.android.wallpaper.livepicker": { "category": "preloads", "ask": false },
         "com.android.dreams.basic": { "category": "screensaver", "ask": true },
-        "com.tcl.partnercustomizer": { "category": "brand", "ask": true }
+        "com.tcl.partnercustomizer": { "category": "brand", "ask": true },
+        "com.google.android.leanbacklauncher.partnercustomizer": { "category": "other", "ask": true },
+        "com.tcl.useragreement": { "category": "other", "ask": true },
+        "com.tcl.dashboard": { "category": "brand", "ask": true }
       }
     },
     "telesystem-ont2hd": {
@@ -4067,7 +4084,7 @@
       "liveTv": null,
       "setupWraith": "com.google.android.tungsten.setupwraith",
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
-      "neverDisable": ["com.sdt.projector.observer", "com.mft.rcupair", "com.sdt.globalkey", "com.mft.frontpanelledsservice", "com.google.android.tv.dfuservice", "com.dolby.android.audio.service", "com.sdt.customization", "com.android.devicelockcontroller"],
+      "neverDisable": ["com.sdt.projector.observer", "com.mft.rcupair", "com.sdt.globalkey", "com.mft.frontpanelledsservice", "com.google.android.tv.dfuservice", "com.dolby.android.audio.service", "com.android.devicelockcontroller"],
       "suggestedDock": [],
       "tested": { "by": "swordfish6975 (PR #303)", "firmware": "UKG3.260128.001.C3.3.5_20260723", "daysLivedWith": null, "rebootTested": false },
       "groups": {
@@ -4084,7 +4101,8 @@
         "com.android.hotspot2.osulogin": { "category": "other", "ask": true },
         "com.google.android.syncadapters.calendar": { "category": "other", "ask": false },
         "com.google.android.youtube.tvmusic": { "category": "streaming", "ask": true },
-        "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true }
+        "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true },
+        "com.sdt.customization": { "category": "brand", "ask": true }
       }
     },
     "xgimi-horizon-s-pro": {
@@ -4531,7 +4549,9 @@
         "com.amazon.amazonvideo.livingroom": { "category": "streaming", "ask": true },
         "com.google.android.youtube.tvmusic": { "category": "streaming", "ask": true },
         "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true },
-        "com.mitv.videoplayer": { "category": "preloads", "ask": true }
+        "com.mitv.videoplayer": { "category": "preloads", "ask": true },
+        "com.netflix.tokenmanager": { "category": "streaming", "ask": true },
+        "com.google.android.backdrop": { "category": "screensaver", "ask": true }
       }
     },
     "xiaomi-mitv-mffu0": {
@@ -4633,7 +4653,8 @@
         "com.xiaomo.tv.milegal": { "category": "other", "ask": false },
         "com.mstar.android.tv.disclaimercustomization": { "category": "other", "ask": false },
         "com.mediatek.wwtv.webview": { "category": "other", "ask": false },
-        "fusion.android.tv.demo": { "category": "demo", "ask": false }
+        "fusion.android.tv.demo": { "category": "demo", "ask": false },
+        "com.xiaomi.tvqs.overseas": { "category": "tracking", "ask": true }
       }
     },
     "xiaomi-mitv-mooq2": {

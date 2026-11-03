@@ -8,4 +8,3 @@ insignia-ns55f301na25	com.amazon.device.metrics	tracking	the same profile's neve
 rca-ai-pont	com.homwee.mmp.fileexplorer	brand	the same profile's never-disable list (its header says keep it)
 tcl-qm6k-google-tv	com.tcl.ttvs	tracking	the same profile's never-disable list (its header says keep it)
 tcl-qm6k-google-tv	com.tcl.logkit	tracking	the same profile's never-disable list (its header says keep it)
-wanbo-x5-pro	com.sdt.customization	tracking	the same profile's never-disable list (its header says keep it)
