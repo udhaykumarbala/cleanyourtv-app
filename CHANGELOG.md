@@ -2,7 +2,47 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
-## 0.5.0 (unreleased)
+## 0.5.0-beta1 (test build)
+
+A GitHub pre-release for testers, made from 0.4.9-beta1 (2026-11-04). It installs over 0.4.9-beta1, 0.4.8
+and every earlier build. The test switches are on, as in the 0.4.9 test build: the Home button helper, the
+candidate lists, and the new home screen with the setup wizard left on for every brand.
+
+### Make it yours
+- Manage's Home screen row is now **Make it yours**: one page for every part of the new home screen, in
+  this order: Look, Wallpaper, Apps, Widgets, Inputs and Live TV, Remote buttons and Screensaver, with a
+  preview of the TV that shows your changes before they go. Changes from every page collect in one bar
+  ("3 changes not on the TV yet") and go to the TV with one **Put it on the TV**. The Home screen page
+  keeps which home screen is in charge and its updates.
+- **Widgets** (was the clock and top bar switches in Look's More options) shows the TV's places as they
+  sit on the TV: the clock, under the clock, the buttons, under the buttons and before your apps. Tap
+  one to change what is in it:
+  - The clock: the greeting with your name, the date under the clock, a brighter date, and 12 or 24
+    hours from the phone (home screen 3.3).
+  - Under the clock: a second date (Solar Hijri, or lunar for the Chinese and Vietnamese calendars)
+    and TV health (CPU, memory and storage).
+  - The buttons: with names, round icons or one menu; which show (Inputs, up to 3 of your apps as round
+    logos, Wi-Fi, VPN, Reorder, Library; Settings always); green Wi-Fi with orange and red warnings; the
+    network name on the round Wi-Fi button; whether Wi-Fi opens a VPN app; whether Settings opens the
+    TV's settings or the home screen's.
+  - Before your apps: the Retro card, from Cards and modules.
+  - Widgets that need more than the home screen has today (weather, world clock, countdown, sunrise and
+    sunset, prayer times, F1 weekends, a note, coming up, and the cards we have not signed yet) show
+    dimmed, marked Later, with what each needs. None can be added yet.
+  - When the date beside the clock would run into many buttons, the page says so and offers to put the
+    date under the clock.
+- **Apps**: the dock, Move apps with the remote (hold OK on the TV), the App library, hidden apps and a
+  tile's own name.
+- **Inputs and Live TV**: when the TV starts, on Home, on Live TV, or on an app you pick on the TV.
+- **Screensaver**: the TV's own, or the home screen's clock after 5 to 30 minutes, over your picture or
+  plain black. It shows only on the home screen, never over Live TV or an app.
+- A look no longer changes the greeting, the date or the top buttons on a TV where Widgets set them:
+  those are Widgets' now. A TV that never had them still gets the look's buttons.
+
+### One settings file per TV
+- Every change from the phone (a look, the dock, Cards and modules, Setup and Make it yours) starts from
+  the settings file the TV has and changes only its own part, so no change takes away what another set.
+  A TV on an older home screen gets only the settings it reads.
 
 ### The new home screen reaches six more TVs in the release
 - SHARP on Android 11 (#852, #3915, #4128), the Hisense HiSmart 2K ATV4 and HiSmart TV (hamamatsucho)
