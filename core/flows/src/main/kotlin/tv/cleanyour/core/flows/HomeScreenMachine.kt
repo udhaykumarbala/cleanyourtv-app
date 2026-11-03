@@ -150,6 +150,7 @@ sealed interface HomeScreenIntent {
     data object RunSetupAgain : HomeScreenIntent       // 0.3.3 D2, NotOnTv.setupAgain
     data object HelpAddTv : HomeScreenIntent           // 0.3.3 D2, NotOnTv.helpAddTv
     data object HelperOff : HomeScreenIntent           // RFC-HELPER-1: the helper's "Switch off"
+    data object Reload : HomeScreenIntent              // 0.5.0: Make it yours sent the settings; read the TV's file again
 }
 
 class HomeScreenMachine(
@@ -299,6 +300,7 @@ class HomeScreenMachine(
             HomeScreenIntent.RunSetupAgain -> if (after.notOnTv?.setupAgain == true) effect(ManageEffect.Navigate("setup/${tvId.value}"))
             HomeScreenIntent.HelpAddTv -> if (after.notOnTv?.helpAddTv == true) effect(ManageEffect.Navigate("report/tv/${tvId.value}"))
             HomeScreenIntent.HelperOff -> if (after.helper?.canSwitchOff == true) scope.launch { helperOff() }
+            HomeScreenIntent.Reload -> if (before.busy == null) scope.launch { load() }
             else -> {}
         }
     }

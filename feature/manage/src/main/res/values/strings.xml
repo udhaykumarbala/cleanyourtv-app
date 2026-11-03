@@ -39,7 +39,7 @@
     <string name="manage_level_custom">Custom</string>
     <string name="manage_level_simple_note">Switches off the usual clutter and keeps everything else.</string>
     <string name="manage_level_custom_note">Lets you choose each item yourself.</string>
-    <string name="manage_row_home">Home screen</string>
+    <string name="manage_row_home">Make it yours</string>
     <string name="manage_row_home_own">The TV keeps its own. See why</string>
     <!-- 0.4.7 (UX finding 8): the new home screen is installed but not in use -->
     <string name="manage_row_home_not_in_use">The TV\'s own is in use</string>

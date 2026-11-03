@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +68,8 @@ import tv.cleanyour.feature.backup.RestoreScreen
 import tv.cleanyour.feature.connect.ConnectFlow
 import tv.cleanyour.feature.connect.isConnectState
 import tv.cleanyour.feature.launcher.HomeScreen
+import tv.cleanyour.feature.launcher.HubPage
+import tv.cleanyour.feature.launcher.MakeItYoursScreen
 import tv.cleanyour.feature.manage.AppSettingsScreen
 import tv.cleanyour.feature.manage.DebugStepSheet
 import tv.cleanyour.feature.manage.DetailsUi
@@ -90,6 +93,8 @@ import tv.cleanyour.feature.setup.SetupFlow
     // 0.4.8: `again`, from Done's "Not right? Send it again": the page sends the saved look once it has loaded.
     @Serializable data class Home(val tvId: String, val again: Boolean = false) : Dest
     @Serializable data class Modules(val tvId: String) : Dest
+    // 0.5.0 Make it yours: the hub and its pages (one entry, so one draft across the pages).
+    @Serializable data class Customise(val tvId: String) : Dest
     @Serializable data class Restore(val tvId: String) : Dest
     @Serializable data class TvSettings(val tvId: String) : Dest
     @Serializable data object AppSettings : Dest
@@ -119,6 +124,7 @@ internal fun applyRoute(stack: MutableList<NavKey>, route: String, noTvs: Boolea
         "resume" -> id?.let { t -> parts.getOrNull(2)?.let { p -> Dest.Setup(t, p) } }
         "modules" -> if (addOns) id?.let { Dest.Modules(it) } else null
         "home" -> if (id != null) Dest.Home(id, again = parts.getOrNull(2) == "again") else null
+        "customise" -> id?.let { Dest.Customise(it) }
         "switchedoff" -> id?.let { Dest.SwitchedOff(it) }
         "leftovers" -> id?.let { Dest.Leftovers(it) }
         "restore" -> id?.let { Dest.Restore(it) }
@@ -319,9 +325,32 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
                     val m = rememberMachine("home:${key.tvId}:${key.again}") { graph.homeScreen(it, TvId(key.tvId), key.again) }
                     val state by m.state.collectAsStateWithLifecycle()
                     LaunchedEffect(m) { m.effects.collect { onManageEffect(it) } }
-                    HomeScreen(state, m::dispatch, onBack = { go("back") }, photos = photoPicker, onReport = { lead ->
+                    HomeScreen(state, m::dispatch, onBack = { go("back") }, photos = photoPicker, onOpenHub = { go("customise/${key.tvId}") }, onReport = { lead ->
                         go(IssueRoute.of(TvId(key.tvId), ReportContext("Home screen", ReportContext.named(lead, state.tvName), "HOME_BLOCKED_${state.notOnTv?.reason ?: "NONE"}")))
                     }, onOpenUrl = { url -> scope.launch { onManageEffect(ManageEffect.OpenUrl(url)) } })
+                }
+                entry<Dest.Customise> { key ->
+                    val hm = rememberMachine("hub-home:${key.tvId}") { graph.homeScreen(it, TvId(key.tvId)) }
+                    val sm = rememberMachine("hub-settings:${key.tvId}") { graph.makeItYours(it, TvId(key.tvId)) }
+                    val home by hm.state.collectAsStateWithLifecycle()
+                    val settings by sm.state.collectAsStateWithLifecycle()
+                    LaunchedEffect(hm) { hm.effects.collect { onManageEffect(it) } }
+                    LaunchedEffect(sm) { sm.effects.collect { onManageEffect(it) } }
+                    // A look or a dock sent from the hub changes the TV's file: the settings draft reads it again (keeping
+                    // its changes), and a settings send makes the look's previews read the Widgets again.
+                    var homeWasBusy by remember { mutableStateOf(false) }
+                    LaunchedEffect(home.busy == null) {
+                        if (home.busy == null && homeWasBusy) sm.dispatch(tv.cleanyour.core.flows.MakeItYoursIntent.Reload)
+                        homeWasBusy = home.busy != null
+                    }
+                    LaunchedEffect(settings.sent) { if (settings.sent) hm.dispatch(tv.cleanyour.core.flows.HomeScreenIntent.Reload) }
+                    var page by rememberSaveable { mutableStateOf(HubPage.HUB.key) }
+                    BackHandler(page != HubPage.HUB.key) { page = HubPage.HUB.key }
+                    MakeItYoursScreen(home, settings, HubPage.of(page), onPage = { page = it.key }, onHome = hm::dispatch, onSettings = sm::dispatch,
+                        onBack = { go("back") }, onOpenCards = { go("modules/${key.tvId}") }, onOpenHomePage = { go("home/${key.tvId}") },
+                        photos = photoPicker, onReport = { lead ->
+                            go(IssueRoute.of(TvId(key.tvId), ReportContext("Home screen", ReportContext.named(lead, home.tvName), "HOME_BLOCKED_${home.notOnTv?.reason ?: "NONE"}")))
+                        }, onOpenUrl = { url -> scope.launch { onManageEffect(ManageEffect.OpenUrl(url)) } })
                 }
                 entry<Dest.Modules> { key ->
                     val m = rememberMachine("modules:${key.tvId}") { graph.modules(it, TvId(key.tvId)) }

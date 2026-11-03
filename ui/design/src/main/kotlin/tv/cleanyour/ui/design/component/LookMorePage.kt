@@ -29,7 +29,6 @@ import tv.cleanyour.core.flows.LookEdit
 import tv.cleanyour.core.flows.LookReason
 import tv.cleanyour.core.flows.LookRow
 import tv.cleanyour.core.spec.BandChoice
-import tv.cleanyour.core.spec.ButtonsChoice
 import tv.cleanyour.core.spec.GlowChoice
 import tv.cleanyour.core.spec.HighlightChoice
 import tv.cleanyour.core.spec.LookGates
@@ -132,56 +131,11 @@ internal fun ColumnScope.LookMorePage(state: LookEditorState, onEdit: (LookEdit)
         )
     }
 
+    // 0.5.0 Make it yours: the greeting, the date and the top buttons (their look, green Wi-Fi and its warnings)
+    // moved to Widgets, next to the switches that show them. A look no longer sets them on a TV whose file has them.
     LookSection(stringResource(R.string.cyt_look_more_top))
-    if (x.header) {
-        val e = x.acting
-        ListGroup(Modifier.padding(bottom = 4.dp)) {
-            LookSwitchRow(
-                stringResource(R.string.cyt_look_greeting), !e.hideGreeting, { on -> x.edit(onEdit) { copy(hideGreeting = !on) } },
-                description = stringResource(R.string.cyt_look_greeting_desc), keyName = KEY_NAMES["greeting"].takeIf { keys },
-            )
-            ListDivider()
-            LookSwitchRow(
-                stringResource(R.string.cyt_look_date_below), e.dateBelow, { on -> x.edit(onEdit) { copy(dateBelow = on) } },
-                description = stringResource(R.string.cyt_look_date_below_desc), keyName = KEY_NAMES["dateBelow"].takeIf { keys },
-            )
-            ListDivider()
-            LookSwitchRow(
-                stringResource(R.string.cyt_look_bright_date), e.brightDate, { on -> x.edit(onEdit) { copy(brightDate = on) } },
-                description = stringResource(R.string.cyt_look_bright_date_desc), keyName = KEY_NAMES["brightDate"].takeIf { keys },
-            )
-        }
-    }
-    if (r.buttons.visible) {
-        LookSublabel(stringResource(R.string.cyt_look_buttons))
-        LookRadioList(
-            listOf(
-                RadioChoice(ButtonsChoice.WITH_NAMES.id, stringResource(R.string.cyt_look_buttons_names), stringResource(R.string.cyt_look_buttons_names_desc)),
-                RadioChoice(ButtonsChoice.ROUND.id, stringResource(R.string.cyt_look_buttons_round), stringResource(R.string.cyt_look_buttons_round_desc)),
-                RadioChoice(ButtonsChoice.MENU.id, stringResource(R.string.cyt_look_buttons_menu), stringResource(R.string.cyt_look_buttons_menu_desc)),
-            ),
-            r.buttons.value?.id, { id -> ButtonsChoice.of(id)?.let { onEdit(LookEdit.SetButtons(it)) } },
-            enabled = r.buttons.enabled, reason = r.buttons.reason?.let { reasonText(it) }, keyName = KEY_NAMES["buttons"].takeIf { keys },
-        )
-    }
-    if (r.greenWifi.visible) {
-        ListGroup(Modifier.padding(top = 12.dp)) {
-            LookSwitchRow(
-                stringResource(R.string.cyt_look_wifi_green), r.greenWifi.value ?: false, { onEdit(LookEdit.SetGreenWifi(it)) },
-                description = stringResource(R.string.cyt_look_wifi_green_desc), enabled = r.greenWifi.enabled,
-                lines = reasons(r.greenWifi), keyName = KEY_NAMES["wifi"].takeIf { keys },
-            )
-            if (x.wifiWarn) {
-                ListDivider()
-                val why = if (x.menu) R.string.cyt_look_wifi_green_menu else R.string.cyt_look_wifi_warn_needs
-                LookSwitchRow(
-                    stringResource(R.string.cyt_look_wifi_warn), x.wifiWarnOn, { on -> x.edit(onEdit) { copy(wifiWarnings = on) } },
-                    description = stringResource(R.string.cyt_look_wifi_warn_desc), enabled = x.wifiWarnEnabled,
-                    lines = listOfNotNull(stringResource(why).takeUnless { x.wifiWarnEnabled }), keyName = KEY_NAMES["wifiWarn"].takeIf { keys },
-                )
-            }
-        }
-    }
+    Text(stringResource(R.string.cyt_look_moved_widgets), Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp),
+        color = CytTheme.colors.textSecondary, style = CytTheme.type.bodyMedium)
 
     if (x.tiles) {
         LookSection(stringResource(R.string.cyt_look_more_tiles))

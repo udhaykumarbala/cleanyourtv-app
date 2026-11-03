@@ -62,10 +62,7 @@ internal fun extraWords(state: LookEditorState): List<String> {
     val out = mutableListOf<String>()
     if (x.oneRowOn) out += stringResource(R.string.cyt_look_word_one_row)
     if (x.noBandOn) out += stringResource(R.string.cyt_look_word_no_band)
-    if (x.header && e.hideGreeting) out += stringResource(R.string.cyt_look_word_no_greeting)
-    if (x.header && e.dateBelow) out += stringResource(R.string.cyt_look_word_date_below)
-    if (x.header && e.brightDate) out += stringResource(R.string.cyt_look_word_bright_date)
-    if (x.wifiWarnOn) out += stringResource(R.string.cyt_look_word_wifi_warn)
+    // 0.5.0: the header rows are the Widgets page's now, so More options' summary leaves them out.
     if (x.tiles && e.tiles == TilesChoice.ICONS) out += stringResource(R.string.cyt_look_word_icon_tiles)
     if (x.highlight && e.highlight == HighlightChoice.RIM) out += stringResource(R.string.cyt_look_word_rim)
     if (x.highlight && e.highlight == HighlightChoice.HALO) out += stringResource(R.string.cyt_look_word_halo)

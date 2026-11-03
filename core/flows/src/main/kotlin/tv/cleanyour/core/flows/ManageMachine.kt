@@ -71,7 +71,7 @@ data class ManageState(
 }
 
 enum class ManageSection(val key: String) {
-    HOME_SCREEN("home"), MODULES("modules"), SWITCHED_OFF("switchedoff"), LEFTOVERS("leftovers"),
+    HOME_SCREEN("home"), MAKE_IT_YOURS("customise"), MODULES("modules"), SWITCHED_OFF("switchedoff"), LEFTOVERS("leftovers"),
     RESTORE_POINT("restore"), TV_SETTINGS("tvsettings"),
 }
 

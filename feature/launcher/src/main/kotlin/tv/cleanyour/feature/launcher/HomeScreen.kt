@@ -80,7 +80,7 @@ import tv.cleanyour.ui.design.component.toTvLook
 // 0.4.7: `onOpenUrl` opens the TV list page from the not-on-this-TV screen (the browser opens it).
 fun HomeScreen(
     state: HomeScreenState, onIntent: (HomeScreenIntent) -> Unit, onBack: () -> Unit, modifier: Modifier = Modifier, photos: PhotoPicker? = null,
-    onReport: (String) -> Unit = {}, onOpenUrl: (String) -> Unit = {},
+    onReport: (String) -> Unit = {}, onOpenUrl: (String) -> Unit = {}, onOpenHub: () -> Unit = {},
 ) {
     val notOnTv = state.notOnTv
     if (notOnTv != null) { NotOnTvScreen(state.tvName, notOnTv, onIntent, onBack, modifier, onReport, onOpenUrl); return }
@@ -114,15 +114,9 @@ fun HomeScreen(
                     guardObscured = true)
             }
         }
+        // 0.5.0: the dock and the look moved to Make it yours (D9); this page keeps which home screen is in charge.
         ListGroup(Modifier.padding(top = 20.dp)) {
-            // The dock's apps by name, and how many more sit in the rows under it.
-            val inDock = state.dock.take(state.columns).joinToString(", ") { it.name }
-            val below = (state.dock.size - state.columns).coerceAtLeast(0)
-            val dockLine = if (below > 0) msg(R.string.home_row_dock_rows, "names" to inDock, "count" to below) else inDock
-            ListRow(stringResource(R.string.home_row_dock), subtitle = dockLine.ifEmpty { null },
-                onClick = if (busy == null) ({ dockOpen = true }) else null)
-            ListDivider()
-            LookRow(state, onClick = if (busy == null) ({ onIntent(HomeScreenIntent.OpenLook) }) else null)
+            ListRow(stringResource(R.string.miy_title), subtitle = stringResource(R.string.home_row_hub_note), onClick = onOpenHub)
         }
         // look2: a failed look send keeps the draft (and a new photo); Open Look reopens it.
         if (state.lookFailed && busy == null) {

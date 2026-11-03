@@ -371,4 +371,6 @@
     <string name="cyt_address_field_label">TV address</string>
     <string name="cyt_address_error">That isn\'t an address on your home network</string>
     <string name="cyt_address_connect">Connect</string>
+    <!-- 0.5.0 Make it yours: what left Fine-tune for Widgets. -->
+    <string name="cyt_look_moved_widgets">The greeting, the date and the buttons at the top moved to Widgets in Make it yours, next to the switches that show them.</string>
 </resources>
