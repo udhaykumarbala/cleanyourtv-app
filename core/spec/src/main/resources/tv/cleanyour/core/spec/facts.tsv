@@ -1,9 +1,11 @@
 # package	name	description	category
 air.ITVMobilePlayer	ITVX	UK ITV streaming app	streaming
 air.com.vudu.air.DownloaderTablet	Vudu (Fandango at Home)	Movie rental and purchase app	streaming
+android.autoinstalls.config.AMLSTBAndroid.device	Amlogic partner installs	Installs partner apps without asking	ads
 android.autoinstalls.config.JVC	JVC partner installs	Installs partner apps without asking	ads
 android.autoinstalls.config.OnePlus	OnePlus partner installs	Installs partner apps without asking	ads
 android.autoinstalls.config.SW	Skyworth partner installs	Installs partner apps without asking	ads
+android.autoinstalls.config.Sony.BRAVIA_VU1	Sony partner installs	Installs partner apps without asking	ads
 android.autoinstalls.config.askey.tvbox	Askey partner installs	Installs partner apps without asking	ads
 android.autoinstalls.config.google.gtvpai	Google TV partner installs	Installs partner apps without asking	ads
 android.autoinstalls.config.haier.hanyang	Haier partner installs	Installs partner apps without asking	ads
@@ -346,6 +348,7 @@ com.google.android.inputmethod.latin	Gboard	The on-screen keyboard	system
 com.google.android.katniss	Google Assistant	Voice search and the mic button	voice
 com.google.android.leanbacklauncher	Old Android TV home	The old Android TV home screen	launcher
 com.google.android.leanbacklauncher.partnercustomizer	Home partner provider	Provides data the TV service needs at boot	system
+com.google.android.leanbacklauncher.partnerwidget	Partner widget	Partner content widget for the stock home	ads
 com.google.android.leanbacklauncher.recommendations	Old home recommendations	Recommendation rows for the old home	ads
 com.google.android.marvin.talkback	TalkBack	Screen reader for blind users	accessibility
 com.google.android.music	Google Play Music	Music app; the service has shut down	preloads
@@ -385,6 +388,7 @@ com.haier.sharetv.webview	Haier share web view	Web view for Haier's share servic
 com.haier.tvhousekeeper	Haier TV housekeeper	Cleaner app	brand
 com.haier.yudee.tv	Haier share	Shares phone media to the TV	casting
 com.haierubic.usmartdevice	Haier smart device	Haier smart device service	brand
+com.haystack.android	Haystack News	News video app with recommendation cards	streaming
 com.hbo.hbonow	HBO Max	Streaming app	streaming
 com.hbo_android_tv	HBO (old app)	Older HBO app, replaced by Max	streaming
 com.heytap.ars.sink	OnePlus TV Mirror	Shows a phone screen on the TV	casting
@@ -393,6 +397,7 @@ com.heytap.olink	OnePlus Connect	Links the TV to the OnePlus phone app	brand
 com.heytap.oprcupgradeservice	OnePlus remote updates	Updates the remote's firmware	system
 com.heytap.optvfactory	OnePlus factory app	Factory test app, left alone	system
 com.heytap.optvmiracastservice	OnePlus Miracast	Screen mirroring receiver	casting
+com.heytap.rom.service	HeyTap log service	Collects system logs and uploads them	tracking
 com.heytap.tv.assistant.oneplus	OnePlus TV Assistant	OnePlus assistant app	brand
 com.heytap.tv.btspeaker	Bluetooth speaker mode	Plays TV sound on a Bluetooth speaker	brand
 com.heytap.tv.camera	OnePlus camera	Camera app for a plug-in camera	preloads
@@ -401,6 +406,7 @@ com.heytap.tv.gallery3d	OnePlus Gallery	Shows photos from USB storage	preloads
 com.heytap.tv.imagewall	OnePlus Image wall	Picture wall app	preloads
 com.heytap.tv.livetv	OnePlus Live TV	Live TV, HDMI and tuner inputs	system
 com.heytap.tv.musicplayer	OnePlus Music	Plays music from USB storage	preloads
+com.heytap.tv.remotecontrolinspect	Remote diagnostics	OnePlus remote control diagnostics app	other
 com.heytap.tv.remotediagnosing	OnePlus remote diagnosis	Remote support and diagnosis	other
 com.heytap.tv.videoplayer	OnePlus Video	Plays videos from USB storage	preloads
 com.hisense.alexa	Hisense Alexa	Alexa voice assistant	voice
@@ -604,6 +610,7 @@ com.oneplus.oobe.tv	OnePlus first-run setup	First-run setup screens	system
 com.oneplus.tv.factory	OnePlus TV factory app	Factory test app, left alone	system
 com.oneplus.tv.imagewall	OnePlus Image wall	Picture wall app	preloads
 com.oneplus.tv.launcher	OnePlus launcher page	OnePlus content page	brand
+com.oneplus.tv.screensaver	OnePlus screensaver	OnePlus's own screensaver	screensaver
 com.oneplus.tv.userguide	OnePlus user guide	Built-in user guide	preloads
 com.opera.sdk.example	Opera TV sample app	Opera TV SDK sample app	preloads
 com.osn.go	OSN+	Middle East series and film streaming app	streaming
@@ -635,6 +642,7 @@ com.realtek.tv.atsc	ATSC tuner	North American TV tuner input	other
 com.realtek.tv.isdb	ISDB tuner	Japanese and South American tuner input	other
 com.recisio.kfandroid	KaraFun	Karaoke app	streaming
 com.rkgames.basisgame	RK Games game	Preloaded game	preloads
+com.roku.web.trc	The Roku Channel	Roku's free streaming channel app	streaming
 com.rtk.engmenu	Realtek engineering menu	Factory menu, needed by the system	system
 com.rtk.mediabrowser	Media Player	Plays videos and photos from USB	preloads
 com.salute.star	Salute smart home	Smart home app	brand
@@ -643,6 +651,7 @@ com.screenshare.platform	ScreenShare platform	Helper for MHshare screen sharing	
 com.sdmc.facTest	SDMC factory test	Factory test menu	demo
 com.sdmc.hwinfo	SDMC hardware info	Hardware info and diagnostics	brand
 com.sdmc.leakbackcustomer	SDMC partner service	Partner customer service, purpose unclear	other
+com.sdt.customization	Skyworth customization	Partner customization and home channels	brand
 com.sdt.deviceinfo	Skyworth device info	Reports device information	tracking
 com.sdt.producttest	Skyworth product test	Factory key and USB test	demo
 com.secretexit.turbodismount	Turbo Dismount	Preloaded game	preloads
@@ -705,6 +714,7 @@ com.sony.dtv.demosystemsupport	Sony demo system support	Shop demo system service
 com.sony.dtv.deviceadminsettings	Sony pro device admin	Device admin settings for hotel and pro mode	brand
 com.sony.dtv.discovery	Sony Discover	Sony content bar	ads
 com.sony.dtv.distancealert	Distance alert	BRAVIA CAM warns when you sit too close	brand
+com.sony.dtv.ecodashboard	Eco dashboard	Sony's energy settings dashboard tile	brand
 com.sony.dtv.gestureapp	BRAVIA CAM gestures	Hand gesture control with BRAVIA CAM	brand
 com.sony.dtv.helpguidecontents	Sony help guide	Content for the Help app	preloads
 com.sony.dtv.homekit	Apple HomeKit	Lets the Apple Home app control the TV	brand
@@ -824,12 +834,14 @@ com.tcl.ocean.instructions	TCL e-manual	On-screen user manual	preloads
 com.tcl.overseasappshow	TCL app showcase	Recommended apps; on some sets turns promo apps back on at boot	ads
 com.tcl.packageinstaller.service.renew	TCL installer service	App installer service, needed	system
 com.tcl.partnercustomizer	TCL home customizer	TCL home rows; on some sets also the T key and Inputs icon	ads
+com.tcl.partnercustomizer.resource	TCL partner resources	Resources for TCL's promo rows	ads
 com.tcl.playskill	TCL tips	Tips app	preloads
 com.tcl.profilemanager	TCL profile manager	Builds an audience profile for TCL	tracking
 com.tcl.providers.config	TCL config provider	Settings provider, needed for Wi-Fi	system
 com.tcl.pvr.pvrplayer	TCL recordings player	Plays recorded TV shows	preloads
 com.tcl.recognize.service	TCL screen recognition	Recognizes what is on screen; can also install apps	tracking
 com.tcl.repairguide	TCL repair guide	Repair help	preloads
+com.tcl.samba	TCL file sharing	SMB file sharing server	other
 com.tcl.settings	TCL settings	TCL settings app	system
 com.tcl.smartalexa	TCL Alexa	Alexa voice service	voice
 com.tcl.smartlink.core	TCL SmartLink	Includes a silent app installer	ads
@@ -845,6 +857,7 @@ com.tcl.ttvs	TCL viewing data service	Samba TV and TCL analytics; on some TCL TV
 com.tcl.tv	TCL Live TV	Live TV, HDMI and tuner app	system
 com.tcl.tv.plus	TCL TV+	TCL's ad-funded channels	ads
 com.tcl.tv.tclchannel	TCL Channel	TCL channel app with Google ads	ads
+com.tcl.tv.tclhome_master	TCL home content	Pushes TCL content to the home screen	ads
 com.tcl.tv.tclhome_passive	TCL home feed	Pushes TCL content at boot	ads
 com.tcl.tvhealthcheck	TCL health check	Diagnostics uploader	tracking
 com.tcl.tvinput	TCL TV input	Live TV tuner and HDMI inputs	system
@@ -867,6 +880,7 @@ com.tencent.qqlivei18n	WeTV	Asian drama streaming app	streaming
 com.tianci.localmedia	Skyworth USB media player	Plays media from USB	system
 com.tiktok.tv	TikTok	Short video app	streaming
 com.tpv.nftgallery	Philips NFT gallery	Shows NFT artwork	preloads
+com.tpv.screenshotshare	Screenshot share	Philips screenshot sharing service	brand
 com.tpv.xmic.ots.cms.client	TPV CMS client	TPV background content and data service	tracking
 com.tubitv	Tubi	Free films and series with adverts	streaming
 com.tubitv.ott	Tubi	Streaming app	streaming
@@ -895,12 +909,16 @@ com.vt.ambiencephoto	Ambience photo screensaver	Photo screensaver	screensaver
 com.vt.factory	Hisense factory tools	Factory test and service menu	demo
 com.vt.fte	First-time setup guide	Walkthrough shown at first setup	other
 com.vt.hishow	FamilyMoment	Photo and camera app with a screensaver	preloads
+com.vt.roomcalibration	Room calibration	Hisense room audio calibration prompt	brand
 com.vt.storemode	Hisense store mode	Store demo mode	demo
 com.vt.tv.aiot	Hisense AIoT	Hisense system service, needed to boot	system
 com.vt.tv.b2b	Hisense business mode	Hotel and commercial mode	demo
 com.vt.tv.calmanconnector	Calman connector	Professional picture calibration link	brand
+com.vt.tv.dlna	Hisense DLNA	DLNA media renderer, starts at boot	casting
 com.vt.tv.evservice	Hisense ACR	Recognizes what is on screen	tracking
 com.vt.tv.interactive	Interactive TV	Interactive broadcast services	other
+com.vt.tv.mediacenter	Media Center	Hisense player for USB and DLNA files	preloads
+com.vt.tv.mobiledeviceconnectiontips	Hisense screen mirroring	Miracast receiver and its tips	casting
 com.vt.tv.protector	Hisense device assistant	Cleaner and speed-up tool	brand
 com.vt.tv.singlelisten	Vu My Music	Music app	preloads
 com.vt.tv.smartsense.ui	SmartSense screens	Hisense system screens, needed to boot	system
@@ -1002,6 +1020,7 @@ fusion.android.tv.demo	Retail demo	Retail demo app; on some MediaTek and Vestel 
 id.visionplus.android.atv	Vision+	Indonesian streaming app	streaming
 in.startv.hotstar	JioHotstar	Streaming app	streaming
 in.startv.hotstar.dplus.tv	Disney+ Hotstar	Streaming app	streaming
+io.mimi.sdk.service	Mimi sound service	Mimi hearing based sound processing	brand
 io.tiv.dvtv.tv	DVTV	Czech news video app	streaming
 it.hon.service	Haier hOn	Links Haier home appliances	brand
 it.mediaset.infinitytv	Mediaset Infinity	Italian streaming app	streaming
@@ -1026,6 +1045,7 @@ oneplus.smarthome	OnePlus Smart Home	Smart home control	brand
 org.chromium.webview_shell	WebView test browser	AOSP test browser for the web view, not the web view itself	preloads
 org.droidtv.amazonalexa	Philips Alexa	Alexa bridge for the TV	voice
 org.droidtv.android.fitness	Fitness Buddy	Fitness app	preloads
+org.droidtv.calmancalibrator	Calman calibration	Calman picture calibration service	brand
 org.droidtv.candeebug	Philips DAC analytics	Uploads viewing and device data	tracking
 org.droidtv.consentcmpapp	Philips ad consent	Ad consent screen	ads
 org.droidtv.control4UcService	Control4 service	Control4 smart home service	brand
@@ -1037,8 +1057,11 @@ org.droidtv.demome	Philips Demo me	Store demo mode	demo
 org.droidtv.dlna	Philips DLNA	Media server and renderer for the network	casting
 org.droidtv.gel	Philips metrics	Collects metrics for the analytics uploader	tracking
 org.droidtv.hbbtvopapp	HbbTV	Interactive features of broadcast TV	other
+org.droidtv.hidwizard	Keyboard and mouse setup	Setup for USB keyboards and mice	brand
 org.droidtv.ipcontrol	Philips IP control	Control from apps on the home network	brand
 org.droidtv.m7opapp	M7 operator app	Satellite operator promo app	brand
+org.droidtv.matter	Matter smart home	Philips Matter smart home service	brand
+org.droidtv.multiview	Multi View	Philips Multi View picture in picture	brand
 org.droidtv.nettv.market	Smart TV Collection	Philips app gallery	ads
 org.droidtv.nettv_launcherapp	NetTV launcher	Opens the NetTV app gallery	preloads
 org.droidtv.nettvapp1814	ARTE	European culture channel app	streaming
@@ -1060,8 +1083,10 @@ org.droidtv.nettvapp5527	Flix Premiere	Film streaming app	streaming
 org.droidtv.nettvapps	NetTV app installer	Installs gallery apps without asking	ads
 org.droidtv.nettvrecommender	Philips Top Picks	Promoted content row	ads
 org.droidtv.nettvregistration	Philips registration	Philips account and NetTV registration	updates
+org.droidtv.personalisedsound	Personalised sound	Mimi personalised sound settings	brand
 org.droidtv.recommendation	Philips recommendations	Backend for the Top Picks row	ads
 org.droidtv.sticker	Philips e-sticker	Shop banners for store displays	demo
+org.droidtv.sunrise	Sunrise alarm	Philips wake-up light alarm	brand
 org.droidtv.tv.frameworklogger	Philips reboot logger	Sends reboot reasons and update records to the Philips logger	tracking
 org.droidtv.usagelogger	Philips usage logger	Logs usage and device data	tracking
 org.liskovsoft.androidtv.rukeyboard	Russian keyboard	On-screen keyboard	system

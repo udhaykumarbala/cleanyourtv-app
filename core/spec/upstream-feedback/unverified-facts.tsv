@@ -27,6 +27,7 @@ com.gameloft.android.HEP.GloftANHP	which Gameloft game it is
 com.goodtoolapps.zeus	what the app does; the list only says Zeus
 com.google.android.apps.nbu.smartconnect.tv	purpose from the headers (data-saver VPN); not confirmed on a TV
 com.google.android.boot.appsplashscreen	purpose from the list's comment only
+com.google.android.leanbacklauncher.partnerwidget	purpose from the package name; the UnionTV list gives no comment
 com.google.android.tv.remote.service	the remote mic role is from the tcl-c755 header only
 com.google.android.tv.setup.customizationsample	purpose from the package name
 com.haier.yudee.tv	purpose from the list's short comment only
@@ -52,6 +53,7 @@ com.mitv.toolhouse	purpose from the package name
 com.mk.tv.meeting.service	purpose from the package name
 com.mstar.android.media.tests	purpose from the list's comment only ("media test cases")
 com.nvidia.developerwidget	purpose from the list's short comment only
+com.oneplus.tv.screensaver	name from the Cebu list's comment only
 com.pomelogames.MarsGame	name from the package name
 com.qjy.browser	purpose from the list's comment only
 com.rkgames.basisgame	purpose from the list's comment only (a game)
@@ -75,6 +77,7 @@ com.sony.dtv.watchtvrecommendation	purpose from the package name
 com.sony.dtv.woprecommendation	purpose from the package name
 com.talents.huanclientauth	purpose from the list's comment only
 com.tcl.interactive	purpose from the list's comment only (TIAS service)
+com.tcl.partnercustomizer.resource	purpose from the package name; the UnionTV list gives no comment
 com.tcl.pvr.pvrplayer	purpose from the package name and the list's group title
 com.twentyfouri.tvbridge.rte	purpose from the list's group comment only (Freeview Play app layer)
 com.vectorunit.purple.googleplay	which Vector Unit game it is (Beach Buggy Racing 2 assumed)
