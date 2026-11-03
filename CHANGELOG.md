@@ -32,7 +32,7 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
   removing your launcher, which could leave the TV with no home screen.
 - An uninstall was counted as done when the TV's package list failed to answer, and so was a
   switch-on or an uninstall checked again when the app came back after closing mid-run. Both now read
-  the list another way when it fails (as the probe does), then the app's own entry, and a list that
+  the list another way when it fails (as the probe does), then the package's own record, and a list that
   failed never passes a check.
 - Sony BRAVIA VH21: the release keeps the TV's own home screen, because upstream now keeps its setup wizard
   on (Wi-Fi and casting need it); test builds offer the Home button helper there instead.
