@@ -1,6 +1,10 @@
 FACTS	getprop; echo '@@cyt@@ meminfo'; cat /proc/meminfo; echo '@@cyt@@ gms'; pm path com.google.android.gms
 PACKAGES	pm list packages -f
 DISABLED	pm list packages -d
+PACKAGES_CMD_USER0	cmd package list packages -f --user 0
+PACKAGES_USER0	pm list packages --user 0
+DISABLED_CMD_USER0	cmd package list packages -d --user 0
+DISABLED_USER0	pm list packages -d --user 0
 PACKAGE_FLAGS	dumpsys package packages | grep -E '^(Packages:|Hidden system packages:)|^ +(Package \[|codePath=|versionCode=|pkgFlags=|User 0: )'
 HOME	cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME; echo '@@cyt@@ resolved'; cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
 HOME_RESOLVED	cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME

@@ -36,6 +36,13 @@ object ProbeScripts {
     // Stage PACKAGES: three calls, the package manager's own lists plus the flags and state of each.
     val PACKAGES = ShellLine("pm list packages -f")
     val DISABLED = ShellLine("pm list packages -d")
+    // 0.4.9 (issues #3436, #1543): on TVs where `pm list packages -f` fails on every connect (exit 255,
+    // a SecurityException), the same lists through `cmd package` for user 0, then through `pm` for user 0
+    // without the install paths (the flags dump below has them). Each runs only after the one before it failed.
+    val PACKAGES_CMD_USER0 = ShellLine("cmd package list packages -f --user 0")
+    val PACKAGES_USER0 = ShellLine("pm list packages --user 0")
+    val DISABLED_CMD_USER0 = ShellLine("cmd package list packages -d --user 0")
+    val DISABLED_USER0 = ShellLine("pm list packages -d --user 0")
     val PACKAGE_FLAGS = ShellLine(
         "dumpsys package packages | grep -E '^(Packages:|Hidden system packages:)|^ +(Package \\[|codePath=|versionCode=|pkgFlags=|User 0: )'",
     )
@@ -117,7 +124,9 @@ object ProbeScripts {
 
     // Every constant line, for the golden test and for anyone auditing what a probe can send.
     val all: Map<String, ShellLine> = linkedMapOf(
-        "FACTS" to FACTS, "PACKAGES" to PACKAGES, "DISABLED" to DISABLED, "PACKAGE_FLAGS" to PACKAGE_FLAGS, "HOME" to HOME,
+        "FACTS" to FACTS, "PACKAGES" to PACKAGES, "DISABLED" to DISABLED, "PACKAGES_CMD_USER0" to PACKAGES_CMD_USER0,
+        "PACKAGES_USER0" to PACKAGES_USER0, "DISABLED_CMD_USER0" to DISABLED_CMD_USER0, "DISABLED_USER0" to DISABLED_USER0,
+        "PACKAGE_FLAGS" to PACKAGE_FLAGS, "HOME" to HOME,
         "HOME_RESOLVED" to HOME_RESOLVED, "LAUNCHABLE" to LAUNCHABLE, "INPUTS" to INPUTS, "SETTINGS" to SETTINGS, "HOME_FOCUS" to HOME_FOCUS, "BOOT_ID" to BOOT_ID,
         "FREE_DATA" to FREE_DATA, "SCREENSHOT" to SCREENSHOT, "SCREENSHOT_CLEANUP" to SCREENSHOT_CLEANUP, "MKDIR_TMP" to MKDIR_TMP,
         "NOOP_INSTALL" to NOOP_INSTALL, "NOOP_UNINSTALL" to NOOP_UNINSTALL, "NOOP_CLEANUP" to NOOP_CLEANUP, "PS_ARGS" to PS_ARGS,

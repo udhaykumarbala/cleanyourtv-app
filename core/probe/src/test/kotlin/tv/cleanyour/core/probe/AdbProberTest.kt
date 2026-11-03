@@ -28,6 +28,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class AdbProberTest {
+    private val PACKAGE_TRIES = (AdbProber.PACKAGE_LISTS + AdbProber.DISABLED_LISTS).map { it.second.text }
     private fun p(s: String) = PackageName(s)
     private fun c(s: String) = Component(p(s.substringBefore('/')), s.substringAfter('/'))
     private val prober = AdbProber(ProbeFixtures.clock())
@@ -265,6 +266,72 @@ class AdbProberTest {
         assertFailsWith<ProbeException> { prober.facts(FakeTvSession(recording = noModel)) }
         val badBoot = ProbeFixtures.miTvRecording().on(ProbeScripts.BOOT_ID.text, "\$(reboot)\n")
         assertFailsWith<ProbeException> { prober.bootId(FakeTvSession(recording = badBoot)) }
+    }
+
+    // 0.4.9 (issues #3436, #1543): `pm list packages -f` failed with exit 255 and a SecurityException on
+    // every connect, and the probe stopped there. The lists now fall back, one command at a time, and
+    // the log names the source that answered; a TV where pm answers sends the same seven calls as before.
+    private val denied = "java.lang.SecurityException: Shell does not have permission to access user 10"
+    private fun failingPm() = ProbeFixtures.miTvRecording()
+        .on(ProbeScripts.PACKAGES.text, "", exit = 255, stderr = denied)
+        .on(ProbeScripts.DISABLED.text, "", exit = 255, stderr = denied)
+    private val usual by lazy { runBlocking { prober.snapshot(ProbeFixtures.miTvSession(), SnapshotReason.MANUAL) } }
+
+    @Test fun aFailingPmListFallsBackToCmdPackageForUserZero() = runBlocking<Unit> {
+        val c = Fixtures.miTv()
+        val r = failingPm().on(ProbeScripts.PACKAGES_CMD_USER0.text, c.packagesAllText).on(ProbeScripts.DISABLED_CMD_USER0.text, c.packagesDisabledAfterText)
+        val log = mutableListOf<String>()
+        val snap = AdbProber(ProbeFixtures.clock(), log = { log += it }).snapshot(FakeTvSession(recording = r), SnapshotReason.MANUAL)
+        assertEquals(usual.packages, snap.packages)
+        assertEquals(listOf(
+            "probe: package list from cmd package list packages -f for user 0 after pm list packages -f exit 255",
+            "probe: disabled list from cmd package list packages -d for user 0 after pm list packages -d exit 255",
+        ), log)
+    }
+
+    // Without paths (pm for user 0) the flags dump says what is a system app, as for an empty flags line.
+    @Test fun thenToPmForUserZeroWithoutPaths() = runBlocking<Unit> {
+        val c = Fixtures.miTv()
+        val names = c.packagesAllText.lines().filter { it.startsWith("package:") }.joinToString("\n", postfix = "\n") { "package:" + it.substringAfterLast('=') }
+        val r = failingPm().on(ProbeScripts.PACKAGES_USER0.text, names).on(ProbeScripts.DISABLED_USER0.text, c.packagesDisabledAfterText)
+        val log = mutableListOf<String>()
+        val s = FakeTvSession(recording = r)
+        val snap = AdbProber(ProbeFixtures.clock(), log = { log += it }).snapshot(s, SnapshotReason.MANUAL)
+        assertEquals(usual.packages, snap.packages)
+        assertEquals("probe: package list from pm list packages for user 0 after pm list packages -f exit 255, cmd package list packages -f for user 0 exit 127", log.first())
+        // Reads only: the three tries of each list, then the flags dump as before.
+        assertEquals(PACKAGE_TRIES, s.execLines.filter { it in PACKAGE_TRIES })
+    }
+
+    @Test fun thenToTheFlagsDump() = runBlocking<Unit> {
+        val log = mutableListOf<String>()
+        val snap = AdbProber(ProbeFixtures.clock(), log = { log += it }).snapshot(FakeTvSession(recording = failingPm()), SnapshotReason.MANUAL)
+        assertEquals(usual.packages, snap.packages)
+        assertEquals(listOf(
+            "probe: package list from dumpsys package after pm list packages -f exit 255, cmd package list packages -f for user 0 exit 127, pm list packages for user 0 exit 127",
+            "probe: disabled list from dumpsys package after pm list packages -d exit 255, cmd package list packages -d for user 0 exit 127, pm list packages -d for user 0 exit 127",
+        ), log)
+    }
+
+    // Nothing answers and the dump lists nothing: the first failure is the one reported, as before
+    // (LogCodes.probeDetail makes "exit 255: SecurityException" of it), and the log says what was tried.
+    @Test fun whenNothingAnswersTheFirstFailureIsReported() = runBlocking<Unit> {
+        val log = mutableListOf<String>()
+        val r = failingPm().on(ProbeScripts.PACKAGE_FLAGS.text, "")
+        val e = assertFailsWith<ProbeException> { AdbProber(ProbeFixtures.clock(), log = { log += it }).snapshot(FakeTvSession(recording = r), SnapshotReason.MANUAL) }
+        assertEquals(ProbeStage.PACKAGES, e.stage)
+        assertEquals("exit 255: $denied", e.detail)
+        assertEquals(listOf("probe: package list failed: pm list packages -f exit 255, cmd package list packages -f for user 0 exit 127, " +
+            "pm list packages for user 0 exit 127, dumpsys package listed nothing"), log)
+    }
+
+    // A fallback that answers with nothing has not answered; the first command keeps its meaning.
+    @Test fun anEmptyFallbackAnswerIsNotAnAnswer() = runBlocking<Unit> {
+        val r = failingPm().on(ProbeScripts.PACKAGES_CMD_USER0.text, "")
+        val log = mutableListOf<String>()
+        val snap = AdbProber(ProbeFixtures.clock(), log = { log += it }).snapshot(FakeTvSession(recording = r), SnapshotReason.MANUAL)
+        assertEquals(usual.packages.keys, snap.packages.keys)
+        assertTrue(log.first().contains("cmd package list packages -f for user 0 listed nothing"), log.first())
     }
 
     @Test fun homeFallsBackWhenTheChainedCommandStops() = runBlocking<Unit> {

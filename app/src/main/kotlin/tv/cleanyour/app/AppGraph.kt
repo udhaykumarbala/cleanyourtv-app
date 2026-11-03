@@ -121,7 +121,7 @@ class AppGraph(context: Context, val appVersion: String = versionOf(context), va
     val prober: Prober = AdbProber(clock, known = mapOf(
         tv.cleanyour.core.model.Sha256(PinnedLauncher.SHA256) to tv.cleanyour.core.model.Sha256(PinnedLauncher.SIGNER_SHA256),
         tv.cleanyour.core.model.Sha256(PinnedCurtain.SHA256) to tv.cleanyour.core.model.Sha256(PinnedCurtain.SIGNER_SHA256),
-    ))
+    ), log = { CytLog.i(it) })   // 0.4.9: which package list answered, when `pm list packages` did not (#3436, #1543)
     // Test build: the person's answers on Setup's candidate list card, which every resolve reads.
     val candidateChoices = tv.cleanyour.core.flows.CandidateChoices(documents)
     val profiles = BundledProfileSource(consent = candidateChoices)
