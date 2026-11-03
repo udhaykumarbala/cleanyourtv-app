@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:launcher. English source strings of the Widgets page (0.5.0, Make it yours).
+  Strings with an argument are ICU MessageFormat with NAMED arguments in braces, formatted by msg().
+  The sample lines (the time, the date, the second date, TV health) show what the TV draws; the board
+  shows them in capitals, as the TV does.
+-->
+<resources>
+
+    <!-- The five places, as the TV has them -->
+    <string name="widgets_place_clock">Clock</string>
+    <string name="widgets_place_under_clock">Under the clock</string>
+    <string name="widgets_place_buttons">Buttons</string>
+    <string name="widgets_place_under_buttons">Under the buttons</string>
+    <string name="widgets_place_before_apps">Before your apps</string>
+
+    <!-- The board -->
+    <!-- One place on the board for TalkBack: its name, then what is in it now -->
+    <string name="widgets_board_place_cd">{place}. {now}</string>
+    <string name="widgets_board_add">+ Add</string>
+    <string name="widgets_board_add_card">+ Add a card</string>
+    <string name="widgets_board_nothing">Nothing here yet</string>
+    <string name="widgets_board_no_cards">No cards in this version</string>
+    <string name="widgets_board_hint">Laid out as on the TV. The places stay where they are; what is in them is yours.</string>
+
+    <!-- What the TV draws, as samples -->
+    <string name="widgets_sample_greeting">Good evening</string>
+    <string name="widgets_sample_greeting_name">Good evening, {name}</string>
+    <string name="widgets_sample_time_12">8:41</string>
+    <string name="widgets_sample_am_pm">PM</string>
+    <string name="widgets_sample_time_24">20:41</string>
+    <string name="widgets_sample_date">Tuesday 28 October</string>
+
+    <!-- The widgets this version offers: name, the line under it, and the line the TV draws -->
+    <string name="widgets_second_name">Second date</string>
+    <string name="widgets_second_sub">Solar Hijri or lunar</string>
+    <string name="widgets_line_shamsi">6 Aban 1405</string>
+    <string name="widgets_line_lunar">Lunar 13/9 · Year of the Horse</string>
+    <string name="widgets_stats_name">TV health</string>
+    <string name="widgets_stats_sub">Every 10 seconds</string>
+    <string name="widgets_line_stats" formatted="false">CPU 14% · Memory 1.2 GB free · Storage 61% free</string>
+    <string name="widgets_caption_name">Picture name</string>
+    <string name="widgets_caption_sub">Switched below</string>
+    <string name="widgets_line_caption">The picture\'s name</string>
+    <string name="widgets_retro_name">Retro</string>
+    <string name="widgets_retro_sub">Add-on card</string>
+    <string name="widgets_line_retro">Classic games</string>
+
+    <!-- Later widgets: not on TVs yet, shown dimmed at the end of their place -->
+    <string name="widgets_later_tag">Later</string>
+    <string name="widgets_later_sub">Not on TVs yet</string>
+    <!-- A Later widget for TalkBack: its name, then that it is not on TVs yet -->
+    <string name="widgets_later_cd">{name}. Later, not on TVs yet.</string>
+    <string name="widgets_later_action">See what it needs</string>
+    <string name="widgets_weather_name">Weather</string>
+    <string name="widgets_weather_line">29° light rain</string>
+    <string name="widgets_weather_why">The home screen does not show weather up here. It stays small and never goes online, so weather needs a small change to the home screen first.</string>
+    <string name="widgets_world_name">World clock</string>
+    <string name="widgets_world_line">London 15:12 · New York 10:12</string>
+    <string name="widgets_countdown_name">Countdown</string>
+    <string name="widgets_countdown_line">Diwali in 4 days</string>
+    <string name="widgets_sun_name">Sunrise and sunset</string>
+    <string name="widgets_sun_line">Sunset 18:04</string>
+    <string name="widgets_note_name">Note</string>
+    <string name="widgets_note_line">Dentist at 4</string>
+    <!-- World clock, Countdown, Sunrise and sunset, and Note share this reason -->
+    <string name="widgets_small_change_why">Needs a change to the home screen. Its core stays small, so this would be a small change of our own to it.</string>
+    <string name="widgets_prayer_name">Prayer times</string>
+    <string name="widgets_prayer_line">Asr 15:42</string>
+    <string name="widgets_prayer_why">Through the Coming up line once the Prayer Times add-on supports it, or as a card once it is signed.</string>
+    <string name="widgets_f1_name">F1 weekends</string>
+    <string name="widgets_f1_line">F1 · This weekend</string>
+    <string name="widgets_f1_why">The home screen can show it today. The app first needs to fetch each season\'s race calendar, so it comes in a later version.</string>
+    <string name="widgets_match_name">Coming up</string>
+    <string name="widgets_match_line">IND v NZ · Sat 14:00</string>
+    <string name="widgets_match_why">Home screen 3.3 can already show games and events here, fed by an add-on (Game Day). It comes once that add-on is signed.</string>
+    <string name="widgets_sources_name">Sources</string>
+    <string name="widgets_sources_line">Your inputs</string>
+    <string name="widgets_sources_why">A card from Gathin\'s add-ons. It comes once it is signed, like Retro.</string>
+    <string name="widgets_wcard_name">Weather card</string>
+    <string name="widgets_wcard_line">Forecast and air quality</string>
+    <string name="widgets_wclock_name">World Clock</string>
+    <string name="widgets_wclock_line">Times around the world</string>
+    <!-- The Weather card and World Clock share this reason -->
+    <string name="widgets_card_why">A card from Gathin\'s add-ons. It comes once it is signed.</string>
+
+    <!-- A pick's state for TalkBack -->
+    <string name="widgets_pick_on">On</string>
+    <string name="widgets_pick_off">Off</string>
+
+    <!-- Clock -->
+    <string name="widgets_greeting">Greeting</string>
+    <string name="widgets_greeting_sub">Good morning, afternoon, evening or night, above the clock.</string>
+    <string name="widgets_greeting_plain">Plain</string>
+    <string name="widgets_greeting_with_name">With your name</string>
+    <string name="widgets_name_label">Your name</string>
+    <string name="widgets_name_hint">It stays on the TV and never goes in a problem report.</string>
+    <string name="widgets_greeting_times">Morning until 12:00, afternoon until 17:00, evening until 22:00, then night. In a festival season, like the Diwali picture, the greeting changes with it.</string>
+    <string name="widgets_date_label">Date</string>
+    <string name="widgets_date_below">Date under the clock</string>
+    <string name="widgets_date_below_sub">Off: beside it, after a short line.</string>
+    <string name="widgets_bright_date">Brighter date</string>
+    <string name="widgets_bright_date_sub">Full white, like the clock, instead of dimmed.</string>
+    <string name="widgets_time_label">Time</string>
+    <string name="widgets_time_system">Like the TV</string>
+    <string name="widgets_time_12">12 hours</string>
+    <string name="widgets_time_24">24 hours</string>
+    <string name="widgets_time_hint">This TV\'s home screen takes this from the phone. Like the TV follows the TV\'s own setting.</string>
+    <string name="widgets_time_older">This TV\'s home screen follows the TV\'s own 12 or 24 hour setting. Change it in the TV\'s settings.</string>
+    <string name="widgets_clock_always">The clock always shows once the TV knows the time: connect it to the internet or set the date.</string>
+
+    <!-- Under the clock -->
+    <string name="widgets_under_hint">They stack in the home screen\'s order. Tap a Later one to see what it needs.</string>
+    <string name="widgets_second_label">Second date</string>
+    <string name="widgets_second_shamsi">Solar Hijri</string>
+    <string name="widgets_second_lunar">Lunar (Chinese and Vietnamese)</string>
+    <string name="widgets_second_shamsi_hint">Above the usual date, which gets a little smaller so both fit.</string>
+    <string name="widgets_second_lunar_hint">Under the usual date, worked out for your time zone.</string>
+    <string name="widgets_stats_hint">TV health: how busy the TV is and how much room it has left. Handy on a slow TV.</string>
+
+    <!-- Buttons -->
+    <string name="widgets_look_label">How they look</string>
+    <string name="widgets_look_names">With names</string>
+    <string name="widgets_look_names_sub">Words and icons</string>
+    <string name="widgets_look_icons">Round icons</string>
+    <string name="widgets_look_icons_sub">Inputs too</string>
+    <string name="widgets_look_menu">One menu</string>
+    <string name="widgets_look_menu_sub">Like Google TV</string>
+    <string name="widgets_look_menu_hint">One gear button. Its menu holds Inputs, the network, Reorder and Settings.</string>
+    <string name="widgets_which_label">Which buttons</string>
+    <string name="widgets_which_hint">They keep this order on the TV, left to right.</string>
+    <string name="widgets_btn_inputs">Inputs</string>
+    <string name="widgets_btn_inputs_sub">Hides itself when nothing is plugged in</string>
+    <string name="widgets_btn_apps">Your apps</string>
+    <string name="widgets_btn_apps_sub">Round logos, out of the rows</string>
+    <string name="widgets_btn_wifi">Wi-Fi</string>
+    <string name="widgets_btn_wifi_sub">Shows the network name</string>
+    <string name="widgets_btn_vpn">VPN</string>
+    <string name="widgets_btn_vpn_sub">Green when on, red when off</string>
+    <string name="widgets_btn_reorder">Reorder</string>
+    <string name="widgets_btn_reorder_sub">Move apps around</string>
+    <string name="widgets_btn_library">Library</string>
+    <string name="widgets_btn_library_sub">Every app on the TV</string>
+    <string name="widgets_btn_library_needs">Needs App library. Turns it on too.</string>
+    <string name="widgets_btn_settings">Settings</string>
+    <string name="widgets_btn_settings_sub">Always there</string>
+    <string name="widgets_btn_settings_always">Settings always shows on the TV, so the TV\'s settings are always one press away.</string>
+    <string name="widgets_btn_menu">Menu</string>
+    <string name="widgets_apps_label">Your apps in the top bar</string>
+    <string name="widgets_apps_hint">Up to 3, as round logos. They leave the rows below, so each app is in one place.</string>
+    <string name="widgets_apps_full">Up to 3 apps in the top bar. Take one off first.</string>
+    <!-- An app picked for the top bar, for TalkBack: its place in the order -->
+    <string name="widgets_apps_number">Number {n} in the top bar</string>
+    <string name="widgets_wifi_label">Wi-Fi button</string>
+    <string name="widgets_wifi_green">Green while online</string>
+    <string name="widgets_wifi_green_sub">The Wi-Fi icon turns green when the TV is online.</string>
+    <string name="widgets_wifi_warn">Orange or red when something is wrong</string>
+    <string name="widgets_wifi_warn_sub">Orange: connected but no internet. Red: offline.</string>
+    <string name="widgets_wifi_name">Network name next to the icon</string>
+    <string name="widgets_wifi_name_sub">Off: just the round icon.</string>
+    <string name="widgets_opens_label">Pressing OK on it opens</string>
+    <string name="widgets_wifi_opens_wifi">Wi-Fi settings</string>
+    <string name="widgets_wifi_opens_vpn">A VPN app</string>
+    <string name="widgets_wifi_hold">Holding OK still opens Wi-Fi settings.</string>
+    <string name="widgets_vpn_app_label">Which VPN app</string>
+    <string name="widgets_vpn_none">No VPN app was found on this TV.</string>
+    <string name="widgets_vpn_label">VPN button opens</string>
+    <string name="widgets_vpn_hint">Green with a lock while a VPN is up, red \"VPN off\" while it is not. The Wi-Fi button then always opens Wi-Fi settings.</string>
+    <string name="widgets_settings_label">Settings button</string>
+    <string name="widgets_settings_tv">The TV\'s settings</string>
+    <string name="widgets_settings_home">Home screen settings</string>
+    <string name="widgets_settings_hint">Holding OK opens a menu with both.</string>
+    <string name="widgets_collide">The date runs into the buttons. With this many buttons there is no room for the date beside the clock on the TV.</string>
+    <string name="widgets_collide_action">Put the date under the clock</string>
+
+    <!-- Under the buttons -->
+    <string name="widgets_caption_none">Your pictures have no names yet. This app sends one picture; names come with picture collections.</string>
+    <string name="widgets_caption_showing">Showing now: each picture\'s name, under the buttons.</string>
+    <string name="widgets_caption_off">Your pictures have names, and showing them is off.</string>
+    <string name="widgets_caption_switch">Picture names</string>
+    <string name="widgets_caption_switch_sub">Each picture\'s name under the buttons.</string>
+
+    <!-- Before your apps -->
+    <string name="widgets_cards_label">Cards before your apps</string>
+    <string name="widgets_cards_hint">A card is a tile with a name and one short line, like an app, at the start of the row under the dock. Each is an add-on built from Gathin\'s repo and signed by us; the author is credited on the TV. Up to 8.</string>
+    <string name="widgets_retro_hint">Retro opens the add-on\'s games. No internet, no special permissions.</string>
+    <string name="widgets_retro_action">Change it in Cards and modules</string>
+    <string name="widgets_cards_link">Cards and modules</string>
+    <string name="widgets_cards_play">Cards come with add-ons, which this version of the app does not have.</string>
+</resources>
