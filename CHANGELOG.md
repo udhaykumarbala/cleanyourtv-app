@@ -2,6 +2,16 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## 0.5.0 (unreleased)
+
+### Lists
+- The careful brand sets are back as they were in 0.4.8: a TV of a brand with one or two lists and no
+  list of its own (MOKA, Stellamore and Vidda among them) again gets the print spooler, Android TV's
+  feedback consent and the Privacy Sandbox services switched off where its brand's lists do, and
+  Kalley TVs get such a set too. The Fire TV Stick 4K (2018), the TCL 55P7K, the TCL BeyondTV2 (Latin
+  America) and the Kalley R10G lists now switch these off by default, since their testers had them off
+  across a restart; the rest of those lists' new rows stay rows you choose.
+
 ## 0.4.9-beta1 (test build)
 
 A GitHub pre-release for testers, made from 0.4.8 (2026-11-03). It installs over 0.4.8 and every
