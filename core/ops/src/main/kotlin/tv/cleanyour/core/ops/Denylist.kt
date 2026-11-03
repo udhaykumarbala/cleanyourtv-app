@@ -64,12 +64,42 @@ object Denylist {
         // buttons; on the 22AE the custom (Daily) button needs it.
         "com.smartdevice.global.service" to "it runs the remote's hot keys on this TV",
         "com.smartdevice.dailyshortcut" to "it runs the remote's quick menu and extra buttons on this TV",
+        // 0.4.9: upstream's core guard (tools/disable.sh CORE_RE at d7b0d4a5), which refuses a whole list
+        // that names one of these: without them a TV may not start again (#884, #1578, #1711, #2557).
+        "com.android.sdksandbox" to "it is a core part of Android; a TV may not start again without it",
+        "android.ext.services" to "it is a core part of Android; a TV may not start again without it",
+        "android.ext.shared" to "it is a core part of Android; a TV may not start again without it",
+        "com.android.ext.services" to "it is a core part of Android; a TV may not start again without it",
+        "com.google.android.ext.services" to "it is a core part of Android; a TV may not start again without it",
+        "com.android.ext.shared" to "it is a core part of Android; a TV may not start again without it",
+        "com.google.android.ext.shared" to "it is a core part of Android; a TV may not start again without it",
+        "com.android.modulemetadata" to "it describes Android's system modules; a TV may not start again without it",
+        "com.google.android.modulemetadata" to "it describes Android's system modules; a TV may not start again without it",
+        "com.android.phone" to "it is a core part of Android; a TV may not start again without it",
+        // MediaTek TV middleware: a Haier H50H5F restarted in a loop with com.cltv.mal off (#1578).
+        "com.cltv.mal" to "it is the TV's own system layer (MediaTek); a TV restarted in a loop without it",
+        "com.mediatek.tis" to "it provides the TV's inputs and tuner (MediaTek)",
+        "com.mediatek.tv.service" to "it runs the TV's picture, sound and inputs (MediaTek)",
+        "com.mediatek.tv.agent" to "it runs the TV's picture, sound and inputs (MediaTek)",
     ) + vendorSetupWizards.associateWith { REASON_VENDOR_WIZARD } + vendorHomes.associateWith { REASON_VENDOR_HOME }
 
     val prefixes: Map<String, String> = linkedMapOf(
         "com.android.networkstack" to "it keeps the TV's network running",
         "com.android.wifi." to "it keeps the TV's Wi-Fi running",
         "com.android.providers.media." to "it manages the TV's storage",
+        // 0.4.9, upstream's core guard: Google's system module overlays and every Android data
+        // provider but the four in providerExceptions.
+        "com.google.android.overlay.modules" to "it is part of Android's system modules; a TV may not start again without it",
+        "com.android.providers." to "it keeps data the TV's system needs (downloads, settings, media and more)",
+    )
+
+    // Upstream's CORE_OK: data providers that tested lists switch off and no TV feature uses. They
+    // are not protected by the providers prefix (a list can still keep them on).
+    val providerExceptions: Set<String> = setOf(
+        "com.android.providers.calendar",
+        "com.android.providers.contacts",
+        "com.android.providers.userdictionary",
+        "com.android.providers.blockednumber",
     )
 
     // The first-run wizard: protected unless the profile names it with the takeover quirk, and
@@ -94,6 +124,7 @@ object Denylist {
 
     fun staticReason(pkg: String): String? {
         exact[pkg]?.let { return it }
+        if (pkg in providerExceptions) return null
         for ((prefix, reason) in prefixes) if (pkg.startsWith(prefix)) return reason
         return null
     }
