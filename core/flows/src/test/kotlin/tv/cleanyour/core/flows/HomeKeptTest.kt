@@ -203,6 +203,27 @@ class HomeKeptTest {
         }
     }
 
+    // 0.4.9 (issue #3870): without a home switch the restart is Optional, also on a profile whose restart
+    // was never tested and on a TV without a list; with one it stays recommended there.
+    @Test fun withoutAHomeSwitchTheRestartIsOptional() = runTest(timeout = 30.seconds) {
+        for ((profiled, takeover) in listOf(true to false, false to false, true to true)) {
+            val h = Harness()
+            h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+            if (!profiled) h.profiles.resolver = { _, _ -> ProfileResolution.None(listOf(Samples.stockLauncher)) }
+            h.setupPlan = h.plan(listOf(Op.Disable(adPkg)), takeover = takeover)
+            h.engine.onStart = { p -> finish(p, RunStatus.COMPLETED, if (takeover) HomeOutcome.CONFIRMED else null) }
+            val m = h.setup(backgroundScope)
+            h.discovery.emit(DiscoveryEvent.Found(miTvFound)); settle()
+            m.dispatch(SetupIntent.Start); settle()
+            h.discovery.open5555[HOST] = true
+            settle(2_100); settle(700)
+            m.dispatch(SetupIntent.MakeItClean); settle()
+            val d = assertIs<SetupState.Done>(m.state.value)
+            assertEquals(takeover, d.summary.homeScreenOn)
+            assertEquals(takeover, d.summary.restartRecommended, "profiled=$profiled takeover=$takeover")
+        }
+    }
+
     private fun ours(signer: Sha256?) = Issue034.launcherState(signer)
 
     private var snapshotsSaved = 0

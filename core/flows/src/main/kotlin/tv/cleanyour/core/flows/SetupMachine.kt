@@ -1354,7 +1354,9 @@ class SetupMachine(
         val p = profile()
         // UX finding 24: the wizard quirk only matters when the switch ran; a kept home screen on a
         // reboot tested profile has nothing a restart could check.
-        val recommended = p == null || (homeOn && Quirk.HOME_TAKEOVER_SETUPWRAITH in p.quirks) || p.tested?.rebootTested != true
+        // 0.4.9 (issue #3870): recommended only when a home switch (or the helper) ran; without one the
+        // restart is Optional, and with one Done says to restart before Finish.
+        val recommended = homeOn && (p == null || Quirk.HOME_TAKEOVER_SETUPWRAITH in p.quirks || p.tested?.rebootTested != true)
         // beta3 QA: the restore point Undo everything goes back to is the first read (the baseline),
         // so Done names that one, and says when it is from an earlier run.
         val baseline = deps.snapshots.baseline(tvId)

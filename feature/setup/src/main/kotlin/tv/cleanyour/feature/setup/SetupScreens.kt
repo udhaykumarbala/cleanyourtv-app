@@ -880,6 +880,11 @@ fun DoneScreen(state: SetupState.Done, extras: SetupExtras, actions: SetupAction
         Glow.Done, modifier,
         topBar = { TopBar(extras) },
         bottomBar = {
+            // 0.4.9 (issue #3870): the restart check runs only from Restart on Done, before Finish; after a
+            // home switch where the restart is recommended (its profile's restart not tested yet), the line
+            // above Finish says so until the check has run.
+            if (s.homeScreenOn && s.restartRecommended && state.restartState == null && finishing == null && !extras.doneNothing)
+                Body(stringResource(R.string.done_restart_first), Modifier.padding(start = 4.dp, end = 4.dp, bottom = 12.dp))
             PrimaryButton(
                 when (finishing) { Finishing.SWITCHING -> stringResource(R.string.done_finishing); Finishing.DONE -> stringResource(R.string.done_finished); null -> stringResource(R.string.done_finish) },
                 { actions.intent(SetupIntent.Finish) }, loading = finishing == Finishing.SWITCHING, enabled = finishing == null,

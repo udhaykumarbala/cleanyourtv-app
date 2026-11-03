@@ -382,6 +382,8 @@
     <!-- Optional, never a step of Setup: the new home screen starts with module cards off (RFC-CARDS-1) -->
     <string name="done_add_card_body">Optional. You can add cards later under Cards and modules.</string>
     <string name="done_note_title">Save a restore note for the family</string>
+    <!-- 0.4.9 (issue #3870): above Finish after a home switch, until the restart check has run -->
+    <string name="done_restart_first">Before you finish, restart the TV to check that the new home screen stays.</string>
     <string name="done_finish">Finish</string>
     <string name="done_finishing">Switching debugging off...</string>
     <string name="done_finished">Switching debugging off... done.</string>
