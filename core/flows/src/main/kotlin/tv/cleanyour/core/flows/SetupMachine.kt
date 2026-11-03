@@ -326,6 +326,7 @@ class SetupMachine(
     // pause the collector never saw, and neither path logs the same pause twice.
     private var lastPauseLogged: RunState.Paused? = null
     private var lastDecision: HomeDecision? = null
+    private var lastListRows: String? = null
 
     private var discoveryJob: Job? = null
     private var pollJob: Job? = null
@@ -1026,6 +1027,12 @@ class SetupMachine(
                 val apps = candidates
                 deps.log.line("setup: plan ready, ${r.plan.steps.size} steps, ${r.plan.steps.count { it.op is Op.Disable }} to switch off, " +
                     "level ${draft.level}, dock ${dock.size}, ${apps.size} dock candidates")
+                // 0.4.9 (issues #1222, #4896): what became of each row of the TV's list, so a plan with
+                // nothing to switch off says why in the report (a TV cleaned before has its rows off).
+                ListRows.count(res, snap, r.plan.summary, draft.kept)?.line?.takeIf { it != lastListRows }?.let { line ->
+                    lastListRows = line
+                    deps.log.line("setup: $line")
+                }
                 // 0.3.2 B3: why the home screen switch is or is not in the plan, once per change, and
                 // kept for the TV report (B1) that Manage makes without the TV.
                 val decision = HomeDecision.of(block, r.plan.sections.isNotEmpty(), snap.home.resolved?.pkg == launcher.pkg,
