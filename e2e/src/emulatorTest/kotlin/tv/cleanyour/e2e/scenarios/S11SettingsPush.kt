@@ -98,7 +98,7 @@ class S11SettingsPush : E2eScenario() {
             val wallpaperSha = oracle.sha256(wallpaperPath)
             assertEquals(wallpaper.sha256.hex, wallpaperSha)
             delay(3_000)
-            oracle.pressHome()
+            oracle.shell("am start -W -n $LAUNCHER_PKG/.MainActivity")   // the image's Home is its own launcher
             delay(2_000)
             screenshot("s11-before")
             val pidBefore = oracle.shell("pidof $LAUNCHER_PKG").stdout.trim()
@@ -124,10 +124,23 @@ class S11SettingsPush : E2eScenario() {
                 if (pidAfter.isNotEmpty() && pidAfter != pidBefore) break
             }
             File(out, "s11-crash.txt").writeText(oracle.shell("logcat -d -b crash").stdout + "\n---\n" +
-                oracle.shell("logcat -d -s AndroidRuntime:E ActivityManager:I").stdout.lines().filter { "tvhome" in it || "FATAL" in it }.takeLast(80).joinToString("\n"))
+                oracle.shell("logcat -d -v brief", timeoutS = 120).stdout.lines().filter { "tvhome" in it.lowercase() || "FATAL" in it || "AndroidRuntime" in it }
+                    .takeLast(300).joinToString("\n"))
+            if (pidAfter.isEmpty()) {
+                // Diagnosis: start it by hand, then the look's own file again with the same steps, to tell a key from the restart.
+                oracle.shell("am start -W -n $LAUNCHER_PKG/.MainActivity")
+                delay(3_000)
+                val byHand = oracle.shell("pidof $LAUNCHER_PKG").stdout.trim()
+                val again = plan(session, PlanRequest.ApplySettings(doc, fileBlob("s11-look-again.json", LauncherConfigCodec.encode(doc))))
+                runToEnd(engine, again, session, pass(session.tvId))
+                delay(5_000)
+                val afterLook = oracle.shell("pidof $LAUNCHER_PKG").stdout.trim()
+                File(out, "s11-diagnosis.txt").writeText("after settings: '$pidAfter'; started by hand: '$byHand'; after the look's own file: '$afterLook'\n" +
+                    oracle.shell("dumpsys activity activities").stdout.lines().filter { "Resumed" in it || "tvhome" in it }.take(20).joinToString("\n"))
+            }
             assertTrue("launcher not running after the push", pidAfter.isNotEmpty())
             assertNotEquals("launcher was not restarted", pidBefore, pidAfter)
-            oracle.pressHome()
+            oracle.shell("am start -W -n $LAUNCHER_PKG/.MainActivity")   // the image's Home is its own launcher
             delay(3_000)
             screenshot("s11-after")
             File(out, "s11-settings.txt").writeText(bytes.decodeToString())
