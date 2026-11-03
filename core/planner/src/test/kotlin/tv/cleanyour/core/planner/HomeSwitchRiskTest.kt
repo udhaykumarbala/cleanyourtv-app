@@ -547,6 +547,66 @@ class HomeSwitchRiskTest {
         }
     }
 
+    // 0.5.0 (issues #5168, #5197, #2741, #5264, #4372, #5115): Sony's Android 9 sets report TV Settings' own
+    // FallbackHome under Sony's class name, com.android.tv.settings/com.sony.dtv.settings.system.FallbackHome at
+    // -1000, and nothing else next to tvlauncher. It is Android's placeholder in Android's TV Settings package
+    // (Sony builds that app from its own source tree), not a vendor service like #825's, and the exact lists of
+    // these sets switched with it before beta4 and held (#1567, #5869). So R0 takes it, and the exact lists
+    // switch again. Only that component: the same class in another package, or another class, still blocks.
+    private val sonyFallback = Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.system.FallbackHome")
+    private val sonyClaims = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(sonyFallback, -1000))
+    private val atv3 = reported("BRAVIA 4K GB ATV3", "BRAVIA_ATV3_4K", 28, "Sony/BRAVIA_ATV3_4K_BR/BRAVIA_ATV3_4K:9/PTT1.190515.001.S54/672201:user/release-keys",
+        brand = "Sony", manufacturer = "Sony")
+    private val atv2 = reported("BRAVIA 4K GB", "BRAVIA_ATV2", 28, "Sony/BRAVIA_ATV2_EU/BRAVIA_ATV2:9/PTT1.190515.001.S54/672201:user/release-keys",
+        brand = "Sony", manufacturer = "Sony")
+    private val atv3_2k = reported("BRAVIA 2K GB ATV3", "BRAVIA_ATV3_2K", 28, "Sony/BRAVIA_ATV3_2K_PA/BRAVIA_ATV3_2K:9/PTT1.190515.001.S54/672201:user/release-keys",
+        brand = "Sony", manufacturer = "Sony")
+
+    @Test fun sonysTvSettingsFallbackHomeIsAndroidsOwnPlaceholder() {
+        assertTrue(HomeSwitchRisk.r0Placeholder(sonyFallback))
+        assertTrue(HomePlaceholder.isPlaceholder(sonyFallback), "every other caller already took it as a placeholder")
+        for ((f, id) in listOf(atv3 to "sony-xbr-65x900f", atv2 to "sony-bravia-4k-gb")) {
+            val profile = assertNotNull(exact(f), f.model)
+            assertEquals(id, profile.id)
+            val s = r0Tv(f, sonyClaims)
+            assertTrue(!HomeSwitchRisk.vendorPlaceholderClaims(s), f.model)
+            for (anyBrand in listOf(false, true)) for (w in WizardWifi.entries) {
+                assertNull(HomeSwitchRisk.of(f, profile, s, w, anyBrand = anyBrand), "${f.model} exact, anyBrand=$anyBrand $w")
+                assertNull(HomeSwitchRisk.of(f, profile, r0Tv(f, sonyClaims, home = sonyFallback), w, anyBrand = anyBrand), "${f.model} Home on it $w")
+            }
+        }
+        // The brand set (#4372, #5115): no VENDOR_HOME any more. A release has no Sony row for Android 9, so the setup
+        // wizard keeps the switch out; the test build's R0 for every brand takes these claimants.
+        val brandSet = r0Tv(atv3_2k, sonyClaims)
+        assertNull(exact(atv3_2k))
+        for (w in WizardWifi.entries) {
+            assertEquals(HomeSwitchRisk.R0Blocker.SCOPE, HomeSwitchRisk.r0Blocker(atv3_2k, brandSet, anyBrand = false))
+            assertTrue(HomeSwitchRisk.of(atv3_2k, null, brandSet, w, anyBrand = false) in setOf(Risk.WIZARD_WIFI, Risk.WIZARD_STAYS_ON), "release $w")
+            assertNull(HomeSwitchRisk.of(atv3_2k, null, brandSet, w, anyBrand = true), "test build $w")
+        }
+        // Narrow: the same class in a package of its own, Sony's class names that are not this one, and a vendor
+        // service's FallbackHome next to Sony's all still block, on the exact list too.
+        val profile = assertNotNull(exact(atv3))
+        for (c in listOf(Component(PackageName("com.sony.dtv.settings"), "com.sony.dtv.settings.system.FallbackHome"),
+            Component(PackageName("com.sony.dtv.settings"), ".system.FallbackHome"),
+            Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.FallbackHome"),
+            Component(PackageName("com.android.tv.settings"), "com.sony.dtv.vendor.system.FallbackHome"),
+            Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.system.FallbackHomeService"))) {
+            assertTrue(!HomeSwitchRisk.r0Placeholder(c), c.flat)
+            val claims = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(c, -1000))
+            assertEquals(Risk.VENDOR_HOME, HomeSwitchRisk.of(atv3, profile, r0Tv(atv3, claims), WizardWifi.NOT_OWNER, anyBrand = true), c.flat)
+        }
+        assertEquals(Risk.VENDOR_HOME, HomeSwitchRisk.of(atv3, profile, r0Tv(atv3, sonyClaims + HomeClaimant(keyintercept, -999)), WizardWifi.NOT_OWNER, anyBrand = false))
+        // The planner plans the exact list's switch (it refused it before).
+        releaseRule {
+            val p = plan(PlanRequest.Setup(ProfileResolution.Exact(profile), choices(wizardWifi = WizardWifi.NOT_OWNER), PlannerFixtures.artifact(), Level.SIMPLE),
+                snapshot = r0Tv(atv3, sonyClaims))
+            val ops = p.steps.map { it.op }
+            assertEquals(1, p.sections.size)
+            assertTrue(Op.Disable(tvlauncher.pkg) in ops && Op.SetHome(PlannerFixtures.launcher) in ops, "$ops")
+        }
+    }
+
     // beta4, after the incident of 0.4.6-beta2: a release gives R0 to Xiaomi and Redmi with no list
     // on Android 9, 10 and 11 only, and holds out the MiTV-AXSO2 (dangalUHD) on Android 11 (issue
     // #945) until its owner answers. The test build keeps every brand and Android version, and holds

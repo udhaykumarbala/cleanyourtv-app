@@ -1,0 +1,38 @@
+Clean Your TV: problem report
+App: 0.4.8-beta2 (full)
+Phone: Xiaomi 24122RKC7G, Android 15
+
+What happened
+Screen: Home screen
+Card: the TV keeps its own home screen. The dock and the look belong to the new home screen, and it isn't on this TV. (HOME_BLOCKED_WIZARD_STAYS_ON)
+
+TV
+Brand: Panasonic
+Manufacturer: Panasonic
+Model: 4KTV-0SU
+Device: SW4H
+Android: 10 (SDK 29)
+Build: Panasonic/SW4H_PANATV/SW4H:10/QTG3.200617.002/20230419:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-11-02
+
+Matching
+Profile: exact panasonic-4ktv-0su
+Home switch: blocked WIZARD_STAYS_ON
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tungsten.setupwraith/.MainActivity priority 4
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+Accessibility
+Switched on: no
+Services listed: none
+Home button helper: not listed
+Home redirect: none
+Key filter: the launcher's default
+Button map: none
+
+Apps: 106 system, 19 other

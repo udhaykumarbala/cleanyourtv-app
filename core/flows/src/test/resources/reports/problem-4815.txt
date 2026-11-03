@@ -1,0 +1,26 @@
+Clean Your TV: problem report
+App: 0.3.3 (full)
+Phone: Samsung SM-S948U, Android 17
+
+TV
+Brand: Sony
+Manufacturer: Sony
+Model: BRAVIA 4K VH21
+Device: BRAVIA_VH21
+Android: 12 (SDK 31)
+Build: Sony/BRAVIA_VH21_M_UC/BRAVIA_VH21:12/STT2.230505.001.S136/682241:user/release-keys
+Google Play services: yes
+Home screen it came with: Google TV
+Read from the TV: 2026-11-01
+
+Matching
+Profile: exact sony-bravia-4k-vh21
+Home switch: planned
+
+Home screen
+Resolves to: com.google.android.apps.tv.launcherx/.home.HomeActivity
+Claimant: com.google.android.apps.tv.launcherx/.home.HomeActivity priority 2
+Claimant: com.google.android.tungsten.setupwraith/.RecoveryActivity priority 1
+Claimant: com.android.tv.settings/.system.FallbackHome priority -1000
+
+Apps: 239 system, 5 other

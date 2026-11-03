@@ -1,0 +1,96 @@
+Clean Your TV: TV report
+App: 0.4.7 (full)
+Phone: Samsung SM-F971B, Android 17
+
+TV
+Brand: Sony
+Manufacturer: Sony
+Model: BRAVIA 2K GB ATV3
+Device: BRAVIA_ATV3_2K
+Android: 9 (SDK 28)
+Build: Sony/BRAVIA_ATV3_2K_PA/BRAVIA_ATV3_2K:9/PTT1.190515.001.S54/672201:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-11-01
+
+Matching
+Profile: brand set Sony
+Home switch: blocked VENDOR_HOME
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/com.sony.dtv.settings.system.FallbackHome priority -1000
+
+System apps (176)
+Switched off by this app (19):
+android.autoinstalls.config.sony.bravia, com.android.printspooler, com.google.android.feedback,
+com.google.android.play.games, com.google.android.tv.bugreportsender,
+com.google.android.tvrecommendations, com.qterics.da.product, com.sony.dtv.bivlinfo,
+com.sony.dtv.customersupport, com.sony.dtv.da.service, com.sony.dtv.demomode,
+com.sony.dtv.demosupport, com.sony.dtv.imanual, com.sony.dtv.multiscreendemo,
+com.sony.dtv.smarthelp, com.sony.dtv.sonybugreportsys, com.sony.dtv.sonyselect,
+com.sony.dtv.tvlaunchercustomizer, tv.samba.ssm
+
+Off, disabled (3):
+com.sony.dtv.kenhchonloc, com.sony.dtv.notifybravia, com.sony.dtv.smarthomesettings
+
+On, enabled (4):
+com.amazon.amazonvideo.livingroom, com.android.vending, com.google.android.videos, com.netflix.ninja
+
+On, default (150):
+android, com.android.backupconfirm, com.android.bluetooth, com.android.captiveportallogin,
+com.android.certinstaller, com.android.companiondevicemanager, com.android.cts.ctsshim,
+com.android.cts.priv.ctsshim, com.android.defcontainer, com.android.dreams.basic,
+com.android.externalstorage, com.android.htmlviewer, com.android.inputdevices, com.android.keychain,
+com.android.location.fused, com.android.pacprocessor, com.android.providers.calendar,
+com.android.providers.contacts, com.android.providers.downloads, com.android.providers.media,
+com.android.providers.settings, com.android.providers.tv, com.android.providers.userdictionary,
+com.android.proxyhandler, com.android.se, com.android.settings.intelligence,
+com.android.sharedstoragebackup, com.android.shell, com.android.statementservice,
+com.android.systemui, com.android.tv.settings, com.android.vpndialogs, com.android.wallpaperbackup,
+com.google.android.apps.mediashell, com.google.android.backdrop, com.google.android.backuptransport,
+com.google.android.ext.services, com.google.android.ext.shared, com.google.android.gms,
+com.google.android.gsf, com.google.android.inputmethod.latin, com.google.android.katniss,
+com.google.android.leanbacklauncher, com.google.android.marvin.talkback,
+com.google.android.onetimeinitializer, com.google.android.packageinstaller,
+com.google.android.partnersetup, com.google.android.speech.pumpkin,
+com.google.android.sss.authbridge, com.google.android.syncadapters.calendar,
+com.google.android.syncadapters.contacts, com.google.android.tts,
+com.google.android.tungsten.setupwraith, com.google.android.tv.frameworkpackagestubs,
+com.google.android.tv.remote.service, com.google.android.tvlauncher, com.google.android.webview,
+com.google.android.youtube.tv, com.google.android.youtube.tvmusic, com.mediatek.agent,
+com.mediatek.dmagent, com.mediatek.network, com.sony.dtv.HomeTheatreControl,
+com.sony.dtv.QuickSetupCustomizer, com.sony.dtv.audiooutput, com.sony.dtv.b2b.frameworkextension,
+com.sony.dtv.b2b.hotelmode, com.sony.dtv.b2b.importexport, com.sony.dtv.b2b.noderuntime.normal,
+com.sony.dtv.b2b.noderuntime.privilege, com.sony.dtv.b2b.prosettings,
+com.sony.dtv.b2b.rs232csupport, com.sony.dtv.b2b.vendorprotocol, com.sony.dtv.b2b.webappruntimedrm,
+com.sony.dtv.braviasyncmenu, com.sony.dtv.braviasyncservice, com.sony.dtv.braviasyncsetting,
+com.sony.dtv.broadcasttimezonereceiver, com.sony.dtv.browser.ceb,
+com.sony.dtv.browser.webappruntime, com.sony.dtv.browser.webappruntimeextension,
+com.sony.dtv.browser.webappservice, com.sony.dtv.common.base.AccessibilityText,
+com.sony.dtv.configsettings, com.sony.dtv.countrysetting, com.sony.dtv.dialservice,
+com.sony.dtv.discovery, com.sony.dtv.handlingirblaster, com.sony.dtv.hbbtvlauncher,
+com.sony.dtv.hddmgr, com.sony.dtv.heatcontrol, com.sony.dtv.homenetwork, com.sony.dtv.ime.chww,
+com.sony.dtv.imeproxy, com.sony.dtv.interactivetvutil, com.sony.dtv.interactivetvutil.output,
+com.sony.dtv.irblaster, com.sony.dtv.irbservice, com.sony.dtv.networkapp.wifidirect,
+com.sony.dtv.networksettings, com.sony.dtv.osat.music, com.sony.dtv.osdplanevisibilitymanager,
+com.sony.dtv.panelsettings, com.sony.dtv.preinappfiltering, com.sony.dtv.privacypolicy,
+com.sony.dtv.provider.modelvariation, com.sony.dtv.quicksetup, com.sony.dtv.rcplayer,
+com.sony.dtv.rcplayer.service, com.sony.dtv.rcpowerkey, com.sony.dtv.reminderservice,
+com.sony.dtv.remoteaccess, com.sony.dtv.remotecontrolsettings, com.sony.dtv.remotepairing,
+com.sony.dtv.scrums.action, com.sony.dtv.seconddispsetting, com.sony.dtv.serviceinformation,
+com.sony.dtv.servicemode, com.sony.dtv.settingsprovider, com.sony.dtv.smartmediaapp,
+com.sony.dtv.softwarelicense, com.sony.dtv.sonyloglevelsettingsys,
+com.sony.dtv.sonyloglevelsettingvnd, com.sony.dtv.sonyselect.overlay,
+com.sony.dtv.sonysystemservice, com.sony.dtv.systemupdate, com.sony.dtv.timers,
+com.sony.dtv.tuningconfirmation_dvbt, com.sony.dtv.tvdotactiondevicecontrol,
+com.sony.dtv.tvinput.external, com.sony.dtv.tvinput.provider, com.sony.dtv.tvinput.tuner,
+com.sony.dtv.tvlaunchercustomizer.overlay.apporder, com.sony.dtv.tvpositionscreen,
+com.sony.dtv.tvsettingsbroadcast, com.sony.dtv.tvx, com.sony.dtv.tvxlauncher.programguide,
+com.sony.dtv.tvxlauncher.titlelist, com.sony.dtv.uinputservice, com.sony.dtv.usbmsgservice,
+com.sony.dtv.videoframeserver, com.sony.dtv.webapi.core, com.sony.huey.dlna.module,
+com.sony.huey.dlna.renderersettings, com.sonyericsson.dlna, com.uei.quicksetsdk.sony,
+com.vewd.core.integration.dia, com.vewd.core.service, mtktvapi.agent, screnmirroring.com
+
+Other apps: 8 (not named)
