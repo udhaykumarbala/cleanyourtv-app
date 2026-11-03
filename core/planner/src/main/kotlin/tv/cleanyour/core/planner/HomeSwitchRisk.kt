@@ -10,6 +10,7 @@ import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.ops.Denylist
 import tv.cleanyour.core.ops.HomePlaceholder
+import tv.cleanyour.core.spec.HomeFit
 import tv.cleanyour.core.spec.KnownLaunchers
 
 // RF-SAFETY-250, owner decisions for 0.2.0: TVs where the home screen switch is skipped up front, so
@@ -353,10 +354,14 @@ object HomeSwitchRisk {
     // when it could not read a package's flags, and to "not a system app" when it read neither; a
     // version code of 0 is that case (its details were not read), so it does not count either. Nor
     // does an app with an accessibility service in the TV's list: it can catch the Home key itself.
+    // 0.5.0 (issues #5539, #5744, #4177): Google TV's home screen is one when the person put it on an
+    // Android TV set (HomeFit.sideloadedGoogleTvHome); the other known TV home screens never are.
     fun installedHome(p: PackageName, snapshot: Snapshot): Boolean {
         val state = snapshot.packages[p] ?: return false
         val accessibility = snapshot.settings[SettingKey.ENABLED_ACCESSIBILITY].orEmpty().split(':').map { it.trim().substringBefore('/') }
-        return !state.system && state.versionCode > 0 && !isWizard(p) && p.value !in Denylist.vendorHomes && p !in KnownLaunchers.byPackage &&
+        val known = p in KnownLaunchers.byPackage &&
+            !(p == KnownLaunchers.LAUNCHERX.pkg && HomeFit.sideloadedGoogleTvHome(snapshot.home, snapshot.packages))
+        return !state.system && state.versionCode > 0 && !isWizard(p) && p.value !in Denylist.vendorHomes && !known &&
             p.value !in accessibility
     }
 
@@ -384,8 +389,17 @@ object HomeSwitchRisk {
         val homeWizards = homeWizards(profile, snapshot)
         if (profile == null) {
             if (r0) return null
+            // 0.5.0 (issue #4077, a RockChip box no list knows, Google's wizard not on it): AOSP's first-run
+            // app (com.android.provision) claimed Home at 1 under tvlauncher (2), so with tvlauncher off it
+            // took Home, the switch rolled back and "Use the new home screen" ran into the same wall.
+            // Without a list a first-run app of any name (isWizard) that claims Home and is on counts as
+            // the setup wizard does: the switch never switches it off. As in homeWizards, one the snapshot
+            // does not list counts, the safe side.
+            val firstRunClaims = snapshot.home.claimants.map { it.component.pkg }.any { p ->
+                isWizard(p) && snapshot.packages[p]?.enabled.let { it != EnabledState.DISABLED_USER && it != EnabledState.DISABLED }
+            }
             val wizard = snapshot.packages.keys.firstOrNull { it.value in Denylist.setupWizards && on(it) }
-                ?: return if (homeWizards.isEmpty()) null else Risk.WIZARD_STAYS_ON
+                ?: return if (homeWizards.isEmpty() && !firstRunClaims) null else Risk.WIZARD_STAYS_ON
             return if (wizardWifi == WizardWifi.OWNER && on(wizard)) Risk.WIZARD_WIFI else Risk.WIZARD_STAYS_ON
         }
         val allowed = profile.setupWraith?.takeIf { Denylist.isWizardAllowed(it, profile) }
