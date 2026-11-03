@@ -250,6 +250,7 @@ nvidia-shield-tv-2019	com.android.bluetoothmidiservice	a Bluetooth service by na
 nvidia-shield-tv-2019	com.android.hotspot2.osulogin	Passpoint hotspot sign-in is network setup; ask row
 nvidia-shield-tv-2019	com.google.android.tv	Live Channels hosts network tuner inputs; ask row
 nvidia-shield-tv-2019	com.nvidia.KeyComboOta	the owner's choice; updaters stay Software updates (the Pro list keeps it on)
+nvidia-shield-tv-2019	com.nvidia.ota	d7b0d4a: kept on (commented out with NvCPLUpdater and KeyComboOta): the second unit ran three days with updates on, so security patches keep coming; Better back on offers the three where this app switched them off (PutBackAdvice)
 nvidia-shield-tv-2019	com.nvidia.tegraprofiler.security	purpose not documented beyond profiler permissions; ask row
 ok-ai-pont-ikebukuro	(groups)	b06ab21, batch 5: switched off on the second unit (Nikkei DVB91NK, same device and firmware) and reboot-checked; partner setup (telemetry) and the print spooler (one of the six reviewed packages) are default-off rows, the other Android extras and the USB file and photo players stay ask rows (2.7 bump rule)
 oneplus-tv-cebu	(header)	the Kept on purpose names (TV inputs, Live TV, remote service, hot keys, the Netflix key, Assistant, updaters, factory apps) are never-disable
@@ -393,9 +394,11 @@ sony-bravia-4k-gb	(match)	EU firmware of the BRAVIA_ATV2 platform; the fingerpri
 sony-bravia-4k-gb-us	com.sony.dtv.networkapp.wifidirect	Wi-Fi Direct for screen mirroring, in the owner's optional group; an ask row, never default-off
 sony-bravia-4k-gb-us	com.sony.dtv.osat.music	listed under preloaded apps; it plays music from USB, so it is an ask row
 sony-bravia-4k-gb-us	com.sony.dtv.smartmediaapp	listed under preloaded apps; it is the USB media player, so it is an ask row
+sony-bravia-4k-vh1	com.youview.poa	d7b0d4a: kept on, as UK sets need it for Freeview Play (BBC iPlayer, ITVX, Channel 4 and 5); Better back on offers it where this app switched it off (PutBackAdvice)
 sony-bravia-4k-vh2	(groups)	b06ab21, the two Asia-Pacific groups stay ask rows: the unit that ran them off (India, BRAVIA_VH2_PA) and the UC units resolve to sony-kd-55x85j, while this profile matches the EU fingerprint only, where they were never tried (2.7 bump rule: only ads and telemetry tested off go off)
 sony-bravia-4k-vh2	(match)	EU firmware of BRAVIA_VH2; the fingerprint prefix leaves other regions to sony-kd-55x85j (same device and build)
 sony-bravia-4k-vh21	com.google.android.tts	in the owner's memory group; text to speech feeds TalkBack, so it is an accessibility ask row
+sony-bravia-4k-vh21	com.google.android.tungsten.setupwraith	d7b0d4a: the list keeps the wizard on (second and third units: it owns the saved Wi-Fi network there, and switching it off costs casting); only the first unit, on Ethernet, switched it off with launcherx. Never-disable here, so the home screen switch is skipped (HomeSwitchRisk WIZARD_STAYS_ON) and the Home button helper's redirect route, the one upstream now uses, is the way; the profile still names the wizard with the takeover quirk, so a TV that has it off gets it back only with the TV's own home screen in charge
 sony-bravia-4k-vh21	com.vewd.core.service	Vewd may also run HbbTV here (kept by the owner), so both Vewd packages are ask rows
 sony-bravia-ae2	com.mediatek.dtv.tvinput.atsctuner	the list switches off the ATSC tuner inputs; TV input drivers are never switched off, so the tuner group is an ask row and the two tuner inputs are in the curated never-disable list (RF-LAUNCHER-250 F1)
 sony-bravia-ae2	com.sony.dtv.seeds.iot	filed under tracking; it is Sony's phone app and smart home link (the VH21 list), so it is an ask row
@@ -441,6 +444,7 @@ tcl-43s5k	com.google.android.tungsten.setupwraith	the header says it claims Home
 tcl-43s5k	com.mediatek.MtkDemo	b06ab21: MediaTek's store demo app, switched off and reboot-checked on the AU13 unit; a default-off row as upstream has it
 tcl-43s5k	com.tcl.messagebox	carries a ttvs receiver, and tcl-40s5400a and tcl-32s5k keep it to be safe while ttvs is the updater here; ask row
 tcl-43s5k	com.tcl.partnercustomizer	ask row: the header tested the Input key but not the remote's T key (RF-PROFILES-63 P5)
+tcl-43s5k	com.tcl.partnercustomizer	d7b0d4a: kept on (upstream #2138): on G13 it owns the tvlauncher.widget provider of com.mediatek.tv.service, and a related MediaTek build crashed that service over and over without it; the header keep list makes it never-disable and Better back on offers it (PutBackAdvice)
 tcl-43s5k	com.tcl.ttvs	commented out by the list: the header says it is TCL's analytics and also the firmware updater; never-disable
 tcl-50dp660	(header)	the Keep these enabled paragraph is never-disable, with the setup wizard, which the list leaves on (disabling it costs phone Cast pairing)
 tcl-50dp660	(match)	model Percee TV and device tcl_eu from the four reports (issues #1240, #1196, #701, #481), which the header lacked; tcl_eu is a broad TCL name, so the build OTT1.180130.001 is the fingerprint prefix
@@ -662,6 +666,7 @@ xiaomi-mitv-mssp1	com.google.android.marvin.talkback	b06ab21 lists TalkBack with
 xiaomi-mitv-mssp2	com.google.android.videos	a streaming app in the preloaded group; ask row, as on the other Xiaomi lists
 xiaomi-mitv-mssp3-android9	(header)	v2.5.0 notes for the older PI.4663 firmware (upstream #494, alessandrodauria): no package change; there the old leanback home is installed next to tvlauncher, and the home screen switch turns off only the one that holds Home
 xiaomi-mitv-mssp3-android9	com.google.android.katniss	the header says the firmware turns it back on at every boot (REENABLED_AT_BOOT)
+xiaomi-mitv-mssp3-android9	com.xiaomi.mitv.updateservice	d7b0d4a: kept on (better left enabled for firmware updates); Better back on offers it where this app switched it off (PutBackAdvice)
 xiaomi-mitv-mteq0	(home)	clean-up only: Home takes only allowlisted apps and with com.mitv.tvhome off the TV shows a black FallbackHome (its header); com.mitv.tvhome never-disable and not a known launcher
 xiaomi-mitv-mteq0	com.mitv.screensaver	the stock screensaver; ask row
 xiaomi-mitv-mteq0	com.xiaomi.gamecenter.sdk.service.mibox	Xiaomi store games may need it for sign-in; ask row as on xiaomi-mitv-astp1

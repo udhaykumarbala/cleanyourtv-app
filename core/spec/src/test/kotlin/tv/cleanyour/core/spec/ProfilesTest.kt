@@ -136,6 +136,32 @@ class ProfilesTest {
         assertTrue(Quirk.HOME_TAKEOVER_SETUPWRAITH in kalley.quirks)
     }
 
+    // d7b0d4a: the lists that now keep a package on that they switched off at b06ab21. None of them is
+    // a row any more; the TCL widget provider (#2138) and the BRAVIA VH21's wizard are never-disable,
+    // and the VH21 profile still names its wizard with the takeover quirk, so the home screen switch is
+    // skipped there while the wizard claims Home (the Home button helper is the way, as upstream's
+    // second and third units did). PutBackAdvice offers each where this app switched it off.
+    @Test fun theNowKeptPackagesLeaveTheProfiles() {
+        val kept = mapOf(
+            "nvidia-shield-tv-2019" to listOf("com.nvidia.ota", "com.nvidia.NvCPLUpdater", "com.nvidia.KeyComboOta"),
+            "tcl-43s5k" to listOf("com.tcl.partnercustomizer"),
+            "xiaomi-mitv-mssp3-android9" to listOf("com.xiaomi.mitv.updateservice"),
+            "sony-bravia-4k-vh1" to listOf("com.youview.poa"),
+            "sony-bravia-4k-vh21" to listOf(KnownLaunchers.SETUPWRAITH.value),
+            "skyworth-swtv-22ae-fhd" to listOf("com.smartdevice.dailymanage", "com.smartdevice.dailyshortcut", "com.smartdevice.myapp"),
+        )
+        for ((id, pkgs) in kept) {
+            val pr = profile(id)
+            val inGroups = pr.groups.flatMap { g -> g.packages.map { it.name } }.toSet()
+            for (pkg in pkgs.map(::p)) assertTrue(pkg !in inGroups, "$id ${pkg.value}")
+        }
+        assertTrue(p("com.tcl.partnercustomizer") in profile("tcl-43s5k").neverDisable)
+        val vh21 = profile("sony-bravia-4k-vh21")
+        assertTrue(KnownLaunchers.SETUPWRAITH in vh21.neverDisable)
+        assertEquals(KnownLaunchers.SETUPWRAITH, vh21.setupWraith)
+        assertTrue(Quirk.HOME_TAKEOVER_SETUPWRAITH in vh21.quirks)
+    }
+
     // Issue #1378 (Skyworth SWTV-22AE-FHD, Android 14): after the clean-up the remote's custom (Daily)
     // button did nothing, and the owner got it back by switching com.smartdevice.dailymanage,
     // dailyshortcut and myapp on again. The profile left those lines out (leftOut) and kept them

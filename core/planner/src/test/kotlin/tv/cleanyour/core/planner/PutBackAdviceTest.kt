@@ -20,11 +20,16 @@ class PutBackAdviceTest {
     private fun tv(state: EnabledState?) = snapshot(extra = if (state == null) emptyMap() else
         mapOf(mic to PackageState(state, true, 1, null, false, false, "Remote service", false)))
 
-    @Test fun theTableIsTheFiveReviewedEntries() {
+    @Test fun theTableIsTheReviewedEntries() {
         assertEquals(
             listOf("tcl-g10-google-tv" to "com.google.android.tv.remote.service", "tcl-g03-google-tv" to "com.tcl.xian.StartandroidService",
                 "tcl-ak30a5" to "com.tcl.versionUpdateApp", "kalley-r10g" to "com.google.android.apps.tv.launcherx",
-                "kalley-r10g" to "com.google.android.tungsten.setupwraith"),
+                "kalley-r10g" to "com.google.android.tungsten.setupwraith",
+                // d7b0d4a: NVIDIA's updaters, TCL's widget provider for the TV service (#2138), Xiaomi's
+                // updater and Sony's Freeview Play package (UK).
+                "nvidia-shield-tv-2019" to "com.nvidia.ota", "nvidia-shield-tv-2019" to "com.nvidia.NvCPLUpdater",
+                "nvidia-shield-tv-2019" to "com.nvidia.KeyComboOta", "tcl-43s5k" to "com.tcl.partnercustomizer",
+                "xiaomi-mitv-mssp3-android9" to "com.xiaomi.mitv.updateservice", "sony-bravia-4k-vh1" to "com.youview.poa"),
             PutBackAdvice.entries.map { it.profileId to it.pkg.value },
         )
         // Every profile id is a shipped profile, and every reason is plain text.

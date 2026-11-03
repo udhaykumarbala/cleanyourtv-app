@@ -2543,7 +2543,7 @@
       "liveTv": "com.sony.dtv.tvx",
       "setupWraith": "com.google.android.tungsten.setupwraith",
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
-      "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
+      "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
       "tested": { "by": "swordfish6975 (PR #302)", "firmware": "STT2.230505.001.S136", "daysLivedWith": null, "rebootTested": true },
       "groups": {

@@ -9,9 +9,10 @@ import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.ops.Denylist
 
 // "Better back on" (WP4, C6): packages an earlier list switched off that upstream's list for the
-// same TV now keeps on, each with our reason. After the b06ab21 bump they are commented-out (kept)
-// lines in that folder's debloat.txt, so they leave the profile; a TV this app already cleaned may
-// still have them off. A test reads the pinned lists so this table cannot drift from upstream.
+// same TV now keeps on, each with our reason. After the b06ab21 bump (and again at d7b0d4a) they are
+// commented-out (kept) lines in that folder's debloat.txt, so they leave the profile; a TV this app
+// already cleaned may still have them off. A test reads the pinned lists so this table cannot drift
+// from upstream.
 //
 // The offer is only ever an offer: the advice lists a package when the TV's exact profile has an
 // entry for it, the package is off now, and this app's own change records for the TV show that we
@@ -27,6 +28,10 @@ object PutBackAdvice {
     const val REASON_TCL_UPDATE_DNUM = "TCL's software update needs this to find your TV."
     const val REASON_TCL_UPDATES = "This brings TCL's software updates."
     const val REASON_BOOT_LOOP = "With the TV's own home screen and setup wizard both off, this TV can restart over and over."
+    const val REASON_NVIDIA_UPDATES = "This brings NVIDIA's software updates and security patches."
+    const val REASON_TV_SERVICE = "The TV's own TV service needs this, or it can stop over and over."
+    const val REASON_XIAOMI_UPDATES = "This brings Xiaomi's software updates."
+    const val REASON_FREEVIEW = "Freeview Play needs this on UK TVs: BBC iPlayer, ITVX, Channel 4 and 5."
 
     val entries: List<Entry> = listOf(
         Entry("tcl-g10-google-tv", PackageName("com.google.android.tv.remote.service"), REASON_REMOTE_MIC),
@@ -34,6 +39,13 @@ object PutBackAdvice {
         Entry("tcl-ak30a5", PackageName("com.tcl.versionUpdateApp"), REASON_TCL_UPDATES),
         Entry("kalley-r10g", PackageName("com.google.android.apps.tv.launcherx"), REASON_BOOT_LOOP),
         Entry("kalley-r10g", PackageName("com.google.android.tungsten.setupwraith"), REASON_BOOT_LOOP),
+        // d7b0d4a: the lists that keep these on now.
+        Entry("nvidia-shield-tv-2019", PackageName("com.nvidia.ota"), REASON_NVIDIA_UPDATES),
+        Entry("nvidia-shield-tv-2019", PackageName("com.nvidia.NvCPLUpdater"), REASON_NVIDIA_UPDATES),
+        Entry("nvidia-shield-tv-2019", PackageName("com.nvidia.KeyComboOta"), REASON_NVIDIA_UPDATES),
+        Entry("tcl-43s5k", PackageName("com.tcl.partnercustomizer"), REASON_TV_SERVICE),
+        Entry("xiaomi-mitv-mssp3-android9", PackageName("com.xiaomi.mitv.updateservice"), REASON_XIAOMI_UPDATES),
+        Entry("sony-bravia-4k-vh1", PackageName("com.youview.poa"), REASON_FREEVIEW),
     )
 
     fun forProfile(profileId: String?): List<Entry> = if (profileId == null) emptyList() else entries.filter { it.profileId == profileId }
