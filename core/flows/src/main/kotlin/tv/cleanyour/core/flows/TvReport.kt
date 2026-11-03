@@ -9,6 +9,7 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.SnapshotReason
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.spec.KnownLaunchers
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.store.DocumentStore
 
@@ -440,9 +441,19 @@ object TvReport {
     // person chose, so it stays unnamed like every other app of theirs.
     const val NOT_NAMED = "an app you installed (not named)"
 
-    private fun nameable(s: Snapshot, pkg: PackageName): Boolean = pkg == Launcher.pkg || s.packages[pkg]?.system == true
+    // Issues #3845, #5639, #5295: Google's and Amazon's own home screens (KnownLaunchers) are never the
+    // person's, even when an update under /data makes their system flag read false (SwitchOffRule's rule).
+    // Unnamed, the report showed a TV whose Home "goes to an app you installed" at priority 2, which only a
+    // system app can claim, and hid that it was Google's home screen. Such a line says the flag read false.
+    private fun nameable(s: Snapshot, pkg: PackageName): Boolean = pkg == Launcher.pkg || s.packages[pkg]?.system == true || pkg in KnownLaunchers.byPackage
 
-    private fun named(s: Snapshot, c: tv.cleanyour.core.model.Component): String = if (nameable(s, c.pkg)) c.flat else NOT_NAMED
+    private fun named(s: Snapshot, c: tv.cleanyour.core.model.Component): String = when {
+        !nameable(s, c.pkg) -> NOT_NAMED
+        c.pkg in KnownLaunchers.byPackage && s.packages[c.pkg]?.system != true -> "${c.flat} $NOT_SYSTEM"
+        else -> c.flat
+    }
+
+    const val NOT_SYSTEM = "(not read as a system app)"
 
     private fun state(e: EnabledState): String = when (e) {
         EnabledState.ENABLED -> "enabled"

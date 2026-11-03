@@ -178,6 +178,25 @@ class TvReportTest {
         assertTrue("Claimant: an app you installed (not named) priority 1" in t2, t2)
     }
 
+    // Issues #3845 (Skyworth SWTV-20AE) and #5639 (Blaupunkt shinjuku), Android 11: Home answered to "an app
+    // you installed" at priority 2 and Google's home screen was nowhere in the report, yet Setup found the
+    // TV's own home screen among the claimants (WIZARD_STAYS_ON). It was Google's home screen, updated under
+    // /data so its system flag read false. Google's and Amazon's home screens are named, with that said.
+    @Test fun googlesHomeScreenIsNamedWhenItsSystemFlagReadsFalse() {
+        val tvlauncher = Component(PackageName("com.google.android.tvlauncher"), ".MainActivity")
+        val fallback = Component(PackageName("com.android.tv.settings"), ".system.FallbackHome")
+        val pkgs = packages + mapOf(tvlauncher.pkg to pkg(EnabledState.ENABLED, false), fallback.pkg to pkg(EnabledState.ENABLED, true))
+        val s = snapshot(pkgs = pkgs).copy(home = HomeResolution(tvlauncher, listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(fallback, -1000))))
+        for (out in listOf(TvReport.text(input(s)), TvReport.problem(about, input(s), "log"))) {
+            assertTrue("Resolves to: com.google.android.tvlauncher/.MainActivity (not read as a system app)\n" in out, out)
+            assertTrue("Claimant: com.google.android.tvlauncher/.MainActivity (not read as a system app) priority 2\n" in out, out)
+            assertFalse("not named) priority 2" in out, out)
+        }
+        // Read as a system app, the line is as before.
+        val sys = snapshot(pkgs = pkgs + (tvlauncher.pkg to pkg(EnabledState.ENABLED, true))).copy(home = HomeResolution(tvlauncher, listOf(HomeClaimant(tvlauncher, 2))))
+        assertTrue("Claimant: com.google.android.tvlauncher/.MainActivity priority 2\n" in TvReport.text(input(sys)))
+    }
+
     // Never the serial, the TV id (derived from it), the TV's name for itself, its inputs, labels or
     // an address, in the report or in the link.
     @Test fun noPersonalValueIsInTheReportOrTheLink() {

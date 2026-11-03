@@ -3,7 +3,7 @@ op: PushAsset src=cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 privilege: COMMUNITY
 timeout_ms: 600000
 stdout_cap: 65536
-line: rm -f /sdcard/Android/data/com.gathin.tvhome/files/wallpaper.jpg 2>/dev/null; o=$(content write --uri content://com.gathin.tvhome.theme/wallpaper.jpg < /data/local/tmp/cleanyourtv/theme-wallpaper.jpg 2>&1) && [ -z "$o" ] || cp /data/local/tmp/cleanyourtv/theme-wallpaper.jpg /sdcard/Android/data/com.gathin.tvhome/files/wallpaper.jpg; r=$?; rm -f /data/local/tmp/cleanyourtv/theme-wallpaper.jpg; exit $r
+line: rm -f /sdcard/Android/data/com.gathin.tvhome/files/wallpaper.jpg 2>/dev/null; o=$(content write --uri content://com.gathin.tvhome.theme/wallpaper.jpg < /data/local/tmp/cleanyourtv/theme-wallpaper.jpg 2>&1) && [ -z "$o" ] || cp /data/local/tmp/cleanyourtv/theme-wallpaper.jpg /sdcard/Android/data/com.gathin.tvhome/files/wallpaper.jpg; r=$?; [ $r -eq 0 ] || { e=$(echo "$o" | grep -o -E "[A-Za-z0-9_]+[.][A-Za-z0-9_.]+(Exception|Error)" | head -n 1); echo "provider: ${e:-no exception named}" >&2; }; rm -f /data/local/tmp/cleanyourtv/theme-wallpaper.jpg; exit $r
 transfer: sync:/data/local/tmp/cleanyourtv/theme-wallpaper.jpg cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 verify: Read kind=LAUNCHER_FILE_SHA256 path=/sdcard/Android/data/com.gathin.tvhome/files/wallpaper.jpg
 verify_line: content read --uri content://com.gathin.tvhome.theme/wallpaper.jpg | sha256sum

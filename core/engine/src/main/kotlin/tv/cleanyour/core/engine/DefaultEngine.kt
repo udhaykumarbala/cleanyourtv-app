@@ -36,6 +36,7 @@ import tv.cleanyour.core.ops.PackageDump
 import tv.cleanyour.core.ops.Privilege
 import tv.cleanyour.core.ops.RenderRefused
 import tv.cleanyour.core.ops.Rendered
+import tv.cleanyour.core.ops.ShellRenderer
 import tv.cleanyour.core.ops.Transfer
 import tv.cleanyour.core.ops.VerifyResult
 import tv.cleanyour.core.model.Component
@@ -651,6 +652,17 @@ class DefaultEngine(
                 journal.append(JournalRecord.Failed(run.plan.id, step.index, 1, "package not on the TV", ""))
                 return Outcome.Refused(1, "package not on the TV")
             }
+            // Issue #5808 (Hisense songshan, Android 11): the setup wizard's switch-off failed every run with "Shell
+            // cannot change component state for com.google.android.tungsten.setupwraith/null to 3", and the switch
+            // rolled back. Android lets the shell move a package only between default, enabled and disabled by the
+            // user; this one was already off by the TV itself (disabled, or disabled until used, which the package
+            // list does not show as off). It is off, nothing is sent and nothing recorded: a skip whatever the
+            // step's policy, inside the switch too, like a package kept on (Undo has nothing to put back).
+            if (step.op is Op.Disable && PackageDump.enabledSetting(dump) in OFF_BY_THE_TV) {
+                journal.append(JournalRecord.Begin(run.plan.id, step.index, step.op, step.rendered.lines.map { it.text }, step.prior, clock.nowMs()))
+                journal.append(JournalRecord.Failed(run.plan.id, step.index, 1, ALREADY_OFF_BY_THE_TV, ""))
+                return Outcome.Refused(1, ALREADY_OFF_BY_THE_TV, kept = true)
+            }
         }
         return perform(run, step.index, step.op, step.rendered, step.prior)
     }
@@ -780,7 +792,10 @@ class DefaultEngine(
         val verifyOutput = rendered.verify?.let { read(session, renderer.render(it)) } ?: ownOutput
         return when (val v = renderer.check(op, verifyOutput, prior)) {
             VerifyResult.Ok -> installedApkCheck(session, op)
-            is VerifyResult.Mismatch -> Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got ${v.actual}"), "verify: expected ${v.expected}, got ${v.actual}")
+            is VerifyResult.Mismatch -> {
+                val got = v.actual + (notInstalledWhy(session, op, v)?.let { " ($it)" } ?: "")
+                Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got $got"), "verify: expected ${v.expected}, got $got")
+            }
         }
     }
 
@@ -819,6 +834,19 @@ class DefaultEngine(
         return first
     }
     private val packageListNoted: MutableSet<TvId> = java.util.Collections.synchronizedSet(mutableSetOf())
+
+    // Issues #5242 (TiVo Stream 4K, Android 12) and #5295 (Changhong, Android 11), 0.4.8-beta2: the streamed
+    // install answered Success, then the package dump showed no versionCode ("got not installed"), run after
+    // run, with nothing to say why. The same read-only state read as RFC-INSTALL-1 adds the cause in fixed
+    // words and one diagnostics line (pm path, user 0's install flags); it never turns the failure into a pass.
+    private suspend fun notInstalledWhy(session: TvSession, op: Op, v: VerifyResult.Mismatch): String? {
+        val pkg = when (op) {
+            is Op.Install -> op.pkg
+            is Op.InstallStream -> op.pkg
+            else -> return null
+        }
+        return if (v.actual == ShellRenderer.NOT_INSTALLED) unreadableApk(session, pkg) else null
+    }
 
     // A switch-off's check read (pm list packages -d). A check read that errors is a failure, never
     // a kept-on package: the step pauses as before. When the check read answers but does not list the
@@ -1312,6 +1340,9 @@ class DefaultEngine(
         // because it runs the TV's inputs (RF-LAUNCHER-250 F1); Done and Manage name it.
         const val PROTECTED = "protected: "
         const val KEPT_TV_INPUT = PROTECTED + Denylist.REASON_TV_INPUT
+        // Issue #5808: a switch-off of a package the TV itself turned off (its enabled setting 2, or 4: until used).
+        const val ALREADY_OFF_BY_THE_TV = "already off by the TV (disabled by the system, the shell cannot change it)"
+        val OFF_BY_THE_TV: Set<Int> = setOf(2, 4)
         // The journal's Failed text for a streamed install the TV ended with a protocol error while
         // the connection stayed up (issues #80, #367).
         const val STREAM_FAILED = "streamed install failed, the TV is still connected: "

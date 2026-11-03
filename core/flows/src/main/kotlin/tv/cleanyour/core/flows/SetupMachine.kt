@@ -76,6 +76,7 @@ import tv.cleanyour.core.session.TvSession
 import tv.cleanyour.core.spec.AppNames
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.FactsTable
+import tv.cleanyour.core.spec.KnownLaunchers
 import tv.cleanyour.core.spec.LiveTvKeys
 import tv.cleanyour.core.spec.Looks
 import tv.cleanyour.core.spec.PictureSource
@@ -875,6 +876,14 @@ class SetupMachine(
 
     private fun profile(): Profile? = (resolution as? ProfileResolution.Exact)?.profile
 
+    // The stock launchers of whatever the TV resolved to: the exact list's, the brand set's or no list's.
+    private fun resolutionStocks(): List<Component> = when (val r = resolution) {
+        is ProfileResolution.Exact -> r.profile.stockLaunchers
+        is ProfileResolution.BrandSureSet -> r.stockLaunchers
+        is ProfileResolution.None -> r.stockLaunchers
+        null -> emptyList()
+    }
+
     // Why the new home screen is not offered: the TV refuses other home screens (UX 4.6); it runs an
     // Android older than the launcher's (RF-PROFILES-63 P1: the clean-up only, no install, look,
     // curtain or switch); the switch is known to be unsafe on it (RF-SAFETY-250: the MOKA family's
@@ -911,12 +920,7 @@ class SetupMachine(
         // Issue #8: the exact profile's stock launchers too, through the planner's own StockHome, so
         // a TV whose own home screen is not among the claimants is never asked for a switch the
         // planner then refuses as a whole.
-        val stocks = when (val r = resolution) {
-            is ProfileResolution.Exact -> r.profile.stockLaunchers
-            is ProfileResolution.BrandSureSet -> r.stockLaunchers
-            is ProfileResolution.None -> r.stockLaunchers
-            null -> emptyList()
-        }
+        val stocks = resolutionStocks()
         // Issue #2028: so is a TV whose Home answers to a home screen we do not know, ranked above ours.
         val stockUnknown = !ours && (StockHome.of(snap, stocks) == null || StockHome.unknownAboveOurs(snap, stocks))
         return when {
@@ -1944,7 +1948,9 @@ class SetupMachine(
         if (failure == null || (failure.op !is Op.SetHome && failure.op !is Op.VerifyHome)) return emptyList()
         if (!failure.stderrHead.endsWith("got $HOME_CHOOSER")) return emptyList()
         val s = snapshot ?: return emptyList()
-        val stock = profile()?.stockLaunchers?.map { it.pkg }.orEmpty().toSet()
+        // Issue #5242: the brand set's or no list's stock home too, and Google's and Amazon's own home
+        // screens whatever their system flag reads (an update under /data reads false): never "uninstall it".
+        val stock = resolutionStocks().map { it.pkg }.toSet() + KnownLaunchers.byPackage.keys
         return s.home.claimants.map { it.component }
             .filter { c -> c.pkg != Launcher.pkg && c.pkg !in stock && s.packages[c.pkg]?.system != true && !HomePlaceholder.isPlaceholder(c) }
             .map { it.pkg }.distinct()
@@ -1960,8 +1966,11 @@ class SetupMachine(
     // A launcher of someone else's that answers Home. Not one: the setup wizard, the settings apps,
     // com.android.provision, and a vendor's FallbackHome (com.tcl.keycustomfunctionservice/.FallbackHome),
     // a placeholder the firmware shows when no launcher is enabled (upstream #435).
+    // Issue #5242 (a TiVo Stream 4K, no list): the TV's own home screen is the stock home of the brand
+    // set or of no list too, not only of an exact list. Counted as another app, Google's own home
+    // screen made the card say another home screen app was in charge after an install that did not land.
     private fun otherLauncherName(): String? {
-        val stock = profile()?.stockLaunchers?.map { it.pkg }.orEmpty().toSet()
+        val stock = resolutionStocks().map { it.pkg }.toSet()
         val wraith = profile()?.setupWraith
         val other = snapshot?.home?.claimants?.map { it.component }
             // #481's TCL Percee TV: com.android.boot.fallbackhome/.FallbackHomeCustomizer is one too.

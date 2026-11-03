@@ -15,6 +15,8 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.PackageState
 import tv.cleanyour.core.model.Prior
 import tv.cleanyour.core.planner.Plan
+import tv.cleanyour.core.spec.KnownLaunchers
+import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.testing.fixtures.Samples
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -136,5 +138,42 @@ class HomeStopWordsTest {
         val card = stopCard(h)
         assertEquals(StopCase.HOME_OTHER_LAUNCHER, card.case)
         assertTrue(card.body.startsWith("STOP_HOME_OTHER_LAUNCHER_BODY"), card.body)
+    }
+
+    // Issue #5242 (a TiVo Stream 4K, Android 12, no list, the test build's R0): the launcher's install
+    // returned, its check read "got not installed", and the card said another home screen app was in
+    // charge of Home and offered "Use the new home screen" again. The only other claimant was Google's
+    // own home screen, the stock home of a TV with no list. It is the plain card now.
+    @Test fun issue5242NoListTheTvsOwnHomeIsNotAnotherApp() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        h.profiles.resolver = { _, _ -> ProfileResolution.None(KnownLaunchers.generic) }
+        installFails(h, "verify: expected Package [com.gathin.tvhome] with versionCode=9, got not installed")
+        val card = stopCard(h)
+        assertEquals(StopCase.HOME_UNKNOWN, card.case)
+        assertEquals("STOP_HOME_UNKNOWN_BODY{launcher=}", card.body)
+    }
+
+    // The same TV on a brand set: its stock home is the set's, so it is not another app either.
+    @Test fun aBrandSetsStockHomeIsNotAnotherApp() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        h.profiles.resolver = { _, _ -> ProfileResolution.BrandSureSet("Xiaomi", emptyList(), KnownLaunchers.generic) }
+        installFails(h, "verify: expected Package [com.gathin.tvhome] with versionCode=9, got not installed")
+        assertEquals(StopCase.HOME_UNKNOWN, stopCard(h).case)
+    }
+
+    // A chooser on a TV with no list: Google's home screen with its system flag read false (an update
+    // under /data) is the TV's own, never one of the apps the card asks to uninstall.
+    @Test fun theChooserCardNeverNamesGooglesHomeScreen() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        h.profiles.resolver = { _, _ -> ProfileResolution.None(KnownLaunchers.generic) }
+        chooser(h, "verify: expected ${Launcher.home.flat}, got android/com.android.internal.app.ResolverActivity")
+        val inner = h.prober.snapshotFor
+        h.prober.snapshotFor = { r -> inner(r).let { s -> s.copy(packages = s.packages + (Samples.stockLauncher.pkg to PackageState(EnabledState.ENABLED, false, 1, null, false, false, "Android TV Home", false))) } }
+        val card = stopCard(h)
+        assertTrue("names=Projectivy Launcher, com.wolf.firelauncher" in card.body && "count=2" in card.body, card.body)
+        assertTrue("Android TV Home" !in card.body && "tvlauncher" !in card.body, card.body)
     }
 }

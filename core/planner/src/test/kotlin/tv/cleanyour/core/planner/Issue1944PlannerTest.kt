@@ -106,6 +106,26 @@ class Issue1944PlannerTest {
         assertEquals(listOf(Op.Enable(factory.pkg), Op.SetHome(launcher), Op.VerifyHome(launcher)), back)
     }
 
+    // Issue #4976 (Xiaomi MiTV-MOSR2, list xiaomi-mitv-mosr4, 0.4.6.1): the switch was done before the #1944 fix,
+    // so the factory test app still claimed Home at 0 next to the new home screen, with the TV's own off. Run Setup
+    // again plans no switch (Home is ours), so nothing took it off, and once the new home screen is gone Home lands
+    // on it. Setup now switches it off then, outside any switch, and Undo everything puts it back.
+    @Test fun issue4976ALeftOverFactoryTestAppGoesOffWhenHomeIsAlreadyOurs() {
+        val ours = snapshot(disabled = setOf(stock.pkg.value), home = launcher, claimants = listOf(launcher, factory, fallback), extra = extra + installedLauncher())
+        val p = plan(setup(), snapshot = ours)
+        assertTrue(p.sections.isEmpty(), "no switch: Home is ours")
+        val off = p.steps.single { it.op == Op.Disable(factory.pkg) }
+        assertEquals(DefaultPlanner.GROUP_LEFTOVERS, off.group)
+        assertEquals(EnabledState.ENABLED, off.prior?.packageState)
+        // Already off, or Home not ours: nothing.
+        val offAlready = snapshot(disabled = setOf(stock.pkg.value), home = launcher, claimants = listOf(launcher, fallback),
+            extra = mapOf(factory.pkg to sys("Factory test").copy(enabled = EnabledState.DISABLED_USER)) + installedLauncher())
+        assertTrue(plan(setup(), snapshot = offAlready).steps.none { it.op == Op.Disable(factory.pkg) })
+        // TCL's factory view is never switched off (the TCL lists say so).
+        val tcl = snapshot(disabled = setOf(stock.pkg.value), home = launcher, claimants = listOf(launcher, tclFactory, fallback), extra = extra + installedLauncher())
+        assertTrue(plan(setup(), snapshot = tcl).steps.none { it.op == Op.Disable(tclFactory.pkg) })
+    }
+
     // R0 is unchanged: a factory test app among the claimants is still another home screen there.
     @Test fun r0StillCountsItAsAnotherHome() = releaseRule {
         assertFalse(HomeSwitchRisk.r0Placeholder(factory))
