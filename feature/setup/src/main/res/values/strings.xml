@@ -445,6 +445,12 @@
     <string name="helper_row">Home button helper</string>
     <string name="helper_row_note">The TV\'s own home screen stays on; the Home button opens the new one</string>
     <string name="helper_row_on">On: the Home button opens the new home screen, and the TV\'s own stays on</string>
+    <!-- 0.4.9 (issue #4288, test build): why Customise does not offer the helper on this TV now -->
+    <string name="helper_not_offered_new_home">Not offered while the new home screen is Home. To try it, choose Use the TV\'s own home screen in Home screen for this TV, then run Setup again.</string>
+    <string name="helper_not_offered_not_google">Not offered: Home doesn\'t open Google\'s home screen on this TV now. If this app changed it before, Undo everything puts it back; then run Setup again.</string>
+    <string name="helper_not_offered_home_unknown">Not offered: we don\'t know this TV\'s home screen well enough.</string>
+    <string name="helper_not_offered_tv">Not offered: this TV can\'t take the new home screen.</string>
+    <string name="helper_not_offered_accessibility">Not offered: the TV\'s accessibility settings can\'t be changed safely.</string>
     <string name="helper_consent_title">Home button helper</string>
     <string name="helper_consent_keep">The TV\'s own home screen stays on; the Home button opens the new one. Its setup wizard stays on too, so casting and your Wi-Fi are not touched. A small helper inside the new home screen watches for the TV\'s home screen and opens the new one instead.</string>
     <string name="helper_consent_sees">The helper is an Android accessibility service. Android will say it can see your screen and the buttons you press. This one asks Android only for which app is open, not for what is on screen, and not for your button presses. It has no internet access. It is part of the open-source home screen by Gathin (github.com/Gathin23/cleanyourtv), the same app this app installs.</string>

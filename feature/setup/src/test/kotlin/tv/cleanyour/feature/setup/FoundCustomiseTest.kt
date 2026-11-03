@@ -1,6 +1,11 @@
 package tv.cleanyour.feature.setup
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -13,6 +18,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import tv.cleanyour.core.flows.ChipState
+import tv.cleanyour.core.flows.HelperWhyNot
 import tv.cleanyour.core.flows.HomeBlock
 import tv.cleanyour.core.flows.Sheet
 import tv.cleanyour.core.flows.SetupActions
@@ -25,6 +31,7 @@ import tv.cleanyour.core.planner.GroupSummary
 import tv.cleanyour.core.planner.PlanSummary
 import tv.cleanyour.core.planner.RowSummary
 import tv.cleanyour.testing.fixtures.Samples
+import tv.cleanyour.ui.design.component.rememberUndoSnackbarState
 import tv.cleanyour.ui.design.theme.CytTheme
 
 // 0.4.9 (issue #1222, a Freebox Player POP on an exact list, Android 10, UNKNOWN_HOME): a plan with
@@ -71,6 +78,33 @@ class FoundCustomiseTest {
         compose.onNodeWithText("Done").assertExists()
         assertTrue("Customise is offered", compose.onAllNodesWithText("Customise").fetchSemanticsNodes().isEmpty())
         assertTrue("the choices line is shown", compose.onAllNodesWithText("Some apps are left on for you to choose. Customise lists them.").fetchSemanticsNodes().isEmpty())
+    }
+
+    // 0.4.9 (issue #4288, test build): Customise says in one line why the helper is not offered now.
+    @Test fun customiseSaysWhyTheHelperIsNotOffered() {
+        val state = found(row("fr.tf1.mytf1", "TF1+"))
+        val e = SetupExtras(tvName = "TCL BeyondTV4", chip = ChipState.CONNECTED, helperWhyNot = HelperWhyNot.NEW_HOME_ON)
+        compose.setContent {
+            CytTheme(reducedMotion = true) {
+                Column(Modifier.verticalScroll(rememberScrollState())) { CustomiseContent(state, e, actions, rememberUndoSnackbarState(), onWhy = {}, onCopyCommands = {}) }
+            }
+        }
+        compose.onNodeWithText("Home button helper").performScrollTo().assertExists()
+        compose.onNodeWithText("Not offered while the new home screen is Home. To try it, choose Use the TV's own home screen in Home screen for this TV, then run Setup again.")
+            .performScrollTo().assertExists()
+    }
+
+    // A release build (no reason) and a TV where it is offered show no such line.
+    @Test fun noLineWithoutAReason() {
+        val state = found(row("fr.tf1.mytf1", "TF1+"))
+        compose.setContent {
+            CytTheme(reducedMotion = true) {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    CustomiseContent(state, SetupExtras(tvName = "TCL BeyondTV4", chip = ChipState.CONNECTED), actions, rememberUndoSnackbarState(), onWhy = {}, onCopyCommands = {})
+                }
+            }
+        }
+        assertTrue("the helper group is shown", compose.onAllNodesWithText("Home button helper").fetchSemanticsNodes().isEmpty())
     }
 
     // RFC-HELPER-1 (test build, #251): the helper still opens Customise on a plan with no rows at all.

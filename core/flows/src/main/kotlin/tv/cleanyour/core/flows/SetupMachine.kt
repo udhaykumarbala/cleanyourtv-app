@@ -126,6 +126,23 @@ enum class HomeBlock { NONE, TV_REFUSES, OLD_ANDROID, UNKNOWN_HOME, WIZARD_WIFI,
 // kept it, or the live check did), or the run was stopped before anything changed.
 enum class NothingWhy { NOTHING_PLANNED, KEPT_ON, STOPPED }
 
+// 0.4.9 (issue #4288, RFC-HELPER-1 test build): why Customise does not offer the Home button helper,
+// for its one line there and the log. NEW_HOME_ON: an earlier run's new home screen is Home, so the
+// helper has no Google home to send on from (Use the TV's own home screen first). HOME_NOT_GOOGLE:
+// Home opens another home screen, not Google's (or not the one the TV's list knows). HOME_UNKNOWN: the
+// app does not know this TV's home screen well enough. TV_CANNOT: the TV refuses other home screens,
+// app installs, or is older than Android 8. ACCESSIBILITY: the TV's accessibility list cannot be
+// changed safely (unreadable, full, or another app's service would start too).
+enum class HelperWhyNot { NEW_HOME_ON, HOME_NOT_GOOGLE, HOME_UNKNOWN, TV_CANNOT, ACCESSIBILITY;
+    companion object {
+        fun of(r: HomeHelper.Refusal): HelperWhyNot = when (r) {
+            HomeHelper.Refusal.NOT_THIS_BUILD, HomeHelper.Refusal.TV_REFUSES, HomeHelper.Refusal.OLD_ANDROID, HomeHelper.Refusal.NO_INSTALLS -> TV_CANNOT
+            HomeHelper.Refusal.NOT_GOOGLE_HOME, HomeHelper.Refusal.NOT_PROFILE_HOME -> HOME_NOT_GOOGLE
+            HomeHelper.Refusal.LIST_UNREADABLE, HomeHelper.Refusal.LIST_FULL, HomeHelper.Refusal.OTHERS_WOULD_BIND -> ACCESSIBILITY
+        }
+    }
+}
+
 // Presentation details the frozen SetupState has no field for (RFC-W8-2). Never a source of truth:
 // everything here is derived from the state, the plan, the draft or a live call.
 data class SetupExtras(
@@ -200,6 +217,9 @@ data class SetupExtras(
     // hold, the TV's own home screen is Google's), and the plan on screen uses it instead of the switch.
     val helperOffer: Boolean = false,
     val helperOn: Boolean = false,
+    // 0.4.9 (issue #4288, test build): why Customise does not offer the helper on this TV now; null where
+    // it is offered, and always in a release build.
+    val helperWhyNot: HelperWhyNot? = null,
     // 0.4.8 (Restarts): what this phone counted for the TV, and what the Done restart check's read said (HELD, FAILED,
     // or null before it); and (PLAN item 3) the TV's screenshot after Setup sent the look, "This is your TV now".
     val restarts: RestartTally? = null,
@@ -327,6 +347,7 @@ class SetupMachine(
     private var lastPauseLogged: RunState.Paused? = null
     private var lastDecision: HomeDecision? = null
     private var lastListRows: String? = null
+    private var lastHelperWhyNot: HelperWhyNot? = null
 
     private var discoveryJob: Job? = null
     private var pollJob: Job? = null
@@ -916,18 +937,28 @@ class SetupMachine(
     // or null when Customise does not offer it here: not this build, a TV that refuses other home
     // screens or installs or runs an old Android, a home screen changed by the person or unknown, our
     // launcher already Home, or a rule of HomeHelper.refusal (a home screen that is not Google's, S3, S4).
-    private fun helperStock(snap: Snapshot, block: HomeBlock): Component? {
-        if (!deps.homeHelper) return null
-        if (block == HomeBlock.TV_REFUSES || block == HomeBlock.OLD_ANDROID || block == HomeBlock.HOME_CHANGED || block == HomeBlock.UNKNOWN_HOME) return null
-        if (snap.home.resolved?.pkg == deps.launcherPin.bundled().pkg) return null
+    private fun helperStock(snap: Snapshot, block: HomeBlock): Component? = helperCheck(snap, block).first
+
+    // The helper's stock home where it is offered, else why not (0.4.9, issue #4288: an earlier run's
+    // new home screen, still Home, hid the helper with no word why). Both null outside the test build.
+    private fun helperCheck(snap: Snapshot, block: HomeBlock): Pair<Component?, HelperWhyNot?> {
+        if (!deps.homeHelper) return null to null
+        if (snap.home.resolved?.pkg == deps.launcherPin.bundled().pkg) return null to HelperWhyNot.NEW_HOME_ON
+        when (block) {
+            HomeBlock.TV_REFUSES, HomeBlock.OLD_ANDROID -> return null to HelperWhyNot.TV_CANNOT
+            HomeBlock.HOME_CHANGED -> return null to HelperWhyNot.HOME_NOT_GOOGLE
+            HomeBlock.UNKNOWN_HOME -> return null to HelperWhyNot.HOME_UNKNOWN
+            else -> {}
+        }
         val stocks = when (val r = resolution) {
             is ProfileResolution.Exact -> r.profile.stockLaunchers
             is ProfileResolution.BrandSureSet -> r.stockLaunchers
             is ProfileResolution.None -> r.stockLaunchers
-            null -> return null
+            null -> return null to null
         }
-        if (HomeHelper.refusal(snap, stocks, refusesOtherHomes = false, build = true) != null) return null
-        return HomeHelper.stock(snap, stocks)
+        HomeHelper.refusal(snap, stocks, refusesOtherHomes = false, build = true)?.let { return null to HelperWhyNot.of(it) }
+        val stock = HomeHelper.stock(snap, stocks)
+        return if (stock != null) stock to null else null to HelperWhyNot.HOME_NOT_GOOGLE
     }
 
     // Plans the Setup from the current snapshot and draft; pure and quick (the planner is pure).
@@ -966,7 +997,7 @@ class SetupMachine(
         val block = homeBlock(snap, wifi, journals, PatchWallFeeds.goesOff(snap, groups, draft.kept, draft.extraOff))
         // RFC-HELPER-1 (test build): the Home button helper instead of the switch, when the person
         // switched it on in Customise and this TV meets its rules (HomeHelper.refusal, as the planner).
-        val helperStock = helperStock(snap, block)
+        val (helperStock, helperWhyNot) = helperCheck(snap, block)
         val helper = helperStock != null && draft.homeHelper
         val possible = block == HomeBlock.NONE && !helper
         val choices = Choices(
@@ -1037,6 +1068,10 @@ class SetupMachine(
                 // kept for the TV report (B1) that Manage makes without the TV.
                 val decision = HomeDecision.of(block, r.plan.sections.isNotEmpty(), snap.home.resolved?.pkg == launcher.pkg,
                     app = deps.about?.version, profile = LogCodes.profile(res), redirect = helper)
+                if (helperWhyNot != lastHelperWhyNot) {
+                    lastHelperWhyNot = helperWhyNot
+                    helperWhyNot?.let { deps.log.line("setup: home button helper not offered: ${it.name}") }
+                }
                 if (decision != lastDecision) {
                     lastDecision = decision
                     deps.log.line("setup: ${decision.line}")
@@ -1053,7 +1088,7 @@ class SetupMachine(
                 // The look step's draft and preview, from the whole draft dock (its waiting apps too).
                 mutableExtras.update {
                     it.copy(commands = commandsOf(r.plan), unknownModel = res !is ProfileResolution.Exact, homePossible = possible, homeBlock = block,
-                        helperOffer = helperStock != null, helperOn = helper,
+                        helperOffer = helperStock != null, helperOn = helper, helperWhyNot = helperWhyNot,
                         noScreenLock = !deps.screenLock.available(), draft = draft, dock = dock.map { p -> AppChoice(p, label(p)) }, apps = apps,
                         dockColumns = columns, look = sheet, ownPicture = own, ownDim = saved?.dim ?: OwnPicture.DEFAULT_DIM,
                         newPicture = photo?.ref, newDim = photo?.dim ?: OwnPicture.DEFAULT_DIM, waiting = DockLayers.waiting(kept.size, columns),

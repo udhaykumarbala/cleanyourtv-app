@@ -90,6 +90,46 @@ class HomeHelperFlowsTest {
         assertFalse(h.planner.requests.filterIsInstance<PlanRequest.Setup>().last().choices.homeHelper)
     }
 
+    // 0.4.9 (issue #4288, a TCL BeyondTV4 on beta2): an earlier run's new home screen, still Home, hid the
+    // helper with no word why; it showed only after Undo everything. Customise now says why (helperWhyNot),
+    // and the log names it once. A release build says nothing.
+    @Test fun setupSaysWhyTheHelperIsNotOfferedWhileTheNewHomeScreenIsHome() = runTest(timeout = 30.seconds) {
+        for (build in listOf(false, true)) {
+            val h = Harness()
+            h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+            val ours = tv.cleanyour.core.model.Component(Samples.launcherArtifact().pkg, ".MainActivity")
+            h.prober.snapshotFor = { r -> Samples.miTvSnapshot(r).let { s -> s.copy(home = HomeResolution(ours, listOf(HomeClaimant(ours, 999)) + s.home.claimants)) }
+                .let { it.copy(contentHash = SnapshotCodec.hash(it)) } }
+            val m = SetupMachine(h.setupDeps(homeHelper = build), backgroundScope, SetupStart.Fresh)
+            toFound(h, m)
+            assertFalse(m.extras.value.helperOffer)
+            assertEquals(if (build) HelperWhyNot.NEW_HOME_ON else null, m.extras.value.helperWhyNot)
+            assertEquals(if (build) listOf("setup: home button helper not offered: NEW_HOME_ON") else emptyList(),
+                h.logLines.filter { it.startsWith("setup: home button helper") })
+        }
+    }
+
+    @Test fun whyNotIsEmptyWhereTheHelperIsOfferedAndNamesTheAccessibilityRule() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        val m = SetupMachine(h.setupDeps(homeHelper = true), backgroundScope, SetupStart.Fresh)
+        toFound(h, m)
+        assertTrue(m.extras.value.helperOffer)
+        assertNull(m.extras.value.helperWhyNot)
+        val other = Harness()
+        other.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        other.prober.snapshotFor = { r -> Samples.miTvSnapshot(r).helper(reader, "0", at = Samples.NOW_MS) }
+        val n = SetupMachine(other.setupDeps(homeHelper = true), backgroundScope, SetupStart.Fresh)
+        toFound(other, n)
+        assertEquals(HelperWhyNot.ACCESSIBILITY, n.extras.value.helperWhyNot)
+    }
+
+    @Test fun everyRefusalHasAReason() {
+        for (r in tv.cleanyour.core.planner.HomeHelper.Refusal.entries) assertNotNull(HelperWhyNot.of(r))
+        assertEquals(HelperWhyNot.HOME_NOT_GOOGLE, HelperWhyNot.of(tv.cleanyour.core.planner.HomeHelper.Refusal.NOT_GOOGLE_HOME))
+        assertEquals(HelperWhyNot.TV_CANNOT, HelperWhyNot.of(tv.cleanyour.core.planner.HomeHelper.Refusal.NO_INSTALLS))
+    }
+
     @Test fun manageShowsTheHelperAndSwitchesItOff() = runTest(timeout = 30.seconds) {
         val h = Harness()
         val tv = h.knownTv()
