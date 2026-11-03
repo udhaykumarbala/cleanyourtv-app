@@ -3,7 +3,9 @@ package tv.cleanyour.app
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import java.io.ByteArrayInputStream
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -107,6 +109,28 @@ class FullStoreTest {
         val ok = ByUrl(mapOf(Store.RELEASES_URL to (200 to """{"tag_name":"v0.4.6"}""")))
         assertEquals("0.4.6", Store.updateChecker(ok) {}.latestNewerThan("0.4.5"))
         assertEquals(listOf(Store.RELEASES_URL), ok.urls)
+    }
+
+    // 0.4.8 (issues #818, #2486): Settings asks from the screen's scope, on the main thread, and the body used to be
+    // read there: Android refused it (NetworkOnMainThreadException), so the check failed every time, API and feed.
+    // A body that throws when read on the "main" thread stands in for that.
+    @Test fun theCheckReadsTheAnswerOffTheMainThread() = runBlocking {
+        class OffMainOnly(bytes: ByteArray) : ByteArrayInputStream(bytes) {
+            override fun read(b: ByteArray, off: Int, len: Int): Int {
+                if (Thread.currentThread().name == "main-ui") throw IllegalStateException("NetworkOnMainThreadException")
+                return super.read(b, off, len)
+            }
+        }
+        val http = object : HttpFetcher {
+            override suspend fun get(url: String, etag: String?, rangeFrom: Long?): HttpResponse =
+                HttpResponse(200, null, OffMainOnly("""{"tag_name":"v0.4.8"}""".encodeToByteArray()), null)
+        }
+        val lines = mutableListOf<String>()
+        val ui = java.util.concurrent.Executors.newSingleThreadExecutor { Thread(it, "main-ui") }.asCoroutineDispatcher()
+        try {
+            assertEquals("0.4.8", withContext(ui) { Store.updateChecker(http) { lines += it }.latestNewerThan("0.4.7") })
+            assertEquals(emptyList<String>(), lines)
+        } finally { ui.close() }
     }
 
     // Test build: 0.3.5-test1 is offered 0.3.5 and later, never the 0.3.4 it installs over.

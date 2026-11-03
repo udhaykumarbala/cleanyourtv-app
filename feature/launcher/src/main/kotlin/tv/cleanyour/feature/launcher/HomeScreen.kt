@@ -144,6 +144,9 @@ fun HomeScreen(
         // Issue #275: on TCL Google TV these remote buttons only reach Google TV's own home screen.
         // With the Home button helper the TV's own home screen stays Home, so they keep working there.
         if (state.tclRemoteKeys && state.helper?.canSwitchOff != true) Banner(stringResource(R.string.home_tcl_remote_keys), BannerTone.INFO, Modifier.padding(top = 12.dp))
+        // Issue #3059: on other Google TVs the remote's Settings (gear) button opens Google TV's own
+        // settings panel, often with the input's picture and sound settings.
+        if (state.googleTvSettingsKey && state.helper?.canSwitchOff != true) Banner(stringResource(R.string.home_google_tv_settings_key), BannerTone.INFO, Modifier.padding(top = 12.dp))
         state.helper?.let { HomeHelperCard(it, enabled = busy == null, onIntent) }   // RFC-HELPER-1 (test build)
         // RFC-HELPER-1 (test build): while the helper is listed the TV's own home screen is already
         // Home; the helper's Switch off is the way back, so no "Use the TV's own home screen".

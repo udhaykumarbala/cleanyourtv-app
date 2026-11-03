@@ -27,6 +27,8 @@
     <string name="home_row_dock_rows">{names}, plus {count, plural, one {# app} other {# apps}} below</string>
     <string name="home_row_look">Look</string>
     <string name="home_tcl_remote_keys">On TCL Google TV, the remote\'s Settings (gear), Netflix and YouTube buttons don\'t work with the new home screen. To get them back, choose Use the TV\'s own home screen.</string>
+    <!-- Issue #3059: a Google TV of another brand than TCL, whose remote's Settings button may stop working -->
+    <string name="home_google_tv_settings_key">On Google TV, the remote\'s Settings (gear) button opens Google TV\'s own settings panel, which on many TVs also has the picture and sound settings for the input you\'re watching. With the new home screen it may stop working. To get it back, choose Use the TV\'s own home screen.</string>
     <string name="home_row_stock">Use the TV\'s own home screen</string>
     <string name="home_row_stock_note">Brings back the TV\'s own home screen. Ours stays installed, so you can switch again.</string>
     <string name="home_drift_banner">The home screen settings on the TV changed since you set them.</string>

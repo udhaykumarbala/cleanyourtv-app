@@ -46,7 +46,7 @@ changes anything, on the "What we found" screen, and why.
 
 | | Which TVs | What the app does |
 | :- | :- | :- |
-| **New home screen and clean-up** | TVs where testers confirmed the switch holds after a restart: most Xiaomi and Redmi sets on Android 9 to 11 and the Xiaomi MiTV-MZTU1 on Android 14; OnePlus on Android 11, Sony on Android 8, Hisense on Android 9, Homatics and MECOOL on Android 14 (with Google's Android TV home); and the TCL, Sony, Hisense, Philips and other models whose list says so | Switches off the clutter and puts the Clean Your TV home screen in charge, with a restore point first |
+| **New home screen and clean-up** | TVs where testers confirmed the switch holds after a restart: most Xiaomi and Redmi sets on Android 9 to 11 and the Xiaomi MiTV-MZTU1 and MiTV-MOEU1 on Android 14; OnePlus on Android 11, Sony on Android 8, Hisense on Android 9, Homatics, MECOOL and the Strong LEAP-S1 on Android 14, the Toshiba Smart TV (hamamatsucho) on Android 11, the MI MiProjM05 projector on Android 9 (with Google's Android TV home); and the TCL, Sony, Hisense, Philips and other models whose list says so | Switches off the clutter and puts the Clean Your TV home screen in charge, with a restore point first |
 | **Clean-up only, for now** | Most Google TV sets (their setup wizard holds the Wi-Fi, or the TV has no list yet), TVs the app has not met before, and Google's own Chromecast and TV Streamer (the switch would cost casting) | Switches off adverts, tracking and background apps. The TV keeps its own home screen, so it looks the same; the adverts drawn by that home screen stay with it |
 | **Not possible** | Fire TV, TCL's China builds, Android 7 and older | Clean-up only, and the app says so up front |
 

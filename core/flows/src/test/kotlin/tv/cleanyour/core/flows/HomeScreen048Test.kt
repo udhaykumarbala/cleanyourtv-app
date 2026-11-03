@@ -109,4 +109,34 @@ class HomeScreen048Test {
         m2.dispatch(HomeScreenIntent.OpenLook); settle()
         assertTrue(assertNotNull(m2.state.value.look).canSend)
     }
+
+    // 0.4.8 (issue #2742): Manage's dock list used the rule for a TV that cannot say, which hid launchable system apps
+    // (the Play Store, Settings) and offered user apps with nothing to open (our TV curtain, a token service). With the
+    // TV connected it offers what a launcher would show; FallbackHome (a HOME claimant at -1000, in Settings) bars
+    // nothing, and our curtain is never offered.
+    @Test fun theDockListOffersTheAppsALauncherWouldShow() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        fun st(system: Boolean) = tv.cleanyour.core.model.PackageState(tv.cleanyour.core.model.EnabledState.ENABLED, system, 1, null, false, false, null, false)
+        val store = PackageName("com.android.vending")
+        val settings = PackageName("com.android.tv.settings")
+        val curtain = PackageName("tv.cleanyour.curtain")
+        val token = PackageName("com.example.tokenservice")
+        val vlc = PackageName("org.videolan.vlc")
+        val fallback = tv.cleanyour.core.model.Component(settings, ".FallbackHome")
+        val home = HomeResolution(Launcher.home, listOf(HomeClaimant(Launcher.home, 0), HomeClaimant(fallback, -1000)))
+        val t = h.knownTv().copy(launcher = LauncherState(1, Samples.zeroHash, Samples.zeroHash, Samples.zeroHash))
+        h.tvs.upsert(t)
+        h.snapshots.save(Samples.snapshot(takenAtMs = Samples.NOW_MS + 1, home = home,
+            packages = Samples.miTvPackages() + mapOf(store to st(true), settings to st(true), curtain to st(false), token to st(false), vlc to st(false))))
+        h.prober.launchableApps = setOf(store, settings, curtain, vlc)
+        val m = HomeScreenMachine(h.manageDeps(), backgroundScope, t.id).also { settle() }
+        val offered = m.state.value.apps.map { it.pkg }.toSet()
+        assertTrue(store in offered && settings in offered && vlc in offered, offered.toString())
+        assertFalse(curtain in offered || token in offered, offered.toString())
+        // Not connected (or the TV cannot say): the rule as before, but still never the curtain.
+        h.prober.launchableApps = null
+        val fallbackRule = HomeScreenMachine(h.manageDeps(), backgroundScope, t.id).also { settle() }.state.value.apps.map { it.pkg }.toSet()
+        assertTrue(vlc in fallbackRule && token in fallbackRule && store !in fallbackRule, fallbackRule.toString())
+        assertFalse(curtain in fallbackRule)
+    }
 }

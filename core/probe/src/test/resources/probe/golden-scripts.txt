@@ -23,3 +23,4 @@ installedSha256(com.gathin.tvhome)	p=$(pm path 'com.gathin.tvhome' | grep base.a
 watchdogAlive(0123456789abcdef)	pgrep -f '[c]leanyourtv-rollback-0123456789abcdef'
 copyApk(com.gathin.tvhome, signer-0123456789abcdef.apk, 16777216)	mkdir -p /data/local/tmp/cleanyourtv && p=$(pm path 'com.gathin.tvhome' | grep base.apk | head -n 1) && [ -n "$p" ] && [ "$(stat -c %s "${p#package:}")" -le 16777216 ] && cp "${p#package:}" '/data/local/tmp/cleanyourtv/signer-0123456789abcdef.apk'
 signerCleanup(signer-0123456789abcdef.apk)	rm -f '/data/local/tmp/cleanyourtv/signer-0123456789abcdef.apk'
+installedApkState(com.gathin.tvhome)	p=$(pm path 'com.gathin.tvhome'); echo "$p" | grep -c base.apk; echo '@@cyt@@ hash'; b=$(echo "$p" | grep base.apk | head -n 1); sha256sum "${b#package:}" >/dev/null 2>&1; echo $?; echo '@@cyt@@ current'; cmd activity get-current-user; echo '@@cyt@@ users'; dumpsys package 'com.gathin.tvhome' | grep -E '^ +User [0-9]+: '

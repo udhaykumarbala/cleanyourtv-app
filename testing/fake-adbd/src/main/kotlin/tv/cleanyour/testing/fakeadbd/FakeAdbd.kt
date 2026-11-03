@@ -165,6 +165,9 @@ class FakeAdbd(tv: FakeTv, val faults: Faults = Faults(), private val scope: Cor
     }
 }
 
+// RFC-INSTALL-1: the streamed install the app sends, for user 0.
+private const val INSTALL_USER0 = "cmd package install --user 0 -S "
+
 class FakeAdbdSocketFactory(private val byHost: Map<String, FakeAdbd>) : SocketFactory {
     val attempts = CopyOnWriteArrayList<Endpoint>()
     override suspend fun connect(endpoint: Endpoint, timeoutMs: Long): AdbSocket {
@@ -379,8 +382,10 @@ class ServerConnection(private val adbd: FakeAdbd, private val socket: AdbSocket
     private suspend fun exec(s: ServerStream, command: String) {
         when {
             command == "echo" -> s.write("\n".encodeToByteArray())
-            command.startsWith("cmd package install -S ") -> {
-                val size = command.removePrefix("cmd package install -S ").trim().toLongOrNull()
+            // RFC-INSTALL-1: the app sends `--user 0`; the form without a user stays for older callers.
+            command.startsWith("cmd package install -S ") || command.startsWith(INSTALL_USER0) -> {
+                val forUser0 = command.startsWith(INSTALL_USER0)
+                val size = command.removePrefix(if (forUser0) INSTALL_USER0 else "cmd package install -S ").trim().toLongOrNull()
                 if (size == null || size < 0 || size > 200L * 1024 * 1024) { s.write("Failure [INSTALL_FAILED_INVALID_APK: bad size]\n".encodeToByteArray()); return }
                 val reader = AdbStreamReader(s)
                 val bytes = ByteArrayOutputStream()
@@ -391,7 +396,7 @@ class ServerConnection(private val adbd: FakeAdbd, private val socket: AdbSocket
                     left -= chunk.size
                 }
                 if (faults.installHang) awaitCancellation()
-                val result = tv.installApk(bytes.toByteArray())
+                val result = tv.installApk(bytes.toByteArray(), forUser0)
                 adbd.events += "install: $result"
                 s.write((result + "\n").encodeToByteArray())
             }

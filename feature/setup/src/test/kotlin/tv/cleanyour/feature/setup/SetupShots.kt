@@ -440,6 +440,9 @@ object SetupShots {
         Shot("found_replaces_launcher") { Setup(found(fullPlan.copy(summary = fullPlan.summary.copy(replacesLauncher = true)))) },
         // Issue #275: a TCL Google TV, whose remote's gear, Netflix and YouTube buttons need Google TV's home.
         Shot("found_tcl_remote_keys") { Setup(found(), connected.copy(tvName = "TCL 55C755", tclRemoteKeys = true)) },
+        // Issue #3059: another Google TV, whose remote's Settings (gear) button may need Google TV's home.
+        // Taller, so the banner under the home screen row is in the picture.
+        Shot("found_google_tv_settings_key", 1100.dp) { Setup(found(), connected.copy(tvName = "Xiaomi MiTV-MOEU0", googleTvSettingsKey = true)) },
         // RFC-HELPER-1 (test build): the Home button helper chosen on a casting TV: the redirect's outcome, never "keeps its own".
         // #251: a Google TV cleaned before, nothing left to switch off: Customise still offers the helper.
         Shot("found_zero_kept_helper_offer") { Setup(found(zeroPlan.copy(summary = zeroPlan.summary.copy(homeScreenPossible = false))), connected.copy(tvName = "Google TV Streamer", brand = "Google", homePossible = false, homeBlock = HomeBlock.WIZARD_STAYS_ON, helperOffer = true)) },
@@ -572,6 +575,17 @@ object SetupShots {
         Shot("stopped_home_unknown") {
             Stopped(home(StopCase.HOME_UNKNOWN, R.string.stop_home_unknown_title, R.string.stop_home_unknown_body,
                 R.string.stop_home_unknown_primary, R.string.stop_home_unknown_secondary), connected.copy(commands = commands))
+        },
+        // Issues #3221, #3101, #2851: the TV ended the launcher's install and is low on storage.
+        Shot("stopped_home_low_storage") {
+            Stopped(home(StopCase.HOME_UNKNOWN, R.string.stop_home_unknown_title, R.string.stop_home_low_storage_body,
+                R.string.stop_home_unknown_primary, R.string.stop_home_unknown_secondary, mapOf("free" to 120)), connected.copy(commands = commands))
+        },
+        // Issues #3301, #3305: home screen apps the person installed left Android's chooser in charge.
+        Shot("stopped_home_chooser") {
+            Stopped(home(StopCase.HOME_OTHER_LAUNCHER, R.string.stop_home_other_launcher_title, R.string.stop_home_chooser_body,
+                R.string.stop_home_other_launcher_primary, R.string.stop_home_other_launcher_secondary,
+                mapOf("launcher" to "Projectivy Launcher", "names" to "Projectivy Launcher, com.wolf.firelauncher", "count" to 2)), connected.copy(commands = commands))
         },
         // Issue #629: a Settings page was open on the TV during the check.
         Shot("stopped_home_settings_open") {

@@ -291,7 +291,13 @@ object ManageShots {
         } },
         Shot("debugstep_stuck", 1500.dp) { SheetOver({ ManageScreen(manage(), {}) }) {
             DebugStepContent(Reach.NeedsDebugging(tvId, "Mi TV 4A"), ReachCheck(Seen.YES, Seen.YES, Seen.NO, Seen.NO, Seen.NO, switchedOff = true, waitedMs = 34_000), {},
-                details = DetailsUi(copied = true), initiallyOpen = true)
+                details = DetailsUi(copied = true), initiallyOpen = true, onAddress = {})
+        } },
+        // 0.4.8: "Enter the TV's address" on the step (Setup's entry), and the row for the address typed there
+        Shot("debugstep_address") { SheetOver({ ManageScreen(manage(), {}) }) { AddressStep({ false }, {}, initial = "8.8.8.8", initialError = true) } },
+        Shot("debugstep_typed", 1500.dp) { SheetOver({ ManageScreen(manage(), {}) }) {
+            DebugStepContent(Reach.NeedsDebugging(tvId, "Mi TV 4A"), ReachCheck(Seen.YES, Seen.NO, Seen.NO, Seen.NO, Seen.NO, waitedMs = 40_000, typed = Seen.NO), {},
+                initiallyOpen = true, onAddress = {})
         } },
         Shot("debugstep_collecting", 1400.dp) { SheetOver({ ManageScreen(manage(), {}) }) {
             DebugStepContent(Reach.NeedsDebugging(tvId, "Mi TV 4A"), ReachCheck(Seen.YES, Seen.UNKNOWN, Seen.NO, Seen.NO, Seen.NO, waitedMs = 12_000), {},

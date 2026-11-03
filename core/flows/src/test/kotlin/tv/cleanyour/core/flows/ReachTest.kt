@@ -215,4 +215,96 @@ class ReachTest {
         assertTrue(c.copy(foundElsewhere = Seen.NO).stuck)
         assertFalse(c.copy(foundElsewhere = Seen.NO, waitedMs = 20_000).stuck)
     }
+    // 0.4.8 (beta4 follow-up): "Enter the TV's address" on the step. Setup's rule for a typed address, the typed one is
+    // tried first, and it is saved only once this TV answers there.
+    @Test fun aTypedAddressIsTriedAndSavedOnceThisTvAnswers() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val lines = java.util.concurrent.CopyOnWriteArrayList<String>()
+        val access = TvAccess(h.sessions, h.discovery, h.tvs, h.clock, log = FlowLog { lines += it })
+        val tv = Samples.tv()
+        h.tvs.upsert(tv)
+        var result: AccessResult? = null
+        backgroundScope.launch { result = access.session(tv.id) }
+        settle()
+        assertIs<Reach.NeedsDebugging>(access.reach.value)
+        assertFalse(access.tryAddress(tv.id, "8.8.8.8"), "not an address on a home network, as in Setup")
+        assertNull(access.check.value.typed)
+        assertTrue(access.tryAddress(tv.id, " $TYPED "))
+        assertEquals(Seen.CHECKING, access.check.value.typed)
+        h.sessions.register(TYPED, h.session)
+        h.discovery.open5555[TYPED] = true
+        settle(2_100)
+        assertIs<AccessResult.Ok>(result)
+        assertEquals(listOf(Endpoint.PlainTcp(TYPED)), h.tvs.tvs.value.single().endpoints, "the typed address replaces the saved one")
+        assertTrue(Endpoint.PlainTcp(TYPED) in h.sessions.opens, "on the setup's network the handshake is Setup's")
+        assertTrue(lines.any { it == "access: connected at the address typed on the phone (saved there)" }, lines.toString())
+        assertTrue(lines.none { it.contains(TYPED) }, "the typed address is never logged")
+        assertEquals(ReachCheck(), access.check.value)
+    }
+
+    @Test fun onAnotherNetworkATypedAddressGetsOnlyTheKnownHandshake() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = Samples.tv()
+        h.tvs.upsert(tv)
+        otherNetwork(h)
+        val job = backgroundScope.launch { h.access.session(tv.id) }
+        settle()
+        h.sessions.register(TYPED, h.session)
+        h.sessions.allowPromptFor[TYPED] = "AB:CD"       // this TV has not allowed the phone at that address
+        h.discovery.open5555[TYPED] = true
+        assertTrue(h.access.tryAddress(tv.id, TYPED))
+        settle(4_100)
+        assertFalse(job.isCompleted, "no Allow dialog, and the wait goes on")
+        assertTrue(h.sessions.opens.isEmpty(), "never the open that can show the Allow dialog on another network")
+        assertTrue(Endpoint.PlainTcp(TYPED) in h.sessions.knownOpens)
+        assertEquals(tv.endpoints, h.tvs.tvs.value.single().endpoints, "nothing saved")
+        assertEquals(Seen.YES, h.access.check.value.typed)
+        h.sessions.allowPromptFor.remove(TYPED)          // the TV takes the key it already knows
+        settle(2_100)
+        assertTrue(job.isCompleted)
+        assertEquals(listOf(Endpoint.PlainTcp(TYPED)), h.tvs.tvs.value.single().endpoints)
+    }
+
+    @Test fun aDifferentTvAtATypedAddressEndsNothingAndIsNotSaved() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = Samples.tv()
+        h.tvs.upsert(tv)
+        val otherId = TvId("0123456789abcdef")
+        h.sessions.register(TYPED, FakeTvSession(identity = Fixtures.miTv().identity().copy(tvId = otherId)))
+        h.discovery.open5555[TYPED] = true
+        val job = backgroundScope.launch { h.access.session(tv.id) }
+        settle()
+        assertTrue(h.access.tryAddress(tv.id, TYPED))
+        settle(2_100)
+        assertFalse(job.isCompleted, "a wrong address typed is no reason to stop waiting")
+        assertEquals(Seen.NO, h.access.check.value.typed)
+        assertIs<Reach.NeedsDebugging>(h.access.reach.value)
+        assertNull(h.sessions.existing(otherId), "the other TV got no session")
+        assertEquals(tv, h.tvs.tvs.value.single(), "nothing saved")
+        val tries = h.discovery.probes.count { it == TYPED }
+        settle(4_100)
+        assertEquals(tries, h.discovery.probes.count { it == TYPED }, "the wrong address is dropped")
+        h.discovery.open5555[HOST] = true
+        settle(2_100)
+        assertTrue(job.isCompleted, "the saved address still works")
+    }
+
+    @Test fun anAddressTypedForAnotherTvIsNotTried() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = Samples.tv()
+        h.tvs.upsert(tv)
+        val job = backgroundScope.launch { h.access.session(tv.id) }
+        settle()
+        assertTrue(h.access.tryAddress(TvId("0123456789abcdef"), TYPED))
+        settle(4_100)
+        assertTrue(TYPED !in h.discovery.probes)
+        assertFalse(job.isCompleted)
+    }
+
+    @Test fun theSummaryNamesATypedAddressOnlyWhenOneWasTyped() {
+        val c = ReachCheck(Seen.YES, Seen.YES, Seen.NO, Seen.NO, Seen.NO, waitedMs = 12_000)
+        assertFalse(c.summary().contains("typed"))
+        assertEquals("wifi yes, same network yes, 5555 no, found elsewhere no, allow asked no, typed address no, waited 12 s",
+            c.copy(typed = Seen.NO).summary())
+    }
 }

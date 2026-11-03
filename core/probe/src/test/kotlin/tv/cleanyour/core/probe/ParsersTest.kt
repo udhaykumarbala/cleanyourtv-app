@@ -26,6 +26,7 @@ class ParsersTest {
             "copyApk(com.gathin.tvhome, signer-0123456789abcdef.apk, 16777216)" to
                 ProbeScripts.copyApk(p("com.gathin.tvhome"), ProbeScripts.signerPath("0123456789abcdef"), 16L * 1024 * 1024).text,
             "signerCleanup(signer-0123456789abcdef.apk)" to ProbeScripts.signerCleanup(ProbeScripts.signerPath("0123456789abcdef")).text,
+            "installedApkState(com.gathin.tvhome)" to ProbeScripts.installedApkState(p("com.gathin.tvhome")).text,
         )
         assertEquals(golden, actual)
         // Printable ASCII only, and no write verb outside the lines that must write (all of them in

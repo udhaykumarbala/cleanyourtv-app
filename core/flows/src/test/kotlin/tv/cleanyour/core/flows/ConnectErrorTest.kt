@@ -106,4 +106,32 @@ class ConnectErrorTest {
         settle(700)
         assertNull(m.extras.value.connectError)
     }
+
+    // 0.4.8 (issues #2084, #2502, #2823 and six more): a refused connection (ECONNREFUSED) is the TV's answer: nothing
+    // listens on its debugging port, so debugging is off there. The card says that, not that the phone is in the way.
+    @Test fun aRefusedConnectionIsDebuggingOffOnTheTv() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val refusing = object : tv.cleanyour.core.session.SessionManager by h.sessions {
+            override suspend fun open(endpoint: tv.cleanyour.core.model.Endpoint, expected: tv.cleanyour.core.model.TvId?, onAwaitingAllow: suspend (fingerprint: String) -> Unit) =
+                if (endpoint.host == other) tv.cleanyour.core.session.OpenResult.Failed(tv.cleanyour.core.model.AdbError.Transport.Refused)
+                else h.sessions.open(endpoint, expected, onAwaitingAllow)
+        }
+        val m = SetupMachine(h.setupDeps(diagnostics = { log(3) }, about = about, sessions = refusing,
+            connectDetail = { "ConnectException, ECONNREFUSED (Connection refused)" }), backgroundScope, SetupStart.Fresh)
+        toDoor(h, m)
+        val e = assertNotNull(m.extras.value.connectError, "the door shows the connect card")
+        assertEquals("refused", e.kind)
+        assertTrue(e.debuggingOff)
+        assertTrue("Error: refused (ConnectException, ECONNREFUSED (Connection refused))" in e.summary, e.summary)
+    }
+
+    @Test fun onlyTheTvsOwnRefusalIsDebuggingOff() {
+        assertTrue(ConnectError.debuggingOff("refused", "ConnectException, ECONNREFUSED (Connection refused)"))
+        assertTrue(ConnectError.debuggingOff("refused", null))
+        assertTrue(ConnectError.debuggingOff("refused", "ConnectException"))
+        // A firewall or VPN on the phone: Android reports it as a ConnectException too, with its own errno.
+        assertFalse(ConnectError.debuggingOff("refused", "ConnectException, EPERM (Operation not permitted)"))
+        assertFalse(ConnectError.debuggingOff("unreachable", "NoRouteToHostException, EHOSTUNREACH (No route to host)"))
+        assertFalse(ConnectError.debuggingOff("timeout(connect)", null))
+    }
 }

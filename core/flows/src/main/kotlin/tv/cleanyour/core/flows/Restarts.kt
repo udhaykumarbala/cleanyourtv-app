@@ -6,7 +6,12 @@ import tv.cleanyour.core.model.HomeResolution
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.Tv
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.ops.HelperLines
 import tv.cleanyour.core.planner.HomeHelper
+import tv.cleanyour.core.probe.AccessibilityNow
+import tv.cleanyour.core.probe.AccessibilityRead
+import tv.cleanyour.core.probe.Prober
+import tv.cleanyour.core.session.TvSession
 import tv.cleanyour.core.spec.KnownLaunchers
 import tv.cleanyour.core.store.DocumentStore
 
@@ -14,9 +19,9 @@ import tv.cleanyour.core.store.DocumentStore
 // text, which the graduation rule (2 or 3 confirmed restarts per brand and Android version) cannot count. So each time
 // the app connects to a TV whose home screen it switched, or whose Home button helper it switched on, it reads two
 // things it reads anyway: the TV's boot_id (/proc/sys/kernel/random/boot_id, a new one after every boot) and what Home
-// answers to (the same read as Manage's Home check). A new boot_id with the new home screen still answering Home is
-// one held restart; the TV's own back after a new boot_id is a failed one. Nothing else is read and nothing is written
-// to the TV. Kept per TV on the phone, never sent: the person's tap on "Tell us it worked" (Confirmation) is the only
+// answers to (the same read as Manage's Home check), and for the helper its two accessibility settings too. A new
+// boot_id with the new home screen still answering Home is one held restart; the TV's own back after a new boot_id is
+// a failed one. Nothing else is read and nothing is written to the TV. Kept per TV on the phone, never sent: the person's tap on "Tell us it worked" (Confirmation) is the only
 // way the count leaves it.
 
 // How the new home screen reaches the TV, for the count and the confirmation: the switch with an exact (or candidate)
@@ -105,9 +110,10 @@ class Restarts(private val store: DocumentStore) {
     // A restart counts only across two reads on the same path with the new home screen answering at the first: held
     // when it still answers, failed when it does not. A read on another path (Setup run again with the switch after
     // the helper) starts a new count from that read: a confirmation is for one path.
-    suspend fun observe(id: TvId, bootId: String, home: HomeResolution, path: HomePath, build: String, nowMs: Long): RestartObservation = lock.withLock {
+    // `helperOn`, on the helper's path: our service listed with accessibility on, as read with Home (HelperNow.ON).
+    suspend fun observe(id: TvId, bootId: String, home: HomeResolution, path: HomePath, build: String, nowMs: Long, helperOn: Boolean = true): RestartObservation = lock.withLock {
         val before = attempt { load(id) }.getOrNull() ?: RestartTally()
-        val answers = answers(path, home)
+        val answers = answers(path, home, helperOn)
         val (read, next) = when {
             before.bootId == null -> RestartRead.FIRST to before.copy(bootId = bootId, answered = answers, path = path)
             before.path != path -> RestartRead.FIRST to RestartTally(bootId = bootId, answered = answers, path = path)
@@ -128,6 +134,14 @@ class Restarts(private val store: DocumentStore) {
         t.copy(toldAtMs = nowMs, toldHeld = t.held).also { save(id, it) }
     }
 
+    // 0.4.8 (issues #2061, #1799, #1650, #947): Home alone counted the helper held while it was off, and testers
+    // saw the TV's own home screen come back on Home. So the helper's path reads its two settings with Home
+    // (AccessibilityRead, the same read as a snapshot's SETTINGS stage): our service listed with accessibility on
+    // is the helper on; not listed, it is gone; listed with accessibility off, Android has not bound it yet (that
+    // takes about half a minute after a boot, issue #1622), so that read is left for a later one in the same boot,
+    // like a Home that is not settled().
+    enum class HelperNow { ON, NOT_LISTED, NOT_YET }
+
     companion object {
         // Whether the TV's Home answer is one to count: right after a boot Home resolves to the framework's FallbackHome
         // (or to nothing) until the TV is up, which says nothing about the restart. Such a read is left for the next one
@@ -140,11 +154,26 @@ class Restarts(private val store: DocumentStore) {
 
         // Whether the new home screen answers Home on `path`. The switch: Home resolves to ours. The helper: Home
         // resolves to the TV's own Google home screen it sends on from, with ours still a Home claimant (installed and
-        // on); whether the helper's service is bound is not read (that would be a new command), the report says so.
-        fun answers(path: HomePath, home: HomeResolution): Boolean = when (path) {
+        // on), and the helper itself on (`helperOn`, from HelperNow).
+        fun answers(path: HomePath, home: HomeResolution, helperOn: Boolean = true): Boolean = when (path) {
             HomePath.LIST, HomePath.R0 -> home.resolved?.pkg == Launcher.pkg
-            HomePath.HELPER -> home.resolved?.pkg?.let { p -> KnownLaunchers.generic.any { it.pkg == p } } == true &&
+            HomePath.HELPER -> helperOn && home.resolved?.pkg?.let { p -> KnownLaunchers.generic.any { it.pkg == p } } == true &&
                 home.claimants.any { it.component.pkg == Launcher.pkg }
         }
+
+        // The helper at one read of its two settings (HelperNow).
+        fun helperNow(a: AccessibilityNow): HelperNow = when {
+            !HelperLines.listed(a.services) -> HelperNow.NOT_LISTED
+            a.enabled == "1" -> HelperNow.ON
+            else -> HelperNow.NOT_YET
+        }
+
+        // The log's words for a failed restart.
+        fun failedWhy(helper: HelperNow?): String =
+            if (helper == HelperNow.NOT_LISTED) "the helper is no longer listed" else "Home does not answer to the new home screen"
+
+        // The helper as the TV has it now, or null when the TV could not say (then nothing is counted at this read).
+        suspend fun helperNow(prober: Prober, session: TvSession): HelperNow? =
+            (prober as? AccessibilityRead)?.let { r -> attempt { r.accessibility(session) }.getOrNull() }?.let { helperNow(it) }
     }
 }

@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import tv.cleanyour.core.discovery.DiscoverySource
 import tv.cleanyour.core.discovery.FoundTv
@@ -49,6 +48,7 @@ import tv.cleanyour.core.flows.StopAction
 import tv.cleanyour.core.flows.StopCase
 import tv.cleanyour.core.flows.fingerprintTail
 import tv.cleanyour.ui.design.component.ActionColumn
+import tv.cleanyour.ui.design.component.AddressEntry
 import tv.cleanyour.ui.design.component.AdbAllowMirror
 import tv.cleanyour.ui.design.component.Banner
 import tv.cleanyour.ui.design.component.BannerTone
@@ -57,7 +57,6 @@ import tv.cleanyour.ui.design.component.ChoiceList
 import tv.cleanyour.ui.design.component.ChoiceOption
 import tv.cleanyour.ui.design.component.CodeMatchCard
 import tv.cleanyour.ui.design.component.CytBottomSheet
-import tv.cleanyour.ui.design.component.CytTextField
 import tv.cleanyour.ui.design.component.CytTopBar
 import tv.cleanyour.ui.design.component.DiscoveryChip
 import tv.cleanyour.ui.design.component.GlassChip
@@ -79,6 +78,7 @@ import tv.cleanyour.ui.design.component.TvMenuArt
 import tv.cleanyour.ui.design.component.TvStatusChip
 import tv.cleanyour.ui.design.component.TvThumbnail
 import tv.cleanyour.ui.design.component.WelcomeIllustration
+import tv.cleanyour.ui.design.component.addressText
 import tv.cleanyour.ui.design.component.rememberEmphasis
 import tv.cleanyour.ui.design.component.rememberPng
 import tv.cleanyour.ui.design.theme.Glow
@@ -271,13 +271,17 @@ fun DoorScreen(state: SetupState.OpenDoor, extras: SetupExtras, actions: SetupAc
 // 0.3.6 (issues #98, #270, #325, #468): the TV's port answered but the connection failed. What may be
 // in the way on the phone's side, and "Copy error" with a short redacted summary for an issue.
 // 0.4.6: "Report a problem" under it opens the GitHub form with that side filled in, no paste.
+// 0.4.8 (issues #2084, #2502, #2823 and six more): a refused connection is the TV's answer, not the phone's: debugging
+// is off on the TV. That card says so and how to switch it back on; Copy error and Report a problem stay.
 @Composable
 internal fun ConnectErrorCard(error: ConnectError, onCopy: (String) -> Unit, modifier: Modifier = Modifier, onReport: (String) -> Unit = {}) {
     var copied by remember(error) { mutableStateOf(false) }
-    val title = stringResource(R.string.door_connect_failed_title)
+    val off = error.debuggingOff
+    val title = stringResource(if (off) R.string.door_connect_refused_title else R.string.door_connect_failed_title)
     StopCard(
         title,
-        msg(R.string.door_connect_failed_body, "kind" to error.kind) + "\n\n" + stringResource(R.string.door_connect_failed_hint),
+        msg(if (off) R.string.door_connect_refused_body else R.string.door_connect_failed_body, "kind" to error.kind) + "\n\n" +
+            stringResource(if (off) R.string.door_connect_refused_hint else R.string.door_connect_failed_hint),
         modifier.padding(top = 20.dp),
         primaryLabel = stringResource(if (copied) R.string.door_error_copied else R.string.door_copy_error),
         onPrimary = { onCopy(error.summary); copied = true },
@@ -470,16 +474,9 @@ internal fun PairingStepsContent() {
 fun AddressSheet(error: Boolean, actions: SetupActions) {
     var text by rememberSaveable { mutableStateOf("") }
     CytBottomSheet({ actions.back() }) {
-        AddressContent(text, { text = it.filter { c -> c.isDigit() || c == '.' }.take(15) }, error, onConnect = { actions.intent(SetupIntent.EnterAddress(text)) })
+        AddressContent(text, { text = addressText(it) }, error, onConnect = { actions.intent(SetupIntent.EnterAddress(text)) })
     }
 }
 
 @Composable
-internal fun AddressContent(text: String, onText: (String) -> Unit, error: Boolean, onConnect: () -> Unit) {
-    SheetHeader(stringResource(R.string.address_title), subtitle = stringResource(R.string.address_body))
-    CytTextField(
-        text, onText, stringResource(R.string.address_field_label), Modifier.padding(top = 16.dp),
-        error = if (error) stringResource(R.string.address_error) else null, keyboardType = KeyboardType.Decimal,
-    )
-    PrimaryButton(stringResource(R.string.address_connect), onConnect, Modifier.padding(top = 16.dp), enabled = text.count { it == '.' } == 3)
-}
+internal fun AddressContent(text: String, onText: (String) -> Unit, error: Boolean, onConnect: () -> Unit) = AddressEntry(text, onText, error, onConnect)

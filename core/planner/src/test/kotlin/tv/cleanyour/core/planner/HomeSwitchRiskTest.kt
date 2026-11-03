@@ -591,11 +591,15 @@ class HomeSwitchRiskTest {
             Row(setOf("Homatics"), 34..34, emptySet(), emptySet(), emptySet()),
             Row(setOf("MECOOL"), 34..34, emptySet(), emptySet(), emptySet()),
             Row(setOf("Sony"), 26..26, emptySet(), emptySet(), emptySet()),
+            Row(setOf("Xiaomi", "Redmi"), 34..34, setOf("MiTV-MOEU1"), emptySet(), emptySet()),
+            Row(setOf("MI"), 28..28, setOf("MiProjM05"), setOf("eva"), emptySet()),
+            Row(setOf("Strong"), 34..34, setOf("LEAP-S1"), setOf("LAS"), emptySet()),
+            Row(setOf("Toshiba"), 30..30, emptySet(), setOf("hamamatsucho"), emptySet()),
         ), HomeSwitchRisk.GRADUATED.map { Row(it.makers, it.sdks, it.models, it.devices, it.excludedDevices) })
         for (g in HomeSwitchRisk.GRADUATED) {
             assertTrue(g.makers.isNotEmpty() && !g.sdks.isEmpty() && g.sdks.first >= 26 && g.why.isNotBlank(), g.toString())
-            // A 0.4.7 row is one Android version: a new version needs its own confirmations.
-            if ("(0.4.7)" in g.why) assertEquals(g.sdks.first, g.sdks.last, g.toString())
+            // A 0.4.7 or 0.4.8 row is one Android version: a new version needs its own confirmations.
+            if ("(0.4.7)" in g.why || "(0.4.8)" in g.why) assertEquals(g.sdks.first, g.sdks.last, g.toString())
         }
         // A brand with no row is BRAND, whatever its version.
         val philips = axso1.copy(brand = "Philips", manufacturer = "TPV", device = "unknown")
@@ -618,6 +622,10 @@ class HomeSwitchRiskTest {
         "#2396" to graduatedTv("LEAP-S1", "LAS", 34, "MECOOL/HP4035-Mecool/LAS:14/UKG3.240613.001/C1.4.1_20251218:user/release-keys", "MECOOL", "SkyworthDigital"),
         "#2522" to graduatedTv("4K Android TV Box", "YYC", 34, "MECOOL/HP4414-MECOOL/YYC:14/UKG3.250115.001/C1.2.7_20250822:user/release-keys", "MECOOL", "SkyworthDigital"),
         "#1219 #1585" to graduatedTv("BRAVIA 4K GB ATV3", "BRAVIA_ATV3_4K", 26, "Sony/BRAVIA_ATV3_4K_EU/BRAVIA_ATV3_4K:8.0.0/OPR2.170623.027.S34/665751:user/release-keys", "Sony", "Sony"),
+        "#3099 #3312" to reported("MiTV-MOEU1", "lalaland", 34, "Xiaomi/lalaland/lalaland:14/UKN1.240806.017/V816.0.25.12.1.UOEMBTV:user/release-keys"),
+        "#1647 #2925" to graduatedTv("MiProjM05", "eva", 28, "MI/eva/eva:9/PQ3B.190705.003/4185:user/release-keys", "MI", "fengmi"),
+        "#1471 #3716" to graduatedTv("LEAP-S1", "LAS", 34, "Strong/HP4005/LAS:14/UKG3.240613.001/C1.6.2_20251218:user/release-keys", "Strong", "SkyworthDigital"),
+        "#2092 #3724" to graduatedTv("Smart TV", "hamamatsucho", 30, "Toshiba/fushan_euT/hamamatsucho:11/RTO6.230618.001/10344060:user/release-keys", "Toshiba", "Hisense"),
     )
     // The two Android 8 sets reported tvlauncher at priority 0, the others at 2.
     private fun confirmedTv(f: DeviceFacts, extra: List<HomeClaimant> = emptyList(), home: Component? = tvlauncher): Snapshot =
@@ -683,11 +691,14 @@ class HomeSwitchRiskTest {
             Triple("Kogan 11", graduatedTv("AI PONT", "samseong", 30, "Kogan/DVB93KG/samseong:11/RTO2.250508.001/13470691:user/release-keys", "Kogan", "Changhong"), brand),
             Triple("SHARP 11", graduatedTv("AQUOS_TVE19A", "sindang", 30, "SHARP/tcbrae_a/sindang:11/RTOB.250721.001/13808904:user/release-keys", "SHARP", "SHARP"), brand),
             Triple("SHARP 14", graduatedTv("SHARP 2K EU Android TV", "martin", 34, "SHARP/SHARP_2K_ATV2/martin:14/UKNV.260324.001/15080168:user/release-keys", "SHARP", "Expressluck"), brand),
-            Triple("Strong 14, the MECOOL board", graduatedTv("LEAP-S1", "LAS", 34, "Strong/HP4005/LAS:14/UKG3.240613.001/1:user/release-keys", "Strong", "SkyworthDigital"), brand),
+            Triple("Strong 14, another box (#693, the helper)", graduatedTv("Android TV", "YDA", 34, "Strong/YDA/YDA:14/1:user/release-keys", "Strong", "SkyworthDigital"), scope),
+            Triple("Strong LEAP-S1 on 12", graduatedTv("LEAP-S1", "LAS", 31, "Strong/HP4005/LAS:12/1:user/release-keys", "Strong", "SkyworthDigital"), scope),
+            Triple("Strong 11, no row", graduatedTv("SRT 420", "SRT420", 30, "Strong/SRT420/SRT420:11/1:user/release-keys", "Strong", "Strong"), scope),
             Triple("THOMSON 14", graduatedTv("270", "SNA", 34, "THOMSON/Streaming_Box_Plus/SNA:14/URO4.260304.011.B1/15051976:user/release-keys", "THOMSON", "SDMC"), brand),
             Triple("TiVo Stream 4K, SEI Robotics", graduatedTv("TiVo Stream 4K", "SEI400TV", 31, "eSTREAM4K/SEI400TV/SEI400TV:12/1:user/release-keys", "eSTREAM4K", "SEI Robotics"), brand),
             Triple("Hisense 11", graduatedTv("HiSmart 2K ATV4", "hamamatsucho", 30, "Hisense/fushan_emeu/hamamatsucho:11/RTO6.230411.001/9924732:user/release-keys", "Hisense", "Hisense"), scope),
-            Triple("Toshiba on Hisense's board, 11", graduatedTv("Smart TV", "hamamatsucho", 30, "Toshiba/hamamatsucho/hamamatsucho:11/1:user/release-keys", "Toshiba", "Hisense"), scope),
+            Triple("Toshiba on Hisense's board, 11, another set", graduatedTv("Smart TV", "xiangshan", 30, "Toshiba/xiangshan/xiangshan:11/1:user/release-keys", "Toshiba", "Hisense"), scope),
+            Triple("Toshiba hamamatsucho on 12", graduatedTv("Smart TV", "hamamatsucho", 31, "Toshiba/hamamatsucho/hamamatsucho:12/1:user/release-keys", "Toshiba", "Hisense"), scope),
             Triple("OnePlus's JMGO on 14", graduatedTv("H80A", "songni", 34, "JMGO/songni/songni:14/1:user/release-keys", "JMGO", "OnePlus"), scope),
             Triple("OnePlus on 12", graduatedTv("C00", "Cebu", 31, "OnePlus/OnePlusTV/Cebu:12/1:user/release-keys", "OnePlus", "OnePlus"), scope),
             Triple("My on 14", graduatedTv("Android TV", "finch", 34, "My/finch/finch:14/1:user/release-keys", "My", "vestel"), scope),
@@ -700,6 +711,10 @@ class HomeSwitchRiskTest {
             Triple("Xiaomi 14, another model (#884, the helper)", reported("MiTV-MOOR2", "venom", 34, "Xiaomi/venom/venom:14/1:user/release-keys"), scope),
             Triple("Xiaomi 12 (#1273 failed)", reported("MIBOX4", "oneday", 31, "Xiaomi/oneday/oneday:12/1:user/release-keys"), scope),
             Triple("Xiaomi 13, the MZTU1's model", reported("MiTV-MZTU1", "stepup", 33, "Xiaomi/stepup/stepup:13/1:user/release-keys"), scope),
+            Triple("Xiaomi 14, the MOEU0 beside the MOEU1", reported("MiTV-MOEU0", "ladybird", 34, "Xiaomi/ladybird/ladybird:14/1:user/release-keys"), scope),
+            Triple("Xiaomi 13, the MOEU1's model", reported("MiTV-MOEU1", "lalaland", 33, "Xiaomi/lalaland/lalaland:13/1:user/release-keys"), scope),
+            Triple("MI on 9, another fengmi projector", graduatedTv("MiProjM02", "almond", 28, "MI/almond/almond:9/1:user/release-keys", "MI", "fengmi"), scope),
+            Triple("MI MiProjM05 on 11", graduatedTv("MiProjM05", "eva", 30, "MI/eva/eva:11/1:user/release-keys", "MI", "fengmi"), scope),
         )
         for ((why, f, blocker) in off) {
             assertTrue(!HomeSwitchRisk.graduated(f), why)

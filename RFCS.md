@@ -194,5 +194,73 @@ has the phone's network kinds (`PhoneNetwork`, read by the app from Connectivity
 ACCESS_NETWORK_STATE only), each saved TV's addresses cut to their last part with port 5555 and the
 known-TV handshake, a fresh 10 s search, the last 40 "access:" lines and the step's state. It keeps
 RFC-RECONNECT-1's rules: `openKnown` only, so no Allow dialog on any TV, and it saves nothing.
-`ManageDeps` gets `phoneNetwork` (with a default). Not done: "Enter the TV's address" on the sheet,
-as the address entry lives in Setup's machine (S1c) and is not reachable from a returning write.
+`ManageDeps` gets `phoneNetwork` (with a default).
+
+0.4.8, "Enter the TV's address" on the sheet (the beta4 follow-up; additive): shown in the debugging-off
+case with "Show details" or the 30 s hint, it turns the sheet into Setup's address entry (S1c, now
+`AddressEntry` in `:ui:design`, the same words and field) and hands the text to
+`TvAccess.tryAddress(tvId, text)`, which takes Setup's rule (`isHomeAddress`) and says no otherwise. The
+wait tries the typed address first from the next round, with a saved address's rules: on a network
+other than the setup's only `openKnown` (no Allow dialog on a stranger's TV), the TvId check always.
+It is saved in place of the saved addresses only once this TV answers there; a different TV there drops
+it and the wait goes on. `ReachCheck.typed` is its row in "What the app sees"; the log says only that
+an address was typed, never which.
+
+0.4.8, the debugging state after Finish (the beta4 follow-up): `SessionEnd.switchOff` recorded "on"
+whenever port 5555 still answered after debug_off, and the Android emulator's own process listens on
+5555 whatever the TV's adbd does, so the record said "on" and the sheet never said why debugging is
+off. A port that stays open is now asked with `openKnown` (6 s) and an unstored read of adb_enabled
+(`PlanRunner.readSnapshot`, the snapshot's settings read): on when this TV answers with it not 0 or an
+adbd there refuses only the key, off when nothing answers as an adbd or it reads 0, unknown when the
+read fails or a different TV answers.
+
+0.4.8, one network search (the beta4 follow-up): every `discover()` of `NsdDiscovery` starts its own
+NSD listeners and resolve queue, so the step's search, "Copy connection details" and Setup's search
+ran side by side, resolving and probing everything twice (older Android refuses a second resolve
+while one runs). `SharedDiscovery` (`:core:flows`, around the frozen `Discovery`, wired in AppGraph)
+runs one search while anything collects and stops it with the last collector; a late collector first
+gets every TV found so far as `Found`, then the changes.
+
+## RFC-INSTALL-1: the streamed install is for user 0, and an unreadable APK says why
+
+Twenty reports from 0.3.x to 0.4.7-beta4, all Google TVs on Android 11 and 12 (Sony BRAVIA VH2 and
+VH22, TCL G05, G07 and G09, Xiaomi jaws, Hisense songshan) and one TiVo Stream 4K, ended "Install
+com.gathin.tvhome: failed: verify: installed apk sha256 <x>, got no readable apk". The package dump
+showed versionCode 9, but `pm path` named no APK, `am start -W` of the launcher failed, its provider
+did not answer and its files folder was never made: a package on the TV that is not installed for
+user 0. `pm uninstall --user 0` leaves a package like that when another Android user still has it,
+and the streamed install, `cmd package install -S` with no user, is "for all users"; on Android 11
+and 12 that installs over such a package without installing it for user 0 again
+(PackageManagerService.updateSettingsInternalLI: "This does not apply to USER_ALL, which here means
+only install on users for which the app is already installed"; Android 13 changed it). The pushed
+install already names `--user 0` (SECURITY 3.2). Change, no frozen signature changes:
+
+- `:adb:wire`: `AdbService.ExecInstall` is spelled `exec:cmd package install --user 0 -S <size>`, the
+  same user as `pm install --user 0`, `pm uninstall --user 0` and `set-home-activity --user 0`. A
+  fresh install no longer reaches other users, so Undo's `pm uninstall --user 0` removes it whole.
+- `:core:probe`: `InstalledApkReader` beside the frozen Prober (like `LaunchableApps`), with one fixed
+  read-only script (`ProbeScripts.installedApkState`, golden file): one `pm path`, then only the count
+  of base.apk lines, the exit code of the hash command, the user in front and the package dump's
+  "User N:" lines leave the TV, never a path or a hash. `InstalledApkParser` reads them as untrusted.
+- `:core:engine`: when the installed APK's hash reads nothing, the install check asks it once, adds
+  the cause in fixed words to the failure ("got no readable apk (on the TV but not installed for user
+  0, installed for 1 other user)") and logs one line with the counts and flags. The check stays a
+  hash check: the extra read never turns a failure into a pass, and the home screen switch is still
+  never opened without its launcher.
+- `:testing:fake-adbd`: the fake models a package that is not installed for user 0 and Android 11 and
+  12's install rule, and takes the new install line.
+
+Not done: a fallback read of the APK through the dump's codePath. It would hash the right file for a
+package that still cannot start for user 0, so it would hide the cause instead of fixing it.
+
+0.4.8-beta2, the TV's free storage after a streamed install the TV ended (#3221, #3101, #2851; additive,
+no frozen signature changes): when the launcher's stream ends with a protocol error and the installed
+APK does not hash to it, the engine reads the frozen `Prober.freeDataMb` once (the existing
+`ProbeScripts.FREE_DATA`, `df -k /data`, already in the golden file) and appends " [TV storage: N MB
+free]" to the failure; a read that fails leaves the words as before and logs one line. Its parser
+(`FreeDataParser`) now takes only 1K-block output (the header says so), the busybox row wrapped after
+a long filesystem name, and numbers only. `InstallStorage` (`:core:engine`) holds the words and the
+"clearly low" rule (under 200 MB or under twice the APK), which the stop card uses for its new body.
+The chooser card of #3301 and #3305 is words only: `SetupMachine` reads the check's "got
+android/com.android.internal.app.ResolverActivity" from the journal and names the Home claimants the
+person installed on the card (never in the log or the report). Two `CopyKey`s are added.

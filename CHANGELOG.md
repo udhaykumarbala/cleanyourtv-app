@@ -2,6 +2,91 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## 0.4.8 (2026-11-03)
+
+### The new home screen reaches four more TVs in the release
+- The Xiaomi MiTV-MOEU1 on Android 14 (#3099, #3312), the MI MiProjM05 projector on Android 9
+  (#1647, #2925), the Strong LEAP-S1 box on Android 14 (#1471, #3716) and the Toshiba Smart TV
+  (hamamatsucho) on Android 11 (#2092, #3724) get the new home screen with the setup wizard left on,
+  after two testers each said it stayed after a restart. Only these models: other Android 14 Xiaomi
+  models, other MI projectors, other Strong boxes and other Toshiba sets keep their home screen until
+  their own testers confirm it.
+
+### The new home screen installs again on Google TVs
+- On Google TVs with Android 11 and 12 (Sony BRAVIA, TCL, Xiaomi, Hisense, the TiVo Stream 4K), the home
+  screen switch could stop at "Install com.gathin.tvhome" with "got no readable apk", run after run
+  (#2743, #1918, #1510 and 17 more). The app was on the TV but not installed for the TV's main
+  user, which can happen after it was removed for that user while another user still had it. The app
+  now installs it for the main user, the way the copy-and-install route always did, so it can start.
+- If the check still cannot read the installed app, the report says why in plain words (not on the
+  TV, not installed for the main user, hidden), and the log has one line with the counts behind it.
+  The home screen switch still never opens without its launcher.
+
+### Waiting for the TV
+- "Enter the TV's address" on the debugging step now works: with Show details, or after 30 seconds
+  with nothing found, it opens the same address entry as Setup. The app tries that address first,
+  with the same care as the saved one (on another network only the key the TV already allowed, so no
+  Allow prompt on someone else's TV), and saves it once your TV answers there. A different TV at that
+  address ends nothing; the step says the TV doesn't answer there.
+- After Finish switched debugging off, the TV's record could still say it was on, so the debugging
+  step did not say "It's off because we switched it off". When the TV's port still answers after the
+  switch, the app now asks the TV itself (the key it already allowed and the debugging setting) and
+  records what the TV says.
+- The debugging step's search for a TV that moved and "Copy connection details" (or Setup's search)
+  no longer run two network searches side by side: the app runs one and shares it.
+
+### Fixes
+- "Check for updates" in Settings works again. It said "Couldn't check for updates" on every phone and
+  every version (#818, #2486): the app read GitHub's answer in a way Android does not allow on the
+  screen's own thread. It now reads it in the background.
+- Undo everything reads the TV first and plans from what it has now, so a change on the TV since the
+  app last looked no longer stops it as "the TV changed". In test builds, "Switch off" of the Home
+  button helper stopped that way at its first step after the TV had restarted (#2825); it reads the
+  TV first too.
+- When the new home screen did not install, the problem report also said "look not sent:
+  PushAsset config.json via provider", which looked like the old look problem (#2486, #2743,
+  #2851). It now says "look not sent: the new home screen did not install".
+- When the TV turns the connection away ("refused"), the connect card no longer says the phone is in
+  the way (a VPN, MIUI, Private DNS). It says debugging is off on the TV, that the app switches it
+  off on purpose when setup ends, and how to switch it back on (#2084, #2211, #2430, #2502, #2529,
+  #2823, #1915, #2274, #2673). Copy error and Report a problem stay.
+- Test builds: the restart count no longer counts a restart as held when the Home button helper is
+  off (#2061, #1799, #1650, #947). With Home it now reads the helper's two accessibility settings:
+  listed with accessibility on is held, not listed is failed, and listed with accessibility still
+  off waits for a later read (Android switches it on about half a minute after the TV starts). The
+  confirmation says "Checked: boot_id, Home and the helper's accessibility settings".
+- On a TV the app knows by its brand only (a brand set, or no list), the new home screen's dock now
+  has the TV's Live TV app again when you did not pick the dock yourself (#1902). TVs with their own
+  list are unchanged.
+- Manage's dock list offers the apps the TV's home screen would show (#2742). It hid apps such as
+  the Play Store, a media player or the cast app, and offered apps with nothing to open, such as the
+  app's own TV curtain. With the TV connected it asks the TV, as Setup does; the TV's Settings app is
+  no longer left out because Android keeps a stand-in home screen in it.
+- The debugging step's search for a TV that moved no longer skips a TV it saw earlier while
+  debugging was off: it checks that TV's port again.
+- When reading the TV fails because a command on it fails, the log (and so a problem report) now
+  says what kind of answer the TV gave, in fixed words ("Broken pipe", "can't find service",
+  "SecurityException", "not found" or "other"), never the TV's own text (#1543).
+- When the TV ends the new home screen's install ("the TV closed the stream", #3221, #3101, #2851),
+  the app now reads how much space the TV has left and the report's step line says it ("[TV storage:
+  312 MB free]"). When the TV is clearly low on space (under 200 MB, or under twice the size of the
+  app), the card says so and asks you to free some space on the TV, then run Setup again.
+- When the switch stopped because Android showed its "which home screen?" chooser (#3301, #3305), the
+  card now names the home screen apps you installed that answer Home beside the new one and asks you
+  to uninstall them, then run Setup again. It said another app was in charge of Home, and trying
+  again with those apps still installed stopped the same way. The TV's own home screen still goes
+  back as before.
+- On Google TVs of every brand other than TCL, What we found and Manage, Home screen now say before
+  the switch that the remote's Settings (gear) button opens Google TV's own settings panel (on many
+  TVs with the picture and sound settings of the input you're watching), that it may stop working
+  with the new home screen, and that Use the TV's own home screen brings it back (#3059). TCL Google
+  TVs keep their own warning, and nothing about the plan changes.
+
+### Test builds only (not in this release)
+- 0.4.8-beta1 and 0.4.8-beta2 had the switches of the 0.4.7 test builds on: the Home button helper,
+  the candidate lists, and the new home screen with the setup wizard left on for every brand. They stay
+  in test builds; 0.4.8 has them off.
+
 ## 0.4.7 (2026-10-30)
 
 ### Home screen

@@ -53,6 +53,7 @@ import tv.cleanyour.core.flows.ManageEffect
 import tv.cleanyour.core.flows.ProblemReports
 import tv.cleanyour.core.flows.ReportKind
 import tv.cleanyour.core.flows.Reach
+import tv.cleanyour.core.flows.tvIdOrNull
 import tv.cleanyour.core.flows.ReportContext
 import tv.cleanyour.core.flows.SetupEffect
 import tv.cleanyour.core.flows.SetupStart
@@ -385,11 +386,13 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
         if (reach !is Reach.Idle) DebugStepSheet(reach, onCancel = { graph.access.cancelWaiting() }, check = reachCheck,
             onReport = { title ->
                 val r = reach
-                val tvId = when (r) { is Reach.NeedsDebugging -> r.tvId; is Reach.AwaitingAllow -> r.tvId; is Reach.WrongNetwork -> r.tvId; is Reach.Connecting -> r.tvId; Reach.Idle -> null }
+                val tvId = r.tvIdOrNull()
                 val name = graph.tvs.tvs.value.firstOrNull { it.id == tvId }?.nickname
                 go(IssueRoute.of(tvId, ReportContext("Manage", ReportContext.named(title, name), reachCase(r), error = reachCheck.summary())))
             },
-            details = details, onDetails = { collectDetails(it) })
+            details = details, onDetails = { collectDetails(it) },
+            // 0.4.8: "Enter the TV's address" on the step: the wait tries the typed address with the known-TV rules.
+            onAddress = { text -> reach.tvIdOrNull()?.let { graph.access.tryAddress(it, text) } ?: false })
         SnackbarHost(snack, Modifier.align(Alignment.BottomCenter).padding(16.dp))
     }
 }

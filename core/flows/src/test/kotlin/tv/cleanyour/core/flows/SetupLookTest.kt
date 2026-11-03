@@ -6,6 +6,7 @@ import tv.cleanyour.core.engine.HomeOutcome
 import tv.cleanyour.core.engine.JournalRecord
 import tv.cleanyour.core.engine.RunStatus
 import tv.cleanyour.core.model.EnabledState
+import tv.cleanyour.core.model.HdmiSource
 import tv.cleanyour.core.model.Level
 import tv.cleanyour.core.model.Op
 import tv.cleanyour.core.model.PackageName
@@ -17,9 +18,12 @@ import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.PlanResult
 import tv.cleanyour.core.spec.BundledThemeSource
 import tv.cleanyour.core.spec.DecodeResult
+import tv.cleanyour.core.spec.DockRanking
 import tv.cleanyour.core.spec.LauncherConfigCodec
 import tv.cleanyour.core.spec.LauncherConfigDoc
+import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.spec.StyleId
+import tv.cleanyour.core.store.SnapshotCodec
 import tv.cleanyour.testing.fixtures.Samples
 import tv.cleanyour.testing.fixtures.sha256Of
 import kotlin.test.Test
@@ -202,6 +206,36 @@ class SetupLookTest {
 
     // A photo made in the look step is sent with its dim when Setup runs, and kept for the TV (as
     // "Restore mine" with that dim) only once the TV has it.
+    // 0.4.8 (issue #1902, a Vestel set with a brand set): the default dock took its Live TV app from the profile only,
+    // so a TV with no profile got no Live TV tile though LiveTvKeys found the app. Now it gets the one LiveTvKeys finds;
+    // a profiled TV still gets its profile's (the harness profile names none, so none).
+    @Test fun aTvWithoutAProfileGetsItsLiveTvAppInTheDefaultDock() = runTest(timeout = 30.seconds) {
+        val live = PackageName("com.android.tv")
+        suspend fun asked(brandSet: Boolean): Pair<PackageName?, List<PackageName>?> {
+            val h = Harness()
+            if (brandSet) h.profiles.resolver = { _, _ -> ProfileResolution.BrandSureSet("Xiaomi", emptyList(), emptyList()) }
+            h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+            h.prober.snapshotFor = { r -> Samples.snapshot(reason = r).let { it.copy(hdmi = listOf(HdmiSource(1, null, "hdmi1", false))) }.let { it.copy(contentHash = SnapshotCodec.hash(it)) } }
+            val picked = mutableListOf<PackageName?>()
+            val m = SetupMachine(h.setupDeps(themes = looks, dock = DockPicker { p, i, hdmi, l, loc -> picked += l; DockRanking.pick(p, i, hdmi, l, loc) }), backgroundScope)
+            h.discovery.emit(tv.cleanyour.core.discovery.DiscoveryEvent.Found(miTvFound))
+            settle()
+            m.dispatch(SetupIntent.Start)
+            settle()
+            h.discovery.open5555[HOST] = true
+            settle(2_100)
+            settle(700)
+            assertIs<SetupState.Found>(m.state.value)
+            return picked.lastOrNull() to h.planner.requests.filterIsInstance<PlanRequest.Setup>().lastOrNull()?.choices?.dock
+        }
+        val (brandLive, brandDock) = asked(brandSet = true)
+        assertEquals(live, brandLive)
+        assertEquals(live, brandDock?.last(), brandDock.toString())
+        val (profiledLive, profiledDock) = asked(brandSet = false)
+        assertNull(profiledLive, "a profiled TV keeps its profile's (none)")
+        assertFalse(live in profiledDock.orEmpty(), profiledDock.toString())
+    }
+
     @Test fun aPhotoMadeInSetupIsSentThenKeptForTheTv() = runTest(timeout = 30.seconds) {
         val h = Harness()
         val m = found(h)

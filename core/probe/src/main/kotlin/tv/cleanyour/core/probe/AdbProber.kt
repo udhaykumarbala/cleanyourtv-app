@@ -45,7 +45,7 @@ class AdbProber(
     private val clock: Clock,
     private val signed: Set<PackageName> = SIGNED_PACKAGES,
     private val known: Map<Sha256, Sha256> = emptyMap(),
-) : Prober, LaunchableApps, SavedWifiOwners {
+) : Prober, LaunchableApps, SavedWifiOwners, InstalledApkReader, AccessibilityRead {
 
     private suspend fun run(
         session: TvSession, line: ShellLine, stage: ProbeStage, cap: Int, timeoutMs: Long = 30_000, retry: RetryClass = RetryClass.IDEMPOTENT_READ,
@@ -186,6 +186,13 @@ class AdbProber(
         return LaunchableParser.parse(s.getValue("").asSequence()) + LaunchableParser.parse(s.getValue("launcher").asSequence())
     }
 
+    // The SETTINGS stage's script, of which only the secure table's two accessibility keys are kept.
+    override suspend fun accessibility(session: TvSession): AccessibilityNow {
+        val r = run(session, ProbeScripts.SETTINGS, ProbeStage.SETTINGS, 4 * 1024 * 1024)
+        val secure = SettingsListParser.parse(sections(ProbeStage.SETTINGS, r.stdout, listOf("global")).getValue("").asSequence())
+        return AccessibilityNow(secure[SettingKey.ACCESSIBILITY_ENABLED.key], secure[SettingKey.ENABLED_ACCESSIBILITY.key])
+    }
+
     override suspend fun savedWifi(session: TvSession): SavedWifi {
         val r = run(session, ProbeScripts.WIFI_OWNERS, ProbeStage.LAUNCHER, 256 * 1024)
         return WifiOwnersParser.parse(lines(r.stdout))
@@ -235,19 +242,21 @@ class AdbProber(
     override suspend fun installedSha256(session: TvSession, pkg: PackageName): Sha256? =
         firstHash(run(session, ProbeScripts.installedSha256(pkg), ProbeStage.LAUNCHER, 4096))
 
+    // RFC-INSTALL-1: asked only after installedSha256 read nothing, so the failure can say why.
+    override suspend fun installedApk(session: TvSession, pkg: PackageName): InstalledApk {
+        val r = run(session, ProbeScripts.installedApkState(pkg), ProbeStage.LAUNCHER, 16 * 1024)
+        return InstalledApkParser.parse(sections(ProbeStage.LAUNCHER, r.stdout, listOf("hash", "current", "users")))
+    }
+
     private fun firstHash(r: ExecResult): Sha256? {
         if (r.exit != 0) return null
         val h = r.stdout.trim().substringBefore(' ').lowercase()
         return if (SHA256_RE.matches(h)) Sha256(h) else null
     }
 
-    override suspend fun freeDataMb(session: TvSession): Int {
-        val r = run(session, ProbeScripts.FREE_DATA, ProbeStage.FACTS, 16 * 1024)
-        val row = lines(r.stdout).map { it.trim().split(Regex("\\s+")) }.lastOrNull { it.size >= 6 && it.last() == "/data" }
-            ?: throw ProbeException(ProbeStage.FACTS, "df printed no /data row")
-        val kb = row[3].toLongOrNull() ?: throw ProbeException(ProbeStage.FACTS, "df Available is not a number: ${row[3]}")
-        return (kb / 1024).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
-    }
+    // The Available MB of /data (FreeDataParser: 1K blocks only, numbers only).
+    override suspend fun freeDataMb(session: TvSession): Int =
+        FreeDataParser.parse(lines(run(session, ProbeScripts.FREE_DATA, ProbeStage.FACTS, 16 * 1024).stdout))
 
     override suspend fun installRefusal(session: TvSession, noopApk: BlobRef): Boolean {
         run(session, ProbeScripts.MKDIR_TMP, ProbeStage.LAUNCHER, 4096, retry = RetryClass.IDEMPOTENT_WRITE)

@@ -331,7 +331,8 @@ sealed interface WriteResult {
 // The returning-user write of UX 4.11: the debugging step if needed (TvAccess), a plan from the
 // newest snapshot, the credential gate (D17), the run, then the restore point on the TV (D44).
 // `fresh` plans from a new snapshot instead of the newest stored one, for a request that needs what
-// an older snapshot may not hold (UpdateLauncher: the installed launcher's signer, launcher v2.4.0).
+// an older snapshot may not hold (UpdateLauncher: the installed launcher's signer, launcher v2.4.0), or whose
+// priors drift between reads (HomeHelperOff and UndoEverything: the whole accessibility list, issue #2825).
 class TvWriter(private val d: ManageDeps) {
     suspend fun write(tvId: TvId, request: PlanRequest, fresh: Boolean = false, onBusy: (Busy) -> Unit = {}): WriteResult {
         onBusy(Busy.Connecting)

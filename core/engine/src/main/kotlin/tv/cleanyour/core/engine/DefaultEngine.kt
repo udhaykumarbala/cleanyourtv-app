@@ -47,6 +47,8 @@ import tv.cleanyour.core.planner.PlanSummary
 import tv.cleanyour.core.planner.Step
 import tv.cleanyour.core.planner.StockHome
 import tv.cleanyour.core.planner.SwitchOffRule
+import tv.cleanyour.core.probe.InstalledApkReader
+import tv.cleanyour.core.probe.ProbeException
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.session.BootOutcome
 import tv.cleanyour.core.session.ExecResult
@@ -680,10 +682,26 @@ class DefaultEngine(
     private suspend fun streamFailed(run: Run, op: Op.InstallStream, error: AdbError): Outcome = try {
         when (installedApkCheck(run.session, op)) {
             Outcome.Ok -> Outcome.Ok
-            else -> Outcome.Failed(error, "$STREAM_FAILED$error")
+            else -> Outcome.Failed(error, "$STREAM_FAILED$error${storageTag(run.session, op)}")
         }
     } catch (e: AdbException) {
         if (e.error.isLost()) Outcome.Lost(e.error) else Outcome.Failed(error, "$STREAM_FAILED$error")
+    }
+
+    // Issues #3221, #3101 and #2851 (InstallStorage): the free space on /data, read once after the
+    // streamed install failed, as " [TV storage: N MB free]". A read that fails leaves the failure
+    // text as it was, with one line that says so; the read never changes the outcome.
+    private suspend fun storageTag(session: TvSession, op: Op.InstallStream): String {
+        val free = try {
+            prober.freeDataMb(session)
+        } catch (e: ProbeException) {
+            log("engine: streamed install of ${op.pkg.value}: the TV's free storage could not be read (${e.stage.name.lowercase()})")
+            return ""
+        } catch (e: AdbException) {
+            log("engine: streamed install of ${op.pkg.value}: the TV's free storage could not be read (no answer)")
+            return ""
+        }
+        return InstallStorage.tag(free)
     }
 
     // Begin (forced) before the line is sent, Done or Failed before the next Begin.
@@ -785,8 +803,25 @@ class DefaultEngine(
         }
         val installed = prober.installedSha256(session, pkg)
         if (installed == expected) return Outcome.Ok
-        val got = installed?.hex ?: "no readable apk"
+        val got = installed?.hex ?: "no readable apk${unreadableApk(session, pkg)?.let { " ($it)" }.orEmpty()}"
         return Outcome.Failed(AdbError.Policy.GuardFailed(-1, "installed apk sha256 ${expected.hex}, got $got"), "verify: installed apk sha256 ${expected.hex}, got $got")
+    }
+
+    // RFC-INSTALL-1: twenty reports from Google TVs on Android 11 and 12 ended "got no readable apk"
+    // with nothing to say why. One more read-only call, only on that path: the cause in fixed words
+    // for the failure (the report's step line) and one diagnostics line with the counts, exit codes,
+    // user ids and state flags (no path, no hash). It never turns the failure into a pass. A probe
+    // that cannot say (an older prober, a firmware printing something else) leaves the words as before.
+    private suspend fun unreadableApk(session: TvSession, pkg: PackageName): String? {
+        val reader = prober as? InstalledApkReader ?: return null
+        val state = try {
+            reader.installedApk(session, pkg)
+        } catch (e: ProbeException) {
+            log("engine: install check of ${pkg.value}: its state could not be read (${e.stage.name.lowercase()})")
+            return null
+        }
+        log("engine: install check of ${pkg.value}: ${state.summary()}")
+        return state.why()
     }
 
     // Verify and probe reads: idempotent, so the session may retry them.

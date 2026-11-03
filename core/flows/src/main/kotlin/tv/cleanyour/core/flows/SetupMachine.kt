@@ -20,6 +20,7 @@ import tv.cleanyour.core.discovery.DiscoverySource
 import tv.cleanyour.core.discovery.FoundTv
 import tv.cleanyour.core.engine.Engine
 import tv.cleanyour.core.engine.HomeOutcome
+import tv.cleanyour.core.engine.InstallStorage
 import tv.cleanyour.core.engine.PauseReason
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.engine.RunStatus
@@ -52,6 +53,7 @@ import tv.cleanyour.core.model.WizardDraft
 import tv.cleanyour.core.planner.Choices
 import tv.cleanyour.core.planner.DefaultPlanner
 import tv.cleanyour.core.planner.FireOs
+import tv.cleanyour.core.planner.GoogleTvSettingsKey
 import tv.cleanyour.core.planner.HomeSwitchRisk
 import tv.cleanyour.core.planner.TclGoogleTv
 import tv.cleanyour.core.planner.TclChina
@@ -86,6 +88,7 @@ import tv.cleanyour.core.store.BlobStore
 import tv.cleanyour.core.store.Clock
 import tv.cleanyour.core.store.DocumentStore
 import tv.cleanyour.core.store.GatePass
+import tv.cleanyour.core.ops.HomePlaceholder
 import tv.cleanyour.core.ops.Transfer
 import tv.cleanyour.core.store.SnapshotStore
 import tv.cleanyour.core.store.TvRepository
@@ -147,6 +150,7 @@ data class SetupExtras(
     val homeBlock: HomeBlock = HomeBlock.NONE,   // why the switch is not offered, for S3's line (RF-PROFILES-63 P1, P2)
     val fireTv: Boolean = false,                 // issue #2: a Fire OS set, so S3's TV_REFUSES line names Fire TV, not the panel's brand
     val tclRemoteKeys: Boolean = false,          // issue #275: a TCL Google TV, so S3 says which remote buttons the new home screen loses
+    val googleTvSettingsKey: Boolean = false,    // issue #3059: another Google TV, so S3 says the remote's Settings button may stop working
     val connectError: ConnectError? = null,      // 0.3.6: the TV's port answered, the connection failed; the door's card and "Copy error"
     val staleNotice: Boolean = false,            // the TV changed under the plan; a new plan is shown
     val finishing: Finishing? = null,            // D7 "Switching debugging off... done."
@@ -712,7 +716,7 @@ class SetupMachine(
         val kind = errorName(error)
         val log = attempt { deps.diagnostics.redactedText() }.getOrDefault("")
         val detail = attempt { deps.connectDetail() }.getOrNull()
-        mutableExtras.update { it.copy(connectError = ConnectError(kind, ConnectErrorSummary.build(deps.about, kind, detail, log))) }
+        mutableExtras.update { it.copy(connectError = ConnectError(kind, ConnectErrorSummary.build(deps.about, kind, detail, log), ConnectError.debuggingOff(kind, detail))) }
     }
 
     private fun onOpenFailed(error: AdbError) {
@@ -861,7 +865,7 @@ class SetupMachine(
         val f = deviceFacts ?: return HomeBlock.NONE
         val p = profile()
         val fireOs = p?.platform == Platform.FIRE_OS || FireOs.isFireOs(f, snap)
-        mutableExtras.update { it.copy(fireTv = fireOs, tclRemoteKeys = TclGoogleTv.applies(f, snap)) }
+        mutableExtras.update { it.copy(fireTv = fireOs, tclRemoteKeys = TclGoogleTv.applies(f, snap), googleTvSettingsKey = GoogleTvSettingsKey.applies(f, snap)) }
         // Already ours (a re-run): there is no switch to skip, as in the planner's takeover.
         // 0.3.4 (issues #171, #187, #220): Home may answer to our package name with another key on
         // it (CleanYourTV's tool for computers installs its launcher under the same name). That is not
@@ -935,11 +939,18 @@ class SetupMachine(
         // row (DockLayers). The draft keeps its whole list (up to 24 apps), so fewer apps in a row
         // never drops the rest of the order.
         val choice = lookChoice(draft)
+        // 0.4.7: the TV's Live TV app (LiveTvKeys, as Manage's LookCarry), not one switched off here.
+        val liveTv = LiveTvKeys.pick(profile(), snap.packages, draft.extraOff)
+        // 0.4.8 (issue #1902, a Vestel set on Android 14 with a brand set): the dock and the look took the Live TV app
+        // from the profile only, which a brand set or an unlisted TV has not, so the default dock had no Live TV tile
+        // though LiveTvKeys found the app. Without a profile they take the one LiveTvKeys found; a profiled TV's stay
+        // its profile's.
+        val live = profile().let { if (it != null) it.liveTv else liveTv }
         val tvLook = LookTv(null, deviceFacts?.ramMb?.takeIf { it > 0 } ?: snap.facts.ramMb.takeIf { it > 0 },
-            snap.hdmi.isNotEmpty() || profile()?.liveTv?.let { it in snap.packages } == true)
+            snap.hdmi.isNotEmpty() || live?.let { it in snap.packages } == true)
         val columns = mutableExtras.value.look?.columns ?: drafts.partsOf(choice, tvLook, autoPick = false).columns
         val theme = mutableExtras.value.look?.legacyThemeId?.let { drafts.theme(it) } ?: choice?.takeUnless { it.isNew }?.lookOn(deps.clock.today())?.let { drafts.theme(it) }
-        val dock = DockLayers.trim(draft.dock ?: deps.dock.pick(profile(), snap.packages.keys, snap.hdmi.isNotEmpty(), profile()?.liveTv, deps.locale()), columns)
+        val dock = DockLayers.trim(draft.dock ?: deps.dock.pick(profile(), snap.packages.keys, snap.hdmi.isNotEmpty(), live, deps.locale()), columns)
         val kept = draft.dock?.let(DockLayers::keep) ?: dock
         val wifi = wizardWifi(s, snap)
         val groups = when (res) {
@@ -987,8 +998,6 @@ class SetupMachine(
         lookContext = LookContext(apps = lookApps, others = candidates.filter { it.pkg !in kept }, mine = mine, new = new, tv = tvLook, cards = cards,
             keyNames = keyNames, dockChosen = draft.dock != null)
         val sheet = mutableExtras.value.look?.let { drafts.refresh(it, lookContext) } ?: drafts.open(choice, lookContext)
-        // 0.4.7: the TV's Live TV app (LiveTvKeys, as Manage's LookCarry), not one switched off here.
-        val liveTv = LiveTvKeys.pick(profile(), snap.packages, draft.extraOff)
         val look = if (!possible && !helper) null else attempt { val (doc, w) = drafts.docOf(sheet, dock, cards, lookContext)
             Look.encode(deps.encoder, deps.blobs, LiveTvKeys.apply(if (helper) HomeHelperKeys.with(doc, helperStock!!.pkg) else doc, liveTv), w) }
             .onFailure { deps.log.line("setup: the look could not be encoded, planned without it") }.getOrNull()
@@ -1252,7 +1261,7 @@ class SetupMachine(
     private suspend fun onFinished(tvId: TvId, f: RunState.Finished) {
         lastFinished = f
         mutableExtras.update { it.copy(rollingBack = false, highlightStop = false, reconnect = null) }
-        if (f.home == HomeOutcome.VERIFY_FAILED) logHomeSwitchFailure(f.plan)
+        val switchFailure = if (f.home == HomeOutcome.VERIFY_FAILED) logHomeSwitchFailure(f.plan) else null
         // 0.4.7: a look the TV refused is named in the log with the TV's answer, never only counted as a skip.
         attempt { RunLines.lookSkipped(f, deps.ledger) }.getOrNull()?.let { deps.log.line("setup: $it") }
         when {
@@ -1264,7 +1273,7 @@ class SetupMachine(
             f.status == RunStatus.ABANDONED && f.home == HomeOutcome.CONNECTION_LOST && f.plan.steps.isEmpty() ->
                 send(Ev.Stop(tvId, homePutBackCard(f.plan.id)))
             f.status == RunStatus.ABANDONED -> effect(SetupEffect.Navigate("manage/${tvId.value}"))
-            f.home != null && f.home != HomeOutcome.CONFIRMED -> send(Ev.Stop(tvId, homeCard(f, switchedOffSoFar(f.plan))))
+            f.home != null && f.home != HomeOutcome.CONFIRMED -> send(Ev.Stop(tvId, homeCard(f, switchedOffSoFar(f.plan), switchFailure)))
             // 0.4.7-beta1 QA: the engine finishes a confirmed section with no HomeOutcome (null; only a rolled back
             // one carries its outcome, and that went to the card above), so a run that got here with a section held
             // its switch or its helper. Before, Done never said "New home screen on" and the TV record never got
@@ -1376,18 +1385,21 @@ class SetupMachine(
 
     // 0.4.8 (Restarts): the TV's Home and its boot_id, on a TV this app switched (or gave the helper); the read counts a
     // held or a failed restart against the one before it. Nothing else is read, nothing is written to the TV.
+    // The helper's path reads its two accessibility settings too (Restarts.HelperNow, issues #2061, #1799): a helper not
+    // yet bound is left for a later read.
     private suspend fun countRestart(record: Tv, s: TvSession): RestartRead? {
         val restarts = deps.restarts ?: return null
         val latest = attempt { deps.snapshots.latest(record.id) }.getOrNull()
         val decision = attempt { deps.homeDecisions?.load(record.id) }.getOrNull()
         val path = HomePath.of(record, latest, decision) ?: return null
         val home = attempt { deps.prober.homeNow(s) }.getOrNull()?.takeIf { Restarts.settled(it) } ?: return null
+        val helper = if (path == HomePath.HELPER) Restarts.helperNow(deps.prober, s)?.takeIf { it != Restarts.HelperNow.NOT_YET } ?: return null else null
         val boot = attempt { deps.prober.bootId(s) }.getOrNull() ?: return null
         val build = deps.about?.countLine ?: "unknown"
-        val o = attempt { restarts.observe(record.id, boot, home, path, build, deps.clock.nowMs()) }.getOrNull() ?: return null
+        val o = attempt { restarts.observe(record.id, boot, home, path, build, deps.clock.nowMs(), helperOn = helper != Restarts.HelperNow.NOT_LISTED) }.getOrNull() ?: return null
         when (o.read) {
             RestartRead.HELD -> deps.log.line("setup: restart held (${path.word}), ${o.tally.held} held, ${o.tally.failed} failed")
-            RestartRead.FAILED -> deps.log.line("setup: restart failed (${path.word}): Home does not answer to the new home screen, ${o.tally.held} held, ${o.tally.failed} failed")
+            RestartRead.FAILED -> deps.log.line("setup: restart failed (${path.word}): ${Restarts.failedWhy(helper)}, ${o.tally.held} held, ${o.tally.failed} failed")
             else -> {}
         }
         mutableExtras.update { it.copy(restarts = o.tally) }
@@ -1802,7 +1814,15 @@ class SetupMachine(
     private suspend fun switchedOffSoFar(plan: Plan): Int =
         (earlierRuns + plan.id).distinct().flatMap { id -> attempt { deps.ledger.disabledBy(id) }.getOrDefault(emptySet()) }.toSet().size
 
-    private fun homeCard(f: RunState.Finished, off: Int = 0): StopCard {
+    // `failure`: the step the switch stopped at, when it ended VERIFY_FAILED (logHomeSwitchFailure).
+    private fun homeCard(f: RunState.Finished, off: Int = 0, failure: LastFailure? = null): StopCard {
+        // Issues #3221, #3101, #2851: the TV ended the launcher's install and is clearly low on
+        // storage. The switch never opened, so neither the wizard nor another home screen app was
+        // the cause; the card says to free some space.
+        lowStorageMb(failure)?.let { free ->
+            wifiCard = false
+            return card(StopCase.HOME_UNKNOWN, f.plan.id, args = mapOf("free" to free), body = CopyKey.STOP_HOME_LOW_STORAGE_BODY)
+        }
         val other = otherLauncherName()
         // Issue #375: "Try with the wizard off" is never offered. The planner switches the wizard off
         // only inside the home screen switch, on a profile with the wizard quirk, and then this run
@@ -1843,7 +1863,38 @@ class SetupMachine(
         // QA of 0.4.5: "Your TV is as it was" only when nothing stayed switched off; otherwise the
         // card says how many things are still off and that the home screen is as it was.
         if (case == StopCase.HOME_TIMED_OUT && off > 0) return card(case, f.plan.id, args = mapOf("launcher" to (other ?: ""), "count" to off), body = CopyKey.STOP_HOME_TIMED_OUT_BODY_OFF)
+        // Issues #3301, #3305: Home answered with Android's chooser because home screen apps the person
+        // installed tie with ours; the card names them and says what to do. Only the words change:
+        // the run rolled back as before, and the buttons are the case's own.
+        if (case == StopCase.HOME_OTHER_LAUNCHER || case == StopCase.HOME_UNKNOWN) {
+            val theirs = chooserApps(failure)
+            if (theirs.isNotEmpty()) return card(case, f.plan.id, body = CopyKey.STOP_HOME_CHOOSER_BODY,
+                args = mapOf("launcher" to (other ?: ""), "names" to theirs.joinToString(", "), "count" to theirs.size))
+        }
         return card(case, f.plan.id, args = mapOf("launcher" to (other ?: "")))
+    }
+
+    // The free MB the launcher's failed install named (InstallStorage), when that is clearly low for its APK.
+    private fun lowStorageMb(failure: LastFailure?): Int? {
+        val op = failure?.op as? Op.InstallStream ?: return null
+        if (op.pkg != Launcher.pkg) return null
+        val free = InstallStorage.freeMbIn(failure.stderrHead) ?: return null
+        return free.takeIf { InstallStorage.low(it, op.blob.size) }
+    }
+
+    // The home screen apps the person installed that claim Home, when the switch's check read the
+    // chooser: not ours, not the TV's own, not a system app and not a placeholder (HomePlaceholder).
+    // Each by its label when the app has one, else its package name. Never logged: the person's
+    // apps stay out of the log and the report.
+    private fun chooserApps(failure: LastFailure?): List<String> {
+        if (failure == null || (failure.op !is Op.SetHome && failure.op !is Op.VerifyHome)) return emptyList()
+        if (!failure.stderrHead.endsWith("got $HOME_CHOOSER")) return emptyList()
+        val s = snapshot ?: return emptyList()
+        val stock = profile()?.stockLaunchers?.map { it.pkg }.orEmpty().toSet()
+        return s.home.claimants.map { it.component }
+            .filter { c -> c.pkg != Launcher.pkg && c.pkg !in stock && s.packages[c.pkg]?.system != true && !HomePlaceholder.isPlaceholder(c) }
+            .map { it.pkg }.distinct()
+            .map { pkg -> s.packages[pkg]?.label?.trim()?.takeIf { it.isNotEmpty() } ?: pkg.value }
     }
 
     private fun wraithClaims(): Boolean {
@@ -1890,11 +1941,12 @@ class SetupMachine(
 
     // Issue #338: the step the home screen switch stopped at, with its exit code and the head of the
     // TV's answer, the way a pause line names its step (0.3.2 B3).
-    private suspend fun logHomeSwitchFailure(plan: Plan) {
-        val failed = attempt { deps.ledger.homeSwitchFailure(plan) }.getOrNull() ?: return
+    private suspend fun logHomeSwitchFailure(plan: Plan): LastFailure? {
+        val failed = attempt { deps.ledger.homeSwitchFailure(plan) }.getOrNull() ?: return null
         val code = failed.exit?.let { "exit $it" } ?: "failed"
         val head = LogCodes.clean(failed.stderrHead, 160).takeIf { it.isNotEmpty() }?.let { ": $it" }.orEmpty()
         deps.log.line("setup: home switch stopped at ${LogCodes.op(failed.op)}: $code$head")
+        return failed
     }
 
     private fun runLabel(r: RunState): String = RunLines.label(r)
@@ -1971,6 +2023,9 @@ class SetupMachine(
         }
     }
 }
+
+// What the home check reads when Android's chooser answers Home (issues #3301, #3305).
+private const val HOME_CHOOSER = "android/com.android.internal.app.ResolverActivity"
 
 // The TV's settings apps (issue #629), as the engine's home check names them.
 private val SETTINGS_PACKAGES = setOf("com.android.tv.settings", "com.android.settings")

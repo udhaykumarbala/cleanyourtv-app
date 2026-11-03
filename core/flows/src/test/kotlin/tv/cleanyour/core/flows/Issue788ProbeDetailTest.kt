@@ -43,7 +43,8 @@ class Issue788ProbeDetailTest {
         h.prober.snapshotFor = { throw ProbeException(ProbeStage.PACKAGES, "exit 1: /system/bin/sh: cmd: inaccessible 192.168.1.20") }
         val m = h.setup(backgroundScope)
         toFound(h, m)
-        assertTrue("setup: probe failed probe_failed(packages): exit 1" in h.logLines, h.logLines.toString())
+        // 0.4.8 (issue #1543): the kind of the answer in fixed words ("other" here), never the answer.
+        assertTrue("setup: probe failed probe_failed(packages): exit 1: other" in h.logLines, h.logLines.toString())
         assertTrue(h.logLines.none { "192.168" in it || "inaccessible" in it }, h.logLines.toString())
     }
 }

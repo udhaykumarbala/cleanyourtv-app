@@ -82,6 +82,8 @@
     <!-- D36 (RF-LAUNCHER-240 F1): the plan replaces a home screen app signed with another key -->
     <string name="found_replaces_launcher">Replaces the home screen app already on this TV. Its look, app order, settings and card answers start fresh.</string>
     <string name="found_tcl_remote_keys">On TCL Google TV, the remote\'s Settings (gear), Netflix and YouTube buttons stop working with the new home screen. To get them back, choose Use the TV\'s own home screen on the Home screen page.</string>
+    <!-- Issue #3059: a Google TV of another brand than TCL, whose remote's Settings button may stop working -->
+    <string name="found_google_tv_settings_key">On Google TV, the remote\'s Settings (gear) button opens Google TV\'s own settings panel, which on many TVs also has the picture and sound settings for the input you\'re watching. With the new home screen it may stop working. To get it back, choose Use the TV\'s own home screen on the Home screen page.</string>
     <string name="found_no_lock">No screen lock on this phone, so we can\'t double-check it\'s you.</string>
     <!-- Unknown model (no profile) -->
     <string name="found_unknown_title">{count, plural, =0 {We didn\'t find anything we\'re sure about} one {We found one thing we\'re sure about} other {We found # things we\'re sure about}}</string>
@@ -276,6 +278,10 @@
     <string name="stop_home_other_launcher_secondary">Keep {launcher}</string>
     <!-- Issue #629: the check rolled back because a Settings page was open on the TV. -->
     <string name="stop_home_settings_open_body">A Settings page was open on the TV during the check, so we put the TV\'s own home screen back to be safe. Nothing is wrong with your TV. Try again, and this time press only Home on the remote.</string>
+    <!-- Issues #3221, #3101, #2851: the TV ended the new home screen's install and is low on storage. -->
+    <string name="stop_home_low_storage_body">The TV is almost out of space ({free, plural, other {# MB}} free), so the new home screen couldn\'t be installed. The TV\'s own home screen stays, and everything else we did is kept. Free some space on the TV in Settings > Storage, then run Setup again.</string>
+    <!-- Issues #3301, #3305: home screen apps the person installed tie with ours, so Android showed its chooser. -->
+    <string name="stop_home_chooser_body">{count, plural, one {Another home screen app is installed on the TV ({names}), so Android asked which home screen to use and the switch couldn\'t finish. We put the TV\'s own home screen back. Uninstall that app on the TV, then run Setup again.} other {Other home screen apps are installed on the TV ({names}), so Android asked which home screen to use and the switch couldn\'t finish. We put the TV\'s own home screen back. Uninstall them on the TV, then run Setup again.}}</string>
     <string name="stop_home_unknown_title">The TV\'s own home screen is back</string>
     <string name="stop_home_unknown_body">We couldn\'t make the new home screen take over on this TV, so we put the TV\'s own back. Everything else we did is kept. To try again later, open Home screen for this TV, or send us a report so we can look at this model.</string>
     <string name="stop_home_unknown_primary">Report a problem</string>

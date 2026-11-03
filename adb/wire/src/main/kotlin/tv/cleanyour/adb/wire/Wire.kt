@@ -24,7 +24,7 @@ interface TlsUpgrader { suspend fun upgrade(socket: AdbSocket, pin: Sha256?): Ad
 sealed interface AdbService {
     data class ShellV2(val line: ShellLine) : AdbService       // "shell,v2,raw:" + line.text
     data object Sync : AdbService                              // "sync:"
-    data class ExecInstall(val size: Long) : AdbService        // "exec:cmd package install -S <size>"
+    data class ExecInstall(val size: Long) : AdbService        // "exec:cmd package install --user 0 -S <size>" (RFC-INSTALL-1)
     data object Ping : AdbService }                            // "exec:echo", the keepalive
 
 class AdbConnection private constructor(private val core: ConnectionCore) {   // sketch; W2 owns the shape inside :adb:wire

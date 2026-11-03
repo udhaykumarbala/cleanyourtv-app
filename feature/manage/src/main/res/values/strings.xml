@@ -106,6 +106,9 @@
     <string name="debugstep_unknown">Can\'t tell</string>
     <string name="debugstep_stuck">Still nothing? Some TVs open the Wi-Fi debugging port only after a restart, so restart the TV once. Some also need \"Network debugging\" or \"Wireless debugging\" switched on as well as USB debugging. And the TV may have a new address: it shows on the TV under Settings > Network.</string>
     <string name="debugstep_report">Report a problem</string>
+    <string name="debugstep_address">Enter the TV\'s address</string>
+    <string name="debugstep_row_typed">The TV answers at the address you typed</string>
+    <string name="debugstep_row_typed_no">Check the address on the TV under Settings > Network. USB debugging must be on there too.</string>
     <string name="details_copy">Copy connection details</string>
     <string name="details_share">Share</string>
     <string name="details_collecting">Looking at the Wi-Fi and your TVs...</string>

@@ -115,13 +115,22 @@ object RunLines {
     // 0.4.7 (issues #1279, #1649): Setup sends its look with a CONTINUE policy, so a look the TV refused used to
     // leave only "3 skipped". This names the skipped send and the TV's answer: "look not sent: PushAsset
     // config.json via provider: nonzero_exit(1) <stderr head>". Null when the run sent its look, or had none.
+    // 0.4.8 (issues #2486, #2743, #2851): when the launcher's install was skipped too (it failed), the look could not
+    // reach a launcher that is not there, and the provider's refusal read like the old look bug. The line then says
+    // only that.
     suspend fun lookSkipped(r: RunState.Finished, ledger: RunLedger): String? {
         val step = r.skipped.firstOrNull { isLookSend(it) } ?: return null
+        if (r.skipped.any { isLauncherInstall(it) }) return LOOK_NO_LAUNCHER
         val failed = attempt { ledger.failureAt(r.plan.id, step.index) }.getOrNull()
         val code = failed?.exit?.let { "nonzero_exit($it)" } ?: "failed"
         val stderr = failed?.let { LogCodes.clean(it.stderrHead, 160) }?.takeIf { it.isNotEmpty() }?.let { " $it" }.orEmpty()
         return "look not sent: ${LogCodes.op(step.op)}: $code$stderr"
     }
+
+    // The launcher's own install step (adb install, or the copy-and-install route's pm install).
+    fun isLauncherInstall(step: Step): Boolean = step.group == DefaultPlanner.GROUP_LAUNCHER && (step.op is Op.Install || step.op is Op.InstallStream)
+
+    const val LOOK_NO_LAUNCHER = "look not sent: the new home screen did not install"
 
     // A finished run's line with the look's, when it was skipped.
     suspend fun finished(r: RunState.Finished, ledger: RunLedger): String = label(r) + (lookSkipped(r, ledger)?.let { "; $it" } ?: "")

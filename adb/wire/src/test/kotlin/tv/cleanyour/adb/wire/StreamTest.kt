@@ -71,7 +71,7 @@ class StreamTest {
         conn.openStream(AdbService.ExecInstall(1234)).close()
         conn.openStream(AdbService.Ping).close()
         advanceUntilIdle()
-        assertEquals(listOf("shell,v2,raw:echo a", "sync:", "exec:cmd package install -S 1234", "exec:echo"), tv.connections.first().openedServices)
+        assertEquals(listOf("shell,v2,raw:echo a", "sync:", "exec:cmd package install --user 0 -S 1234", "exec:echo"), tv.connections.first().openedServices)
         conn.close()
     }
 

@@ -9,6 +9,7 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.RemotePath
 import tv.cleanyour.core.model.RunToken
+import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.Sha256
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.SnapshotReason
@@ -19,6 +20,10 @@ import tv.cleanyour.core.backup.TvRestoreFiles
 import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.PlanResult
 import tv.cleanyour.core.planner.Planner
+import tv.cleanyour.core.probe.AccessibilityNow
+import tv.cleanyour.core.probe.AccessibilityRead
+import tv.cleanyour.core.probe.LaunchableApps
+import tv.cleanyour.core.probe.ProbeException
 import tv.cleanyour.core.probe.ProbeStage
 import tv.cleanyour.core.probe.Prober
 import tv.cleanyour.core.session.TvSession
@@ -44,7 +49,11 @@ class FakeProber(
     @Volatile var freeMb: Int = 900,
     @Volatile var refusesInstall: Boolean = false,
     @Volatile var bootIdValue: String = "fake-boot-1",
-) : Prober {
+    // 0.4.8: the helper's two settings now (AccessibilityRead); null: those of snapshotFor's MANUAL read.
+    @Volatile var accessibilityNow: AccessibilityNow? = null,
+    // 0.4.8: the apps a launcher would show (LaunchableApps); null: the TV cannot say (ProbeException).
+    @Volatile var launchableApps: Set<PackageName>? = null,
+) : Prober, AccessibilityRead, LaunchableApps {
     val fileHashes = ConcurrentHashMap<String, Sha256>()
     val installedHashes = ConcurrentHashMap<PackageName, Sha256>()
     val liveWatchdogs: MutableSet<RunToken> = ConcurrentHashMap.newKeySet()
@@ -65,6 +74,16 @@ class FakeProber(
     override suspend fun installRefusal(session: TvSession, noopApk: BlobRef): Boolean { calls += "installRefusal"; return refusesInstall }
     override suspend fun watchdogAlive(session: TvSession, token: RunToken): Boolean { calls += "watchdogAlive"; return token in liveWatchdogs }
     override suspend fun bootId(session: TvSession): String { calls += "bootId"; return bootIdValue }
+    override suspend fun launchable(session: TvSession): Set<PackageName> {
+        calls += "launchable"
+        return launchableApps ?: throw ProbeException(ProbeStage.LAUNCHER, "no answer")
+    }
+    override suspend fun accessibility(session: TvSession): AccessibilityNow {
+        calls += "accessibility"
+        return accessibilityNow ?: snapshotFor(SnapshotReason.MANUAL).settings.let {
+            AccessibilityNow(it[SettingKey.ACCESSIBILITY_ENABLED], it[SettingKey.ENABLED_ACCESSIBILITY])
+        }
+    }
 }
 
 // Profiles from a list; resolve() is an exact model match, else None with no stock launchers.

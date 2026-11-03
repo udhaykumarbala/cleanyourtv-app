@@ -82,6 +82,24 @@ class LookSkippedTest {
         assertNull(RunLines.lookSkipped(RunState.Finished(h.setupPlan, RunStatus.COMPLETED, emptyList(), null), h.ledger))
     }
 
+    // 0.4.8 (issues #2486, #2743, #2851): with the launcher's install skipped (it failed), the look had no launcher to
+    // reach, and "PushAsset config.json via provider: ..." read like the old look bug. The line says why instead; a
+    // skipped install of the TV curtain changes nothing.
+    @Test fun aLookAfterAFailedLauncherInstallSaysTheHomeScreenDidNotInstall() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val install = Op.InstallStream(BlobRef(sha, 10, "blobs/l"), sha, Launcher.pkg, 250, sha)
+        val p = h.plan(listOf(install, Op.PushAsset(BlobRef(sha, 10, "blobs/c"), config, sha, FileRoute.THEME_PROVIDER)), takeover = true)
+            .let { p -> p.copy(steps = p.steps.mapIndexed { i, s -> when (i) { 0 -> s.copy(group = DefaultPlanner.GROUP_LAUNCHER); 1 -> s.copy(group = DefaultPlanner.GROUP_THEME); else -> s } }) }
+        h.journal.append(JournalRecord.Begin(p.id, 1, p.steps[1].op, listOf("fake"), null, 21))
+        h.journal.append(JournalRecord.Failed(p.id, 1, 1, "exit 1", "Error: no provider for com.gathin.tvhome.theme"))
+        val f = RunState.Finished(p, RunStatus.COMPLETED_WITH_SKIPS, listOf(p.steps[0], p.steps[1]), null)
+        assertEquals("look not sent: the new home screen did not install", RunLines.lookSkipped(f, h.ledger))
+        assertTrue(RunLines.finished(f, h.ledger).endsWith("2 skipped; look not sent: the new home screen did not install"), RunLines.finished(f, h.ledger))
+        val curtain = f.copy(skipped = listOf(p.steps[0].copy(group = DefaultPlanner.GROUP_CURTAIN), p.steps[1]))
+        assertEquals("look not sent: PushAsset config.json via provider: nonzero_exit(1) Error: no provider for com.gathin.tvhome.theme",
+            RunLines.lookSkipped(curtain, h.ledger))
+    }
+
     // The sync push (Android 8 and 9, an older launcher) is the same look step: the same line on Done and in the report.
     @Test fun aRefusedSyncPushIsTheSameLine() = runTest(timeout = 30.seconds) {
         val h = Harness()

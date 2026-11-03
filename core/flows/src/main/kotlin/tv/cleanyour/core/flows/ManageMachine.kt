@@ -220,8 +220,7 @@ class ManageMachine(
         val s = d.access.live(id) ?: return
         val tv = d.tv(id) ?: return
         val home = attempt { d.prober.homeNow(s) }.getOrNull() ?: return
-        homeSettled = Restarts.settled(home)
-        countRestart(tv, s, home)
+        homeSettled = Restarts.settled(home) && countRestart(tv, s, home)
         val profile = d.profileOf(tv)
         val changes = d.ledger.changes(id)
         val stock = WizardHome.stockOf(changes, profile)
@@ -235,18 +234,22 @@ class ManageMachine(
 
     // 0.4.8 (Restarts): on a TV whose home screen this app switched (or whose helper it switched on), the boot_id
     // beside the Home read above; a new one counts a held or a failed restart. Nothing is read on any other TV.
-    private suspend fun countRestart(tv: tv.cleanyour.core.model.Tv, s: tv.cleanyour.core.session.TvSession, home: tv.cleanyour.core.model.HomeResolution) {
+    // The helper's path reads its two accessibility settings too (Restarts.HelperNow, issues #2061, #1799); false when
+    // the helper is listed but not bound yet, so the reconnect reads again in this boot, as for a Home not settled.
+    private suspend fun countRestart(tv: tv.cleanyour.core.model.Tv, s: tv.cleanyour.core.session.TvSession, home: tv.cleanyour.core.model.HomeResolution): Boolean {
         val latest = attempt { d.snapshots.latest(tv.id) }.getOrNull()
-        val path = HomePath.of(tv, latest, attempt { d.homeDecisions.load(tv.id) }.getOrNull()) ?: return
-        if (!Restarts.settled(home)) return
-        val boot = attempt { d.prober.bootId(s) }.getOrNull() ?: return
-        val o = attempt { d.restarts.observe(tv.id, boot, home, path, d.about.countLine, d.clock.nowMs()) }.getOrNull() ?: return
+        val path = HomePath.of(tv, latest, attempt { d.homeDecisions.load(tv.id) }.getOrNull()) ?: return true
+        val helper = if (path == HomePath.HELPER) Restarts.helperNow(d.prober, s) ?: return true else null
+        if (helper == Restarts.HelperNow.NOT_YET) return false
+        val boot = attempt { d.prober.bootId(s) }.getOrNull() ?: return true
+        val o = attempt { d.restarts.observe(tv.id, boot, home, path, d.about.countLine, d.clock.nowMs(), helperOn = helper != Restarts.HelperNow.NOT_LISTED) }.getOrNull() ?: return true
         when (o.read) {
             RestartRead.HELD -> d.log.line("manage: restart held (${path.word}), ${o.tally.held} held, ${o.tally.failed} failed")
-            RestartRead.FAILED -> d.log.line("manage: restart failed (${path.word}): Home does not answer to the new home screen, ${o.tally.held} held, ${o.tally.failed} failed")
+            RestartRead.FAILED -> d.log.line("manage: restart failed (${path.word}): ${Restarts.failedWhy(helper)}, ${o.tally.held} held, ${o.tally.failed} failed")
             else -> {}
         }
         send(RestartsRead(tv.id, o.tally))
+        return true
     }
 
     // "Switch it back on": the existing undo of the switch (Use the TV's own home screen), then Home

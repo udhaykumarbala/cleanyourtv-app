@@ -260,7 +260,8 @@ object TvReport {
         appendLine("Last counted: ${t.lastAtMs?.let { DAY.format(Instant.ofEpochMilli(it)) } ?: "none"}")
         appendLine("Counted by: ${t.build?.let { own(it) } ?: "none"}")
         appendLine("Look route: ${r.lookRoute}")
-        appendLine("Checked: ${if (r.path == HomePath.HELPER) "boot_id and Home only (the helper's service is not read)" else "boot_id and Home only"}")
+        // 0.4.8 (issues #2061, #1799): the helper's path reads its accessibility settings too (Restarts.HelperNow).
+        appendLine("Checked: ${if (r.path == HomePath.HELPER) "boot_id, Home and the helper's accessibility settings" else "boot_id and Home only"}")
     }
 
     // 0.4.8 (PLAN item 2): "Tell us it worked", the confirmation the issue bot counts. A fixed block of the app, the

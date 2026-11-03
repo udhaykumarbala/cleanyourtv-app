@@ -12,10 +12,12 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.ops.HomePlaceholder
 import tv.cleanyour.core.planner.FireOs
+import tv.cleanyour.core.planner.GoogleTvSettingsKey
 import tv.cleanyour.core.planner.HomeHelper
 import tv.cleanyour.core.planner.Plan
 import tv.cleanyour.core.planner.PlanRequest
 import tv.cleanyour.core.planner.TclGoogleTv
+import tv.cleanyour.core.probe.LaunchableApps
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.Looks
 import tv.cleanyour.core.spec.ProfileResolution
@@ -79,6 +81,7 @@ data class HomeScreenState(
     val tvSideSettings: Boolean = false,                // the TV's launcher has Launcher settings of its own (2.4, versionCode 5, and later)
     val notOnTv: NotOnTv? = null,                       // 0.3.3 D2: the new home screen is not on this TV; no dock or look rows
     val tclRemoteKeys: Boolean = false,                 // issue #275: a TCL Google TV, whose remote's gear, Netflix and YouTube buttons need its own home screen
+    val googleTvSettingsKey: Boolean = false,           // issue #3059: another Google TV, whose remote's Settings button may need its own home screen
     val endedLook: String? = null,                      // 0.4.0: the name of a dated look that has ended and is still on the TV
     val pictureId: String? = null,                      // 0.4.0: the saved picture choice (HomeChoice.picture)
     val pictures: List<PictureOption> = emptyList(),    // 0.4.0: the gallery of the Picture row
@@ -307,7 +310,12 @@ class HomeScreenMachine(
         val lookId = choice?.lookOn(today)
         // The stored snapshot cannot say which apps are launchable, so the rule without that
         // answer applies: never a home screen, a provider or a system-only package.
-        val apps = (snap?.let { DockCandidates.of(it, null, profile, d.facts) } ?: emptySet())
+        // 0.4.8 (issue #2742): that rule hid launchable system apps (the Play Store, a media player, the cast app) and
+        // offered user apps with nothing to open (our TV curtain, token services). With the TV connected, the apps a
+        // launcher would show are asked, as Setup's dock sheet does; the rule stays for a TV that is not connected or
+        // could not say.
+        val launchable = d.access.live(tvId)?.let { s -> (d.prober as? LaunchableApps)?.let { q -> attempt { q.launchable(s) }.getOrNull() } }
+        val apps = (snap?.let { DockCandidates.of(it, launchable, profile, d.facts) } ?: emptySet())
             .map { AppChoice(it, d.nameOf(it, packages[it]?.label)) }.sortedBy { it.name.lowercase() }
         // The dock as the TV shows it: an app no longer there (gone, switched off) is skipped and the
         // later ones move up a slot, as the launcher does. 0.4.0: at the saved apps in a row, else the
@@ -340,6 +348,7 @@ class HomeScreenMachine(
             homeScreenOurs = tv.launcher != null, columns = columns, updateTo = updateTo(tv, packages),
             tvSideSettings = (packages[Launcher.pkg]?.versionCode ?: 0) >= FIRST_WITH_TV_SETTINGS,
             notOnTv = notOnTv(tv, snap), tclRemoteKeys = snap != null && TclGoogleTv.applies(snap.facts, snap),
+            googleTvSettingsKey = snap != null && GoogleTvSettingsKey.applies(snap.facts, snap),
             endedLook = ended, pictureId = pictureId, pictures = pictureOptions(),
             ownPicture = own, ownDim = choice?.dim ?: OwnPicture.DEFAULT_DIM,
             waitingApps = waiting, earlierPicture = earlierLook?.photo?.ref, sent = sentPreview, sentStyle = drafts.styleOf(choice, tvLook),
@@ -637,8 +646,11 @@ class HomeScreenMachine(
 
     // RFC-HELPER-1: "Switch off" of the Home button helper: our HomeKeyService out of the list, every
     // other service as it was (PLAN 4.4). Switching it on again is Setup's, with its consent.
+    // 0.4.8 (issue #2825): planned from a fresh read of the TV, as UpdateLauncher is. The removal's prior is the
+    // whole accessibility list, and the engine compares it with what the TV has now; a stored snapshot from before
+    // a restart or two had another list, so the run paused at step 0 (HOME_HELPER_OFF_PAUSED_STALE).
     private suspend fun helperOff() {
-        val r = writer.write(tvId, PlanRequest.HomeHelperOff) { send(BusyNow(it)) }
+        val r = writer.write(tvId, PlanRequest.HomeHelperOff, fresh = true) { send(BusyNow(it)) }
         send(BusyNow(null))
         if (r is WriteResult.Done) effect(ManageEffect.Snackbar(SnackKind.HOME_SAVED, "", false))
         else if (r !is WriteResult.GateCancelled && r !is WriteResult.NoTv && r !is WriteResult.Paused) effect(ManageEffect.Snackbar(SnackKind.FAILED, "", false))
