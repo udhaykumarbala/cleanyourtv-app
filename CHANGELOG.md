@@ -4,6 +4,16 @@ All notable changes to the app. Versions follow [semantic versioning](https://se
 
 ## 0.5.0 (unreleased)
 
+### The new home screen reaches six more TVs in the release
+- SHARP on Android 11 (#852, #3915, #4128), the Hisense HiSmart 2K ATV4 and HiSmart TV (hamamatsucho)
+  on Android 11 (#346, #4338), JVC on Android 11 (#3839, #5844), Philips on Android 11 (#1409, #4814),
+  the realme Smart TV (SW4H_FF) on Android 11 (#4679, #5752) and the THOMSON_KODAK PATH_7XPRO on
+  Android 9 (#2149, #5767) get the new home screen with the setup wizard left on, after two testers
+  each said it stayed after a restart. SHARP, JVC and Philips by brand, since their testers had
+  different models; for Hisense, realme and THOMSON_KODAK only these models: other Hisense and realme
+  sets and other Kodak models keep their home screen until their own testers confirm it. A TV with a
+  tested list of its own keeps its list.
+
 ### Lists
 - The careful brand sets are back as they were in 0.4.8: a TV of a brand with one or two lists and no
   list of its own (MOKA, Stellamore and Vidda among them) again gets the print spooler, Android TV's
