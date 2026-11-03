@@ -26,8 +26,8 @@ import tv.cleanyour.e2e.scenarios.S11SettingsPush
     S03DebloatAndUndo::class,
     S04PushAndInstall::class,
     S05TakeoverWithCrashingLauncher::class,
-    S06ThemePush::class,
     S11SettingsPush::class,   // 0.5.0 Make it yours: the settings document without the wallpaper step
+    S06ThemePush::class,
     S09CurtainSetup::class,   // RFC-CURTAIN-1; before the reboot and debug_off, which end the session's TV
     S10HomeHelper::class,     // RFC-HELPER-1 (test build): the Home button helper
     S07RebootAndReconnect::class,
