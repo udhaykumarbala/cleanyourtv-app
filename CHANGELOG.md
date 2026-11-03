@@ -2,6 +2,24 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## 0.5.0 (unreleased)
+
+### Fixes
+- Google TV's home screen installed by you on an Android TV set (it claims Home next to the TV's own)
+  no longer makes the app treat the TV as a Google TV: the TV's tested list matches again, the switch
+  with the setup wizard left on is offered where it would be, and the report says the TV came with
+  Android TV (#5539, #5744, #5911, #4177, #4551). A real Google TV keeps its own rules.
+- A copy of the new home screen signed with another key (put on with the computer tool) gets its own
+  card: remove the old copy first, with the TV's own home screen on, instead of "another home screen
+  app is in charge" (#2293, #4756).
+- On a TV no list knows, Android's first-run app answering Home (com.android.provision) counts as the
+  setup wizard, so the switch is not planned only to roll back again and again (#4077).
+- The debugging-off run of Finish, cut off when the app was closed, no longer shows "We were in the
+  middle of a change on the TV" after a Setup that changed nothing; it is closed and Manage opens
+  (#5016, #5435).
+- After you say no at the home screen check, the card has a third button, "Keep the TV's own home
+  screen", that finishes with the clean-up kept (#3760).
+
 ## 0.4.9-beta1 (test build)
 
 A GitHub pre-release for testers, made from 0.4.8 (2026-11-03). It installs over 0.4.8 and every
