@@ -513,9 +513,12 @@ class SetupMachine(
             Ev.GoProbe -> scope.launch { probe() }
             is Ev.CandidateChosen -> if (after is SetupState.Probing && mutableExtras.value.candidate != null) scope.launch { candidateChosen(event.tryIt) }
             is Ev.OpenFailed -> onOpenFailed(event.error)
+            // 0.4.9: switching a row off is one tap from any state. Before, a row kept by an earlier tap
+            // only left `kept`, so a row a list leaves on to ask stayed on "Kept" until a second tap.
+            // A row the list switches off anyway is off by either set; the planner counts it once.
             is SetupIntent.Keep -> editDraft { d ->
                 if (event.keep) d.copy(kept = d.kept + event.pkg, extraOff = d.extraOff - event.pkg)
-                else if (event.pkg in d.kept) d.copy(kept = d.kept - event.pkg) else d.copy(extraOff = d.extraOff + event.pkg)
+                else d.copy(kept = d.kept - event.pkg, extraOff = d.extraOff + event.pkg)
             }
             // 0.4.0: the sheet's list, then the draft's apps it never showed (waiting for more apps in a
             // row), so a new dock never loses them, as on the Dock sheet after Setup.

@@ -195,6 +195,29 @@ class SetupMachineTest {
         assertEquals(emptySet(), h.planner.requests.filterIsInstance<PlanRequest.Setup>().last().choices.kept)
     }
 
+    // 0.4.9: a row on "Kept" goes off in one tap. Before, the tap only took it out of `kept`, so a
+    // row a list leaves on to ask stayed on until a second tap.
+    @Test fun aKeptRowGoesOffInOneTap() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
+        val m = h.setup(backgroundScope)
+        toFound(h, m)
+        fun last() = h.planner.requests.filterIsInstance<PlanRequest.Setup>().last().choices
+        m.dispatch(SetupIntent.Keep(promoPkg, keep = true)); settle()
+        assertEquals(setOf(promoPkg), last().kept)
+        assertEquals(emptySet(), last().extraOff)
+        m.dispatch(SetupIntent.Keep(promoPkg, keep = false)); settle()
+        assertEquals(emptySet(), last().kept)
+        assertEquals(setOf(promoPkg), last().extraOff)
+        assertEquals(setOf(promoPkg), h.tvs.tvs.value.single().wizard?.extraOff)
+        // A second off tap changes nothing; Kept again takes it out of extraOff.
+        m.dispatch(SetupIntent.Keep(promoPkg, keep = false)); settle()
+        assertEquals(setOf(promoPkg), last().extraOff)
+        m.dispatch(SetupIntent.Keep(promoPkg, keep = true)); settle()
+        assertEquals(setOf(promoPkg), last().kept)
+        assertEquals(emptySet(), last().extraOff)
+    }
+
     @Test fun customiseEntersTheCustomLevel() = runTest(timeout = 30.seconds) {
         val h = Harness()
         h.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
