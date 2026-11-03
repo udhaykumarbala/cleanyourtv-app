@@ -649,6 +649,17 @@ class DefaultEngine(
                 journal.append(JournalRecord.Failed(run.plan.id, step.index, 1, "package not on the TV", ""))
                 return Outcome.Refused(1, "package not on the TV")
             }
+            // Issue #5808 (Hisense songshan, Android 11): the setup wizard's switch-off failed every run with "Shell
+            // cannot change component state for com.google.android.tungsten.setupwraith/null to 3", and the switch
+            // rolled back. Android lets the shell move a package only between default, enabled and disabled by the
+            // user; this one was already off by the TV itself (disabled, or disabled until used, which the package
+            // list does not show as off). It is off, nothing is sent and nothing recorded: a skip whatever the
+            // step's policy, inside the switch too, like a package kept on (Undo has nothing to put back).
+            if (step.op is Op.Disable && PackageDump.enabledSetting(dump) in OFF_BY_THE_TV) {
+                journal.append(JournalRecord.Begin(run.plan.id, step.index, step.op, step.rendered.lines.map { it.text }, step.prior, clock.nowMs()))
+                journal.append(JournalRecord.Failed(run.plan.id, step.index, 1, ALREADY_OFF_BY_THE_TV, ""))
+                return Outcome.Refused(1, ALREADY_OFF_BY_THE_TV, kept = true)
+            }
         }
         return perform(run, step.index, step.op, step.rendered, step.prior)
     }
@@ -1273,6 +1284,9 @@ class DefaultEngine(
         // because it runs the TV's inputs (RF-LAUNCHER-250 F1); Done and Manage name it.
         const val PROTECTED = "protected: "
         const val KEPT_TV_INPUT = PROTECTED + Denylist.REASON_TV_INPUT
+        // Issue #5808: a switch-off of a package the TV itself turned off (its enabled setting 2, or 4: until used).
+        const val ALREADY_OFF_BY_THE_TV = "already off by the TV (disabled by the system, the shell cannot change it)"
+        val OFF_BY_THE_TV: Set<Int> = setOf(2, 4)
         // The journal's Failed text for a streamed install the TV ended with a protocol error while
         // the connection stayed up (issues #80, #367).
         const val STREAM_FAILED = "streamed install failed, the TV is still connected: "
