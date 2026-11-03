@@ -12,7 +12,10 @@ import java.io.File
 // listed folder that has an entry or is not upstream.
 // Test build only (-Pcyt.candidates=true): the candidate lists in core/spec/candidates, each with an
 // entry in candidate-meta.json marked `"candidate": true`, are added after the upstream profiles.
-// They never feed a brand sure set, and a candidate folder may not share a name with an upstream one.
+// They never feed a brand sure set, and a candidate folder may not share a name with an upstream
+// folder the app ships. A parked one (unconverted.txt) is not a profile, so a candidate of the same
+// name stays the test list until that folder is curated (xiaomi-mitv4i-magnolia at d7b0d4a): the id
+// is what saved candidate choices and TV records carry.
 object ProfileConverter {
     // unconverted.txt: one folder per line; # comments and blank lines are ignored.
     fun readUnconverted(file: File?): Set<String> =
@@ -45,7 +48,7 @@ object ProfileConverter {
             DebloatTxt.parse(text, dir.name, m)
         }
         (meta.profiles.keys - all.map { it.name }.toSet()).forEach { problems += "$it: in profile-meta.json but not upstream" }
-        val tried = if (candidates == null || candidateMeta == null) emptyList() else candidateProfiles(candidates, candidateMeta, all.map { it.name }.toSet(), problems)
+        val tried = if (candidates == null || candidateMeta == null) emptyList() else candidateProfiles(candidates, candidateMeta, folders.map { it.name }.toSet(), problems)
         return ProfileBundle(commit, profiles + tried, SureSetGenerator.generate(profiles, BundledFactsTable.parse(factsFile.readText()))) to problems
     }
 
@@ -62,7 +65,7 @@ object ProfileConverter {
     fun keptOnly(folder: String, line: Int) =
         "$folder/debloat.txt:$line: the comment block above holds only commented-out packages, so these packages join the group before it"
 
-    private fun candidateProfiles(dir: File, metaFile: File, upstream: Set<String>, problems: MutableList<String>): List<tv.cleanyour.core.model.Profile> {
+    private fun candidateProfiles(dir: File, metaFile: File, shipped: Set<String>, problems: MutableList<String>): List<tv.cleanyour.core.model.Profile> {
         val meta = ProfileMeta.decode(metaFile.readText())
         val folders = dir.listFiles().orEmpty().filter { File(it, "debloat.txt").isFile }.sortedBy { it.name }
         (meta.profiles.keys - folders.map { it.name }.toSet()).forEach { problems += "candidate $it: in candidate-meta.json but no debloat.txt" }
@@ -71,7 +74,7 @@ object ProfileConverter {
             when {
                 m == null -> { problems += "candidate ${d.name}: no entry in candidate-meta.json"; null }
                 m.tested?.candidate != true -> { problems += "candidate ${d.name}: tested.candidate is not true"; null }
-                d.name in upstream -> { problems += "candidate ${d.name}: an upstream folder has the same name"; null }
+                d.name in shipped -> { problems += "candidate ${d.name}: an upstream folder has the same name"; null }
                 else -> {
                     val text = File(d, "debloat.txt").readText()
                     val scan = DebloatTxt.scan(text, d.name)

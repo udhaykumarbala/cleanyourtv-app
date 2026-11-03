@@ -78,10 +78,14 @@ class CandidatesTest {
             File(dir, "untested/debloat.txt").writeText("# T\ncom.a.b\n")
             File(dir, "nometa").mkdirs()
             File(dir, "nometa/debloat.txt").writeText("# T\ncom.a.b\n")
+            // A parked upstream folder (unconverted.txt) is no profile, so a candidate may share its name.
+            val parked = unconverted.first()
+            File(dir, parked).mkdirs()
+            File(dir, "$parked/debloat.txt").writeText("# T\ncom.a.b\n")
             fun entry(candidate: Boolean) = """{"match":{"models":["X"],"brand":"B","sdkMin":30,"sdkMax":30},"platform":"ANDROID_TV",
                 "tested":{"by":"candidate, issue #1","candidate":$candidate},"groups":{"T":{"category":"tracking"}}}"""
-            File(dir, "m.json").writeText("""{"schema":1,"profiles":{"sony-bravia-4k-ur2":${entry(true)},"untested":${entry(false)},"gone":${entry(true)}}}""")
-            val (_, problems) = ProfileConverter.convert(examples, meta, "b06ab21", unconverted, dir, File(dir, "m.json"))
+            File(dir, "m.json").writeText("""{"schema":1,"profiles":{"sony-bravia-4k-ur2":${entry(true)},"untested":${entry(false)},"gone":${entry(true)},"$parked":${entry(true)}}}""")
+            val (bundle, problems) = ProfileConverter.convert(examples, meta, "b06ab21", unconverted, dir, File(dir, "m.json"))
             assertEquals(
                 setOf(
                     "candidate gone: in candidate-meta.json but no debloat.txt",
@@ -91,6 +95,8 @@ class CandidatesTest {
                 ),
                 problems.toSet(),
             )
+            assertTrue(File(examples, parked).isDirectory, parked)
+            assertEquals(listOf(parked), bundle.profiles.filter { it.isCandidate }.map { it.id })
         } finally { dir.deleteRecursively() }
     }
 
