@@ -596,6 +596,9 @@ class DefaultEngine(
                 val none = r.exit == 1 && r.stdout.isBlank() && r.stderr.isBlank()
                 return none || (r.exit == 0 && renderer.check(op, r.stdout, null) == VerifyResult.Ok)
             }
+            // 0.5.0: a switch-off or an uninstall is read the way its own check reads it, with the list's
+            // fallbacks and its exit looked at (verifyAfter), not from the first list alone.
+            is Op.Disable, is Op.Uninstall -> return rendered.verify != null && verifyAfter(session, op, rendered, null, "") == Outcome.Ok
             else -> {
                 val probe = rendered.verify?.let { renderer.render(it) } ?: rendered.takeIf { it.privilege == Privilege.READ && it.transfer == null } ?: return false
                 val r = readResult(session, probe) ?: return false
@@ -762,15 +765,60 @@ class DefaultEngine(
             }
             null -> {}
         }
+        return verifyAfter(session, op, rendered, prior, ownOutput)
+    }
+
+    // An op's check after it ran (perform), and the same check where its state is read again: the
+    // in-doubt step on resume (safety) and step R's state check (targetHolds). 0.5.0: a switch-off, a
+    // switch-on and an uninstall read their package list with the probe's fallbacks and look at its exit
+    // (disableChecked, enableChecked, uninstallChecked), so a list that failed never passes a check.
+    private suspend fun verifyAfter(session: TvSession, op: Op, rendered: Rendered, prior: Prior?, ownOutput: String): Outcome {
         val check = rendered.verify
         if (op is Op.Disable && check != null) return disableChecked(session, op, renderer.render(check), prior)
         if (op is Op.Enable && check != null) return enableChecked(session, op, renderer.render(check), prior)
+        if (op is Op.Uninstall && check != null) return uninstallChecked(session, op, renderer.render(check), prior)
         val verifyOutput = rendered.verify?.let { read(session, renderer.render(it)) } ?: ownOutput
         return when (val v = renderer.check(op, verifyOutput, prior)) {
             VerifyResult.Ok -> installedApkCheck(session, op)
             is VerifyResult.Mismatch -> Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got ${v.actual}"), "verify: expected ${v.expected}, got ${v.actual}")
         }
     }
+
+    // 0.5.0: an uninstall was checked with `pm list packages -f` without a look at its exit, so a list that
+    // failed (exit 255 with a SecurityException on some TVs, #3436, #1543) printed nothing and read as
+    // "not listed", which passed. Now the list falls back as the probe's does (cmd package for user 0, then
+    // pm for user 0), and only a list that answers exit 0 with packages in it decides. When none does, the
+    // package's own dump decides: only a dump that answers and does not show the package passes; anything
+    // else (the package still there, an empty or failed dump) is a failure with the list's own exit.
+    private suspend fun uninstallChecked(session: TvSession, op: Op.Uninstall, check: Rendered, prior: Prior?): Outcome {
+        val r = packageList(session, check) ?: return Outcome.Failed(AdbError.Transport.Protocol("no check read"), "verify: no check read")
+        if (r.exit == 0 && r.stdout.isNotBlank()) return when (val v = renderer.check(op, r.stdout, prior)) {
+            VerifyResult.Ok -> Outcome.Ok
+            is VerifyResult.Mismatch -> Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got ${v.actual}"), "verify: expected ${v.expected}, got ${v.actual}")
+        }
+        val d = readResult(session, renderer.render(Op.Read(ProbeKind.PACKAGE_DUMP, ReadArg.Pkg(op.pkg))))
+        val gone = d != null && d.exit == 0 && d.stdout.isNotBlank() && !PackageDump.exists(op.pkg, d.stdout)
+        return if (gone) Outcome.Ok
+            else Outcome.Failed(AdbError.NonZeroExit(r.exit, r.stderr.take(4096)), "verify read: exit ${r.exit}")
+    }
+
+    // 0.5.0: the package list an uninstall is checked with, as the probe reads it (PACKAGE_LISTS): `pm list
+    // packages -f`, then cmd package for user 0, then pm for user 0, each only after the one before failed or
+    // listed nothing. The first that answers exit 0 with output is returned, else the first answer. The log
+    // says once per TV which one answered, in fixed words.
+    private suspend fun packageList(session: TvSession, check: Rendered): ExecResult? {
+        val first = readResult(session, check) ?: return null
+        if (first.exit == 0 && first.stdout.isNotBlank()) return first
+        for ((name, line) in AdbProber.PACKAGE_LISTS.drop(1)) {
+            val r = send(session, line, ExecSpec(timeoutMs = check.timeoutMs, stdoutCap = check.stdoutCap, retry = RetryClass.IDEMPOTENT_READ))
+            if (r.exit != 0 || r.stdout.isBlank()) continue
+            if (packageListNoted.add(session.tvId)) log("engine: package list from $name after pm list packages -f exit ${first.exit}")
+            return r
+        }
+        if (packageListNoted.add(session.tvId)) log("engine: no package list answered (pm list packages -f exit ${first.exit}); the package's dump decides")
+        return first
+    }
+    private val packageListNoted: MutableSet<TvId> = java.util.Collections.synchronizedSet(mutableSetOf())
 
     // A switch-off's check read (pm list packages -d). A check read that errors is a failure, never
     // a kept-on package: the step pauses as before. When the check read answers but does not list the
@@ -1218,9 +1266,17 @@ class DefaultEngine(
             if (inDoubt != null) {
                 val step = plan.steps[inDoubt]
                 flow(plan.tvId).value = RunState.InDoubt(plan, inDoubt)
+                // 0.5.0: a switch-off, a switch-on or an uninstall in doubt is read the way its own check
+                // reads it (verifyAfter: the list's fallbacks, its exit, the package's dump), so a list
+                // that failed on resume no longer reads as "not listed" and passes a switch-on or an uninstall.
                 val verified = step.rendered.verify?.let { v ->
-                    val out = read(run.session, renderer.render(v))
-                    renderer.check(step.op, out, step.prior) == VerifyResult.Ok && installedApkCheck(run.session, step.op) == Outcome.Ok
+                    when (step.op) {
+                        is Op.Disable, is Op.Enable, is Op.Uninstall -> verifyAfter(run.session, step.op, step.rendered, step.prior, "") == Outcome.Ok
+                        else -> {
+                            val out = read(run.session, renderer.render(v))
+                            renderer.check(step.op, out, step.prior) == VerifyResult.Ok && installedApkCheck(run.session, step.op) == Outcome.Ok
+                        }
+                    }
                 } ?: false
                 if (verified) {
                     journal.append(JournalRecord.Done(plan.id, inDoubt, 0, verified = true, ms = 0, resumed = true))

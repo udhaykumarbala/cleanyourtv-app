@@ -259,7 +259,9 @@ class ShellRenderer(private val watchdogVariant: WatchdogVariant = WatchdogVaria
             is Op.DefaultState -> if (PackageDump.enabledSetting(verifyOutput) == 0) VerifyResult.Ok else mismatch("enabled=0 in dumpsys package ${op.pkg.value}")
             is Op.Install -> installed(op.pkg, op.versionCode, verifyOutput)
             is Op.InstallStream -> installed(op.pkg, op.versionCode, verifyOutput)
-            is Op.Uninstall -> if (lines.none { it.startsWith("package:") && it.endsWith("=" + op.pkg.value) }) VerifyResult.Ok
+            // 0.5.0: a list without the install paths (pm list packages --user 0, the probe's last fallback)
+            // names a package as "package:<name>", so both forms count as still installed.
+            is Op.Uninstall -> if (lines.none { it == "package:" + op.pkg.value || (it.startsWith("package:") && it.endsWith("=" + op.pkg.value)) }) VerifyResult.Ok
                 else mismatch("${op.pkg.value} absent from pm list packages -f")
             is Op.SettingsPut -> {
                 val prefix = op.key.key + "="
