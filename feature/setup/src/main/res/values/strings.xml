@@ -53,6 +53,8 @@
     <!-- 0.4.7 (UX finding 5, PM 7): nothing to switch off while the TV keeps its own home screen -->
     <string name="found_title_zero_kept">Nothing to switch off</string>
     <string name="found_zero_kept_body">This TV is already tidy, and it keeps its own home screen, so there\'s nothing to do.</string>
+    <!-- 0.4.9 (issue #1222): an empty plan with apps left on for the person to choose -->
+    <string name="found_zero_kept_choices">Some apps are left on for you to choose. Customise lists them.</string>
     <string name="found_zero_kept_unknown_body">We weren\'t sure about anything on this TV, and it keeps its own home screen, so there\'s nothing to do yet. We make a list from reports like yours, and we\'ll post in your issue when there\'s one to try.</string>
     <string name="found_switch_home">Switch the home screen</string>
     <string name="found_group_ads">Adverts and sponsored rows</string>

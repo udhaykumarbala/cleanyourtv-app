@@ -69,6 +69,7 @@ import tv.cleanyour.core.flows.StopCase
 import tv.cleanyour.core.model.Level
 import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.planner.GroupSummary
+import tv.cleanyour.core.planner.PlanSummary
 import tv.cleanyour.core.planner.RowSummary
 import tv.cleanyour.core.planner.switchOffCount
 import tv.cleanyour.ui.design.component.ActionColumn
@@ -232,6 +233,9 @@ fun FoundScreen(
     val kept = extras.homeKept as? HomeKept.Blocked ?: if (!summary.homeScreenPossible && extras.homePossible) HomeKept.Blocked(HomeBlock.NONE, extras.fireTv, extras.brand) else null
     // 0.4.7-beta2 (issue #251): with the Home button helper switched on there is something to do.
     val nothingToDo = kept != null && off == 0 && !extras.helperOn
+    // 0.4.9 (issue #1222): a row left on for the person to choose (ask, or kept by an earlier choice)
+    // can be switched off in Customise, so an empty plan still opens it.
+    val choices = summary.hasChoices
     var why by rememberSaveable { mutableStateOf(false) }
     val locale = LocalConfiguration.current.locales[0]
     ScreenScaffold(
@@ -253,11 +257,11 @@ fun FoundScreen(
                     nothingToDo && extras.unknownModel -> {
                         PrimaryButton(stringResource(R.string.found_help_add_tv), onHelpAddTv, guardObscured = false)
                         SecondaryButton(stringResource(R.string.action_done), { actions.intent(SetupIntent.LeaveAsIs) })
-                        if (extras.helperOffer) TertiaryButton(stringResource(R.string.found_customise), { actions.intent(SetupIntent.Open(Sheet.CUSTOMISE)) })
+                        if (extras.helperOffer || choices) TertiaryButton(stringResource(R.string.found_customise), { actions.intent(SetupIntent.Open(Sheet.CUSTOMISE)) })
                     }
                     nothingToDo -> {
                         PrimaryButton(stringResource(R.string.action_done), { actions.intent(SetupIntent.LeaveAsIs) }, guardObscured = false)
-                        if (extras.helperOffer) TertiaryButton(stringResource(R.string.found_customise), { actions.intent(SetupIntent.Open(Sheet.CUSTOMISE)) })
+                        if (extras.helperOffer || choices) TertiaryButton(stringResource(R.string.found_customise), { actions.intent(SetupIntent.Open(Sheet.CUSTOMISE)) })
                     }
                     else -> {
                         // Nothing to switch off and the switch is possible: the button says what it does.
@@ -274,6 +278,7 @@ fun FoundScreen(
             nothingToDo -> {
                 ScreenTitle(stringResource(R.string.found_title_zero_kept), Modifier.padding(top = 8.dp))
                 Body(stringResource(if (extras.unknownModel) R.string.found_zero_kept_unknown_body else R.string.found_zero_kept_body), Modifier.padding(start = 4.dp, top = 8.dp))
+                if (choices) Body(stringResource(R.string.found_zero_kept_choices), Modifier.padding(start = 4.dp, top = 8.dp))
             }
             else -> {
                 ScreenTitle(msg(if (extras.unknownModel) R.string.found_unknown_title else R.string.found_title, "count" to 0), Modifier.padding(top = 8.dp))
@@ -593,6 +598,10 @@ private fun RowSummary.toItem() = DiffItem(pkg.value, friendlyName, description,
 
 // A protected row that stays on: the "We keep these" group.
 private fun RowSummary.kept() = protected && !off
+
+// 0.4.9 (issue #1222): whether the summary has a row the person can switch off in Customise: one
+// that is neither off nor protected (left on to ask, or kept by an earlier choice).
+internal val PlanSummary.hasChoices: Boolean get() = groups.any { g -> g.rows.any { !it.off && !it.protected } }
 
 // A group of the full list: all rows when there are six or fewer, otherwise four and "Show n more".
 @Composable
