@@ -81,7 +81,10 @@ class S11SettingsPush : E2eScenario() {
 
     @Test fun theSettingsGoWithoutTouchingTheWallpaper() = e2e(timeoutMs = 600_000) {
         val apk = need(cfg.launcherApk, "launcher APK (CYT_E2E_LAUNCHER_APK)")
-        assertTrue(oracle.install(apk).ok)
+        // The package manager of a freshly booted image can refuse the first install; up to three tries, and say why.
+        var r = oracle.install(apk)
+        repeat(2) { if (!r.ok) { delay(10_000); r = oracle.install(apk) } }
+        assertTrue("launcher install: ${r.stdout.takeLast(400)} ${r.stderr.takeLast(400)}", r.ok)
         oracle.shell("am start -W -n $LAUNCHER_PKG/.MainActivity")
         val session = open(manager)
         try {
