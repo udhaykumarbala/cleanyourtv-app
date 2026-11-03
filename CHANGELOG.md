@@ -2,6 +2,48 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## 0.4.9-beta1 (test build)
+
+A GitHub pre-release for testers, made from 0.4.8 (2026-11-03). It installs over 0.4.8 and every
+earlier build. The test switches are on, as in the 0.4.8 test builds: the Home button helper, the
+candidate lists, and the new home screen with the setup wizard left on for every brand.
+
+### The new home screen is launcher 3.3
+- The bundled home screen moves from 3.0 to 3.3 (upstream main d7b0d4a5): the clock refresh fix and
+  the later launcher fixes, Halloween's own skin, and new theme switches (12 or 24 hour clock, Back
+  opens the clock, open an app when the screen comes back on, wait for the network before opening
+  one, an icon-only VPN button, Inputs that show only connected devices, and more). A look or a theme
+  that sets them keeps them; the phone does not set them yet.
+- Hold OK on a tile now opens a small menu by default (Move, Remove from Home, App info) instead of
+  the app's info page. A tile order set on the TV with Move stays until the dock changes: sending a
+  new dock from the phone puts the dock's order back.
+
+### Safer lists
+- The app never switches off the core Android and TV packages that upstream's own tool refuses to
+  touch, whatever a list or a brand set says: the SDK sandbox, Android's extension services and module
+  data, the system data providers (calendar, contacts, the user dictionary and blocked numbers aside),
+  the phone service, and MediaTek's TV middleware. A TV may not start again without them. No tested
+  list switched any of them off, so no plan of a tested TV changes.
+- The TV lists follow upstream's newer versions (d7b0d4a5): what upstream now keeps on stays on (the
+  NVIDIA SHIELD updater, the Skyworth 22AE's Daily button apps, the Sony VH21's setup wizard, TCL
+  43S5K's partner customizer, the Xiaomi MSSP3 update service, Freeview Play on the Sony VH1), and
+  Better back on offers them to anyone who switched them off before. New rows upstream switches off
+  that touch the remote, voice, accessibility or a TV input come in as rows you choose, not switched
+  off by default.
+
+### Fixes
+- What we found offers Customise whenever some apps are left on for you to choose, also when nothing
+  is switched off by default (#1222). Before, a list with only such rows ended at Done.
+- In Customise, switching a Kept row off works with one tap (it took two).
+- When the TV's package list answers with an error ("exit 255: SecurityException", #3436, #1543), the
+  app reads it another way (cmd package, then for the main user), and so does each switch-off and
+  switch-on check. The report says which way worked.
+- The report counts a list's rows by what became of them (to switch off, not on the TV, already off,
+  protected, ask, kept), so "0 to switch off" on a TV cleaned before explains itself (#1222, #4896).
+- The restart check on Done is Optional when no home screen switch ran, and when one ran and its
+  restart is not known to hold, a line above Finish asks you to restart the TV first (#3870).
+- Test builds: Customise says why the Home button helper is not offered on this TV (#4288).
+
 ## 0.4.8 (2026-11-03)
 
 ### The new home screen reaches four more TVs in the release
