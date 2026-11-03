@@ -24,9 +24,35 @@ object HomeFit {
     // and switched off by the user (`packages`, the snapshot's): after the home screen switch a
     // Google TV set's launcherx is DISABLED_USER and no longer claims Home, and the TV must not flip
     // back to fitting the Android TV list it was refused before.
+    // 0.5.0: never a launcherx the person put on an Android TV set (sideloadedGoogleTvHome).
     fun showsGoogleTvHome(home: HomeResolution, packages: Map<PackageName, PackageState>? = null): Boolean =
-        home.resolved?.pkg == GOOGLE_TV_HOME || home.claimants.any { it.component.pkg == GOOGLE_TV_HOME } ||
-            packages?.get(GOOGLE_TV_HOME)?.enabled == EnabledState.DISABLED_USER
+        !sideloadedGoogleTvHome(home, packages) &&
+            (home.resolved?.pkg == GOOGLE_TV_HOME || home.claimants.any { it.component.pkg == GOOGLE_TV_HOME } ||
+                packages?.get(GOOGLE_TV_HOME)?.enabled == EnabledState.DISABLED_USER)
+
+    // 0.5.0 (issues #5539, #5744, #5911, #4177, #4551): Google TV's home screen installed by the person on
+    // an Android TV set (Leanback), where it claims Home next to the TV's own tvlauncher. It made the TV
+    // count as a Google TV: the exact Android TV list did not match and R0 saw another home screen. It is
+    // the person's app only when every sign agrees, so a real Google TV is never taken for one. On a
+    // real Google TV an update puts launcherx under /data, where the probe's install path fallback reads
+    // it as no system app (SwitchOffRule.isPersonsLauncher), but its Home claim keeps the system
+    // priority (2 on the reported sets) and Google's Android TV home is not a system app there. So all of:
+    // the snapshot lists launcherx with its details read (a version code above 0) and not as a system
+    // app; it is on (one switched off is what the home screen switch leaves on a real Google TV);
+    // Home does not answer to it; every claim it makes has priority 0 or less (Android caps an app that
+    // is not a system app at 0); and tvlauncher or leanback is on the TV as a system app, or claims Home
+    // above 0 (an update under /data can make its flag read wrong too). `packages` null (not read) is
+    // never one.
+    fun sideloadedGoogleTvHome(home: HomeResolution, packages: Map<PackageName, PackageState>?): Boolean {
+        val state = packages?.get(GOOGLE_TV_HOME) ?: return false
+        if (state.system || state.versionCode <= 0) return false
+        if (state.enabled == EnabledState.DISABLED_USER || state.enabled == EnabledState.DISABLED) return false
+        if (home.resolved?.pkg == GOOGLE_TV_HOME) return false
+        if (home.claimants.any { it.component.pkg == GOOGLE_TV_HOME && it.priority > 0 }) return false
+        return listOf(KnownLaunchers.TVLAUNCHER.pkg, KnownLaunchers.LEANBACK.pkg).any { p ->
+            packages[p]?.system == true || home.claimants.any { it.component.pkg == p && it.priority > 0 }
+        }
+    }
 
     // Whether the profile may match a TV with this Home. No Home read yet (null) keeps the facts rule.
     fun fits(profile: Profile, home: HomeResolution?, packages: Map<PackageName, PackageState>? = null): Boolean =

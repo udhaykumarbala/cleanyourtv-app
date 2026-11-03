@@ -10,6 +10,7 @@ import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.ops.Denylist
 import tv.cleanyour.core.ops.HomePlaceholder
+import tv.cleanyour.core.spec.HomeFit
 import tv.cleanyour.core.spec.KnownLaunchers
 
 // RF-SAFETY-250, owner decisions for 0.2.0: TVs where the home screen switch is skipped up front, so
@@ -314,10 +315,14 @@ object HomeSwitchRisk {
     // when it could not read a package's flags, and to "not a system app" when it read neither; a
     // version code of 0 is that case (its details were not read), so it does not count either. Nor
     // does an app with an accessibility service in the TV's list: it can catch the Home key itself.
+    // 0.5.0 (issues #5539, #5744, #4177): Google TV's home screen is one when the person put it on an
+    // Android TV set (HomeFit.sideloadedGoogleTvHome); the other known TV home screens never are.
     fun installedHome(p: PackageName, snapshot: Snapshot): Boolean {
         val state = snapshot.packages[p] ?: return false
         val accessibility = snapshot.settings[SettingKey.ENABLED_ACCESSIBILITY].orEmpty().split(':').map { it.trim().substringBefore('/') }
-        return !state.system && state.versionCode > 0 && !isWizard(p) && p.value !in Denylist.vendorHomes && p !in KnownLaunchers.byPackage &&
+        val known = p in KnownLaunchers.byPackage &&
+            !(p == KnownLaunchers.LAUNCHERX.pkg && HomeFit.sideloadedGoogleTvHome(snapshot.home, snapshot.packages))
+        return !state.system && state.versionCode > 0 && !isWizard(p) && p.value !in Denylist.vendorHomes && !known &&
             p.value !in accessibility
     }
 

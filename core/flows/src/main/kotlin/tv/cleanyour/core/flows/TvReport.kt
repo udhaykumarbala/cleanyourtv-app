@@ -9,6 +9,7 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.SnapshotReason
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.spec.HomeFit
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.store.DocumentStore
 
@@ -463,7 +464,8 @@ object TvReport {
         return when {
             f.manufacturer.equals("Amazon", true) || f.brand.equals("Amazon", true) || f.model.startsWith("AFT", true) ||
                 has("com.amazon.tv.launcher") || has("com.amazon.firehomestarter") -> "Fire TV"
-            has("com.google.android.apps.tv.launcherx") -> "Google TV"
+            // 0.5.0 (issue #5539 and others): not a Google TV home screen the person put on an Android TV set.
+            has("com.google.android.apps.tv.launcherx") && !HomeFit.sideloadedGoogleTvHome(s.home, s.packages) -> "Google TV"
             has("com.google.android.tvlauncher") || has("com.google.android.leanbacklauncher") -> "Android TV (Leanback)"
             claimants.any { it != Launcher.pkg.value && !it.startsWith("com.google.") && !it.startsWith("com.android.") && "setupwraith" !in it } -> "The maker's own launcher"
             else -> "Not sure"
