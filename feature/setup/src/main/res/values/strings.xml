@@ -119,7 +119,9 @@
     <string name="kept_reason_boot_loop">Switching can stop TVs of this family starting up.</string>
     <string name="kept_reason_remote_buttons">The remote\'s app buttons only work with the TV\'s own home screen.</string>
     <string name="kept_reason_wizard_stays_on">Its setup wizard would stay on, and that can crash the TV.</string>
-    <string name="kept_reason_home_changed">Its home screen was already changed, so we leave it.</string>
+    <string name="kept_reason_home_changed">Home goes to a launcher you installed, so we leave it.</string>
+    <string name="kept_reason_home_changed_off">Its own home screen is switched off and Home goes to your launcher, so we leave it.</string>
+    <string name="kept_reason_home_changed_ours">It already has the Clean Your TV home screen, put on another way.</string>
     <string name="kept_reason_other_home">Another home screen app is set up on it.</string>
     <string name="kept_reason_vendor_home">A system service also answers the Home button.</string>
     <string name="kept_reason_patchwall_feeds">PatchWall is on while Mi TV+ is off. Switch PatchWall off to get the new one.</string>
@@ -128,7 +130,9 @@
     <string name="found_home_tv_refuses">{brand} TVs only allow their own home screen, and the new one cannot be installed. So this TV keeps its own home screen.</string>
     <string name="found_home_fire_tv">Fire TV only allows its own home screen, and the new one cannot be installed. So this TV keeps its own home screen.</string>
     <string name="found_home_old_android">The new home screen needs Android 8 or newer, and this TV runs an older one. So this TV keeps its own home screen.</string>
-    <string name="found_home_changed">The home screen on this TV was already changed, by another app or an earlier change, and we don\'t undo a choice like that. So this TV keeps its own home screen.</string>
+    <string name="found_home_changed">The Home button goes to a home screen app you installed, and the TV\'s own home screen isn\'t one we can find on the TV. We don\'t undo a choice like that, so this TV keeps the home screen it has.</string>
+    <string name="found_home_changed_off">The Home button goes to a home screen app you installed, and the TV\'s own home screen is switched off, not by this app. We don\'t undo a choice like that, so this TV keeps the home screen it has.</string>
+    <string name="found_home_changed_ours">This TV already has the Clean Your TV home screen, put on another way (for example with the computer tool), under another key. We leave it as it is and don\'t add our own copy.</string>
     <string name="found_home_unknown_stock">We don\'t know this TV\'s own home screen well enough to switch it safely. So this TV keeps its own home screen.</string>
     <!-- RF-SAFETY-250: home screen switches skipped up front for safety -->
     <string name="found_home_wizard_wifi">This TV\'s Wi-Fi was saved by its setup wizard. The new home screen needs the wizard off, which would forget the Wi-Fi, and with the wizard left on the TV can crash. So this TV keeps its own home screen.</string>
@@ -148,7 +152,10 @@
     <!-- What would change it (the Why sheet), where something can -->
     <string name="kept_next_wifi">To change this, forget every Wi-Fi network saved on the TV, then join yours again. A cable alone doesn\'t change it. Then run Setup again.</string>
     <string name="kept_next_wifi_unknown">Running Setup again checks once more.</string>
-    <string name="kept_next_home_changed">If you\'d like the new home screen, set the TV\'s own home screen back as Home in the TV\'s settings, then run Setup again.</string>
+    <string name="kept_next_home_changed">Please keep your launcher installed: without it the TV may have no home screen to go to. If you\'d like the new home screen, tell us with Report a problem and we\'ll work out the safe way for this TV with you.</string>
+    <string name="kept_next_home_changed_off">If you\'d like the new home screen, turn the TV\'s own home screen back on first. On the TV: Settings, Apps, See all apps, Show system apps, then {app}, and Enable (the names differ a little between TVs). Keep your launcher installed. Then run Setup again, and it checks once more.</string>
+    <string name="kept_next_home_changed_ours">To have this app look after it (the dock, the look and updates), first undo it with the restore of the tool that put it on, which brings the TV\'s own home screen back, then run Setup again. Please don\'t uninstall it before that: the TV may have no other home screen to go to.</string>
+    <string name="kept_own_home_screen">the TV\'s own home screen</string>
     <string name="kept_next_other_home">To use the new one, remove that app, then run Setup again. Or tell us with Report a problem.</string>
     <string name="kept_next_patchwall_feeds">To get the new one, switch PatchWall off under Adverts and sponsored rows in Customise.</string>
     <string name="kept_next_list">What would change this is a list made for this TV. Help add this TV sends us its report; we make the list from reports like yours and post in your issue when there\'s one to try.</string>

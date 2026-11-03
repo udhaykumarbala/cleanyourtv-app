@@ -165,6 +165,10 @@ data class SetupExtras(
     val unknownModel: Boolean = false,           // UX 2 "We found 9 things we're sure about"
     val homePossible: Boolean = true,            // UX 4.6 TV refuses other home screens
     val homeBlock: HomeBlock = HomeBlock.NONE,   // why the switch is not offered, for S3's line (RF-PROFILES-63 P1, P2)
+    // 0.5.0: under HOME_CHANGED, what the report shows of the TV's own home screen (HomeChange), and how
+    // the TV's Settings names it when it is switched off, for the advice; null otherwise.
+    val homeChange: HomeChange? = null,
+    val homeChangeOwn: String? = null,
     val fireTv: Boolean = false,                 // issue #2: a Fire OS set, so S3's TV_REFUSES line names Fire TV, not the panel's brand
     val tclRemoteKeys: Boolean = false,          // issue #275: a TCL Google TV, so S3 says which remote buttons the new home screen loses
     val googleTvSettingsKey: Boolean = false,    // issue #3059: another Google TV, so S3 says the remote's Settings button may stop working
@@ -1085,9 +1089,12 @@ class SetupMachine(
                 val patchWall = PatchWallFeeds.PATCHWALL.takeIf { PatchWallFeeds.installed(snap, it) && !PatchWallFeeds.isOff(snap, it) }
                 val holds = patchWall != null && PatchWallFeeds.stayingOff(snap, journals, patchWallGoesOff = false).isNotEmpty()
                 val sent = deps.sentReports?.let { s -> attempt { s.load(record.id) }.getOrNull() }
+                val change = if (block == HomeBlock.HOME_CHANGED) HomeChange.of(snap, stocks()) else null
+                val changeOwn = if (change == HomeChange.OWN_SWITCHED_OFF) HomeChange.settingsName(HomeChange.switchedOff(snap, stocks())) else null
                 // The look step's draft and preview, from the whole draft dock (its waiting apps too).
                 mutableExtras.update {
                     it.copy(commands = commandsOf(r.plan), unknownModel = res !is ProfileResolution.Exact, homePossible = possible, homeBlock = block,
+                        homeChange = change, homeChangeOwn = changeOwn,
                         helperOffer = helperStock != null, helperOn = helper, helperWhyNot = helperWhyNot,
                         noScreenLock = !deps.screenLock.available(), draft = draft, dock = dock.map { p -> AppChoice(p, label(p)) }, apps = apps,
                         dockColumns = columns, look = sheet, ownPicture = own, ownDim = saved?.dim ?: OwnPicture.DEFAULT_DIM,

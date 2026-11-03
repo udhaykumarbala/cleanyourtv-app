@@ -31,6 +31,7 @@ import tv.cleanyour.core.flows.Busy
 import tv.cleanyour.core.flows.HomeScreenIntent
 import tv.cleanyour.core.flows.HomeScreenState
 import tv.cleanyour.core.flows.HomeBlock
+import tv.cleanyour.core.flows.HomeChange
 import tv.cleanyour.core.flows.IssueLinks
 import tv.cleanyour.core.flows.NotOnTv
 import tv.cleanyour.core.model.PackageName
@@ -227,7 +228,12 @@ internal fun NotOnTvScreen(
             HomeBlock.BOOT_LOOP -> stringResource(R.string.home_not_on_tv_boot_loop)
             HomeBlock.REMOTE_BUTTONS -> stringResource(R.string.home_not_on_tv_remote_buttons)
             HomeBlock.WIZARD_STAYS_ON -> stringResource(R.string.home_not_on_tv_wizard_stays_on)
-            HomeBlock.HOME_CHANGED -> stringResource(R.string.home_not_on_tv_home_changed)
+            // 0.5.0: what the report shows of the TV's own home screen (HomeChange) picks the line.
+            HomeBlock.HOME_CHANGED -> stringResource(when (n.change) {
+                HomeChange.OURS_ANOTHER_KEY -> R.string.home_not_on_tv_home_changed_ours
+                HomeChange.OWN_SWITCHED_OFF -> R.string.home_not_on_tv_home_changed_off
+                HomeChange.OWN_NOT_FOUND, null -> R.string.home_not_on_tv_home_changed
+            })
             HomeBlock.OTHER_HOME -> stringResource(R.string.home_not_on_tv_other_home)
             HomeBlock.VENDOR_HOME -> stringResource(R.string.home_not_on_tv_vendor_home)
             HomeBlock.PATCHWALL_FEEDS -> stringResource(R.string.home_not_on_tv_patchwall_feeds)
@@ -236,16 +242,21 @@ internal fun NotOnTvScreen(
         Banner(why, BannerTone.INFO, Modifier.padding(top = 16.dp), icon = CytIcons.Info)
         val next = when {
             n.helpAddTv -> R.string.home_not_on_tv_next_list
+            // 0.5.0: no step can bring the TV's own home screen back here, so the line keeps the launcher.
+            !n.earlier && n.reason == HomeBlock.HOME_CHANGED && !n.setupAgain -> R.string.home_not_on_tv_next_home_changed
             !n.setupAgain -> null
             n.earlier -> R.string.home_not_on_tv_next_check
             n.reason == HomeBlock.WIZARD_WIFI -> R.string.home_not_on_tv_next_wifi
             n.reason == HomeBlock.WIZARD_WIFI_UNKNOWN -> R.string.home_not_on_tv_next_check
+            n.reason == HomeBlock.HOME_CHANGED && n.change == HomeChange.OURS_ANOTHER_KEY -> R.string.home_not_on_tv_next_home_changed_ours
+            n.reason == HomeBlock.HOME_CHANGED && n.change == HomeChange.OWN_SWITCHED_OFF -> R.string.home_not_on_tv_next_home_changed_off
             n.reason == HomeBlock.HOME_CHANGED -> R.string.home_not_on_tv_next_home_changed
             n.reason == HomeBlock.OTHER_HOME -> R.string.home_not_on_tv_next_other_home
             n.reason == HomeBlock.PATCHWALL_FEEDS -> R.string.home_not_on_tv_next_patchwall_feeds
             else -> R.string.home_not_on_tv_next_setup
         }
-        next?.let { Body(stringResource(it), Modifier.padding(top = 16.dp, start = 4.dp, end = 4.dp)) }
+        val own = n.ownName ?: stringResource(R.string.home_own_home_screen)
+        next?.let { Body(msg(it, "app" to own), Modifier.padding(top = 16.dp, start = 4.dp, end = 4.dp)) }
         // The report sent before (SentReports): when, and that the issue is where news comes.
         n.reportSentAtMs?.let { Body(msg(R.string.home_report_sent, "date" to shortDate(it, locale)), Modifier.padding(top = 12.dp, start = 4.dp, end = 4.dp), color = CytTheme.colors.textPrimary) }
         // A designed outcome (a reason Setup recorded, not an earlier version's) is not a fault: say

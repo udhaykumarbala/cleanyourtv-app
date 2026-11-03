@@ -986,6 +986,40 @@ class ManageMachinesTest {
         assertNull(HomeScreenMachine(h.manageDeps(), backgroundScope, tv.id).also { settle() }.state.value.notOnTv)
     }
 
+    // 0.5.0 (36 held reports, #2996 and others): under HOME_CHANGED the Home page said "set the TV's own
+    // home screen back as Home in the TV's settings", which none of those TVs could do. The line and the
+    // next step now follow the newest snapshot: Google's home screen switched off (turn it back on, by its
+    // name in Settings, then Setup again, with or without a list), ours under another key (that tool's
+    // restore first), or no TV home screen to turn back on (keep the launcher; no Setup again).
+    @Test fun theHomeChangedAdviceFollowsTheSnapshot() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val listed = h.knownTv()
+        val person = tv.cleanyour.core.model.Component(PackageName("com.spocky.projengmenu"), ".ui.home.HomeActivity")
+        val theirs = tv.cleanyour.core.model.PackageState(tv.cleanyour.core.model.EnabledState.ENABLED, false, 1, null, false, false, null, false)
+        var at = Samples.NOW_MS + 30
+        suspend fun notOnTv(packages: Map<PackageName, tv.cleanyour.core.model.PackageState>, resolved: tv.cleanyour.core.model.Component, profileId: String?): NotOnTv? {
+            at += 10
+            h.tvs.upsert(listed.copy(profileId = profileId))
+            h.profiles.resolver = { _, all -> all.firstOrNull { it.id == profileId }?.let { ProfileResolution.Exact(it) } ?: ProfileResolution.None(tv.cleanyour.core.spec.KnownLaunchers.generic) }
+            h.snapshots.save(Samples.snapshot(packages = packages, takenAtMs = at,
+                home = tv.cleanyour.core.model.HomeResolution(resolved, listOf(tv.cleanyour.core.model.HomeClaimant(resolved, 0)))))
+            HomeDecisions(h.documents).save(listed.id, HomeDecision(false, "HOME_CHANGED", app = "0.2.0", profile = profileId?.let { "exact $it" } ?: "none"))
+            return HomeScreenMachine(h.manageDeps(), backgroundScope, listed.id).also { settle() }.state.value.notOnTv
+        }
+        val tvlauncher = tv.cleanyour.core.spec.KnownLaunchers.TVLAUNCHER.pkg
+        val base = Samples.miTvPackages()
+        val off = base + (tvlauncher to base.getValue(tvlauncher).copy(enabled = tv.cleanyour.core.model.EnabledState.DISABLED_USER)) + (person.pkg to theirs)
+        for (profileId in listOf(listed.profileId, null)) {
+            assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = profileId == null, setupAgain = true, change = HomeChange.OWN_SWITCHED_OFF, ownName = "Android TV Home"),
+                notOnTv(off, person, profileId), "$profileId")
+        }
+        val gone = base - tvlauncher + (person.pkg to theirs)
+        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true, change = HomeChange.OWN_NOT_FOUND), notOnTv(gone, person, null))
+        val anotherKey = off + (Issue034.gathinHome.pkg to Issue034.launcherState(Issue034.otherSigner))
+        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true, setupAgain = true, change = HomeChange.OURS_ANOTHER_KEY),
+            notOnTv(anotherKey, Issue034.gathinHome, null))
+    }
+
     // 0.3.3 D2: the reason and the next step for each stored decision. WIZARD_WIFI can change by
     // forgetting and adding the network again only on a TV an exact profile knows; on an unlisted TV
     // the wizard has to stay on anyway (HomeSwitchRisk), so the next step is a list.
@@ -1009,10 +1043,11 @@ class ManageMachinesTest {
         assertEquals(NotOnTv(HomeBlock.UNKNOWN_HOME, "Xiaomi"), notOnTv(HomeDecision(false, "UNKNOWN_HOME")))
         assertEquals(NotOnTv(HomeBlock.TV_REFUSES, "Xiaomi"), notOnTv(HomeDecision(false, "TV_REFUSES")))
         assertEquals(NotOnTv(HomeBlock.OLD_ANDROID, "Xiaomi"), notOnTv(HomeDecision(false, "OLD_ANDROID")))
-        // Issue #8: the home screen was already changed; making the TV's own Home again is the person's
-        // choice, and on a TV with an exact list Setup then offers the switch.
-        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", setupAgain = true), notOnTv(HomeDecision(false, "HOME_CHANGED")))
-        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null))
+        // Issue #8: the home screen was already changed. 0.5.0: the next step follows what the newest
+        // snapshot shows (HomeChange); this one shows no TV home screen switched off, so there is none
+        // (theHomeChangedAdviceFollowsTheSnapshot has the others).
+        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", change = HomeChange.OWN_NOT_FOUND), notOnTv(HomeDecision(false, "HOME_CHANGED")))
+        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true, change = HomeChange.OWN_NOT_FOUND), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null))
         // beta3: another home screen app claims Home; with it removed, Setup can switch. No list is missing.
         assertEquals(NotOnTv(HomeBlock.OTHER_HOME, "Xiaomi", unlisted = true, setupAgain = true), notOnTv(HomeDecision(false, "OTHER_HOME"), profileId = null))
         // beta3 QA: a block kept by 0.4.6-beta2 or older (no app= line) is an earlier Setup's, on a TV
@@ -1021,7 +1056,7 @@ class ManageMachinesTest {
             notOnTv(HomeDecision(false, "UNKNOWN_HOME"), profileId = null, earlier = true))
         assertEquals(NotOnTv(HomeBlock.WIZARD_WIFI, "Xiaomi", setupAgain = true, earlier = true), notOnTv(HomeDecision(false, "WIZARD_WIFI"), earlier = true))
         assertEquals(NotOnTv(HomeBlock.TV_REFUSES, "Xiaomi"), notOnTv(HomeDecision(false, "TV_REFUSES"), earlier = true))
-        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null, earlier = true))
+        assertEquals(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true, change = HomeChange.OWN_NOT_FOUND), notOnTv(HomeDecision(false, "HOME_CHANGED"), profileId = null, earlier = true))
         // Planned, but the launcher is gone since (removed): Setup again adds it. No decision (a TV set
         // up before 0.3.2): the same.
         assertEquals(NotOnTv(null, "Xiaomi", setupAgain = true), notOnTv(HomeDecision(true)))

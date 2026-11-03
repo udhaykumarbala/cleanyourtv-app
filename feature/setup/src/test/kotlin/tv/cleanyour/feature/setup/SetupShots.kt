@@ -408,7 +408,24 @@ object SetupShots {
         Shot("found_home_old_android") { Setup(found(noHomePlan), connected.copy(tvName = "Sony KD-55X8509C", homePossible = false, homeBlock = HomeBlock.OLD_ANDROID)) },
         Shot("found_home_unknown_stock") { Setup(found(noHomePlan), connected.copy(tvName = "Mi TV ASTP1", homePossible = false, homeBlock = HomeBlock.UNKNOWN_HOME)) },
         // Issue #8: Home answers to a launcher the person installed; the TV's own home screen is off.
-        Shot("found_home_changed") { Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) },
+        Shot("found_home_changed") { Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED,
+            homeChange = tv.cleanyour.core.flows.HomeChange.OWN_SWITCHED_OFF, homeChangeOwn = "Google TV Home")) },
+        // 0.5.0 (#2996 and 35 more): the Why sheet's next step follows what the report shows of the TV's own home screen.
+        Shot("found_why_kept_home_changed_off") {
+            SheetFrame({ Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) }, maxHeight = 560.dp) {
+                WhyKeptContent(HomeKept.Blocked(HomeBlock.HOME_CHANGED, brand = "TCL", change = tv.cleanyour.core.flows.HomeChange.OWN_SWITCHED_OFF, ownName = "Google TV Home"))
+            }
+        },
+        Shot("found_why_kept_home_changed_ours") {
+            SheetFrame({ Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) }, maxHeight = 560.dp) {
+                WhyKeptContent(HomeKept.Blocked(HomeBlock.HOME_CHANGED, brand = "Xiaomi", unlisted = true, change = tv.cleanyour.core.flows.HomeChange.OURS_ANOTHER_KEY))
+            }
+        },
+        Shot("found_why_kept_home_changed_not_found") {
+            SheetFrame({ Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) }, maxHeight = 560.dp) {
+                WhyKeptContent(HomeKept.Blocked(HomeBlock.HOME_CHANGED, brand = "Hikeen", unlisted = true, change = tv.cleanyour.core.flows.HomeChange.OWN_NOT_FOUND))
+            }
+        },
         // beta3 (issue #1119): another home screen app claims Home where the switch could go ahead.
         Shot("found_home_other_home") { Setup(found(noHomePlan), connected.copy(tvName = "Xiaomi MiTV4I", homePossible = false, homeBlock = HomeBlock.OTHER_HOME)) },
         // beta4 (issue #825): a system service's FallbackHome claims Home where the switch could go ahead.

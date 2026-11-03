@@ -56,6 +56,10 @@ data class NotOnTv(
     val earlier: Boolean = false,
     val installed: Boolean = false,
     val reportSentAtMs: Long? = null,
+    // 0.5.0: under HOME_CHANGED, what the newest snapshot shows of the TV's own home screen, and its name
+    // in the TV's Settings when it is switched off (HomeChange), for the line and the next step.
+    val change: HomeChange? = null,
+    val ownName: String? = null,
 )
 
 // 0.4.0: a picture of the Picture row: a gallery picture by id, with its file for the thumbnail
@@ -397,11 +401,22 @@ class HomeScreenMachine(
         val earlier = reason != null && decision?.earlier(d.about.version, now) == true
         val unlisted = tv.profileId == null && (!earlier || now !is ProfileResolution.Exact)
         if (earlier) return NotOnTv(reason = reason, brand = brand, unlisted = unlisted, setupAgain = true, earlier = true, reportSentAtMs = sent)
+        // 0.5.0: under HOME_CHANGED, what the snapshot shows of the TV's own home screen (HomeChange).
+        val stocks = when (now) {
+            is ProfileResolution.Exact -> now.profile.stockLaunchers
+            is ProfileResolution.BrandSureSet -> now.stockLaunchers
+            is ProfileResolution.None -> now.stockLaunchers
+            null -> emptyList()
+        }.map { it.pkg }
+        val change = if (reason == HomeBlock.HOME_CHANGED) HomeChange.of(snap, stocks) else null
         val setupAgain = when (reason) {
             null, HomeBlock.NONE, HomeBlock.WIZARD_WIFI_UNKNOWN -> true
             // Issue #8: the person can make the TV's own home screen Home again, and on a TV an exact
             // profile knows Setup then offers the switch. Without that list it may still not.
-            HomeBlock.HOME_CHANGED -> !unlisted
+            // 0.5.0: only where there is a step for it: the TV's own home screen is switched off (turn it
+            // back on), or the new one was put on another way (that tool's restore first). Setup then
+            // decides again, on any path, so a list is no longer needed for the line.
+            HomeBlock.HOME_CHANGED -> change != HomeChange.OWN_NOT_FOUND
             // Forgetting and adding the network again makes the TV's own Wi-Fi settings the owner; on a
             // TV no exact profile knows the wizard still has to stay on (HomeSwitchRisk), so not there.
             HomeBlock.WIZARD_WIFI -> !unlisted
@@ -416,6 +431,7 @@ class HomeScreenMachine(
             reason = reason, brand = brand,
             fireTv = reason == HomeBlock.TV_REFUSES && FireOs.isFireOs(snap.facts, snap), unlisted = unlisted,
             setupAgain = setupAgain, helpAddTv = needsList && unlisted, reportSentAtMs = sent,
+            change = change, ownName = if (change == HomeChange.OWN_SWITCHED_OFF) HomeChange.settingsName(HomeChange.switchedOff(snap, stocks)) else null,
         )
     }
 
