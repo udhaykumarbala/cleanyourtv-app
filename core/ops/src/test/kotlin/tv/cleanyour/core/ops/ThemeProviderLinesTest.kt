@@ -30,9 +30,22 @@ class ThemeProviderLinesTest {
             "rm -f /sdcard/Android/data/com.gathin.tvhome/files/config.json 2>/dev/null; " +
                 "o=\$(content write --uri content://com.gathin.tvhome.theme/config.json < /data/local/tmp/cleanyourtv/theme-config.json 2>&1) && [ -z \"\$o\" ] || " +
                 "cp /data/local/tmp/cleanyourtv/theme-config.json /sdcard/Android/data/com.gathin.tvhome/files/config.json; " +
-                "r=\$?; rm -f /data/local/tmp/cleanyourtv/theme-config.json; exit \$r",
+                "r=\$?; [ \$r -eq 0 ] || { e=\$(echo \"\$o\" | grep -o -E \"[A-Za-z0-9_]+[.][A-Za-z0-9_.]+(Exception|Error)\" | head -n 1); " +
+                "echo \"provider: \${e:-no exception named}\" >&2; }; rm -f /data/local/tmp/cleanyourtv/theme-config.json; exit \$r",
             ThemeProviderLines.write(config))
         assertEquals("content read --uri content://com.gathin.tvhome.theme/wallpaper.jpg | sha256sum", ThemeProviderLines.read(wallpaper))
+    }
+
+    // Issues #4232 (Philips TPM191E, Android 12) and #4250 (SHIELD TV Pro, Android 11), and six more: the look's
+    // send ended "nonzero_exit(1) cp: .../files/config.json: No such file or directory" and the provider's own
+    // answer was lost. On failure the line now names the provider's first exception class, nothing else of its text.
+    @Test fun aFailedWriteNamesTheProvidersExceptionOnly() {
+        val line = ThemeProviderLines.write(config)
+        val tail = line.substringAfter("r=\$?; ")
+        assertTrue(tail.startsWith("[ \$r -eq 0 ] || {"), "only when the write and the copy both failed")
+        assertTrue("grep -o -E \"[A-Za-z0-9_]+[.][A-Za-z0-9_.]+(Exception|Error)\" | head -n 1" in tail, "a dotted class name, the first one")
+        assertTrue(tail.endsWith("exit \$r"), "the exit status stays the write's or the copy's")
+        assertFalse("echo \"\$o\" >&2" in line, "the provider's text itself never leaves the TV")
     }
 
     @Test fun onlyTheTwoThemeFilesInTheLaunchersFolder() {
