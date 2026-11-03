@@ -117,8 +117,14 @@ class S11SettingsPush : E2eScenario() {
             assertEquals("config.json is what the phone sent", Sha256(java.security.MessageDigest.getInstance("SHA-256").digest(bytes)
                 .joinToString("") { "%02x".format(it) }).hex, oracle.sha256(FileOverlayTransport.CONFIG.absolute))
             assertEquals("the wallpaper stays", wallpaperSha, oracle.sha256(wallpaperPath))
-            delay(3_000)
-            val pidAfter = oracle.shell("pidof $LAUNCHER_PKG").stdout.trim()
+            var pidAfter = ""
+            for (i in 0 until 15) {
+                delay(1_000)
+                pidAfter = oracle.shell("pidof $LAUNCHER_PKG").stdout.trim()
+                if (pidAfter.isNotEmpty() && pidAfter != pidBefore) break
+            }
+            File(out, "s11-crash.txt").writeText(oracle.shell("logcat -d -b crash").stdout + "\n---\n" +
+                oracle.shell("logcat -d -s AndroidRuntime:E ActivityManager:I").stdout.lines().filter { "tvhome" in it || "FATAL" in it }.takeLast(80).joinToString("\n"))
             assertTrue("launcher not running after the push", pidAfter.isNotEmpty())
             assertNotEquals("launcher was not restarted", pidBefore, pidAfter)
             oracle.pressHome()
