@@ -109,13 +109,14 @@ class GuardedActionsTest {
         tapText("From the top")
         tapText("Ring in the app's colour")
         tapText("Glass")
-        tapText("Round icons")
-        tapText("Green Wi-Fi when online")
+        // 0.5.0: the buttons' look and green Wi-Fi moved to Widgets in Make it yours.
+        compose.onAllNodesWithText("Round icons").assertCountEquals(0)
+        compose.onAllNodesWithText("Green Wi-Fi when online").assertCountEquals(0)
         tapText("Sky that follows the clock")
         tapText("Use Classic's own settings")
         expect(
             LookEdit.SetMovement(Movement.SMOOTH), LookEdit.SetBigName(false), LookEdit.SetGlow(GlowChoice.FROM_TOP), LookEdit.SetRing(true),
-            LookEdit.SetBand(BandChoice.GLASS), LookEdit.SetButtons(ButtonsChoice.ROUND), LookEdit.SetGreenWifi(true), LookEdit.SetSky(true),
+            LookEdit.SetBand(BandChoice.GLASS), LookEdit.SetSky(true),
             LookEdit.ResetDetails,
         )
         tapText("Put it on the TV")

@@ -156,8 +156,39 @@ private val stockPlan = Samples.plan(
     p.copy(steps = p.steps.mapIndexed { i, s -> s.copy(narration = lines[i]) })
 }
 
+// 0.5.0 Make it yours: the hub over a TV with a sent look, and the settings the pages edit.
+private fun hubHome() = home().copy(sent = LookFixtures.preview(StyleId.GLASS), sentStyle = StyleId.GLASS, sentPicture = "mist",
+    pictures = LookFixtures.pictureOptions, dock = LookFixtures.dock4)
+
+private fun hubSettings(changes: Int = 0, saver: Boolean = false, start: tv.cleanyour.core.flows.StartOn = tv.cleanyour.core.flows.StartOn.HOME,
+    versionCode: Long? = null): tv.cleanyour.core.flows.MakeItYoursState {
+    val e = tv.cleanyour.core.flows.MakeItYoursEdits
+    var d = tv.cleanyour.core.flows.SettingsDraft(widgets = tv.cleanyour.core.spec.WidgetsSettings(greetingName = "Asha", showStats = true))
+    d = d.copy(startUp = e.withStart(d.startUp, start))
+    if (saver) d = d.copy(screensaver = e.withSaver(d.screensaver, true))
+    val others = listOf(app("com.spotify.tv.android", "Spotify"), app("com.plexapp.android", "Plex"), app("org.videolan.vlc", "VLC"))
+    return tv.cleanyour.core.flows.MakeItYoursState(tvName = "Mi TV 4A", loading = false, versionCode = versionCode, draft = d, shown = d.shown(), changes = changes,
+        apps = defaultDock + others, dock = defaultDock, liveTv = "Live TV", addOns = true)
+}
+
+@Composable
+private fun Hub(page: HubPage, settings: tv.cleanyour.core.flows.MakeItYoursState = hubSettings(), home: HomeScreenState = hubHome()) =
+    MakeItYoursScreen(home, settings, page, {}, {}, {}, {}, {}, {})
+
 object LauncherShots {
     val all: List<Shot> = listOf(
+        // 0.5.0 Make it yours: the hub, with changes waiting, after a send, and its pages.
+        Shot("miy_hub", 1300.dp) { Hub(HubPage.HUB) },
+        Shot("miy_hub_changes", 1300.dp) { Hub(HubPage.HUB, hubSettings(changes = 3)) },
+        Shot("miy_hub_sent", 1300.dp) { Hub(HubPage.HUB, hubSettings().copy(sent = true, shot = remember { tvShot() })) },
+        Shot("miy_hub_helper", 1300.dp) { Hub(HubPage.HUB, home = hubHome().copy(helper = tv.cleanyour.core.flows.HelperCard(tv.cleanyour.core.flows.HelperShown.ON, googleTv = true))) },
+        Shot("miy_apps", 1400.dp) { Hub(HubPage.APPS, hubSettings(changes = 1)) },
+        Shot("miy_inputs") { Hub(HubPage.INPUTS, hubSettings(start = tv.cleanyour.core.flows.StartOn.LIVE_TV)) },
+        Shot("miy_buttons") { Hub(HubPage.BUTTONS, home = hubHome().copy(helper = tv.cleanyour.core.flows.HelperCard(tv.cleanyour.core.flows.HelperShown.ON, googleTv = true))) },
+        Shot("miy_saver_tv") { Hub(HubPage.SAVER) },
+        Shot("miy_saver_clock", 1000.dp) { Hub(HubPage.SAVER, hubSettings(saver = true, changes = 2)) },
+        // A TV on home screen 3.0 (versionCode 9): no app at start, no 3.3 choices.
+        Shot("miy_inputs_30") { Hub(HubPage.INPUTS, hubSettings(versionCode = 9)) },
         // M2 Home screen
         Shot("home_normal") { HomeScreen(home(), {}, {}) },
         Shot("home_aurora_theme") { HomeScreen(home(themeId = "aurora"), {}, {}) },

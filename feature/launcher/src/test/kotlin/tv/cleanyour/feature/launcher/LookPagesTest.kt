@@ -190,12 +190,15 @@ class LookPagesTest {
         compose.onNodeWithText("Every app in one row").performScrollTo().assertIsDisplayed()
         compose.runOnIdle { nav.open(LookPage.MORE) }
         compose.waitForIdle()
-        for (t in listOf("Greeting above the clock", "Date under the clock", "Brighter date", "Warn when the internet is down", "Icons on cards",
-            "No band. The apps sit right on your picture.")) {
+        for (t in listOf("Icons on cards", "No band. The apps sit right on your picture.")) {
             compose.onNodeWithText(t).performScrollTo().assertIsDisplayed()
         }
-        // Green Wi-Fi is off: the warning row is greyed with its reason.
-        compose.onNodeWithText("Turn on Green Wi-Fi when online first.").performScrollTo().assertIsDisplayed()
+        // 0.5.0: the header rows and the internet warning are the Widgets page's now; one line says so.
+        for (t in listOf("Greeting above the clock", "Date under the clock", "Brighter date", "Warn when the internet is down")) {
+            compose.onAllNodesWithText(t).assertCountEquals(0)
+        }
+        compose.onNodeWithText("The greeting, the date and the buttons at the top moved to Widgets in Make it yours, next to the switches that show them.")
+            .performScrollTo().assertIsDisplayed()
         compose.runOnIdle { nav.open(LookPage.ADVANCED) }
         compose.waitForIdle()
         compose.onNodeWithText("Halo").performScrollTo().assertIsDisplayed()
@@ -223,15 +226,13 @@ class LookPagesTest {
         compose.runOnIdle { nav.open(LookPage.MORE) }
         compose.waitForIdle()
         compose.onNodeWithText("No band. The apps sit right on your picture.").performScrollTo().performClick()
-        compose.onNodeWithText("Greeting above the clock").performScrollTo().performClick()
         compose.onNodeWithText("Each app's banner, as the app makes it.").performScrollTo().performClick()
-        compose.onNodeWithText("Warn when the internet is down").performScrollTo().assertIsNotEnabled()
         compose.runOnIdle { nav.open(LookPage.ADVANCED) }
         compose.waitForIdle()
         compose.onNodeWithText("Halo").performScrollTo().performClick()
         compose.waitForIdle()
         assertEquals(
-            listOf(on.copy(oneRow = true), on.copy(noBand = true), on.copy(hideGreeting = true), on.copy(tiles = TilesChoice.ART), on.copy(highlight = HighlightChoice.HALO))
+            listOf(on.copy(oneRow = true), on.copy(noBand = true), on.copy(tiles = TilesChoice.ART), on.copy(highlight = HighlightChoice.HALO))
                 .map { HomeScreenIntent.Look(LookEdit.SetExtras(it)) },
             hits,
         )
