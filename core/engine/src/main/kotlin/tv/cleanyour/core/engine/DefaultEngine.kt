@@ -47,6 +47,7 @@ import tv.cleanyour.core.planner.PlanSummary
 import tv.cleanyour.core.planner.Step
 import tv.cleanyour.core.planner.StockHome
 import tv.cleanyour.core.planner.SwitchOffRule
+import tv.cleanyour.core.probe.AdbProber
 import tv.cleanyour.core.probe.InstalledApkReader
 import tv.cleanyour.core.probe.ProbeException
 import tv.cleanyour.core.probe.Prober
@@ -763,6 +764,7 @@ class DefaultEngine(
         }
         val check = rendered.verify
         if (op is Op.Disable && check != null) return disableChecked(session, op, renderer.render(check), prior)
+        if (op is Op.Enable && check != null) return enableChecked(session, op, renderer.render(check), prior)
         val verifyOutput = rendered.verify?.let { read(session, renderer.render(it)) } ?: ownOutput
         return when (val v = renderer.check(op, verifyOutput, prior)) {
             VerifyResult.Ok -> installedApkCheck(session, op)
@@ -777,12 +779,21 @@ class DefaultEngine(
     // a change, and only a dump that positively shows it enabled or default is the TV keeping it on
     // (issue #10's GuardFailed, a skip outside the home screen switch). A dump that cannot be read,
     // or shows no enabled state, is a failure too.
+    // 0.4.9 (issues #3436, #1543): the check read falls back as the probe does (disabledList). When no
+    // list answers, the dump is read too, and only a dump showing the package off passes; anything else
+    // (on, no state, unreadable) pauses with the list's own failure, never a kept-on skip.
     private suspend fun disableChecked(session: TvSession, op: Op.Disable, check: Rendered, prior: Prior?): Outcome {
-        val r = readResult(session, check) ?: return Outcome.Failed(AdbError.Transport.Protocol("no check read"), "verify: no check read")
-        if (r.exit != 0) return Outcome.Failed(AdbError.NonZeroExit(r.exit, r.stderr.take(4096)), "verify read: exit ${r.exit}")
-        val v = renderer.check(op, r.stdout, prior) as? VerifyResult.Mismatch ?: return Outcome.Ok
+        val r = disabledList(session, check) ?: return Outcome.Failed(AdbError.Transport.Protocol("no check read"), "verify: no check read")
+        // A list that answered and names the package: done. Otherwise (it does not name it, or no list
+        // could be read at all) the package's own dump decides.
+        val v = if (r.exit == 0) renderer.check(op, r.stdout, prior) as? VerifyResult.Mismatch ?: return Outcome.Ok else null
         val d = readResult(session, renderer.render(Op.Read(ProbeKind.PACKAGE_DUMP, ReadArg.Pkg(op.pkg))))
-            ?: return Outcome.Failed(AdbError.Transport.Protocol("no package dump read"), "verify: no package dump read")
+        if (v == null) {
+            val off = d?.takeIf { it.exit == 0 && PackageDump.exists(op.pkg, it.stdout) }?.let { PackageDump.enabledState(it.stdout) }
+            return if (off == EnabledState.DISABLED_USER || off == EnabledState.DISABLED) Outcome.Ok
+                else Outcome.Failed(AdbError.NonZeroExit(r.exit, r.stderr.take(4096)), "verify read: exit ${r.exit}")
+        }
+        if (d == null) return Outcome.Failed(AdbError.Transport.Protocol("no package dump read"), "verify: no package dump read")
         if (d.exit != 0) return Outcome.Failed(AdbError.NonZeroExit(d.exit, d.stderr.take(4096)), "verify: dumpsys package exit ${d.exit}")
         val state = if (PackageDump.exists(op.pkg, d.stdout)) PackageDump.enabledState(d.stdout) else null
         return when (state) {
@@ -792,6 +803,41 @@ class DefaultEngine(
             null -> Outcome.Failed(AdbError.Transport.Protocol("dumpsys package shows no enabled state"), "verify: dumpsys package shows no enabled state for ${op.pkg.value}")
         }
     }
+
+    // 0.4.9 (issues #3436, #1543): a switch-on (Undo, Put back, a rollback) is checked the same way. Before,
+    // its check read's exit was not looked at, so a list that failed read as "not listed", which passed.
+    // Now a list that answers decides as before; when none can be read, only a dump showing the package
+    // on (ENABLED or DEFAULT) passes, and anything else pauses with the list's own failure.
+    private suspend fun enableChecked(session: TvSession, op: Op.Enable, check: Rendered, prior: Prior?): Outcome {
+        val r = disabledList(session, check) ?: return Outcome.Failed(AdbError.Transport.Protocol("no check read"), "verify: no check read")
+        if (r.exit == 0) return when (val v = renderer.check(op, r.stdout, prior)) {
+            VerifyResult.Ok -> installedApkCheck(session, op)
+            is VerifyResult.Mismatch -> Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got ${v.actual}"), "verify: expected ${v.expected}, got ${v.actual}")
+        }
+        val d = readResult(session, renderer.render(Op.Read(ProbeKind.PACKAGE_DUMP, ReadArg.Pkg(op.pkg))))
+        val state = d?.takeIf { it.exit == 0 && PackageDump.exists(op.pkg, it.stdout) }?.let { PackageDump.enabledState(it.stdout) }
+        return if (state == EnabledState.ENABLED || state == EnabledState.DEFAULT) installedApkCheck(session, op)
+            else Outcome.Failed(AdbError.NonZeroExit(r.exit, r.stderr.take(4096)), "verify read: exit ${r.exit}")
+    }
+
+    // 0.4.9 (issues #3436, #1543): the disabled list a switch-off or a switch-on is checked with. Where
+    // `pm list packages -d` fails (exit 255 with a SecurityException on some TVs, which the probe now reads
+    // past), the prober's pinned fallbacks follow in the same order: cmd package for user 0, then pm for user
+    // 0. The first list that answers exit 0 is returned, else the first failure. The log says once per TV
+    // which one answered, in fixed words.
+    private suspend fun disabledList(session: TvSession, check: Rendered): ExecResult? {
+        val first = readResult(session, check) ?: return null
+        if (first.exit == 0) return first
+        for ((name, line) in AdbProber.DISABLED_LISTS.drop(1)) {
+            val r = send(session, line, ExecSpec(timeoutMs = check.timeoutMs, stdoutCap = check.stdoutCap, retry = RetryClass.IDEMPOTENT_READ))
+            if (r.exit != 0) continue
+            if (disabledListNoted.add(session.tvId)) log("engine: disabled list from $name after pm list packages -d exit ${first.exit}")
+            return r
+        }
+        if (disabledListNoted.add(session.tvId)) log("engine: no disabled list answered (pm list packages -d exit ${first.exit}); the package's dump decides")
+        return first
+    }
+    private val disabledListNoted: MutableSet<TvId> = java.util.Collections.synchronizedSet(mutableSetOf())
 
     // SECURITY 3.2 (R1 R-5): an install is done only when the APK the TV installed hashes to what
     // was pushed or streamed, read through the prober's D40 script; versionCode alone is not enough.
