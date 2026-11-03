@@ -293,5 +293,22 @@ class HomeHelperFlowsTest {
             "nothing read about accessibility, no section")
         val none = TvReport.text(TvReportInput(about, Samples.miTvSnapshot().helper(null, null), null, null, accessibility = true))
         assertTrue("Services listed: none" in none && "Home button helper: not listed" in none && "Switched on: unknown" in none, none)
+        assertFalse("other services listed" in text || "other services listed" in none, "only when the new home screen has another entry")
+    }
+
+    // 0.5.0 (issues #3075, #3287, #5468): Customise refused the helper with one unnamed service listed and
+    // accessibility off (S3). Whether that entry is the new home screen's own InputKeyService, the report could
+    // not say. It names entries of the launcher's package now; other apps' stay a count.
+    @Test fun theReportNamesTheNewHomeScreensOtherServicesOnly() {
+        val about = AppAbout("0.5.0", "full", "Pixel", "Android 15")
+        val input = "com.gathin.tvhome/.InputKeyService"
+        val text = TvReport.text(TvReportInput(about, Samples.miTvSnapshot().helper("$reader:$input", "0"), null, null, accessibility = true))
+        val section = text.substringAfter("\nAccessibility\n").substringBefore("\n\n").lines()
+        assertEquals(listOf("Switched on: no", "Services listed: 2 (not named)", "The new home screen's other services listed: $input",
+            "Home button helper: not listed"), section.take(4))
+        assertFalse("talkback" in text, "another app's service is never named")
+        val both = TvReport.text(TvReportInput(about, Samples.miTvSnapshot().helper("$service:com.gathin.tvhome/com.gathin.tvhome.InputKeyService", "1"), null, null, accessibility = true))
+        assertTrue("Services listed: 2 (the new home screen's Home button helper, 1 other, not named)\n" +
+            "The new home screen's other services listed: com.gathin.tvhome/com.gathin.tvhome.InputKeyService\n" in both, both)
     }
 }
