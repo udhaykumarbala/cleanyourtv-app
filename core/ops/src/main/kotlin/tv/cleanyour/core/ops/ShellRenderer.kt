@@ -310,7 +310,7 @@ class ShellRenderer(private val watchdogVariant: WatchdogVariant = WatchdogVaria
     private fun installed(pkg: PackageName, versionCode: Long, dump: String): VerifyResult {
         val found = PackageDump.versionCode(dump)
         return if (PackageDump.exists(pkg, dump) && found == versionCode) VerifyResult.Ok
-        else VerifyResult.Mismatch("Package [${pkg.value}] with versionCode=$versionCode", found?.let { "versionCode=$it" } ?: "not installed")
+        else VerifyResult.Mismatch("Package [${pkg.value}] with versionCode=$versionCode", found?.let { "versionCode=$it" } ?: NOT_INSTALLED)
     }
 
     private fun homeIs(expected: Component, lines: List<String>): VerifyResult {
@@ -386,6 +386,8 @@ class ShellRenderer(private val watchdogVariant: WatchdogVariant = WatchdogVaria
         private const val RECEIVER_FOREGROUND = "--receiver-foreground"
         private val CUE_WORD_RE = Regex("^[A-Z_]{1,16}$")
         const val EMPTY_FILE_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        // An install check whose package dump shows no versionCode (Mismatch.actual).
+        const val NOT_INSTALLED = "not installed"
 
         // Timeouts (SECURITY 3.5, ARCHITECTURE 3.3) and output caps (SECURITY 3.5, ARCHITECTURE 3.7).
         const val T_DEFAULT = 30_000L

@@ -36,6 +36,7 @@ import tv.cleanyour.core.ops.PackageDump
 import tv.cleanyour.core.ops.Privilege
 import tv.cleanyour.core.ops.RenderRefused
 import tv.cleanyour.core.ops.Rendered
+import tv.cleanyour.core.ops.ShellRenderer
 import tv.cleanyour.core.ops.Transfer
 import tv.cleanyour.core.ops.VerifyResult
 import tv.cleanyour.core.model.Component
@@ -768,8 +769,24 @@ class DefaultEngine(
         val verifyOutput = rendered.verify?.let { read(session, renderer.render(it)) } ?: ownOutput
         return when (val v = renderer.check(op, verifyOutput, prior)) {
             VerifyResult.Ok -> installedApkCheck(session, op)
-            is VerifyResult.Mismatch -> Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got ${v.actual}"), "verify: expected ${v.expected}, got ${v.actual}")
+            is VerifyResult.Mismatch -> {
+                val got = v.actual + (notInstalledWhy(session, op, v)?.let { " ($it)" } ?: "")
+                Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got $got"), "verify: expected ${v.expected}, got $got")
+            }
         }
+    }
+
+    // Issues #5242 (TiVo Stream 4K, Android 12) and #5295 (Changhong, Android 11), 0.4.8-beta2: the streamed
+    // install answered Success, then the package dump showed no versionCode ("got not installed"), run after
+    // run, with nothing to say why. The same read-only state read as RFC-INSTALL-1 adds the cause in fixed
+    // words and one diagnostics line (pm path, user 0's install flags); it never turns the failure into a pass.
+    private suspend fun notInstalledWhy(session: TvSession, op: Op, v: VerifyResult.Mismatch): String? {
+        val pkg = when (op) {
+            is Op.Install -> op.pkg
+            is Op.InstallStream -> op.pkg
+            else -> return null
+        }
+        return if (v.actual == ShellRenderer.NOT_INSTALLED) unreadableApk(session, pkg) else null
     }
 
     // A switch-off's check read (pm list packages -d). A check read that errors is a failure, never
