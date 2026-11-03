@@ -1,0 +1,24 @@
+# scripts/build-launcher-on-forge.sh, 2026-11-03: two builds of upstream main (d7b0d4a5, launcher 3.3) in fresh copies
+# and fresh containers, both re-signed with K1 and compared; the badging must name com.gathin.tvhome. Filtered output.
+# The script ran twice; both runs gave the same signed APK (38458c96..., 594073 bytes) and the same signing block.
+==> build a: assembleRelease in eclipse-temurin:21-jdk
+==> build b: assembleRelease in eclipse-temurin:21-jdk
+==> sign both builds with the launcher release key (in memory), compare and verify
+38458c96b8a2b24ee12c3b877aaf1a76775bff1f8833056bd3672f449bcb0b3a  /src/signed-a.apk
+38458c96b8a2b24ee12c3b877aaf1a76775bff1f8833056bd3672f449bcb0b3a  /src/signed-b.apk
+identical after signing: yes
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Number of signers: 1
+Signer #1 certificate DN: O=cleanyourtv, CN=Clean Your TV launcher
+Signer #1 certificate SHA-256 digest: 576418154bec6505bfc709ccaa6ae85b6e09d98eb89f4a25147ca1b4b0505132
+package: name='com.gathin.tvhome' versionCode='12' versionName='3.3' platformBuildVersionName='14' platformBuildVersionCode='34' compileSdkVersion='34' compileSdkVersionCodename='14'
+38458c96b8a2b24ee12c3b877aaf1a76775bff1f8833056bd3672f449bcb0b3a  /src/cleanyourtv-launcher.apk
+size 594073
+==> signature for the F-Droid rebuild: android/platform/signatures/cleanyourtv-launcher
+==> android/platform/src/main/assets/bundled/cleanyourtv-launcher.apk
+38458c96b8a2b24ee12c3b877aaf1a76775bff1f8833056bd3672f449bcb0b3a  android/platform/src/main/assets/bundled/cleanyourtv-launcher.apk
+size 594073

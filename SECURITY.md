@@ -40,8 +40,20 @@ updating in place is always safe; the release certificate SHA-256 is in
 ## The bundled launcher: what it asks the TV for
 
 The app installs one launcher build, pinned by its SHA-256 (core/trust `PinnedLauncher`): launcher
-3.0 (upstream main after v3.0.0, commit b06ab21, versionCode 9) since 0.4.5. Each upstream bump is
-reviewed against the previous pin; the changes in the manifest are listed here, newest first.
+3.3 (upstream main, commit d7b0d4a5, versionCode 12) since 0.4.9-beta1, 3.0 (commit b06ab21,
+versionCode 9) from 0.4.5 to 0.4.8. Each upstream bump is reviewed against the previous pin; the
+changes in the manifest are listed here, newest first.
+
+Launcher 3.3 (upstream main, commit d7b0d4a5, versionCode 12; was 3.0, b06ab21, versionCode 9). No
+new permission, component, exported entry or provider. Two manifest changes:
+
+- `MainActivity`'s Home filter also lists the categories `android.intent.category.COMMON_HOME`
+  (CVTE firmware sends Home and boot with it, upstream #1201) and
+  `com.heytap.tv.launcher.category.MODERN_HOME` (ColorOS TV only promotes a Home that declares it).
+  Both are in the one existing filter, so a plain Home intent still matches it as before; nothing new
+  can start the activity that could not before.
+- `HomeSettingsActivity` (not exported) uses the launcher's own theme instead of
+  `Theme.NoDisplay` (a black backdrop behind the Default home picker).
 
 Launcher 3.0 (upstream main after v3.0.0, commit b06ab21, versionCode 9; was 2.7, v2.7.0,
 versionCode 8). The manifest at this commit is the same as at the v3.0.0 tag:

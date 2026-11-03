@@ -30,7 +30,7 @@ class LauncherPinTest {
 
     @Test fun pinIsTheUpstreamPackage() {
         assertEquals("com.gathin.tvhome", PinnedLauncher.PACKAGE)
-        assertEquals("b06ab21105c49900cb1ed76b24414dba1e21d0db", PinnedLauncher.UPSTREAM_COMMIT)
+        assertEquals("d7b0d4a5284d3934a1fce192bd4e2f43aa1fbf97", PinnedLauncher.UPSTREAM_COMMIT)
         val gitlink = File(Repo.root, "third_party/cleanyourtv/.git")
         if (gitlink.exists()) {
             // The submodule checkout and the pin must agree (DECISIONS-W1 D-W1-8, ARCHITECTURE 6.2).
@@ -44,8 +44,8 @@ class LauncherPinTest {
         val bytes = apk.readBytes()
         val artifact = BundledLauncherPin(OneBlob(PinnedLauncher.ASSET_NAME, bytes)).bundled()
         assertEquals(PackageName("com.gathin.tvhome"), artifact.pkg)
-        assertEquals(9L, artifact.versionCode)
-        assertEquals("3.0", artifact.versionName)
+        assertEquals(12L, artifact.versionCode)
+        assertEquals("3.3", artifact.versionName)
         assertEquals(Sha256(PinnedLauncher.SHA256), artifact.sha256)
         assertEquals(Sha256(PinnedLauncher.SIGNER_SHA256), artifact.signer)
         assertEquals(artifact.sha256, artifact.blob.sha256)
