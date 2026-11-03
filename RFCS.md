@@ -264,3 +264,30 @@ a long filesystem name, and numbers only. `InstallStorage` (`:core:engine`) hold
 The chooser card of #3301 and #3305 is words only: `SetupMachine` reads the check's "got
 android/com.android.internal.app.ResolverActivity" from the journal and names the Home claimants the
 person installed on the card (never in the log or the report). Two `CopyKey`s are added.
+
+## RFC-F0-1: one settings document per TV (0.5.0 F0)
+
+Every push replaced config.json with what that push alone built (LookKeys.build or a 0.4.0 theme, the
+dock and module_cards, then the helper and Live TV rules), so a key no push wrote, set by a theme, by
+upstream's tools or by a 0.5.0 section, went with the next look. Additive, no frozen signature changes:
+
+- `:core:spec` gets `ConfigKeys` (every key launcher 3.0 at b06ab21 reads, with its type, range, the
+  lowest launcher versionCode that reads it and its one owning `SettingsSection`) and `TvSettings`, the
+  document: seeded from the TV's file, typed values for Apps, Clock and top bar, Screensaver, When the
+  TV starts and Wallpapers, `withSections` for a doc built elsewhere, and `pushDoc`/`encode`, which
+  leave out the keys the TV's launcher does not read. `LauncherConfigDoc` and the codec are unchanged.
+- `:core:flows`: the look push (Manage's three, the Modules cards push, Setup's plan) goes through
+  `LookCarry.merge`: the TV's document with `TvSettings.LOOK_PUSH` (Look, Dock, Cards, the helper's keys)
+  taken from the built doc, then the helper and Live TV rules as before. The hidden list is the Apps
+  section's: the TV's stays, and a 0.4.0 theme's (Default writes the launcher's own) only stands in for
+  none. A list holding part of the launcher's own hidden apps and nothing else is the Live TV rule's and
+  is worked out again, as 0.4.8 did. The seed is the newest snapshot's overlay, or, when the ledger has a later change of
+  config.json, the file this phone pushed (`PushedSettings`, tvs/<id>/pushed-config.json), no file
+  after a removal, else a fresh read while connected. Setup seeds from its own read unless the plan
+  installs the launcher fresh or replaces it, and treats the TV as on the bundled launcher.
+- Undo is unchanged: the planner still records the probed overlay as the push's prior.
+
+The top bar's look keys (icon_only_buttons, icon_only_inputs, top_menu, wifi_status_color) and the
+More options header keys (show_greeting, date_below_clock, header_white, wifi_status_warnings) stay
+LOOK's, since every look push writes them; moving one to the top bar section is its owner in
+`ConfigKeys` and `LookKeys.build` no longer writing it.

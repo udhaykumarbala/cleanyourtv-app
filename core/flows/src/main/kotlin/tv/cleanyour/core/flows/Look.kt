@@ -39,7 +39,8 @@ import tv.cleanyour.core.store.BlobStore
 // look2: a choice in the new form (HomeChoice.style) is built from scratch by LookKeys.build from
 // its resolved LookSpec and PictureKeys (LookRules), spec 7.1; a legacy choice (style null) keeps
 // the frozen 0.4.0 path (LegacyLook) byte for byte until the next send.
-internal class Look(val doc: LauncherConfigDoc, val digest: Sha256, val config: BlobRef, val wallpaper: BlobRef?) {
+// 0.5.0 F0: `bytes`, the file as encoded, kept for the TV once the push reached it (PushedSettings).
+internal class Look(val doc: LauncherConfigDoc, val digest: Sha256, val config: BlobRef, val wallpaper: BlobRef?, val bytes: ByteArray) {
     companion object {
         // RFC-HELPER-1: `carry` adds what this TV needs (LookCarry: the helper's keys, the Live TV keys).
         suspend fun encode(encoder: ConfigEncoder, blobs: BlobStore, theme: Theme?, dock: List<PackageName>, cards: Boolean, picture: LookPicture? = null,
@@ -51,7 +52,7 @@ internal class Look(val doc: LauncherConfigDoc, val digest: Sha256, val config: 
         // A doc and its wallpaper as the push sends them, encoded and stored.
         suspend fun encode(encoder: ConfigEncoder, blobs: BlobStore, doc: LauncherConfigDoc, wallpaper: BlobRef?): Look {
             val bytes = encoder.encode(doc)
-            return Look(doc, sha256Of(bytes), blobs.putBytes(bytes), wallpaper)
+            return Look(doc, sha256Of(bytes), blobs.putBytes(bytes), wallpaper, bytes)
         }
 
         // The doc and the wallpaper a 0.4.0 choice pushes, without storing anything (LegacyLook).
@@ -141,7 +142,10 @@ internal object Cards {
 }
 
 // D15: the digest of the config.json Manage just pushed, so the next connect can warn on drift.
-internal suspend fun rememberPushedLook(d: ManageDeps, tvId: TvId, digest: Sha256) {
+// 0.5.0 F0: and the file itself, which the next push starts from until the TV is read again.
+internal suspend fun rememberPushedLook(d: ManageDeps, tvId: TvId, look: Look) {
+    attempt { PushedSettings.remember(d.documents, tvId, look.bytes) }
+    val digest = look.digest
     val tv = d.tv(tvId) ?: return
     val pin = d.launcherPin.bundled()
     val l = tv.launcher ?: LauncherState(pin.versionCode, pin.signer, null, null)

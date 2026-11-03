@@ -77,6 +77,7 @@ import tv.cleanyour.core.spec.AppNames
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.FactsTable
 import tv.cleanyour.core.spec.LiveTvKeys
+import tv.cleanyour.core.spec.TvSettings
 import tv.cleanyour.core.spec.Looks
 import tv.cleanyour.core.spec.PictureSource
 import tv.cleanyour.core.spec.ProfileResolution
@@ -998,8 +999,12 @@ class SetupMachine(
         lookContext = LookContext(apps = lookApps, others = candidates.filter { it.pkg !in kept }, mine = mine, new = new, tv = tvLook, cards = cards,
             keyNames = keyNames, dockChosen = draft.dock != null)
         val sheet = mutableExtras.value.look?.let { drafts.refresh(it, lookContext) } ?: drafts.open(choice, lookContext)
+        // 0.5.0 F0: the look goes into the TV's settings document (TvSettings), as Manage's LookCarry: from the file
+        // the TV has now, none when the plan installs the new home screen fresh or replaces one signed with another key
+        // (the uninstall takes its files). After the plan the TV's launcher is the bundled one (LookTv above).
+        val seed = TvSettings.seed(snap.launcherOverlay.takeUnless { installed == null || choices.replaceLauncherSigner }, null)
         val look = if (!possible && !helper) null else attempt { val (doc, w) = drafts.docOf(sheet, dock, cards, lookContext)
-            Look.encode(deps.encoder, deps.blobs, LiveTvKeys.apply(if (helper) HomeHelperKeys.with(doc, helperStock!!.pkg) else doc, liveTv), w) }
+            Look.encode(deps.encoder, deps.blobs, LookCarry.merge(seed, doc, liveTv) { if (helper) HomeHelperKeys.with(it, helperStock!!.pkg) else it }, w) }
             .onFailure { deps.log.line("setup: the look could not be encoded, planned without it") }.getOrNull()
         // What Manage starts from once the run pushed it, saved as the Look sheet saves it, in the new
         // form: a photo made here is kept for the TV (and saved as "mine") only once the TV has it.
@@ -1010,7 +1015,7 @@ class SetupMachine(
             chosen == LookPicture.MINE_ID -> saved?.dim ?: OwnPicture.DEFAULT_DIM
             else -> null
         }
-        setupHome = look?.let { SetupHome(it.digest, drafts.choiceOf(sheet, saved, kept, cards, chosen, dim, dockChosen = draft.dock != null), photo?.takeIf { sendsNew }, saved) }
+        setupHome = look?.let { SetupHome(it.digest, drafts.choiceOf(sheet, saved, kept, cards, chosen, dim, dockChosen = draft.dock != null), photo?.takeIf { sendsNew }, saved, it.bytes) }
         // RFC-CURTAIN-1: the TV shows the progress unless Custom switched it off (Simple never shows
         // the switch). An asset that does not match its pin is never offered; the plan goes without it.
         val showOnTv = draft.level == Level.SIMPLE || draft.curtain
@@ -1133,7 +1138,7 @@ class SetupMachine(
 
     // The look the current plan pushes: its digest, what Manage starts from once it is on the TV, the
     // photo made in the look step it sends (kept for the TV only then) and the choice saved before.
-    private class SetupHome(val digest: Sha256, val choice: HomeChoice, val photo: NewPhoto?, val saved: HomeChoice?)
+    private class SetupHome(val digest: Sha256, val choice: HomeChoice, val photo: NewPhoto?, val saved: HomeChoice?, val bytes: ByteArray)
 
     private class NewPhoto(val ref: BlobRef, val jpeg: ByteArray, val dim: Int)
 
@@ -1348,6 +1353,8 @@ class SetupMachine(
             if (keptPhoto) newPhoto = null
             deps.documents?.let { docs -> attempt { EarlierLook.remember(docs, tvId, EarlierLook.firstLook(home.saved, choice.dock), choice, keptPhoto, oldPhoto) } }
             deps.homePrefs?.let { prefs -> attempt { prefs.save(tvId, choice) } }
+            // 0.5.0 F0: the file the TV now has, which Manage's next push starts from (PushedSettings).
+            if (home.digest == digest) deps.documents?.let { docs -> attempt { PushedSettings.remember(docs, tvId, home.bytes) } }
         }
         // Issue #15: nothing switched off, no new home screen and no other change of this run: Done
         // says plainly that nothing changed. The TV curtain comes and goes, so it does not count,
