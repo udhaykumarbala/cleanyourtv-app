@@ -197,3 +197,5 @@ reviewed and tested the app, and every change went through automated tests and r
 - The people who tested the app on their own TVs and told us how it went: [Testers](https://udhaykumarbala.github.io/cleanyourtv-app/testers/).
 
 Full list: [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES). Licence: [MIT](LICENSE), like Clean Your TV.
+
+If the app saved you an evening, you can [buy me a coffee](https://buymeacoffee.com/udhaykumarbala).
