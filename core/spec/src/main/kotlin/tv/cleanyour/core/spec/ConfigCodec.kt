@@ -482,8 +482,8 @@ internal object ConfigCodecImpl {
         }
     }
     val APP_KEY_PREFIXES: List<String> = listOf("hold:", "front:")
-    // RemoteKeys.isAction.
-    val APP_KEY_ACTIONS: Set<String> = setOf("back", "home", "recents", "mute", "sleep", "screensaver", "settings", "wifi")
+    // RemoteKeys.isAction (launcher 3.3 added library and ignore).
+    val APP_KEY_ACTIONS: Set<String> = setOf("back", "home", "recents", "mute", "sleep", "screensaver", "settings", "wifi", "library", "ignore")
     private val ACTIVITY = Regex("\\.?[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)*")
     private val DIGITS = Regex("[0-9]{1,6}")
     private val KEY_NAME = Regex("KEYCODE_[A-Z0-9_]+")

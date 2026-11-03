@@ -59,8 +59,9 @@ sourceSets.main {
 }
 
 // Differential test (F8): the real readers run on the JVM from the test sources, vendored with only
-// the package line changed. Launcher 3.0 (b06ab21, the bundled launcher and the pinned reader,
-// RFC-UP300-1) in src/test/java/com/gathin/tvhome/v30, checked against the submodule, and launcher
+// the package line changed. The bundled launcher and the pinned reader (RFC-UP300-1), launcher 3.3
+// at d7b0d4a5 since 0.4.9-beta1 (3.0 at b06ab21 before), in src/test/java/com/gathin/tvhome/v30,
+// checked against the submodule, and launcher
 // 2.7 (v2.7.0, 3e34f40) in .../v27, frozen by digest in LookDifferentialTest, with stubs for the
 // Android types they call; launcher 2.5 (v2.5.0, 9071ec8) in .../pinned (RFC-UP037-1)
 // and 2.0 (1bbf0c9) in .../previous, kept for the keys they read. Nothing is generated here.

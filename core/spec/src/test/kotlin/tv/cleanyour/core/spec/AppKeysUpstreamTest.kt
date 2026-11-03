@@ -8,14 +8,14 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-// Plan WP5 step 10: every app_keys entry of the upstream per-TV config.json files at the pin (19 of
+// Plan WP5 step 10: every app_keys entry of the upstream per-TV config.json files at the pin (28 of
 // them have app_keys) reads with the 0.4.5 grammar: no false warning, every entry a key and a target
 // the launcher acts on.
 class AppKeysUpstreamTest {
     @Test fun everyUpstreamAppKeysEntryReads() {
         val files = File(Fixtures.upstreamDir, "examples").listFiles()!!.map { File(it, "config.json") }.filter { it.isFile }
             .filter { "\"app_keys\"" in it.readText() }.sortedBy { it.parentFile.name }
-        assertEquals(19, files.size, files.joinToString { it.parentFile.name })
+        assertEquals(28, files.size, files.joinToString { it.parentFile.name })
         var entries = 0
         for (f in files) {
             val label = f.parentFile.name
