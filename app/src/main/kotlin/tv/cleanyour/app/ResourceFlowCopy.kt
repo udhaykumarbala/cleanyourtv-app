@@ -67,6 +67,8 @@ class ResourceFlowCopy(context: Context) : FlowCopy {
         CopyKey.STOP_HOME_OTHER_LAUNCHER_SECONDARY -> SetupR.string.stop_home_other_launcher_secondary
         CopyKey.STOP_HOME_LOW_STORAGE_BODY -> SetupR.string.stop_home_low_storage_body
         CopyKey.STOP_HOME_CHOOSER_BODY -> SetupR.string.stop_home_chooser_body
+        CopyKey.STOP_HOME_OTHER_KEY_TITLE -> SetupR.string.stop_home_other_key_title
+        CopyKey.STOP_HOME_OTHER_KEY_BODY -> SetupR.string.stop_home_other_key_body
         CopyKey.STOP_HOME_UNKNOWN_TITLE -> SetupR.string.stop_home_unknown_title
         CopyKey.STOP_HOME_UNKNOWN_BODY -> SetupR.string.stop_home_unknown_body
         CopyKey.STOP_HOME_UNKNOWN_PRIMARY -> SetupR.string.stop_home_unknown_primary

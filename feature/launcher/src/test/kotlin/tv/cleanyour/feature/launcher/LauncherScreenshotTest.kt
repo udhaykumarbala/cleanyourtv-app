@@ -217,7 +217,13 @@ object LauncherShots {
         Shot("home_not_on_tv_wizard_wifi") { HomeScreen(notOnTv(NotOnTv(HomeBlock.WIZARD_WIFI, "Xiaomi", setupAgain = true)), {}, {}) },
         Shot("home_not_on_tv_unlisted") { HomeScreen(notOnTv(NotOnTv(HomeBlock.WIZARD_STAYS_ON, "Hisense", unlisted = true, helpAddTv = true), "Hisense 32A4200G"), {}, {}) },
         Shot("home_not_on_tv_fire_tv") { HomeScreen(notOnTv(NotOnTv(HomeBlock.TV_REFUSES, "Insignia", fireTv = true), "Insignia Fire TV"), {}, {}) },
-        Shot("home_not_on_tv_home_changed") { HomeScreen(notOnTv(NotOnTv(HomeBlock.HOME_CHANGED, "TCL", setupAgain = true), "TCL G07"), {}, {}) },
+        // 0.5.0 (#2996 and 35 more): the line and the next step follow what the report shows of the TV's own home screen.
+        Shot("home_not_on_tv_home_changed") { HomeScreen(notOnTv(NotOnTv(HomeBlock.HOME_CHANGED, "TCL", setupAgain = true,
+            change = tv.cleanyour.core.flows.HomeChange.OWN_SWITCHED_OFF, ownName = "Google TV Home"), "TCL G07"), {}, {}) },
+        Shot("home_not_on_tv_home_changed_ours") { HomeScreen(notOnTv(NotOnTv(HomeBlock.HOME_CHANGED, "Xiaomi", unlisted = true, setupAgain = true,
+            change = tv.cleanyour.core.flows.HomeChange.OURS_ANOTHER_KEY), "Xiaomi MiTV4I"), {}, {}) },
+        Shot("home_not_on_tv_home_changed_not_found") { HomeScreen(notOnTv(NotOnTv(HomeBlock.HOME_CHANGED, "Hikeen", unlisted = true,
+            change = tv.cleanyour.core.flows.HomeChange.OWN_NOT_FOUND), "Living Smart TV"), {}, {}) },
         // beta3: another home screen app claims Home (issue #1119); a block an earlier Setup decided (issues #701, #1273).
         Shot("home_not_on_tv_other_home") { HomeScreen(notOnTv(NotOnTv(HomeBlock.OTHER_HOME, "Xiaomi", setupAgain = true), "Xiaomi MiTV4I"), {}, {}) },
         // beta4 (issue #825): a system service's FallbackHome claims Home too.

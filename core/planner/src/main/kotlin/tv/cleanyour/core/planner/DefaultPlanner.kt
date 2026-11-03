@@ -526,9 +526,21 @@ class DefaultPlanner(
             }
         }
 
+        // Issue #4976 (Xiaomi MiTV-MOSR2, 0.4.6.1): a switch done before the #1944 fix left the factory test app on, a
+        // Home claimant at priority 0 beside the new home screen, so Home lands on it once the new one is gone. With Home
+        // already ours there is no switch to take it off first, so Setup takes it off here, outside any section, where
+        // SwitchOffRule allows it (Home answers to a real home screen). Undo everything puts it back.
+        fun factoryHomesLeftOn(profile: Profile?, stockLaunchers: List<Component>) {
+            val pkgs = snapshot.home.claimants.map { it.component.pkg }.distinct().filter {
+                it in HomePlaceholder.FACTORY_HOMES_OFF && installed(it) && !isOff(it) && !planned(Op.Disable(it)) &&
+                    SwitchOffRule.reason(it, state(it), profile, snapshot, stockLaunchers, inHomeSwitch = false) == null
+            }
+            for (pkg in pkgs) disable(pkg, GROUP_LEFTOVERS, narration = "Switching off ${name(pkg)}, which also answers the Home button")
+        }
+
         // Section 3.4: the guarded HOME takeover.
         fun takeover(artifact: LauncherArtifact, profile: Profile?, stockLaunchers: List<Component>, launcherInstalledByPlan: Boolean, wizardWifi: WizardWifi) {
-            if (snapshot.home.resolved == launcher) { homeScreenPossible = true; return }   // already ours
+            if (snapshot.home.resolved == launcher) { homeScreenPossible = true; factoryHomesLeftOn(profile, stockLaunchers); return }   // already ours
             if (snapshot.facts.installRefusal) { refuse("this TV refuses app installs, so the home screen switch is not possible"); return }
             if (snapshot.facts.sdk < TV_MIN_SDK) { refuse(REASON_OLD_ANDROID); return }
             // Issue #2: Fire OS (and a China-market TCL) refuses another home screen, told from the

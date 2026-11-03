@@ -99,7 +99,8 @@ launcher's theme provider (`content://com.gathin.tvhome.theme`, exported and gua
 newer, the way upstream's `tools/theme.sh` does: the file is pushed to the app's folder in
 `/data/local/tmp`, `content write` copies it in as the launcher, the staged copy is removed, and the
 check reads it back with `content read` piped to `sha256sum`. A direct copy is the fallback where the
-provider does not answer. These are the renderer's two fixed templates beside the watchdog's
+provider does not answer. When the copy fails too, the line adds the first exception class name in the
+provider's answer to its error output (0.5.0, issues #4232, #4250), never the rest of that text. These are the renderer's two fixed templates beside the watchdog's
 (core/ops `ThemeProviderLines`), filled only from a two-entry list of file names and covered by
 golden files and the property tests. The provider takes nothing else from this app.
 

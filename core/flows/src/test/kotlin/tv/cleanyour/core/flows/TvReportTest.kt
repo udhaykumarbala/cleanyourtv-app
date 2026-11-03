@@ -178,6 +178,25 @@ class TvReportTest {
         assertTrue("Claimant: an app you installed (not named) priority 1" in t2, t2)
     }
 
+    // Issues #3845 (Skyworth SWTV-20AE) and #5639 (Blaupunkt shinjuku), Android 11: Home answered to "an app
+    // you installed" at priority 2 and Google's home screen was nowhere in the report, yet Setup found the
+    // TV's own home screen among the claimants (WIZARD_STAYS_ON). It was Google's home screen, updated under
+    // /data so its system flag read false. Google's and Amazon's home screens are named, with that said.
+    @Test fun googlesHomeScreenIsNamedWhenItsSystemFlagReadsFalse() {
+        val tvlauncher = Component(PackageName("com.google.android.tvlauncher"), ".MainActivity")
+        val fallback = Component(PackageName("com.android.tv.settings"), ".system.FallbackHome")
+        val pkgs = packages + mapOf(tvlauncher.pkg to pkg(EnabledState.ENABLED, false), fallback.pkg to pkg(EnabledState.ENABLED, true))
+        val s = snapshot(pkgs = pkgs).copy(home = HomeResolution(tvlauncher, listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(fallback, -1000))))
+        for (out in listOf(TvReport.text(input(s)), TvReport.problem(about, input(s), "log"))) {
+            assertTrue("Resolves to: com.google.android.tvlauncher/.MainActivity (not read as a system app)\n" in out, out)
+            assertTrue("Claimant: com.google.android.tvlauncher/.MainActivity (not read as a system app) priority 2\n" in out, out)
+            assertFalse("not named) priority 2" in out, out)
+        }
+        // Read as a system app, the line is as before.
+        val sys = snapshot(pkgs = pkgs + (tvlauncher.pkg to pkg(EnabledState.ENABLED, true))).copy(home = HomeResolution(tvlauncher, listOf(HomeClaimant(tvlauncher, 2))))
+        assertTrue("Claimant: com.google.android.tvlauncher/.MainActivity priority 2\n" in TvReport.text(input(sys)))
+    }
+
     // Never the serial, the TV id (derived from it), the TV's name for itself, its inputs, labels or
     // an address, in the report or in the link.
     @Test fun noPersonalValueIsInTheReportOrTheLink() {
@@ -260,6 +279,18 @@ class TvReportTest {
         val vendorHome = HomeResolution(null, listOf(HomeClaimant(Component(PackageName("com.mitv.tvhome"), ".Home"), 1)))
         assertEquals("The maker's own launcher", TvReport.platformOf(snapshot(pkgs = emptyMap()).copy(home = vendorHome)))
         assertEquals("Not sure", TvReport.platformOf(snapshot(pkgs = emptyMap()).copy(home = HomeResolution(null, emptyList()))))
+    }
+
+    // 0.5.0 (issues #5539, #5744, #5911, #4177, #4551): Google TV's home screen the person installed on an
+    // Android TV set (not a system app, claiming Home at 0 next to the TV's own tvlauncher) is not the
+    // home screen the TV came with. The TV's own launcherx (a system app) still is.
+    @Test fun aGoogleTvHomeScreenThePersonInstalledIsNotWhatTheTvCameWith() {
+        val tvlauncher = Component(PackageName("com.google.android.tvlauncher"), ".MainActivity")
+        val home = HomeResolution(tvlauncher, listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(launcherx, 0)))
+        fun with(launcherxSystem: Boolean) = TvReport.platformOf(snapshot(pkgs = mapOf(
+            tvlauncher.pkg to pkg(EnabledState.ENABLED, true), launcherx.pkg to pkg(EnabledState.ENABLED, launcherxSystem))).copy(home = home))
+        assertEquals("Android TV (Leanback)", with(launcherxSystem = false))
+        assertEquals("Google TV", with(launcherxSystem = true))
     }
 
     // B2: the TV summary without the package list, then the log as the app's redactor left it.

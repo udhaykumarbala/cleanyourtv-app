@@ -12,7 +12,10 @@ import tv.cleanyour.core.store.DocumentStore
 sealed interface HomeKept {
     // Setup planned no switch: why (HomeBlock), and what names the TV in the reason. `unlisted`: no
     // exact list knows this TV (or it tried a test list), so a list is what would change it.
-    data class Blocked(val block: HomeBlock, val fireTv: Boolean = false, val brand: String = "", val unlisted: Boolean = false) : HomeKept
+    // 0.5.0: `change` and `ownName`, under HOME_CHANGED, what the report shows of the TV's own home
+    // screen and its name in the TV's Settings (HomeChange), for the advice.
+    data class Blocked(val block: HomeBlock, val fireTv: Boolean = false, val brand: String = "", val unlisted: Boolean = false,
+                       val change: HomeChange? = null, val ownName: String? = null) : HomeKept
 
     // The switch was in the plan and the TV's own home screen is back: the check ran out of time,
     // the person said no, or the new one did not take over.
@@ -26,7 +29,7 @@ sealed interface HomeKept {
         fun of(e: SetupExtras): HomeKept? = when {
             e.doneHomeKept != null -> SwitchFailed(e.doneHomeKept)
             e.helperOn -> null
-            !e.homePossible -> Blocked(e.homeBlock, e.fireTv, e.brand, e.unknownModel || e.candidateTried)
+            !e.homePossible -> Blocked(e.homeBlock, e.fireTv, e.brand, e.unknownModel || e.candidateTried, e.homeChange, e.homeChangeOwn)
             else -> null
         }
 

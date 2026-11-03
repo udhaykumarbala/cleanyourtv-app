@@ -3,6 +3,7 @@ package tv.cleanyour.core.flows
 import tv.cleanyour.core.engine.DefaultEngine
 import tv.cleanyour.core.engine.Journal
 import tv.cleanyour.core.engine.JournalRecord
+import tv.cleanyour.core.engine.RunStatus
 import tv.cleanyour.core.engine.SectionState
 import tv.cleanyour.core.model.ChangeRecord
 import tv.cleanyour.core.model.Op
@@ -41,6 +42,16 @@ class RunLedger(private val store: DocumentStore, private val journal: Journal) 
     suspend fun entry(tvId: TvId, planId: PlanId): RunEntry? = runs(tvId).firstOrNull { it.planId == planId }
 
     suspend fun forget(tvId: TvId) { store.delete(path(tvId)) }
+
+    // 0.5.0 (issues #5016, #5435): Finish's debugging-off run, left open when the app was closed while
+    // it ran, is ended in its journal (ABANDONED), so the next start shows no resume card: there is
+    // nothing to carry on or undo, and the next Finish runs it again. Only a DEBUG_OFF run of this TV
+    // that is still open, and only when no engine runs it (the caller's check). True when it closed one.
+    suspend fun closeOpenDebugOff(tvId: TvId, planId: PlanId): Boolean {
+        if (entry(tvId, planId)?.kind != PlanKind.DEBUG_OFF || planId !in journal.openRuns(tvId)) return false
+        journal.append(JournalRecord.End(planId, RunStatus.ABANDONED))
+        return true
+    }
 
     // Every committed change this app made to the TV, oldest first: a Begin followed by its Done.
     // Reads and phone-side steps are not changes.

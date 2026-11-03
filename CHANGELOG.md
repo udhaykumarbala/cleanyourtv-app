@@ -2,6 +2,70 @@
 
 All notable changes to the app. Versions follow [semantic versioning](https://semver.org/).
 
+## 0.5.0 (unreleased)
+
+### The new home screen reaches six more TVs in the release
+- SHARP on Android 11 (#852, #3915, #4128), the Hisense HiSmart 2K ATV4 and HiSmart TV (hamamatsucho)
+  on Android 11 (#346, #4338), JVC on Android 11 (#3839, #5844), Philips on Android 11 (#1409, #4814),
+  the realme Smart TV (SW4H_FF) on Android 11 (#4679, #5752) and the THOMSON_KODAK PATH_7XPRO on
+  Android 9 (#2149, #5767) get the new home screen with the setup wizard left on, after two testers
+  each said it stayed after a restart. SHARP, JVC and Philips by brand, since their testers had
+  different models; for Hisense, realme and THOMSON_KODAK only these models: other Hisense and realme
+  sets and other Kodak models keep their home screen until their own testers confirm it. A TV with a
+  tested list of its own keeps its list.
+
+### Lists
+- The careful brand sets are back as they were in 0.4.8: a TV of a brand with one or two lists and no
+  list of its own (MOKA, Stellamore and Vidda among them) again gets the print spooler, Android TV's
+  feedback consent and the Privacy Sandbox services switched off where its brand's lists do, and
+  Kalley TVs get such a set too. The Fire TV Stick 4K (2018), the TCL 55P7K, the TCL BeyondTV2 (Latin
+  America) and the Kalley R10G lists now switch these off by default, since their testers had them off
+  across a restart; the rest of those lists' new rows stay rows you choose.
+
+### Fixes
+- When Home goes to a launcher you installed and the TV's own home screen doesn't answer it, the app
+  no longer says to "set the TV's own home screen back as Home in the TV's settings", which no TV in
+  those reports could do. It now says what the report shows: the Clean Your TV home screen is already
+  on, put on another way (undo it with that tool's restore first), the TV's own home screen is
+  switched off (turn it back on in Settings, Apps, system apps, by its name there, then run Setup
+  again), or there is no step to give (keep your launcher installed, and tell us). It never suggests
+  removing your launcher, which could leave the TV with no home screen.
+- An uninstall was counted as done when the TV's package list failed to answer, and so was a
+  switch-on or an uninstall checked again when the app came back after closing mid-run. Both now read
+  the list another way when it fails (as the probe does), then the package's own record, and a list that
+  failed never passes a check.
+- Sony BRAVIA VH21: the release keeps the TV's own home screen, because upstream now keeps its setup wizard
+  on (Wi-Fi and casting need it); test builds offer the Home button helper there instead.
+- Sony BRAVIA on Android 9: the TV Settings placeholder these sets name with Sony's class
+  (com.sony.dtv.settings.system.FallbackHome) is Android's own, not a system service of its own, so the
+  tested lists of the BRAVIA 4K GB and 4K GB ATV3 switch the home screen again (it was held back with "a
+  system service on this TV also answers the Home button"). Sets without a tested list, like the 2K GB
+  ATV3, keep their own home screen in the release because of the setup wizard, as before that block.
+- The TV report names the new home screen's own other accessibility services, so a report shows whether
+  the service that keeps the Home button helper out is one of them.
+- Google TV's home screen installed by you on an Android TV set (it claims Home next to the TV's own)
+  no longer makes the app treat the TV as a Google TV: the TV's tested list matches again, the switch
+  with the setup wizard left on is offered where it would be, and the report says the TV came with
+  Android TV (#5539, #5744, #5911, #4177, #4551). A real Google TV keeps its own rules.
+- A copy of the new home screen signed with another key (put on with the computer tool) gets its own
+  card: remove the old copy first, with the TV's own home screen on, instead of "another home screen
+  app is in charge" (#2293, #4756).
+- On a TV no list knows, Android's first-run app answering Home (com.android.provision) counts as the
+  setup wizard, so the switch is not planned only to roll back again and again (#4077).
+- The debugging-off run of Finish, cut off when the app was closed, no longer shows "We were in the
+  middle of a change on the TV" after a Setup that changed nothing; it is closed and Manage opens
+  (#5016, #5435).
+- After you say no at the home screen check, the card has a third button, "Keep the TV's own home
+  screen", that finishes with the clean-up kept (#3760).
+- On a TV with a brand set or no list, the stop card no longer calls Google's own home screen another
+  app in charge (#5242), and the report names Google's and Amazon's home screens on its Home lines also
+  when an update makes them read as installed apps (#3845, #5639, #5295).
+- An install check that reads the new home screen as not installed says what the TV shows (#5242,
+  #5295), and a look the launcher's provider refused names the provider's exception (#4232, #4250).
+- Run Setup again switches off a factory test app that still answers Home when the new home screen is
+  already Home (#4976).
+- A switch-off of a package the TV itself turned off is skipped, not a failed step (#5808).
+
 ## 0.4.9-beta1 (test build)
 
 A GitHub pre-release for testers, made from 0.4.8 (2026-11-03). It installs over 0.4.8 and every

@@ -49,7 +49,9 @@
     <string name="home_not_on_tv_boot_loop">On this TV family the setup wizard comes back at every restart, and with the TV\'s own home screen off the TV can fail to start. So Setup left the home screen alone.</string>
     <string name="home_not_on_tv_remote_buttons">On this TV the remote\'s app buttons only work through its own home screen, so Setup left the home screen alone.</string>
     <string name="home_not_on_tv_wizard_stays_on">We don\'t know this TV well enough to switch its setup wizard off, and with the wizard left on and the TV\'s own home screen off, the TV can crash. So Setup left the home screen alone.</string>
-    <string name="home_not_on_tv_home_changed">This TV\'s home screen was already changed, by another app or an earlier change, so Setup left it as it is and didn\'t add ours. The clean-up works without it.</string>
+    <string name="home_not_on_tv_home_changed">Home goes to a home screen app you installed, and the TV\'s own home screen isn\'t one this app can find on the TV, so Setup left the home screen as it is and didn\'t add ours. The clean-up works without it.</string>
+    <string name="home_not_on_tv_home_changed_off">Home goes to a home screen app you installed, and the TV\'s own home screen is switched off, not by this app. So Setup left the home screen as it is and didn\'t add ours. The clean-up works without it.</string>
+    <string name="home_not_on_tv_home_changed_ours">This TV already has the Clean Your TV home screen, put on another way (for example with the computer tool), under another key. Setup left it as it is and didn\'t add its own copy. The clean-up works without it.</string>
     <!-- beta3: the home screen was left alone by Setup with an earlier version of the app or another list -->
     <string name="home_not_on_tv_earlier">Setup left the home screen alone when it last ran, but this app has changed since and may now add the new home screen.</string>
     <string name="home_not_on_tv_other_home">Another home screen app is set up on this TV, so Setup left the home screen alone.</string>
@@ -62,7 +64,10 @@
     <string name="home_not_on_tv_none">The new home screen isn\'t installed on this TV right now.</string>
     <string name="home_not_on_tv_next_wifi">To change this, forget every Wi-Fi network saved on the TV, then join yours again. A cable alone doesn\'t change it. Then run Setup again.</string>
     <string name="home_not_on_tv_next_check">Running Setup again checks once more.</string>
-    <string name="home_not_on_tv_next_home_changed">If you\'d like the new home screen, set the TV\'s own home screen back as Home in the TV\'s settings, then run Setup again.</string>
+    <string name="home_not_on_tv_next_home_changed">Please keep your launcher installed: without it the TV may have no home screen to go to. If you\'d like the new home screen, tell us with Report a problem and we\'ll work out the safe way for this TV with you.</string>
+    <string name="home_not_on_tv_next_home_changed_off">If you\'d like the new home screen, turn the TV\'s own home screen back on first. On the TV: Settings, Apps, See all apps, Show system apps, then {app}, and Enable (the names differ a little between TVs). Keep your launcher installed. Then run Setup again, and it checks once more.</string>
+    <string name="home_not_on_tv_next_home_changed_ours">To have this app look after it (the dock, the look and updates), first undo it with the restore of the tool that put it on, which brings the TV\'s own home screen back, then run Setup again. Please don\'t uninstall it before that: the TV may have no other home screen to go to.</string>
+    <string name="home_own_home_screen">the TV\'s own home screen</string>
     <string name="home_not_on_tv_next_setup">Run Setup again to add it.</string>
     <string name="home_not_on_tv_next_list">What would change this is a list made for this TV. Help add this TV sends us its report; we make the list from reports like yours and post in your issue when there\'s one to try.</string>
     <string name="home_run_setup_again">Run Setup again</string>

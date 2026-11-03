@@ -9,6 +9,8 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Snapshot
 import tv.cleanyour.core.model.SnapshotReason
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.spec.HomeFit
+import tv.cleanyour.core.spec.KnownLaunchers
 import tv.cleanyour.core.spec.ProfileResolution
 import tv.cleanyour.core.store.DocumentStore
 
@@ -152,6 +154,8 @@ data class RestartFacts(val path: HomePath, val tally: RestartTally, val lookRou
 
 object TvReport {
     private val DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC)
+    // An entry of the new home screen's own package named in the report: a component, nothing else, and short.
+    private val OWN_ENTRY = Regex("^[A-Za-z0-9_.]+/[A-Za-z0-9_.$]{1,120}$")
 
     // B1 "Help add this TV": the whole TV report, system packages included, one per line. Share sends it.
     fun text(input: TvReportInput): String = buildString {
@@ -236,6 +240,11 @@ object TvReport {
             listed -> "${entries.size} (the new home screen's Home button helper, $others other, not named)"
             else -> "${entries.size} (not named)"
         })
+        // 0.5.0 (issues #3075, #3287, #5468): an entry Customise counts as another service (S3) may be one of the
+        // new home screen's own (its InputKeyService). Those are not the person's apps, so they are named, in the
+        // form the TV lists them; every other entry stays a count.
+        val launcherOwn = tv.cleanyour.core.ops.HelperLines.others(list).filter { it.startsWith(tv.cleanyour.core.ops.HelperLines.PKG + "/") && OWN_ENTRY.matches(it) }
+        if (launcherOwn.isNotEmpty()) appendLine("The new home screen's other services listed: ${launcherOwn.joinToString(", ")}")
         appendLine("Home button helper: " + when {
             listed && on == "1" -> "listed, accessibility on"
             listed -> "listed, accessibility off"
@@ -433,9 +442,19 @@ object TvReport {
     // person chose, so it stays unnamed like every other app of theirs.
     const val NOT_NAMED = "an app you installed (not named)"
 
-    private fun nameable(s: Snapshot, pkg: PackageName): Boolean = pkg == Launcher.pkg || s.packages[pkg]?.system == true
+    // Issues #3845, #5639, #5295: Google's and Amazon's own home screens (KnownLaunchers) are never the
+    // person's, even when an update under /data makes their system flag read false (SwitchOffRule's rule).
+    // Unnamed, the report showed a TV whose Home "goes to an app you installed" at priority 2, which only a
+    // system app can claim, and hid that it was Google's home screen. Such a line says the flag read false.
+    private fun nameable(s: Snapshot, pkg: PackageName): Boolean = pkg == Launcher.pkg || s.packages[pkg]?.system == true || pkg in KnownLaunchers.byPackage
 
-    private fun named(s: Snapshot, c: tv.cleanyour.core.model.Component): String = if (nameable(s, c.pkg)) c.flat else NOT_NAMED
+    private fun named(s: Snapshot, c: tv.cleanyour.core.model.Component): String = when {
+        !nameable(s, c.pkg) -> NOT_NAMED
+        c.pkg in KnownLaunchers.byPackage && s.packages[c.pkg]?.system != true -> "${c.flat} $NOT_SYSTEM"
+        else -> c.flat
+    }
+
+    const val NOT_SYSTEM = "(not read as a system app)"
 
     private fun state(e: EnabledState): String = when (e) {
         EnabledState.ENABLED -> "enabled"
@@ -463,7 +482,8 @@ object TvReport {
         return when {
             f.manufacturer.equals("Amazon", true) || f.brand.equals("Amazon", true) || f.model.startsWith("AFT", true) ||
                 has("com.amazon.tv.launcher") || has("com.amazon.firehomestarter") -> "Fire TV"
-            has("com.google.android.apps.tv.launcherx") -> "Google TV"
+            // 0.5.0 (issue #5539 and others): not a Google TV home screen the person put on an Android TV set.
+            has("com.google.android.apps.tv.launcherx") && !HomeFit.sideloadedGoogleTvHome(s.home, s.packages) -> "Google TV"
             has("com.google.android.tvlauncher") || has("com.google.android.leanbacklauncher") -> "Android TV (Leanback)"
             claimants.any { it != Launcher.pkg.value && !it.startsWith("com.google.") && !it.startsWith("com.android.") && "setupwraith" !in it } -> "The maker's own launcher"
             else -> "Not sure"

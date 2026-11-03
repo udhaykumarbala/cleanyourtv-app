@@ -36,6 +36,7 @@ import tv.cleanyour.core.ops.PackageDump
 import tv.cleanyour.core.ops.Privilege
 import tv.cleanyour.core.ops.RenderRefused
 import tv.cleanyour.core.ops.Rendered
+import tv.cleanyour.core.ops.ShellRenderer
 import tv.cleanyour.core.ops.Transfer
 import tv.cleanyour.core.ops.VerifyResult
 import tv.cleanyour.core.model.Component
@@ -596,6 +597,9 @@ class DefaultEngine(
                 val none = r.exit == 1 && r.stdout.isBlank() && r.stderr.isBlank()
                 return none || (r.exit == 0 && renderer.check(op, r.stdout, null) == VerifyResult.Ok)
             }
+            // 0.5.0: a switch-off or an uninstall is read the way its own check reads it, with the list's
+            // fallbacks and its exit looked at (verifyAfter), not from the first list alone.
+            is Op.Disable, is Op.Uninstall -> return rendered.verify != null && verifyAfter(session, op, rendered, null, "") == Outcome.Ok
             else -> {
                 val probe = rendered.verify?.let { renderer.render(it) } ?: rendered.takeIf { it.privilege == Privilege.READ && it.transfer == null } ?: return false
                 val r = readResult(session, probe) ?: return false
@@ -647,6 +651,17 @@ class DefaultEngine(
                 journal.append(JournalRecord.Begin(run.plan.id, step.index, step.op, step.rendered.lines.map { it.text }, step.prior, clock.nowMs()))
                 journal.append(JournalRecord.Failed(run.plan.id, step.index, 1, "package not on the TV", ""))
                 return Outcome.Refused(1, "package not on the TV")
+            }
+            // Issue #5808 (Hisense songshan, Android 11): the setup wizard's switch-off failed every run with "Shell
+            // cannot change component state for com.google.android.tungsten.setupwraith/null to 3", and the switch
+            // rolled back. Android lets the shell move a package only between default, enabled and disabled by the
+            // user; this one was already off by the TV itself (disabled, or disabled until used, which the package
+            // list does not show as off). It is off, nothing is sent and nothing recorded: a skip whatever the
+            // step's policy, inside the switch too, like a package kept on (Undo has nothing to put back).
+            if (step.op is Op.Disable && PackageDump.enabledSetting(dump) in OFF_BY_THE_TV) {
+                journal.append(JournalRecord.Begin(run.plan.id, step.index, step.op, step.rendered.lines.map { it.text }, step.prior, clock.nowMs()))
+                journal.append(JournalRecord.Failed(run.plan.id, step.index, 1, ALREADY_OFF_BY_THE_TV, ""))
+                return Outcome.Refused(1, ALREADY_OFF_BY_THE_TV, kept = true)
             }
         }
         return perform(run, step.index, step.op, step.rendered, step.prior)
@@ -762,14 +777,75 @@ class DefaultEngine(
             }
             null -> {}
         }
+        return verifyAfter(session, op, rendered, prior, ownOutput)
+    }
+
+    // An op's check after it ran (perform), and the same check where its state is read again: the
+    // in-doubt step on resume (safety) and step R's state check (targetHolds). 0.5.0: a switch-off, a
+    // switch-on and an uninstall read their package list with the probe's fallbacks and look at its exit
+    // (disableChecked, enableChecked, uninstallChecked), so a list that failed never passes a check.
+    private suspend fun verifyAfter(session: TvSession, op: Op, rendered: Rendered, prior: Prior?, ownOutput: String): Outcome {
         val check = rendered.verify
         if (op is Op.Disable && check != null) return disableChecked(session, op, renderer.render(check), prior)
         if (op is Op.Enable && check != null) return enableChecked(session, op, renderer.render(check), prior)
+        if (op is Op.Uninstall && check != null) return uninstallChecked(session, op, renderer.render(check), prior)
         val verifyOutput = rendered.verify?.let { read(session, renderer.render(it)) } ?: ownOutput
         return when (val v = renderer.check(op, verifyOutput, prior)) {
             VerifyResult.Ok -> installedApkCheck(session, op)
+            is VerifyResult.Mismatch -> {
+                val got = v.actual + (notInstalledWhy(session, op, v)?.let { " ($it)" } ?: "")
+                Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got $got"), "verify: expected ${v.expected}, got $got")
+            }
+        }
+    }
+
+    // 0.5.0: an uninstall was checked with `pm list packages -f` without a look at its exit, so a list that
+    // failed (exit 255 with a SecurityException on some TVs, #3436, #1543) printed nothing and read as
+    // "not listed", which passed. Now the list falls back as the probe's does (cmd package for user 0, then
+    // pm for user 0), and only a list that answers exit 0 with packages in it decides. When none does, the
+    // package's own dump decides: only a dump that answers and does not show the package passes; anything
+    // else (the package still there, an empty or failed dump) is a failure with the list's own exit.
+    private suspend fun uninstallChecked(session: TvSession, op: Op.Uninstall, check: Rendered, prior: Prior?): Outcome {
+        val r = packageList(session, check) ?: return Outcome.Failed(AdbError.Transport.Protocol("no check read"), "verify: no check read")
+        if (r.exit == 0 && r.stdout.isNotBlank()) return when (val v = renderer.check(op, r.stdout, prior)) {
+            VerifyResult.Ok -> Outcome.Ok
             is VerifyResult.Mismatch -> Outcome.Failed(AdbError.Policy.GuardFailed(-1, "expected ${v.expected}, got ${v.actual}"), "verify: expected ${v.expected}, got ${v.actual}")
         }
+        val d = readResult(session, renderer.render(Op.Read(ProbeKind.PACKAGE_DUMP, ReadArg.Pkg(op.pkg))))
+        val gone = d != null && d.exit == 0 && d.stdout.isNotBlank() && !PackageDump.exists(op.pkg, d.stdout)
+        return if (gone) Outcome.Ok
+            else Outcome.Failed(AdbError.NonZeroExit(r.exit, r.stderr.take(4096)), "verify read: exit ${r.exit}")
+    }
+
+    // 0.5.0: the package list an uninstall is checked with, as the probe reads it (PACKAGE_LISTS): `pm list
+    // packages -f`, then cmd package for user 0, then pm for user 0, each only after the one before failed or
+    // listed nothing. The first that answers exit 0 with output is returned, else the first answer. The log
+    // says once per TV which one answered, in fixed words.
+    private suspend fun packageList(session: TvSession, check: Rendered): ExecResult? {
+        val first = readResult(session, check) ?: return null
+        if (first.exit == 0 && first.stdout.isNotBlank()) return first
+        for ((name, line) in AdbProber.PACKAGE_LISTS.drop(1)) {
+            val r = send(session, line, ExecSpec(timeoutMs = check.timeoutMs, stdoutCap = check.stdoutCap, retry = RetryClass.IDEMPOTENT_READ))
+            if (r.exit != 0 || r.stdout.isBlank()) continue
+            if (packageListNoted.add(session.tvId)) log("engine: package list from $name after pm list packages -f exit ${first.exit}")
+            return r
+        }
+        if (packageListNoted.add(session.tvId)) log("engine: no package list answered (pm list packages -f exit ${first.exit}); the package's dump decides")
+        return first
+    }
+    private val packageListNoted: MutableSet<TvId> = java.util.Collections.synchronizedSet(mutableSetOf())
+
+    // Issues #5242 (TiVo Stream 4K, Android 12) and #5295 (Changhong, Android 11), 0.4.8-beta2: the streamed
+    // install answered Success, then the package dump showed no versionCode ("got not installed"), run after
+    // run, with nothing to say why. The same read-only state read as RFC-INSTALL-1 adds the cause in fixed
+    // words and one diagnostics line (pm path, user 0's install flags); it never turns the failure into a pass.
+    private suspend fun notInstalledWhy(session: TvSession, op: Op, v: VerifyResult.Mismatch): String? {
+        val pkg = when (op) {
+            is Op.Install -> op.pkg
+            is Op.InstallStream -> op.pkg
+            else -> return null
+        }
+        return if (v.actual == ShellRenderer.NOT_INSTALLED) unreadableApk(session, pkg) else null
     }
 
     // A switch-off's check read (pm list packages -d). A check read that errors is a failure, never
@@ -1175,6 +1251,15 @@ class DefaultEngine(
                 runs[tvId] = run
                 return@withLock scope.launch { abandonFromJournal(run) }
             }
+            // 0.5.0 (issues #5016, #5435): the debugging-off run of Finish, left open when the app was
+            // closed while it ran ("We were in the middle of a change", paused IN_DOUBT at step 0, after
+            // Setup had left the TV as it was). It has nothing to resume or undo (no section, no inverse),
+            // and its next Finish runs it again, so it is closed here instead of asking the person.
+            if (plan.kind == PlanKind.DEBUG_OFF) {
+                journal.append(JournalRecord.End(planId, RunStatus.ABANDONED))
+                flow(tvId).value = RunState.Idle
+                return
+            }
             val run = Run(plan, session)
             Replay.apply(records, run.done, run.openSections, run.closedSections)
             run.undoing = Replay.undoStarted(records)
@@ -1218,9 +1303,17 @@ class DefaultEngine(
             if (inDoubt != null) {
                 val step = plan.steps[inDoubt]
                 flow(plan.tvId).value = RunState.InDoubt(plan, inDoubt)
+                // 0.5.0: a switch-off, a switch-on or an uninstall in doubt is read the way its own check
+                // reads it (verifyAfter: the list's fallbacks, its exit, the package's dump), so a list
+                // that failed on resume no longer reads as "not listed" and passes a switch-on or an uninstall.
                 val verified = step.rendered.verify?.let { v ->
-                    val out = read(run.session, renderer.render(v))
-                    renderer.check(step.op, out, step.prior) == VerifyResult.Ok && installedApkCheck(run.session, step.op) == Outcome.Ok
+                    when (step.op) {
+                        is Op.Disable, is Op.Enable, is Op.Uninstall -> verifyAfter(run.session, step.op, step.rendered, step.prior, "") == Outcome.Ok
+                        else -> {
+                            val out = read(run.session, renderer.render(v))
+                            renderer.check(step.op, out, step.prior) == VerifyResult.Ok && installedApkCheck(run.session, step.op) == Outcome.Ok
+                        }
+                    }
                 } ?: false
                 if (verified) {
                     journal.append(JournalRecord.Done(plan.id, inDoubt, 0, verified = true, ms = 0, resumed = true))
@@ -1256,6 +1349,9 @@ class DefaultEngine(
         // because it runs the TV's inputs (RF-LAUNCHER-250 F1); Done and Manage name it.
         const val PROTECTED = "protected: "
         const val KEPT_TV_INPUT = PROTECTED + Denylist.REASON_TV_INPUT
+        // Issue #5808: a switch-off of a package the TV itself turned off (its enabled setting 2, or 4: until used).
+        const val ALREADY_OFF_BY_THE_TV = "already off by the TV (disabled by the system, the shell cannot change it)"
+        val OFF_BY_THE_TV: Set<Int> = setOf(2, 4)
         // The journal's Failed text for a streamed install the TV ended with a protocol error while
         // the connection stayed up (issues #80, #367).
         const val STREAM_FAILED = "streamed install failed, the TV is still connected: "

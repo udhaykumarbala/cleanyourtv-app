@@ -147,7 +147,8 @@
         "com.amazon.providers.contentsupport": { "category": "ads", "ask": false },
         "com.amazon.tv.releasenotes": { "category": "other", "ask": false },
         "com.amazon.tv.easyupgrade": { "category": "updates", "ask": true },
-        "com.amazon.wifilocker": { "category": "brand", "ask": false }
+        "com.amazon.wifilocker": { "category": "brand", "ask": false },
+        "com.android.printspooler": { "category": "preloads", "ask": false }
       }
     },
     "amazon-fire-tv-stick-4k-2023": {
@@ -1194,7 +1195,7 @@
         "Preloaded services": { "category": "other", "ask": true },
         "Karaoke": { "category": "preloads", "ask": true },
         "Preloaded apps not used on this set; comment out anything you use": { "category": "streaming", "ask": true },
-        "Privacy Sandbox and telemetry": { "category": "tracking", "ask": true }
+        "Privacy Sandbox and telemetry": { "category": "tracking", "ask": false }
       },
       "packages": {
         "com.google.android.videos": { "category": "streaming", "ask": true },
@@ -3243,7 +3244,8 @@
         "com.tcl.interactive": { "category": "brand", "ask": false },
         "com.tcl.guard": { "category": "tracking", "ask": false },
         "com.tcl.smartalexa": { "category": "voice", "ask": true },
-        "com.tcl.t_solo": { "category": "brand", "ask": true }
+        "com.tcl.t_solo": { "category": "brand", "ask": true },
+        "com.android.printspooler": { "category": "preloads", "ask": false }
       }
     },
     "tcl-55s470g": {
@@ -3451,7 +3453,8 @@
         "com.google.android.videos": { "category": "streaming", "ask": true },
         "com.google.android.tts": { "category": "accessibility", "ask": true },
         "com.google.android.marvin.talkback": { "category": "accessibility", "ask": true },
-        "com.google.android.speech.pumpkin": { "category": "voice", "ask": true }
+        "com.google.android.speech.pumpkin": { "category": "voice", "ask": true },
+        "com.android.printspooler": { "category": "preloads", "ask": false }
       }
     },
     "tcl-c755-google-tv": {

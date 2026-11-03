@@ -1,0 +1,25 @@
+Clean Your TV: problem report
+App: 0.4.7 (full)
+Phone: Samsung SM-A566B, Android 17
+
+TV
+Brand: Sony
+Manufacturer: Sony
+Model: BRAVIA 4K GB
+Device: BRAVIA_ATV2
+Android: 9 (SDK 28)
+Build: Sony/BRAVIA_ATV2_EU/BRAVIA_ATV2:9/PTT1.190515.001.S54/672201:user/release-keys
+Google Play services: yes
+Home screen it came with: Android TV (Leanback)
+Read from the TV: 2026-11-02
+
+Matching
+Profile: exact sony-bravia-4k-gb
+Home switch: blocked VENDOR_HOME
+
+Home screen
+Resolves to: com.google.android.tvlauncher/.MainActivity
+Claimant: com.google.android.tvlauncher/.MainActivity priority 2
+Claimant: com.android.tv.settings/com.sony.dtv.settings.system.FallbackHome priority -1000
+
+Apps: 178 system, 1 other

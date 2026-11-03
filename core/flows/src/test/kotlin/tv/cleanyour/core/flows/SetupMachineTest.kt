@@ -1543,6 +1543,12 @@ class SetupMachineTest {
         assertTrue(found.plan.steps.none { it.op == Op.Disable(tv.cleanyour.testing.fixtures.Issue033.personsLauncher.pkg) })
         assertTrue(h.logLines.none { it == "setup: plan refused" }, h.logLines.joinToString("\n"))
         assertTrue(h.logLines.any { it == "setup: home switch blocked HOME_CHANGED" }, h.logLines.joinToString("\n"))
+        // 0.5.0: launcherx is on the TV and switched off, so the advice is to turn it back on, by its name in Settings.
+        assertEquals(HomeChange.OWN_SWITCHED_OFF, m.extras.value.homeChange)
+        assertEquals("Google TV Home", m.extras.value.homeChangeOwn)
+        val kept = assertIs<HomeKept.Blocked>(HomeKept.of(m.extras.value))
+        assertEquals(HomeChange.OWN_SWITCHED_OFF, kept.change)
+        assertEquals("Google TV Home", kept.ownName)
         // The same TV with launcherx still a claimant gets the switch as before.
         val h2 = Harness()
         h2.sessions.allowPromptFor[HOST] = "AB:CD:7F:2A"
@@ -1601,6 +1607,9 @@ class SetupMachineTest {
             assertTrue(found.plan.steps.none { it.op == Op.Disable(pkg) || it.op == Op.Uninstall(pkg) || it.op is Op.Install || it.op is Op.InstallStream && (it.op as Op.InstallStream).pkg == pkg }, log)
             assertTrue(h.logLines.none { it.startsWith("setup: plan refused") }, log)
             assertTrue(h.logLines.any { it == "setup: home switch blocked HOME_CHANGED" }, log)
+            // 0.5.0: the advice names the home screen as ours, put on another way.
+            assertEquals(HomeChange.OURS_ANOTHER_KEY, m.extras.value.homeChange, log)
+            assertNull(m.extras.value.homeChangeOwn, log)
         }
     }
 

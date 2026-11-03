@@ -51,6 +51,7 @@ import tv.cleanyour.core.flows.ChipState
 import tv.cleanyour.core.flows.Confirmations
 import tv.cleanyour.core.flows.Finishing
 import tv.cleanyour.core.flows.HomeBlock
+import tv.cleanyour.core.flows.HomeChange
 import tv.cleanyour.core.flows.HomeKept
 import tv.cleanyour.core.flows.HomeRole
 import tv.cleanyour.core.flows.IssueLinks
@@ -383,7 +384,12 @@ internal fun keptReason(kept: HomeKept.Blocked): String = when (kept.block) {
     HomeBlock.BOOT_LOOP -> stringResource(R.string.kept_reason_boot_loop)
     HomeBlock.REMOTE_BUTTONS -> stringResource(R.string.kept_reason_remote_buttons)
     HomeBlock.WIZARD_STAYS_ON -> stringResource(R.string.kept_reason_wizard_stays_on)
-    HomeBlock.HOME_CHANGED -> stringResource(R.string.kept_reason_home_changed)
+    // 0.5.0: what the report shows of the TV's own home screen (HomeChange) picks the line.
+    HomeBlock.HOME_CHANGED -> stringResource(when (kept.change) {
+        HomeChange.OURS_ANOTHER_KEY -> R.string.kept_reason_home_changed_ours
+        HomeChange.OWN_SWITCHED_OFF -> R.string.kept_reason_home_changed_off
+        HomeChange.OWN_NOT_FOUND, null -> R.string.kept_reason_home_changed
+    })
     HomeBlock.OTHER_HOME -> stringResource(R.string.kept_reason_other_home)
     HomeBlock.VENDOR_HOME -> stringResource(R.string.kept_reason_vendor_home)
     HomeBlock.PATCHWALL_FEEDS -> stringResource(R.string.kept_reason_patchwall_feeds)
@@ -399,7 +405,11 @@ internal fun ColumnScope.WhyKeptContent(kept: HomeKept.Blocked, onOpenUrl: (Stri
         HomeBlock.TV_REFUSES -> if (kept.fireTv) stringResource(R.string.found_home_fire_tv) else msg(R.string.found_home_tv_refuses, "brand" to kept.brand)
         HomeBlock.OLD_ANDROID -> stringResource(R.string.found_home_old_android)
         HomeBlock.UNKNOWN_HOME -> stringResource(R.string.found_home_unknown_stock)
-        HomeBlock.HOME_CHANGED -> stringResource(R.string.found_home_changed)
+        HomeBlock.HOME_CHANGED -> stringResource(when (kept.change) {
+            HomeChange.OURS_ANOTHER_KEY -> R.string.found_home_changed_ours
+            HomeChange.OWN_SWITCHED_OFF -> R.string.found_home_changed_off
+            HomeChange.OWN_NOT_FOUND, null -> R.string.found_home_changed
+        })
         // A TV no exact profile knows keeps its wizard on whoever saved the Wi-Fi, so the
         // "forget the network" advice would not help there.
         HomeBlock.WIZARD_WIFI -> stringResource(if (kept.unlisted) R.string.found_home_wizard_wifi_unlisted else R.string.found_home_wizard_wifi)
@@ -418,6 +428,8 @@ internal fun ColumnScope.WhyKeptContent(kept: HomeKept.Blocked, onOpenUrl: (Stri
         HomeKept.needsList(kept.block, kept.unlisted) && kept.unlisted -> R.string.kept_next_list
         kept.block == HomeBlock.WIZARD_WIFI -> R.string.kept_next_wifi
         kept.block == HomeBlock.WIZARD_WIFI_UNKNOWN -> R.string.kept_next_wifi_unknown
+        kept.block == HomeBlock.HOME_CHANGED && kept.change == HomeChange.OURS_ANOTHER_KEY -> R.string.kept_next_home_changed_ours
+        kept.block == HomeBlock.HOME_CHANGED && kept.change == HomeChange.OWN_SWITCHED_OFF -> R.string.kept_next_home_changed_off
         kept.block == HomeBlock.HOME_CHANGED -> R.string.kept_next_home_changed
         kept.block == HomeBlock.OTHER_HOME -> R.string.kept_next_other_home
         kept.block == HomeBlock.PATCHWALL_FEEDS -> R.string.kept_next_patchwall_feeds
@@ -425,7 +437,7 @@ internal fun ColumnScope.WhyKeptContent(kept: HomeKept.Blocked, onOpenUrl: (Stri
         else -> R.string.kept_next_nothing
     }
     Overline(stringResource(R.string.kept_what_changes_title), Modifier.padding(top = 20.dp, bottom = 6.dp))
-    Body(stringResource(next ?: R.string.kept_next_list), Modifier.padding(top = 2.dp))
+    Body(msg(next ?: R.string.kept_next_list, "app" to (kept.ownName ?: stringResource(R.string.kept_own_home_screen))), Modifier.padding(top = 2.dp))
     if (onHelpAddTv != null) TertiaryButton(stringResource(R.string.found_help_add_tv), onHelpAddTv, Modifier.padding(top = 4.dp))
     Body(stringResource(R.string.kept_clean_up_note), Modifier.padding(top = 16.dp))
     LinkRow(stringResource(R.string.kept_tv_list), { onOpenUrl(IssueLinks.TV_LIST) }, Modifier.padding(top = 8.dp))
@@ -814,7 +826,7 @@ private val REPORT_CASES = setOf(StopCase.STEP_FAILED, StopCase.INSTALL_FAILED, 
 // The home cases: their card offers "Show details" with the run's lines (D21).
 private val HOME_CASES = setOf(
     StopCase.HOME_SETUPWRAITH, StopCase.HOME_OTHER_LAUNCHER, StopCase.HOME_UNKNOWN, StopCase.HOME_USER_SAID_NO,
-    StopCase.HOME_TIMED_OUT, StopCase.UNDONE, StopCase.HOME_PUT_BACK, StopCase.HOME_SETTINGS_OPEN,
+    StopCase.HOME_TIMED_OUT, StopCase.UNDONE, StopCase.HOME_PUT_BACK, StopCase.HOME_SETTINGS_OPEN, StopCase.HOME_OTHER_KEY,
 )
 
 // S4c, S4d, S4e: stop cards with a grey icon and the way out on the card (UX 4).

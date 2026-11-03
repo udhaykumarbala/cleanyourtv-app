@@ -30,8 +30,13 @@ object ThemeProviderLines {
     // staged file through the provider, and only when that answers anything at all (the content tool prints its
     // errors and still exits 0) copy the staged file in directly, the old way. The staged file always goes. The exit
     // status is the write's or the copy's, so a TV where neither works answers non-zero.
+    // 0.5.0 (issues #4232, #4250 and six more on Android 11 and 12): when neither works, the copy's error ("cp: ...
+    // No such file or directory") was all a report showed; what the provider answered was thrown away. Its first
+    // exception class name (dotted, so "Error while accessing provider" itself never matches) now follows on
+    // stderr as "provider: java.io.FileNotFoundException", or "provider: no exception named". Only on failure.
     const val WRITE_TEMPLATE = "rm -f DEST 2>/dev/null; o=\$(content write --uri URI < STAGE 2>&1) && [ -z \"\$o\" ] || cp STAGE DEST; " +
-        "r=\$?; rm -f STAGE; exit \$r"
+        "r=\$?; [ \$r -eq 0 ] || { e=\$(echo \"\$o\" | grep -o -E \"[A-Za-z0-9_]+[.][A-Za-z0-9_.]+(Exception|Error)\" | head -n 1); " +
+        "echo \"provider: \${e:-no exception named}\" >&2; }; rm -f STAGE; exit \$r"
 
     // The check: the file as the launcher reads it, hashed on the TV. A file the launcher cannot open (or no file)
     // reads as nothing, so its hash is the empty file's and never the one expected.

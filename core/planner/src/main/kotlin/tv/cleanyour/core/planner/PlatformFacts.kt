@@ -5,6 +5,7 @@ import tv.cleanyour.core.model.PackageName
 import tv.cleanyour.core.model.Platform
 import tv.cleanyour.core.model.Profile
 import tv.cleanyour.core.model.Snapshot
+import tv.cleanyour.core.spec.HomeFit
 
 // Firmware that refuses another home screen, told from the TV's own facts so that an unlisted set
 // is caught as surely as one with an exact profile (issue #2: an Insignia Fire TV no profile knew
@@ -60,9 +61,12 @@ object TclGoogleTv {
     fun isTcl(facts: DeviceFacts): Boolean =
         BRAND.equals(facts.brand.trim(), ignoreCase = true) || BRAND.equals(facts.manufacturer.trim(), ignoreCase = true)
 
-    // Google TV's home screen (launcherx) installed or answering Home.
+    // Google TV's home screen (launcherx) installed or answering Home. 0.5.0 (issue #5911): not one the
+    // person put on an Android TV set (HomeFit.sideloadedGoogleTvHome); the remote's buttons go to the
+    // TV's own Android TV home there.
     fun hasGoogleTvHome(snapshot: Snapshot?): Boolean {
         val s = snapshot ?: return false
+        if (HomeFit.sideloadedGoogleTvHome(s.home, s.packages)) return false
         return GOOGLE_TV_HOME in s.packages || s.home.resolved?.pkg == GOOGLE_TV_HOME || s.home.claimants.any { it.component.pkg == GOOGLE_TV_HOME }
     }
 

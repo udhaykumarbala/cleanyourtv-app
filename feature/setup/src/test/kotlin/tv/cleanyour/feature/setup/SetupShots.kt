@@ -408,7 +408,24 @@ object SetupShots {
         Shot("found_home_old_android") { Setup(found(noHomePlan), connected.copy(tvName = "Sony KD-55X8509C", homePossible = false, homeBlock = HomeBlock.OLD_ANDROID)) },
         Shot("found_home_unknown_stock") { Setup(found(noHomePlan), connected.copy(tvName = "Mi TV ASTP1", homePossible = false, homeBlock = HomeBlock.UNKNOWN_HOME)) },
         // Issue #8: Home answers to a launcher the person installed; the TV's own home screen is off.
-        Shot("found_home_changed") { Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) },
+        Shot("found_home_changed") { Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED,
+            homeChange = tv.cleanyour.core.flows.HomeChange.OWN_SWITCHED_OFF, homeChangeOwn = "Google TV Home")) },
+        // 0.5.0 (#2996 and 35 more): the Why sheet's next step follows what the report shows of the TV's own home screen.
+        Shot("found_why_kept_home_changed_off") {
+            SheetFrame({ Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) }, maxHeight = 560.dp) {
+                WhyKeptContent(HomeKept.Blocked(HomeBlock.HOME_CHANGED, brand = "TCL", change = tv.cleanyour.core.flows.HomeChange.OWN_SWITCHED_OFF, ownName = "Google TV Home"))
+            }
+        },
+        Shot("found_why_kept_home_changed_ours") {
+            SheetFrame({ Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) }, maxHeight = 560.dp) {
+                WhyKeptContent(HomeKept.Blocked(HomeBlock.HOME_CHANGED, brand = "Xiaomi", unlisted = true, change = tv.cleanyour.core.flows.HomeChange.OURS_ANOTHER_KEY))
+            }
+        },
+        Shot("found_why_kept_home_changed_not_found") {
+            SheetFrame({ Setup(found(noHomePlan), connected.copy(tvName = "TCL Smart TV", homePossible = false, homeBlock = HomeBlock.HOME_CHANGED)) }, maxHeight = 560.dp) {
+                WhyKeptContent(HomeKept.Blocked(HomeBlock.HOME_CHANGED, brand = "Hikeen", unlisted = true, change = tv.cleanyour.core.flows.HomeChange.OWN_NOT_FOUND))
+            }
+        },
         // beta3 (issue #1119): another home screen app claims Home where the switch could go ahead.
         Shot("found_home_other_home") { Setup(found(noHomePlan), connected.copy(tvName = "Xiaomi MiTV4I", homePossible = false, homeBlock = HomeBlock.OTHER_HOME)) },
         // beta4 (issue #825): a system service's FallbackHome claims Home where the switch could go ahead.
@@ -587,14 +604,20 @@ object SetupShots {
                 R.string.stop_home_other_launcher_primary, R.string.stop_home_other_launcher_secondary,
                 mapOf("launcher" to "Projectivy Launcher", "names" to "Projectivy Launcher, com.wolf.firelauncher", "count" to 2)), connected.copy(commands = commands))
         },
+        // 0.5.0 (issues #2293, #4756): a copy of the new home screen signed with another key is on the TV.
+        Shot("stopped_home_other_key") {
+            Stopped(home(StopCase.HOME_OTHER_KEY, R.string.stop_home_other_key_title, R.string.stop_home_other_key_body,
+                R.string.stop_home_setupwraith_secondary, R.string.stop_home_user_said_no_primary), connected.copy(commands = commands))
+        },
         // Issue #629: a Settings page was open on the TV during the check.
         Shot("stopped_home_settings_open") {
             Stopped(home(StopCase.HOME_SETTINGS_OPEN, R.string.stop_home_unknown_title, R.string.stop_home_settings_open_body,
                 R.string.stop_home_user_said_no_primary, R.string.stop_home_setupwraith_secondary), connected.copy(commands = commands))
         },
         Shot("stopped_home_user_said_no") {
-            Stopped(home(StopCase.HOME_USER_SAID_NO, R.string.stop_home_user_said_no_title, R.string.stop_home_user_said_no_body,
-                R.string.stop_home_user_said_no_primary, R.string.stop_home_user_said_no_secondary), connected.copy(commands = commands))
+            // 0.5.0 (issue #3760): the third button keeps the TV's own home screen and goes on to Done.
+            Stopped(card(StopCase.HOME_USER_SAID_NO, R.string.stop_home_user_said_no_title, R.string.stop_home_user_said_no_body,
+                R.string.stop_home_user_said_no_primary, R.string.stop_home_user_said_no_secondary, R.string.stop_home_setupwraith_secondary), connected.copy(commands = commands))
         },
         Shot("stopped_home_timed_out") {
             Stopped(home(StopCase.HOME_TIMED_OUT, R.string.stop_home_timed_out_title, R.string.stop_home_timed_out_body,

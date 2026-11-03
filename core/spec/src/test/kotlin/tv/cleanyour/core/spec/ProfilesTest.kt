@@ -633,28 +633,38 @@ class ProfilesTest {
         assertEquals(six, SureSetGenerator.CAREFUL_PACKAGES)
         val union = careful.flatMap { s -> s.groups.flatMap { g -> g.packages.map { it.name } } }.toSet()
         assertTrue(six.containsAll(union), "careful sets hold only the reviewed packages: ${union - six}")
-        // d7b0d4a: the other five are asked first somewhere (com.android.printspooler in the new
+        // d7b0d4a: the other five were asked first somewhere (com.android.printspooler in the new
         // provisional rows of amazon-fire-tv-stick-4k-2018, tcl-55p7k and tcl-beyondtv2-latin-america;
         // com.android.tv.feedbackconsent and the three Privacy Sandbox packages in kalley-r10g's new
-        // Privacy Sandbox group), so rule 2 leaves them out of every careful set until those rows are
-        // reviewed. docs/history/reviews/UP33-sure-sets.txt has the per brand diff.
-        assertEquals(setOf(p("com.google.android.feedback")), union, "the reviewed packages no list asks for first")
+        // Privacy Sandbox group), so rule 2 left them out of every careful set. 0.5.0: each of those
+        // lists' headers records the unit it was tested on with them off and rebooted, so those rows are
+        // default-off now and the careful sets are those of 0.4.8 again, with one new set for Kalley
+        // (docs/history/reviews/CAREFUL-050.md, one verdict per package and list).
+        assertEquals(six, union, "every reviewed package is in some careful set")
         assertEquals(careful.map { it.brand.lowercase() }.sorted(), careful.map { it.brand.lowercase() })
         fun pkgs(vararg names: String) = names.map(::p).toSet()
-        // The brands of the reported TVs the change is for (docs/lists-0.3.5, the per-brand table).
+        val sandbox = pkgs("com.android.adservices.api", "com.android.ondevicepersonalization.services", "com.android.federatedcompute.services")
+        // The brands of the reported TVs the change is for (docs/lists-0.3.5, the per-brand table), and
+        // the three brands whose only reviewed packages were the ones d7b0d4a's ask rows took away.
         val reported = mapOf(
-            "Skyworth" to pkgs("com.google.android.feedback"),
-            "SHARP" to pkgs("com.google.android.feedback"),
+            "Skyworth" to pkgs("com.google.android.feedback", "com.android.tv.feedbackconsent"),
+            "SHARP" to pkgs("com.google.android.feedback", "com.android.tv.feedbackconsent"),
             "OnePlus" to pkgs("com.google.android.feedback"),
-            "onn" to pkgs("com.google.android.feedback"),
+            "onn" to pkgs("com.google.android.feedback", "com.android.tv.feedbackconsent", "com.android.printspooler"),
             "Haier" to pkgs("com.google.android.feedback"),
-            "google" to pkgs("com.google.android.feedback"),
-            "Expressluck" to pkgs("com.google.android.feedback"),
-            "SkyworthDigital" to pkgs("com.google.android.feedback"),
+            "google" to pkgs("com.google.android.feedback", "com.android.tv.feedbackconsent"),
+            "Expressluck" to six - p("com.android.printspooler"),
+            "SkyworthDigital" to six,
+            "MOKA" to pkgs("com.android.printspooler"),
+            "Stellamore" to pkgs("com.android.printspooler", "com.android.adservices.api", "com.android.ondevicepersonalization.services"),
+            "Vidda" to pkgs("com.android.printspooler"),
+            // kalley-r10g's second unit (KALLEY_FFM, #1807) kept these four off across reboots.
+            "Kalley" to sandbox + p("com.android.tv.feedbackconsent"),
         )
-        // MOKA, Stellamore and Vidda had only such packages, so they have no careful set now.
-        for (brand in listOf("MOKA", "Stellamore", "Vidda")) assertTrue(careful.none { it.brand == brand }, brand)
         for ((brand, want) in reported) assertEquals(want, careful.single { it.brand == brand }.groups.flatMap { g -> g.packages.map { it.name } }.toSet(), brand)
+        // prismplus-q65-ultra-r10g still leaves feedbackconsent and the Privacy Sandbox out (its header
+        // does not record them off across a reboot), so the MOKA set is the print spooler alone.
+        assertTrue(sandbox.none { pkg -> careful.single { it.brand == "MOKA" }.groups.any { g -> g.packages.any { it.name == pkg } } })
         val askedSomewhere = profiles.flatMap { pr -> pr.groups.filter { it.default != GroupDefault.DISABLE }.flatMap { g -> g.packages.map { it.name } } }.toSet()
         val named = profiles.flatMap { pr -> pr.neverDisable + pr.stockLaunchers.map { it.pkg } + listOfNotNull(pr.setupWraith, pr.liveTv) }.toSet()
         for (s in careful) {
@@ -676,6 +686,26 @@ class ProfilesTest {
         println("careful sets: " + careful.joinToString { s -> "${s.brand}=" + s.groups.flatMap { it.packages }.joinToString("/") { it.name.value } })
     }
 
+    // 0.5.0 (docs/history/reviews/CAREFUL-050.md): the reviewed packages that d7b0d4a's provisional
+    // groups asked first are default-off where the list's header records the unit tested with them
+    // off and rebooted. The rest of each provisional group stays an ask row, and the PRISM+ list keeps
+    // feedbackconsent and the Privacy Sandbox out until its own header records the reboot.
+    @Test fun theCarefulPackagesTestedOffAreDefaultOff() {
+        fun off(id: String) = profile(id).groups.filter { it.default == GroupDefault.DISABLE }.flatMap { g -> g.packages.map { it.name } }.toSet()
+        fun asked(id: String) = profile(id).groups.filter { it.default != GroupDefault.DISABLE }.flatMap { g -> g.packages.map { it.name } }.toSet()
+        for (id in listOf("amazon-fire-tv-stick-4k-2018", "tcl-55p7k", "tcl-beyondtv2-latin-america")) assertTrue(p("com.android.printspooler") in off(id), id)
+        assertTrue(asked("amazon-fire-tv-stick-4k-2018").containsAll(listOf("com.amazon.recess", "com.amazon.naatyam", "com.amazon.neodelegate", "com.amazon.csm.htmlruntime").map(::p)))
+        assertTrue(asked("tcl-55p7k").containsAll(listOf("com.google.android.syncadapters.calendar", "com.google.android.onetimeinitializer", "com.google.android.play.games").map(::p)))
+        assertTrue(p("com.google.android.play.games") in asked("tcl-beyondtv2-latin-america"))
+        val four = listOf("com.android.tv.feedbackconsent", "com.android.adservices.api", "com.android.ondevicepersonalization.services", "com.android.federatedcompute.services").map(::p)
+        assertTrue(off("kalley-r10g").containsAll(four))
+        // Health Connect is commented out upstream until it is checked across a reboot: no row at all.
+        assertTrue(profile("kalley-r10g").groups.none { g -> g.packages.any { it.name.value.startsWith("com.android.health") } })
+        val prism = profile("prismplus-q65-ultra-r10g").groups.flatMap { g -> g.packages.map { it.name } }.toSet()
+        assertTrue(four.none { it in prism })
+        assertTrue(p("com.android.printspooler") in off("prismplus-q65-ultra-r10g"))
+    }
+
     // A TV of a careful-set brand without an exact list resolves to the careful set with the generic
     // stock launchers, the same launchers ProfileResolution.None gives.
     @Test fun aCarefulSetResolvesWithTheGenericLaunchers() = runBlocking<Unit> {
@@ -684,7 +714,7 @@ class ProfilesTest {
         val sharp = source.resolve(mi.copy(brand = "SHARP", manufacturer = "SHARP", model = "AQUOS_TVE19A", device = "sindang", sdk = 30))
         assertTrue(sharp is ProfileResolution.BrandSureSet && sharp.brand == "SHARP", sharp.toString())
         assertEquals(KnownLaunchers.generic, sharp.stockLaunchers)
-        assertEquals(setOf(p("com.google.android.feedback")), sharp.sureSet.flatMap { g -> g.packages.map { it.name } }.toSet())
+        assertEquals(setOf(p("com.google.android.feedback"), p("com.android.tv.feedbackconsent")), sharp.sureSet.flatMap { g -> g.packages.map { it.name } }.toSet())
         // A brand with a full set keeps it when its maker also has a careful set.
         val sonyBySkyworth = source.resolve(mi.copy(brand = "Sony", manufacturer = "Skyworth", model = "X1", device = "x1"))
         assertTrue(sonyBySkyworth is ProfileResolution.BrandSureSet && sonyBySkyworth.brand == "Sony", sonyBySkyworth.toString())

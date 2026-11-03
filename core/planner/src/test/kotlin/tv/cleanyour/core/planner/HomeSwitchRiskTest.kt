@@ -547,6 +547,66 @@ class HomeSwitchRiskTest {
         }
     }
 
+    // 0.5.0 (issues #5168, #5197, #2741, #5264, #4372, #5115): Sony's Android 9 sets report TV Settings' own
+    // FallbackHome under Sony's class name, com.android.tv.settings/com.sony.dtv.settings.system.FallbackHome at
+    // -1000, and nothing else next to tvlauncher. It is Android's placeholder in Android's TV Settings package
+    // (Sony builds that app from its own source tree), not a vendor service like #825's, and the exact lists of
+    // these sets switched with it before beta4 and held (#1567, #5869). So R0 takes it, and the exact lists
+    // switch again. Only that component: the same class in another package, or another class, still blocks.
+    private val sonyFallback = Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.system.FallbackHome")
+    private val sonyClaims = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(sonyFallback, -1000))
+    private val atv3 = reported("BRAVIA 4K GB ATV3", "BRAVIA_ATV3_4K", 28, "Sony/BRAVIA_ATV3_4K_BR/BRAVIA_ATV3_4K:9/PTT1.190515.001.S54/672201:user/release-keys",
+        brand = "Sony", manufacturer = "Sony")
+    private val atv2 = reported("BRAVIA 4K GB", "BRAVIA_ATV2", 28, "Sony/BRAVIA_ATV2_EU/BRAVIA_ATV2:9/PTT1.190515.001.S54/672201:user/release-keys",
+        brand = "Sony", manufacturer = "Sony")
+    private val atv3_2k = reported("BRAVIA 2K GB ATV3", "BRAVIA_ATV3_2K", 28, "Sony/BRAVIA_ATV3_2K_PA/BRAVIA_ATV3_2K:9/PTT1.190515.001.S54/672201:user/release-keys",
+        brand = "Sony", manufacturer = "Sony")
+
+    @Test fun sonysTvSettingsFallbackHomeIsAndroidsOwnPlaceholder() {
+        assertTrue(HomeSwitchRisk.r0Placeholder(sonyFallback))
+        assertTrue(HomePlaceholder.isPlaceholder(sonyFallback), "every other caller already took it as a placeholder")
+        for ((f, id) in listOf(atv3 to "sony-xbr-65x900f", atv2 to "sony-bravia-4k-gb")) {
+            val profile = assertNotNull(exact(f), f.model)
+            assertEquals(id, profile.id)
+            val s = r0Tv(f, sonyClaims)
+            assertTrue(!HomeSwitchRisk.vendorPlaceholderClaims(s), f.model)
+            for (anyBrand in listOf(false, true)) for (w in WizardWifi.entries) {
+                assertNull(HomeSwitchRisk.of(f, profile, s, w, anyBrand = anyBrand), "${f.model} exact, anyBrand=$anyBrand $w")
+                assertNull(HomeSwitchRisk.of(f, profile, r0Tv(f, sonyClaims, home = sonyFallback), w, anyBrand = anyBrand), "${f.model} Home on it $w")
+            }
+        }
+        // The brand set (#4372, #5115): no VENDOR_HOME any more. A release has no Sony row for Android 9, so the setup
+        // wizard keeps the switch out; the test build's R0 for every brand takes these claimants.
+        val brandSet = r0Tv(atv3_2k, sonyClaims)
+        assertNull(exact(atv3_2k))
+        for (w in WizardWifi.entries) {
+            assertEquals(HomeSwitchRisk.R0Blocker.SCOPE, HomeSwitchRisk.r0Blocker(atv3_2k, brandSet, anyBrand = false))
+            assertTrue(HomeSwitchRisk.of(atv3_2k, null, brandSet, w, anyBrand = false) in setOf(Risk.WIZARD_WIFI, Risk.WIZARD_STAYS_ON), "release $w")
+            assertNull(HomeSwitchRisk.of(atv3_2k, null, brandSet, w, anyBrand = true), "test build $w")
+        }
+        // Narrow: the same class in a package of its own, Sony's class names that are not this one, and a vendor
+        // service's FallbackHome next to Sony's all still block, on the exact list too.
+        val profile = assertNotNull(exact(atv3))
+        for (c in listOf(Component(PackageName("com.sony.dtv.settings"), "com.sony.dtv.settings.system.FallbackHome"),
+            Component(PackageName("com.sony.dtv.settings"), ".system.FallbackHome"),
+            Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.FallbackHome"),
+            Component(PackageName("com.android.tv.settings"), "com.sony.dtv.vendor.system.FallbackHome"),
+            Component(PackageName("com.android.tv.settings"), "com.sony.dtv.settings.system.FallbackHomeService"))) {
+            assertTrue(!HomeSwitchRisk.r0Placeholder(c), c.flat)
+            val claims = listOf(HomeClaimant(tvlauncher, 2), HomeClaimant(c, -1000))
+            assertEquals(Risk.VENDOR_HOME, HomeSwitchRisk.of(atv3, profile, r0Tv(atv3, claims), WizardWifi.NOT_OWNER, anyBrand = true), c.flat)
+        }
+        assertEquals(Risk.VENDOR_HOME, HomeSwitchRisk.of(atv3, profile, r0Tv(atv3, sonyClaims + HomeClaimant(keyintercept, -999)), WizardWifi.NOT_OWNER, anyBrand = false))
+        // The planner plans the exact list's switch (it refused it before).
+        releaseRule {
+            val p = plan(PlanRequest.Setup(ProfileResolution.Exact(profile), choices(wizardWifi = WizardWifi.NOT_OWNER), PlannerFixtures.artifact(), Level.SIMPLE),
+                snapshot = r0Tv(atv3, sonyClaims))
+            val ops = p.steps.map { it.op }
+            assertEquals(1, p.sections.size)
+            assertTrue(Op.Disable(tvlauncher.pkg) in ops && Op.SetHome(PlannerFixtures.launcher) in ops, "$ops")
+        }
+    }
+
     // beta4, after the incident of 0.4.6-beta2: a release gives R0 to Xiaomi and Redmi with no list
     // on Android 9, 10 and 11 only, and holds out the MiTV-AXSO2 (dangalUHD) on Android 11 (issue
     // #945) until its owner answers. The test build keeps every brand and Android version, and holds
@@ -595,15 +655,22 @@ class HomeSwitchRiskTest {
             Row(setOf("MI"), 28..28, setOf("MiProjM05"), setOf("eva"), emptySet()),
             Row(setOf("Strong"), 34..34, setOf("LEAP-S1"), setOf("LAS"), emptySet()),
             Row(setOf("Toshiba"), 30..30, emptySet(), setOf("hamamatsucho"), emptySet()),
+            Row(setOf("SHARP"), 30..30, emptySet(), emptySet(), emptySet()),
+            Row(setOf("Hisense"), 30..30, setOf("HiSmart 2K ATV4", "HiSmart TV"), setOf("hamamatsucho"), emptySet()),
+            Row(setOf("JVC"), 30..30, emptySet(), emptySet(), emptySet()),
+            Row(setOf("Philips"), 30..30, emptySet(), emptySet(), emptySet()),
+            Row(setOf("realme"), 30..30, setOf("realme Smart TV"), setOf("SW4H_FF"), emptySet()),
+            Row(setOf("THOMSON_KODAK"), 28..28, setOf("PATH_7XPRO"), setOf("LEDTV32HD"), emptySet()),
         ), HomeSwitchRisk.GRADUATED.map { Row(it.makers, it.sdks, it.models, it.devices, it.excludedDevices) })
         for (g in HomeSwitchRisk.GRADUATED) {
             assertTrue(g.makers.isNotEmpty() && !g.sdks.isEmpty() && g.sdks.first >= 26 && g.why.isNotBlank(), g.toString())
-            // A 0.4.7 or 0.4.8 row is one Android version: a new version needs its own confirmations.
-            if ("(0.4.7)" in g.why || "(0.4.8)" in g.why) assertEquals(g.sdks.first, g.sdks.last, g.toString())
+            // A 0.4.7, 0.4.8 or 0.5.0 row is one Android version: a new version needs its own confirmations.
+            if ("(0.4.7)" in g.why || "(0.4.8)" in g.why || "(0.5.0)" in g.why) assertEquals(g.sdks.first, g.sdks.last, g.toString())
         }
         // A brand with no row is BRAND, whatever its version.
-        val philips = axso1.copy(brand = "Philips", manufacturer = "TPV", device = "unknown")
-        assertEquals(HomeSwitchRisk.R0Blocker.BRAND, HomeSwitchRisk.r0Blocker(philips, r0Tv(philips), anyBrand = false))
+        // 0.5.0: Philips has a row (Android 11), so the brand with none is Panasonic.
+        val panasonic = axso1.copy(brand = "Panasonic", manufacturer = "Panasonic", device = "unknown")
+        assertEquals(HomeSwitchRisk.R0Blocker.BRAND, HomeSwitchRisk.r0Blocker(panasonic, r0Tv(panasonic), anyBrand = false))
     }
 
     // 0.4.7 graduations: a TV of each confirming report (the facts its issue's report printed) meets R0 in the
@@ -626,6 +693,19 @@ class HomeSwitchRiskTest {
         "#1647 #2925" to graduatedTv("MiProjM05", "eva", 28, "MI/eva/eva:9/PQ3B.190705.003/4185:user/release-keys", "MI", "fengmi"),
         "#1471 #3716" to graduatedTv("LEAP-S1", "LAS", 34, "Strong/HP4005/LAS:14/UKG3.240613.001/C1.6.2_20251218:user/release-keys", "Strong", "SkyworthDigital"),
         "#2092 #3724" to graduatedTv("Smart TV", "hamamatsucho", 30, "Toshiba/fushan_euT/hamamatsucho:11/RTO6.230618.001/10344060:user/release-keys", "Toshiba", "Hisense"),
+        // 0.5.0: a Toshiba shandao reports the maker My, so the My row covers it (#5952 held on 0.4.8; #1782, see the row).
+        "#5952" to graduatedTv("Android TV", "shandao", 30, "Toshiba/EMIR_Toshiba/shandao:11/RTM6.230109.207/10391326:user/release-keys", "Toshiba", "My"),
+        "#852" to graduatedTv("AQUOS_TVE19A", "sindang", 30, "SHARP/tcbrae_a/sindang:11/RTOB.250721.001/13808904:user/release-keys", "SHARP", "SHARP"),
+        "#3915" to graduatedTv("AQUOS-TVE19G", "ewha", 30, "SHARP/tckosfe/ewha:11/RTOB.250806.001/13890547:user/release-keys", "SHARP", "SHARP"),
+        "#4128" to graduatedTv("SHARP 2K SMART TV", "shinagawa", 30, "SHARP/SHARP_EU/shinagawa:11/RTO9.231120.001/11122473:user/release-keys", "SHARP", "skyworth"),
+        "#346" to graduatedTv("HiSmart 2K ATV4", "hamamatsucho", 30, "Hisense/fushan_emeu/hamamatsucho:11/RTO6.230411.001/9924732:user/release-keys", "Hisense", "Hisense"),
+        "#4338" to graduatedTv("HiSmart TV", "hamamatsucho", 30, "Hisense/fushan_2/hamamatsucho:11/RTO6.250228.001/13139433:user/release-keys", "Hisense", "Hisense"),
+        "#3839" to graduatedTv("4K SMART TV", "zhongshan", 30, "JVC/KTC_JVC_4K_NA_21V2/zhongshan:11/RTM9.241015.064/12731717:user/release-keys", "JVC", "KTC"),
+        "#5844" to graduatedTv("EU 4K Android TV", "bangbae", 30, "JVC/MTCMSD6886EU/bangbae:11/RTO8.260427.001/15299243:user/release-keys", "JVC", "MTC"),
+        "#1409" to graduatedTv("TPM191E", "PH9M_EA_5599", 30, "Philips/PH9M_EA_5599/PH9M_EA_5599:11/RTT2.211108.001/3565:user/release-keys", "Philips", "Philips"),
+        "#4814" to graduatedTv("PHILIPS 4K TV", "sindap", 30, "Philips/polarbear/sindap:11/RTXC.231010.082.A1/11562433:user/release-keys", "Philips", "Funai"),
+        "#4679 #5752" to graduatedTv("realme Smart TV", "SW4H_FF", 30, "realme/SW4H_FF_realme/SW4H_FF:11/RTM5.220609.106/20231126:user/release-keys", "realme", "skyworth"),
+        "#2149 #5767" to graduatedTv("PATH_7XPRO", "LEDTV32HD", 28, "THOMSON_KODAK/LEDTV32HD/LEDTV32HD:9/PI/20210601:user/release-keys", "THOMSON_KODAK", "SPPL"),
     )
     // The two Android 8 sets reported tvlauncher at priority 0, the others at 2.
     private fun confirmedTv(f: DeviceFacts, extra: List<HomeClaimant> = emptyList(), home: Component? = tvlauncher): Snapshot =
@@ -675,6 +755,12 @@ class HomeSwitchRiskTest {
         val chromecast = reported("Chromecast", "sabrina", 34, "google/sabrina_prod_stable/sabrina:14/UTTC.250917.004/14193937:user/release-keys", brand = "google", manufacturer = "Google")
         assertEquals(Risk.CASTING, HomeSwitchRisk.of(chromecast, null, r0Tv(chromecast), WizardWifi.NOT_OWNER, anyBrand = false))
         assertEquals(HomeSwitchRisk.R0Blocker.BRAND, HomeSwitchRisk.r0Blocker(chromecast, r0Tv(chromecast), anyBrand = false))
+        // 0.5.0: the SHARP AQUOS-TVX19A (ebisu, #1268) never switched: Sharp's rcota app claims Home at priority 0, so the
+        // SHARP row does not give it R0 (OTHER_HOME), whoever saved the Wi-Fi.
+        val ebisu = graduatedTv("AQUOS-TVX19A", "ebisu", 30, "SHARP/tckiwfx/ebisu:11/RTOB.250814.001/13933693:user/release-keys", "SHARP", "SHARP")
+        val rcota = HomeClaimant(Component(PackageName("rcota.android.av.sharp.co.jp.rcota"), ".MainActivity"), 0)
+        assertTrue(HomeSwitchRisk.graduated(ebisu))
+        for (w in WizardWifi.entries) assertEquals(Risk.OTHER_HOME, HomeSwitchRisk.of(ebisu, null, confirmedTv(ebisu, listOf(rcota)), w, anyBrand = false), "ebisu $w")
     }
 
     // The pairs 0.4.7 does not graduate keep the wizard's rule in a release: TCL on Android 11 and realme on Android
@@ -686,17 +772,30 @@ class HomeSwitchRiskTest {
         val off: List<Triple<String, DeviceFacts, HomeSwitchRisk.R0Blocker>> = listOf(
             Triple("TCL 11 (#1799, #2061, #2082 failed)", graduatedTv("Smart TV", "BeyondTV4", 30, "TCL/G03_4K_US_NF_DB/BeyondTV4:11/RP1A.200622.001/AR26:user/release-keys", "TCL", "TCL"), brand),
             Triple("TCL 11 G06", graduatedTv("Smart TV", "G06", 30, "TCL/G06/G06:11/RP1A.200622.001/1:user/release-keys", "TCL", "TCL"), brand),
-            Triple("realme 14 (#2126 failed)", graduatedTv("AI PONT", "redwood", 34, "realme/DVB92RM/redwood:14/UKNV.260514.001/15419756:user/release-keys", "realme", "Changhong"), brand),
-            Triple("realme 14 stick", graduatedTv("TV Stick", "BOS", 34, "realme/HP4702-realme/BOS:14/UKG3.250826.001/1:user/release-keys", "realme", "SkyworthDigital"), brand),
+            Triple("realme 14 (#2126 failed)", graduatedTv("AI PONT", "redwood", 34, "realme/DVB92RM/redwood:14/UKNV.260514.001/15419756:user/release-keys", "realme", "Changhong"), scope),
+            Triple("realme 14 stick", graduatedTv("TV Stick", "BOS", 34, "realme/HP4702-realme/BOS:14/UKG3.250826.001/1:user/release-keys", "realme", "SkyworthDigital"), scope),
             Triple("Kogan 11", graduatedTv("AI PONT", "samseong", 30, "Kogan/DVB93KG/samseong:11/RTO2.250508.001/13470691:user/release-keys", "Kogan", "Changhong"), brand),
-            Triple("SHARP 11", graduatedTv("AQUOS_TVE19A", "sindang", 30, "SHARP/tcbrae_a/sindang:11/RTOB.250721.001/13808904:user/release-keys", "SHARP", "SHARP"), brand),
-            Triple("SHARP 14", graduatedTv("SHARP 2K EU Android TV", "martin", 34, "SHARP/SHARP_2K_ATV2/martin:14/UKNV.260324.001/15080168:user/release-keys", "SHARP", "Expressluck"), brand),
+            Triple("SHARP 14 (#194, 1 of 2)", graduatedTv("SHARP 2K EU Android TV", "martin", 34, "SHARP/SHARP_2K_ATV2/martin:14/UKNV.260324.001/15080168:user/release-keys", "SHARP", "Expressluck"), scope),
+            Triple("SHARP 12", graduatedTv("SHARP 4K Smart TV", "umeda", 31, "SHARP/SW7_SHARP_APEU/umeda:12/1:user/release-keys", "SHARP", "skyworth"), scope),
             Triple("Strong 14, another box (#693, the helper)", graduatedTv("Android TV", "YDA", 34, "Strong/YDA/YDA:14/1:user/release-keys", "Strong", "SkyworthDigital"), scope),
             Triple("Strong LEAP-S1 on 12", graduatedTv("LEAP-S1", "LAS", 31, "Strong/HP4005/LAS:12/1:user/release-keys", "Strong", "SkyworthDigital"), scope),
             Triple("Strong 11, no row", graduatedTv("SRT 420", "SRT420", 30, "Strong/SRT420/SRT420:11/1:user/release-keys", "Strong", "Strong"), scope),
             Triple("THOMSON 14", graduatedTv("270", "SNA", 34, "THOMSON/Streaming_Box_Plus/SNA:14/URO4.260304.011.B1/15051976:user/release-keys", "THOMSON", "SDMC"), brand),
             Triple("TiVo Stream 4K, SEI Robotics", graduatedTv("TiVo Stream 4K", "SEI400TV", 31, "eSTREAM4K/SEI400TV/SEI400TV:12/1:user/release-keys", "eSTREAM4K", "SEI Robotics"), brand),
-            Triple("Hisense 11", graduatedTv("HiSmart 2K ATV4", "hamamatsucho", 30, "Hisense/fushan_emeu/hamamatsucho:11/RTO6.230411.001/9924732:user/release-keys", "Hisense", "Hisense"), scope),
+            Triple("Hisense 11, another set (#1622, the helper)", graduatedTv("SmartTV 4K FFM", "wuyishan", 30, "Hisense/wuyishan/wuyishan:11/1:user/release-keys", "Hisense", "Hisense"), scope),
+            Triple("Hisense 11 on hamamatsucho, another model", graduatedTv("SmartTV 4K", "hamamatsucho", 30, "Hisense/fushan/hamamatsucho:11/1:user/release-keys", "Hisense", "Hisense"), scope),
+            Triple("Hisense HiSmart hamamatsucho on 12", graduatedTv("HiSmart TV", "hamamatsucho", 31, "Hisense/fushan_2/hamamatsucho:12/1:user/release-keys", "Hisense", "Hisense"), scope),
+            Triple("JVC on 14, the zhongshan board (#451 failed)", graduatedTv("4K SMART TV", "zhongshan", 34, "JVC/KTC_JVC_4K/zhongshan:14/1:user/release-keys", "JVC", "KTC"), scope),
+            Triple("JVC on 9", graduatedTv("LT-43VA6900", "seoul", 28, "JVC/seoul/seoul:9/1:user/release-keys", "JVC", "Vestel"), scope),
+            Triple("Philips 12, the TPM191E (its list's)", graduatedTv("TPM191E", "PH9M_EA_5599", 31, "Philips/PH9M_EA_5599/PH9M_EA_5599:12/1:user/release-keys", "Philips", "Philips"), scope),
+            Triple("Philips 9", graduatedTv("PHILIPS 4K TV", "sindap", 28, "Philips/polarbear/sindap:9/1:user/release-keys", "Philips", "Funai"), scope),
+            Triple("realme 11, another board", graduatedTv("AI PONT", "ikebukuro", 30, "Realme/DVB93RM/ikebukuro:11/1:user/release-keys", "Realme", "Changhong"), scope),
+            Triple("realme SW4H_FF, another model", graduatedTv("realme Smart TV 43", "SW4H_FF", 30, "realme/SW4H_FF_realme/SW4H_FF:11/1:user/release-keys", "realme", "skyworth"), scope),
+            Triple("realme SW4H_FF on 10", graduatedTv("realme Smart TV", "SW4H_FF", 29, "realme/SW4H_FF_realme/SW4H_FF:10/1:user/release-keys", "realme", "skyworth"), scope),
+            Triple("SANSUI on the SW4H board (#639 failed, #2317 held)", graduatedTv("SANSUITV UHD", "SW4H", 30, "SANSUI/SW4H_SANSUI/SW4H:11/RTM5.220609.106/20241107:user/release-keys", "SANSUI", "skyworth"), brand),
+            Triple("THOMSON_KODAK, the PATH_UHDXANDROID (#6125, 1 of 2)", graduatedTv("PATH_UHDXANDROID", "LEDTVUHD", 28, "THOMSON_KODAK/LEDTVUHD/LEDTVUHD:9/PI/1:user/release-keys", "THOMSON_KODAK", "SPPL"), scope),
+            Triple("THOMSON_KODAK PATH_7XPRO on 11", graduatedTv("PATH_7XPRO", "LEDTV32HD", 30, "THOMSON_KODAK/LEDTV32HD/LEDTV32HD:11/1:user/release-keys", "THOMSON_KODAK", "SPPL"), scope),
+            Triple("THOMSON 9, SPPL", graduatedTv("PATH_7XPRO", "LEDTV32HD", 28, "THOMSON/LEDTV32HD/LEDTV32HD:9/1:user/release-keys", "THOMSON", "SPPL"), brand),
             Triple("Toshiba on Hisense's board, 11, another set", graduatedTv("Smart TV", "xiangshan", 30, "Toshiba/xiangshan/xiangshan:11/1:user/release-keys", "Toshiba", "Hisense"), scope),
             Triple("Toshiba hamamatsucho on 12", graduatedTv("Smart TV", "hamamatsucho", 31, "Toshiba/hamamatsucho/hamamatsucho:12/1:user/release-keys", "Toshiba", "Hisense"), scope),
             Triple("OnePlus's JMGO on 14", graduatedTv("H80A", "songni", 34, "JMGO/songni/songni:14/1:user/release-keys", "JMGO", "OnePlus"), scope),

@@ -76,6 +76,7 @@ import tv.cleanyour.core.session.TvSession
 import tv.cleanyour.core.spec.AppNames
 import tv.cleanyour.core.spec.DockLayers
 import tv.cleanyour.core.spec.FactsTable
+import tv.cleanyour.core.spec.KnownLaunchers
 import tv.cleanyour.core.spec.LiveTvKeys
 import tv.cleanyour.core.spec.TvSettings
 import tv.cleanyour.core.spec.Looks
@@ -166,6 +167,10 @@ data class SetupExtras(
     val unknownModel: Boolean = false,           // UX 2 "We found 9 things we're sure about"
     val homePossible: Boolean = true,            // UX 4.6 TV refuses other home screens
     val homeBlock: HomeBlock = HomeBlock.NONE,   // why the switch is not offered, for S3's line (RF-PROFILES-63 P1, P2)
+    // 0.5.0: under HOME_CHANGED, what the report shows of the TV's own home screen (HomeChange), and how
+    // the TV's Settings names it when it is switched off, for the advice; null otherwise.
+    val homeChange: HomeChange? = null,
+    val homeChangeOwn: String? = null,
     val fireTv: Boolean = false,                 // issue #2: a Fire OS set, so S3's TV_REFUSES line names Fire TV, not the panel's brand
     val tclRemoteKeys: Boolean = false,          // issue #275: a TCL Google TV, so S3 says which remote buttons the new home screen loses
     val googleTvSettingsKey: Boolean = false,    // issue #3059: another Google TV, so S3 says the remote's Settings button may stop working
@@ -872,6 +877,14 @@ class SetupMachine(
 
     private fun profile(): Profile? = (resolution as? ProfileResolution.Exact)?.profile
 
+    // The stock launchers of whatever the TV resolved to: the exact list's, the brand set's or no list's.
+    private fun resolutionStocks(): List<Component> = when (val r = resolution) {
+        is ProfileResolution.Exact -> r.profile.stockLaunchers
+        is ProfileResolution.BrandSureSet -> r.stockLaunchers
+        is ProfileResolution.None -> r.stockLaunchers
+        null -> emptyList()
+    }
+
     // Why the new home screen is not offered: the TV refuses other home screens (UX 4.6); it runs an
     // Android older than the launcher's (RF-PROFILES-63 P1: the clean-up only, no install, look,
     // curtain or switch); the switch is known to be unsafe on it (RF-SAFETY-250: the MOKA family's
@@ -908,12 +921,7 @@ class SetupMachine(
         // Issue #8: the exact profile's stock launchers too, through the planner's own StockHome, so
         // a TV whose own home screen is not among the claimants is never asked for a switch the
         // planner then refuses as a whole.
-        val stocks = when (val r = resolution) {
-            is ProfileResolution.Exact -> r.profile.stockLaunchers
-            is ProfileResolution.BrandSureSet -> r.stockLaunchers
-            is ProfileResolution.None -> r.stockLaunchers
-            null -> emptyList()
-        }
+        val stocks = resolutionStocks()
         // Issue #2028: so is a TV whose Home answers to a home screen we do not know, ranked above ours.
         val stockUnknown = !ours && (StockHome.of(snap, stocks) == null || StockHome.unknownAboveOurs(snap, stocks))
         return when {
@@ -1090,9 +1098,12 @@ class SetupMachine(
                 val patchWall = PatchWallFeeds.PATCHWALL.takeIf { PatchWallFeeds.installed(snap, it) && !PatchWallFeeds.isOff(snap, it) }
                 val holds = patchWall != null && PatchWallFeeds.stayingOff(snap, journals, patchWallGoesOff = false).isNotEmpty()
                 val sent = deps.sentReports?.let { s -> attempt { s.load(record.id) }.getOrNull() }
+                val change = if (block == HomeBlock.HOME_CHANGED) HomeChange.of(snap, stocks()) else null
+                val changeOwn = if (change == HomeChange.OWN_SWITCHED_OFF) HomeChange.settingsName(HomeChange.switchedOff(snap, stocks())) else null
                 // The look step's draft and preview, from the whole draft dock (its waiting apps too).
                 mutableExtras.update {
                     it.copy(commands = commandsOf(r.plan), unknownModel = res !is ProfileResolution.Exact, homePossible = possible, homeBlock = block,
+                        homeChange = change, homeChangeOwn = changeOwn,
                         helperOffer = helperStock != null, helperOn = helper, helperWhyNot = helperWhyNot,
                         noScreenLock = !deps.screenLock.available(), draft = draft, dock = dock.map { p -> AppChoice(p, label(p)) }, apps = apps,
                         dockColumns = columns, look = sheet, ownPicture = own, ownDim = saved?.dim ?: OwnPicture.DEFAULT_DIM,
@@ -1568,12 +1579,19 @@ class SetupMachine(
             }
             StopCase.HOME_OTHER_LAUNCHER -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
             StopCase.HOME_UNKNOWN -> if (action == StopAction.PRIMARY) shareDiagnostics() else send(SetupIntent.LeaveOldHome)
-            StopCase.HOME_USER_SAID_NO -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else shareDiagnostics()
+            // 0.5.0 (issue #3760): the third button keeps the TV's own home screen and goes on to Done.
+            StopCase.HOME_USER_SAID_NO -> when (action) {
+                StopAction.PRIMARY -> scope.launch { tv?.let { retakeover(it) } }
+                StopAction.SECONDARY -> shareDiagnostics()
+                StopAction.TERTIARY -> send(SetupIntent.LeaveOldHome)
+            }
             // QA of 0.4.5: the card's primary is "OK" and its secondary "Try again" (stopKeys); the
             // two were the wrong way round, so "Try again" went straight to Done with the old home
             // screen on the TV, and "OK" started the switch again.
             StopCase.HOME_TIMED_OUT -> if (action == StopAction.SECONDARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
             StopCase.HOME_SETTINGS_OPEN -> if (action == StopAction.PRIMARY) scope.launch { tv?.let { retakeover(it) } } else send(SetupIntent.LeaveOldHome)
+            // 0.5.0 (issues #2293, #4756): keep the TV's own home screen first; "Try again" once the old copy is gone.
+            StopCase.HOME_OTHER_KEY -> if (action == StopAction.PRIMARY) send(SetupIntent.LeaveOldHome) else scope.launch { tv?.let { retakeover(it) } }
             StopCase.CONNECTION_LOST, StopCase.STEP_FAILED -> when (action) {
                 StopAction.PRIMARY -> send(SetupIntent.CarryOn)
                 StopAction.SECONDARY -> scope.launch { abandonToDone() }
@@ -1826,9 +1844,17 @@ class SetupMachine(
     private suspend fun resumeRun(tvId: TvId, planId: PlanId) {
         val record = deps.tvs.tvs.value.firstOrNull { it.id == tvId } ?: run { send(Ev.ToWelcome); return }
         tv = record
+        val entry = deps.ledger.entry(tvId, planId)
+        // 0.5.0 (issues #5016, #5435): the open run is Finish's debugging-off run, cut off when the app
+        // was closed. Nothing to carry on or undo: it is closed and Manage opens, never the resume card.
+        val engineIdle = deps.engine.runState(tvId).value.let { it is RunState.Idle || it is RunState.Finished }
+        if (entry?.kind == PlanKind.DEBUG_OFF && engineIdle && attempt { deps.ledger.closeOpenDebugOff(tvId, planId) }.getOrDefault(false)) {
+            deps.log.line("setup: the debugging-off run was left open, closed")
+            effect(SetupEffect.Navigate("manage/${tvId.value}"))
+            return
+        }
         currentPlanId = planId
         mutableExtras.update { it.copy(tvName = record.nickname, chip = ChipState.WAITING) }
-        val entry = deps.ledger.entry(tvId, planId)
         val progress = deps.ledger.progress(planId)
         val args = mapOf("tv" to record.nickname, "done" to progress.doneDisables, "total" to (entry?.disables ?: progress.doneDisables))
         val manageKind = entry != null && entry.kind != PlanKind.SETUP
@@ -1876,6 +1902,14 @@ class SetupMachine(
         lowStorageMb(failure)?.let { free ->
             wifiCard = false
             return card(StopCase.HOME_UNKNOWN, f.plan.id, args = mapOf("free" to free), body = CopyKey.STOP_HOME_LOW_STORAGE_BODY)
+        }
+        // 0.5.0 (issues #2293, #4756): the TV refused the launcher's install as an update of a copy signed
+        // with another key (put on with the computer tool). The switch never opened, so it is not another
+        // home screen app in charge (the card it got before, HOME_OTHER_LAUNCHER): the card says to
+        // remove the old copy, safely, first.
+        if (otherKeyInstalled(failure)) {
+            wifiCard = false
+            return card(StopCase.HOME_OTHER_KEY, f.plan.id)
         }
         val other = otherLauncherName()
         // Issue #375: "Try with the wizard off" is never offered. The planner switches the wizard off
@@ -1928,6 +1962,18 @@ class SetupMachine(
         return card(case, f.plan.id, args = mapOf("launcher" to (other ?: "")))
     }
 
+    // The launcher's install refused because a copy of com.gathin.tvhome signed with another key is on
+    // the TV: "INSTALL_FAILED_UPDATE_INCOMPATIBLE: Existing package com.gathin.tvhome signatures do not
+    // match newer version" (issue #4756), from the streamed install or pm install.
+    private fun otherKeyInstalled(failure: LastFailure?): Boolean {
+        val pkg = when (val op = failure?.op) {
+            is Op.InstallStream -> op.pkg
+            is Op.Install -> op.pkg
+            else -> return false
+        }
+        return pkg == Launcher.pkg && "INSTALL_FAILED_UPDATE_INCOMPATIBLE" in failure.stderrHead
+    }
+
     // The free MB the launcher's failed install named (InstallStorage), when that is clearly low for its APK.
     private fun lowStorageMb(failure: LastFailure?): Int? {
         val op = failure?.op as? Op.InstallStream ?: return null
@@ -1944,7 +1990,9 @@ class SetupMachine(
         if (failure == null || (failure.op !is Op.SetHome && failure.op !is Op.VerifyHome)) return emptyList()
         if (!failure.stderrHead.endsWith("got $HOME_CHOOSER")) return emptyList()
         val s = snapshot ?: return emptyList()
-        val stock = profile()?.stockLaunchers?.map { it.pkg }.orEmpty().toSet()
+        // Issue #5242: the brand set's or no list's stock home too, and Google's and Amazon's own home
+        // screens whatever their system flag reads (an update under /data reads false): never "uninstall it".
+        val stock = resolutionStocks().map { it.pkg }.toSet() + KnownLaunchers.byPackage.keys
         return s.home.claimants.map { it.component }
             .filter { c -> c.pkg != Launcher.pkg && c.pkg !in stock && s.packages[c.pkg]?.system != true && !HomePlaceholder.isPlaceholder(c) }
             .map { it.pkg }.distinct()
@@ -1960,8 +2008,11 @@ class SetupMachine(
     // A launcher of someone else's that answers Home. Not one: the setup wizard, the settings apps,
     // com.android.provision, and a vendor's FallbackHome (com.tcl.keycustomfunctionservice/.FallbackHome),
     // a placeholder the firmware shows when no launcher is enabled (upstream #435).
+    // Issue #5242 (a TiVo Stream 4K, no list): the TV's own home screen is the stock home of the brand
+    // set or of no list too, not only of an exact list. Counted as another app, Google's own home
+    // screen made the card say another home screen app was in charge after an install that did not land.
     private fun otherLauncherName(): String? {
-        val stock = profile()?.stockLaunchers?.map { it.pkg }.orEmpty().toSet()
+        val stock = resolutionStocks().map { it.pkg }.toSet()
         val wraith = profile()?.setupWraith
         val other = snapshot?.home?.claimants?.map { it.component }
             // #481's TCL Percee TV: com.android.boot.fallbackhome/.FallbackHomeCustomizer is one too.
@@ -2092,10 +2143,16 @@ internal fun stopKeys(case: StopCase): StopKeys = when (case) {
     StopCase.HOME_SETUPWRAITH -> StopKeys(CopyKey.STOP_HOME_SETUPWRAITH_TITLE, CopyKey.STOP_HOME_SETUPWRAITH_WIFI_UNKNOWN_BODY, CopyKey.STOP_HOME_SETUPWRAITH_SECONDARY, CopyKey.STOP_HOME_USER_SAID_NO_PRIMARY)
     StopCase.HOME_OTHER_LAUNCHER -> StopKeys(CopyKey.STOP_HOME_OTHER_LAUNCHER_TITLE, CopyKey.STOP_HOME_OTHER_LAUNCHER_BODY, CopyKey.STOP_HOME_OTHER_LAUNCHER_PRIMARY, CopyKey.STOP_HOME_OTHER_LAUNCHER_SECONDARY)
     StopCase.HOME_UNKNOWN -> StopKeys(CopyKey.STOP_HOME_UNKNOWN_TITLE, CopyKey.STOP_HOME_UNKNOWN_BODY, CopyKey.STOP_HOME_UNKNOWN_PRIMARY, CopyKey.STOP_HOME_UNKNOWN_SECONDARY)
-    StopCase.HOME_USER_SAID_NO -> StopKeys(CopyKey.STOP_HOME_USER_SAID_NO_TITLE, CopyKey.STOP_HOME_USER_SAID_NO_BODY, CopyKey.STOP_HOME_USER_SAID_NO_PRIMARY, CopyKey.STOP_HOME_USER_SAID_NO_SECONDARY)
+    // 0.5.0 (issue #3760): "Try again" and "Something looked wrong" were the only ways on, so a person
+    // who said no because they want the TV's own home screen went round in circles. The third button,
+    // "Keep the TV's own home screen", goes on to Done with the clean-up kept.
+    StopCase.HOME_USER_SAID_NO -> StopKeys(CopyKey.STOP_HOME_USER_SAID_NO_TITLE, CopyKey.STOP_HOME_USER_SAID_NO_BODY, CopyKey.STOP_HOME_USER_SAID_NO_PRIMARY,
+        CopyKey.STOP_HOME_USER_SAID_NO_SECONDARY, CopyKey.STOP_HOME_SETUPWRAITH_SECONDARY)
     StopCase.HOME_TIMED_OUT -> StopKeys(CopyKey.STOP_HOME_TIMED_OUT_TITLE, CopyKey.STOP_HOME_TIMED_OUT_BODY, CopyKey.STOP_HOME_TIMED_OUT_PRIMARY, CopyKey.STOP_HOME_TIMED_OUT_SECONDARY)
     // Issue #629: "Try again" and "Leave the old home screen", with the Settings sentence.
     StopCase.HOME_SETTINGS_OPEN -> StopKeys(CopyKey.STOP_HOME_UNKNOWN_TITLE, CopyKey.STOP_HOME_SETTINGS_OPEN_BODY, CopyKey.STOP_HOME_USER_SAID_NO_PRIMARY, CopyKey.STOP_HOME_SETUPWRAITH_SECONDARY)
+    // 0.5.0 (issues #2293, #4756): "Keep the TV's own home screen" first, "Try again" second.
+    StopCase.HOME_OTHER_KEY -> StopKeys(CopyKey.STOP_HOME_OTHER_KEY_TITLE, CopyKey.STOP_HOME_OTHER_KEY_BODY, CopyKey.STOP_HOME_SETUPWRAITH_SECONDARY, CopyKey.STOP_HOME_USER_SAID_NO_PRIMARY)
     StopCase.CONNECTION_LOST -> StopKeys(CopyKey.STOP_CONNECTION_LOST_TITLE, CopyKey.STOP_CONNECTION_LOST_BODY, CopyKey.STOP_CONNECTION_LOST_PRIMARY, CopyKey.STOP_CONNECTION_LOST_SECONDARY, CopyKey.STOP_CONNECTION_LOST_TERTIARY)
     StopCase.STEP_FAILED -> StopKeys(CopyKey.STOP_STEP_FAILED_TITLE, CopyKey.STOP_STEP_FAILED_BODY, CopyKey.STOP_CONNECTION_LOST_PRIMARY, CopyKey.STOP_CONNECTION_LOST_SECONDARY, CopyKey.STOP_CONNECTION_LOST_TERTIARY)
     StopCase.RESUME_AFTER_DEATH -> StopKeys(CopyKey.STOP_RESUME_TITLE, CopyKey.STOP_RESUME_BODY, CopyKey.STOP_RESUME_PRIMARY, CopyKey.STOP_RESUME_SECONDARY, CopyKey.STOP_RESUME_TERTIARY)

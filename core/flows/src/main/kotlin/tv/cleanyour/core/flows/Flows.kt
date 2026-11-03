@@ -50,7 +50,8 @@ enum class StopCase { HOME_SETUPWRAITH, HOME_OTHER_LAUNCHER, HOME_UNKNOWN, HOME_
     TV_NOT_FOUND, WRONG_NETWORK, TV_NOT_SUPPORTED, HOME_TIMED_OUT, STEP_FAILED, UNDONE, PROBE_FAILED, NOT_BACK_AFTER_RESTART,
     HOME_PUT_BACK,   // M5: step R put the old home screen back after a lost connection
     PLAN_REFUSED,    // 0.3.4 (issues #171, #187, #220): the TV answered, the planner found no safe plan
-    HOME_SETTINGS_OPEN }   // issue #629: the home check rolled back because a Settings page was open on the TV
+    HOME_SETTINGS_OPEN,    // issue #629: the home check rolled back because a Settings page was open on the TV
+    HOME_OTHER_KEY }       // 0.5.0 (issues #2293, #4756): a copy of the new home screen signed with another key is on the TV
 data class StopCard(val case: StopCase, val title: String, val body: String, val primary: String, val secondary: String?, val planId: PlanId?,
     val tertiary: String? = null)   // W8 addition: S4d and S4e have three buttons
 // `restorePointAtMs`: the restore point Undo everything goes back to, the TV as it was before this
