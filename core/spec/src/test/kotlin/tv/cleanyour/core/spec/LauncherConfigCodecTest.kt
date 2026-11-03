@@ -185,28 +185,27 @@ class LauncherConfigCodecTest {
     }
 
     // Drift check (0.4.5): every key a vendored launcher reader takes from config.json (launcher 2.7
-    // at 3e34f40 and 3.0 at b06ab21, the copies the vendored tests hold to the submodule) is modelled
+    // at 3e34f40, and the bundled one in v30: 3.0 at b06ab21 until 0.4.8, 3.3 at d7b0d4a5 since
+    // 0.4.9-beta1, the copies the vendored tests hold to the submodule) is modelled
     // or carried, so no key the TV reads is ever called ignored, and a new upstream key fails here.
     // Keys are found as Config.load reads them: a helper on the parsed file, bool(json, "k") and the
     // like, or json.optJSONObject("k") and its kin. CARRIED_READ holds only keys both versions read,
-    // CARRIED_30 only keys 2.7 does not read, and every carried key is one a reader takes.
+    // CARRIED_30 and CARRIED_33 only keys 2.7 does not read, and every carried key is one a reader
+    // takes. A key read through a String constant of Config (3.3's CLOCK_FORMAT_KEY) counts as its literal.
     @Test fun everyKeyALauncherReadsIsKnown() {
-        fun keys(version: String): Set<String> {
-            val text = java.io.File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/$version/Config.java").readText()
-            return (Regex("\\((?:json|o), \"([a-z_0-9]+)\"").findAll(text) +
-                Regex("\\b(?:json|o)\\.(?:opt\\w*|get\\w*|has|isNull)\\(\"([a-z_0-9]+)\"").findAll(text)).map { it.groupValues[1] }.toSet()
-        }
-        val v27 = keys("v27")
-        val v30 = keys("v30")
-        assertTrue(v27.size > 70 && v30.size > 95, "the readers were found: ${v27.size} and ${v30.size} keys")
-        val known = ConfigCodecImpl.MODELLED + ConfigCodecImpl.CARRIED_27 + ConfigCodecImpl.CARRIED_30 + ConfigCodecImpl.CARRIED_READ
+        val v27 = launcherReads(java.io.File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/v27/Config.java"))
+        val v30 = launcherReads(java.io.File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/v30/Config.java"))
+        assertTrue(v27.size > 70 && v30.size > 105, "the readers were found: ${v27.size} and ${v30.size} keys")
+        assertTrue("clock_format" in v30 && "seasonal_skin" in v30, "the constant and the festival fallback were found")
+        val known = ConfigCodecImpl.MODELLED + ConfigCodecImpl.CARRIED_27 + ConfigCodecImpl.CARRIED_30 + ConfigCodecImpl.CARRIED_33 + ConfigCodecImpl.CARRIED_READ
         assertEquals(emptySet(), v27 - known, "keys launcher 2.7 reads that the codec would call ignored")
-        assertEquals(emptySet(), v30 - known, "keys launcher 3.0 reads that the codec would call ignored")
+        assertEquals(emptySet(), v30 - known, "keys the bundled launcher reads that the codec would call ignored")
         assertEquals(emptySet(), known - v27 - v30, "known keys no launcher reads")
         assertEquals(emptySet(), ConfigCodecImpl.CARRIED_READ - (v27 intersect v30), "CARRIED_READ keys not read by both")
         assertEquals(emptySet(), ConfigCodecImpl.CARRIED_30 intersect v27, "CARRIED_30 keys 2.7 reads too")
-        assertEquals(emptySet(), v27 - v30, "keys 2.7 reads that 3.0 dropped")
-        val sets = listOf(ConfigCodecImpl.MODELLED, ConfigCodecImpl.CARRIED_27, ConfigCodecImpl.CARRIED_30, ConfigCodecImpl.CARRIED_READ)
+        assertEquals(emptySet(), ConfigCodecImpl.CARRIED_33 intersect v27, "CARRIED_33 keys 2.7 reads too")
+        assertEquals(emptySet(), v27 - v30, "keys 2.7 reads that the bundled launcher dropped")
+        val sets = listOf(ConfigCodecImpl.MODELLED, ConfigCodecImpl.CARRIED_27, ConfigCodecImpl.CARRIED_30, ConfigCodecImpl.CARRIED_33, ConfigCodecImpl.CARRIED_READ)
         assertEquals(sets.sumOf { it.size }, known.size, "the sets do not overlap")
         // A file with every read key, each as a boolean, never says one is ignored.
         val all = LauncherConfigDoc(unknown = (v30 - ConfigCodecImpl.MODELLED).associateWith { JsonPrimitive(true) })
@@ -225,6 +224,7 @@ class LauncherConfigCodecTest {
         for (version in listOf("v27", "v30")) {
             val text = java.io.File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/$version/Config.java").readText()
             val literal = Regex("^\\s*\"[a-z_0-9]+\"")
+            val constants = stringConstants(text)
             val methods = Regex("\\b(json|o)\\.(\\w+)\\(([^)]*)\\)").findAll(text).toList()
             assertTrue(methods.size > 5, "$version: the reads were found")
             for (m in methods) {
@@ -236,11 +236,13 @@ class LauncherConfigCodecTest {
             assertEquals(6, methods.count { it.value == "o.opt(key)" }, "$version: the six helpers")
             // Every call that hands the parsed file to a helper names the key as a literal.
             for (m in Regex("\\(\\s*(json|o)\\s*,\\s*([^,)]+)").findAll(text)) {
-                assertTrue(literal.containsMatchIn(m.groupValues[2]), "$version: ${m.value} passes a key that is not a literal")
+                val arg = m.groupValues[2].trim()
+                assertTrue(literal.containsMatchIn(arg) || arg in constants, "$version: ${m.value} passes a key that is not a literal")
             }
-            // And the whole file goes nowhere else but raceCalendar.
+            // And the whole file goes nowhere else but raceCalendar, and in 3.3 festivalName, which
+            // reads festival and seasonal_skin by their literals.
             for (m in Regex("\\b(\\w+)\\(\\s*json\\s*\\)").findAll(text)) {
-                assertEquals("raceCalendar", m.groupValues[1], "$version: ${m.value} reads config.json by itself")
+                assertTrue(m.groupValues[1] in setOf("raceCalendar", "festivalName"), "$version: ${m.value} reads config.json by itself")
             }
         }
     }
@@ -300,15 +302,61 @@ class LauncherConfigCodecTest {
     // CARRIED_30 is exactly what launcher 3.0's Config.load (the submodule at the pin) reads from a
     // config.json beyond 2.7's (the frozen v27 copy), and each is in 3.0's config.xml but
     // lunar_utc_offset, which Config.load reads from config.json alone.
+    // Since 0.4.9-beta1 the submodule is launcher 3.3, which reads CARRIED_33 beyond those.
     @Test fun carried30IsWhatLauncher30ReadsBeyond27() {
-        fun jsonKeys(f: java.io.File) = Regex("\\((?:json|o), \"([a-z_0-9]+)\"").findAll(f.readText()).map { it.groupValues[1] }.toSet()
-        val v30 = jsonKeys(java.io.File(Fixtures.upstreamDir, "launcher/app/src/main/java/com/gathin/tvhome/Config.java"))
-        val v27 = jsonKeys(java.io.File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/v27/Config.java"))
-        assertEquals(ConfigCodecImpl.CARRIED_30, v30 - v27)
-        assertEquals(emptySet(), v27 - v30, "3.0 still reads every key 2.7 reads")
+        val v33 = launcherReads(java.io.File(Fixtures.upstreamDir, "launcher/app/src/main/java/com/gathin/tvhome/Config.java"))
+        val v27 = launcherReads(java.io.File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/v27/Config.java"))
+        assertEquals(ConfigCodecImpl.CARRIED_30 + ConfigCodecImpl.CARRIED_33, v33 - v27 - ConfigCodecImpl.MODELLED - ConfigCodecImpl.CARRIED_READ)
+        assertEquals(emptySet(), v27 - v33, "3.3 still reads every key 2.7 reads")
         val xml = java.io.File(Fixtures.upstreamDir, "launcher/app/src/main/res/values/config.xml").readText()
         for (k in ConfigCodecImpl.CARRIED_30 - "lunar_utc_offset") assertTrue(Regex("<(bool|integer|string|string-array) name=\"$k\"").containsMatchIn(xml), k)
         assertTrue("name=\"lunar_utc_offset\"" !in xml)
+        // CARRIED_33 too, but seasonal_skin (config.json alone, the festival's fallback name).
+        for (k in ConfigCodecImpl.CARRIED_33 - "seasonal_skin") assertTrue(Regex("<(bool|integer|string|string-array) name=\"$k\"").containsMatchIn(xml), k)
+        assertTrue("name=\"seasonal_skin\"" !in xml)
+        // icon_tiles is config.xml only: 3.3 never reads it from config.json, so it is not carried.
+        assertTrue(Regex("<string-array name=\"icon_tiles\"").containsMatchIn(xml))
+        assertTrue("icon_tiles" !in v33 && "icon_tiles" !in ConfigCodecImpl.CARRIED_33)
+    }
+
+    // 0.4.9-beta1: the 11 keys launchers 3.1 to 3.3 added are carried as is with no warning, apart
+    // from every other set, and written back after the modelled keys, sorted. icon_tiles, which 3.3
+    // reads from config.xml alone, still warns.
+    @Test fun launcher33KeysAreCarriedWithoutAWarning() {
+        assertEquals(11, ConfigCodecImpl.CARRIED_33.size)
+        for (k in ConfigCodecImpl.CARRIED_33) assertTrue(k !in ConfigCodecImpl.MODELLED && k !in ConfigCodecImpl.CARRIED_27 &&
+            k !in ConfigCodecImpl.CARRIED_30 && k !in ConfigCodecImpl.CARRIED_READ, k)
+        val values = mapOf(
+            "open_on_start_network_wait" to JsonPrimitive(180),
+            "library_excluded_apps" to JsonArray(listOf(JsonPrimitive("com.example.factory"))),
+            "game_day" to JsonPrimitive("io.github.justinnewman.gameday"),
+            "clock_format" to JsonPrimitive("24"),
+            "seasonal_skin" to JsonPrimitive("halloween"),
+        )
+        val all = LauncherConfigDoc(columns = 5, unknown = ConfigCodecImpl.CARRIED_33.associateWith { k -> values[k] ?: JsonPrimitive(true) })
+        val text = LauncherConfigCodec.encode(all).decodeToString()
+        assertEquals(listOf("columns") + ConfigCodecImpl.CARRIED_33.sorted(), Regex("^  \"([a-z_0-9]+)\":", RegexOption.MULTILINE).findAll(text).map { it.groupValues[1] }.toList())
+        assertEquals(emptyList(), ok(text).warnings)
+        assertEquals(all, ok(text).doc)
+        assertEquals(listOf("unknown key icon_tiles; the launcher ignores it (carried as is)"), ok("{\"icon_tiles\": [\"a.b\"], \"glow_snap\": true}").warnings)
+    }
+
+    // Launcher 3.3 (Config.festivalName): seasonal_skin names the festival when festival is empty or
+    // missing, so a theme can carry Halloween without older launchers showing the diya skin.
+    @Test fun seasonalSkinIsTheFestivalsFallbackName() {
+        val halloween = ok("{\"seasonal_skin\": \" Halloween \", \"festival_until\": \"2026-11-01\", \"accent_color\": \"#FF7A1A\"}")
+        assertEquals(emptyList(), halloween.warnings)
+        assertEquals(null, halloween.doc.festival)
+        val e = LauncherConfigCodec.effective(halloween.doc, LauncherConfigCodec.builtInDefaults)
+        assertEquals("halloween", e.festival)
+        assertEquals("2026-11-01", e.festivalUntil)
+        // A festival wins over seasonal_skin; an empty one gives way to it.
+        assertEquals("diwali", LauncherConfigCodec.effective(ok("{\"festival\": \"diwali\", \"seasonal_skin\": \"halloween\"}").doc, LauncherConfigCodec.builtInDefaults).festival)
+        assertEquals("halloween", LauncherConfigCodec.effective(ok("{\"festival\": \" \", \"seasonal_skin\": \"halloween\"}").doc, LauncherConfigCodec.builtInDefaults).festival)
+        // A seasonal_skin that is not a string is no name.
+        val bad = ok("{\"seasonal_skin\": 3, \"greeting\": \"hi\"}")
+        assertEquals("", LauncherConfigCodec.effective(bad.doc, LauncherConfigCodec.builtInDefaults).festival)
+        assertEquals(listOf("greeting has no effect without a festival"), bad.warnings)
     }
 
     // RFC-W4-1: the two keys upstream 1bbf0c9 added are fields, decoded in Config.java's order and
@@ -439,4 +487,18 @@ class LauncherConfigCodecTest {
         assertTrue(Looks.offered(null, last.plusYears(5)))
         assertTrue(Looks.info("horizon")!!.sky)
     }
+
+    // The keys a vendored or upstream Config.java reads from config.json: a helper on the parsed
+    // file with a literal key or a String constant of the class, or json.optX("k") and its kin.
+    private fun stringConstants(text: String): Map<String, String> =
+        Regex("static final String ([A-Z_0-9]+) = \"([a-z_0-9]+)\";").findAll(text).associate { it.groupValues[1] to it.groupValues[2] }
+
+    private fun launcherReads(f: java.io.File): Set<String> {
+        val text = f.readText()
+        val constants = stringConstants(text)
+        return (Regex("\\((?:json|o), \"([a-z_0-9]+)\"").findAll(text).map { it.groupValues[1] } +
+            Regex("\\b(?:json|o)\\.(?:opt\\w*|get\\w*|has|isNull)\\(\"([a-z_0-9]+)\"").findAll(text).map { it.groupValues[1] } +
+            Regex("\\((?:json|o), ([A-Z_0-9]+)[,)]").findAll(text).mapNotNull { constants[it.groupValues[1]] }).toSet()
+    }
+
 }

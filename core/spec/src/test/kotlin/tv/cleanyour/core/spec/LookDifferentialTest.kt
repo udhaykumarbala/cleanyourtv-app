@@ -73,8 +73,9 @@ class LookDifferentialTest {
         assertEquals(0, t.withWarnings)
     }
 
-    // The vendored 3.0 classes are the submodule's own files (b06ab21) with only the package line
-    // changed, and the Cards stub's cleanLabel is the submodule's method, unchanged.
+    // The vendored v30 classes are the submodule's own files with only the package line changed
+    // (launcher 3.0 at b06ab21 until 0.4.8, 3.3 at d7b0d4a5 since 0.4.9-beta1), and the Cards stub's
+    // cleanLabel is the submodule's method, unchanged.
     @Test fun vendoredLauncher30ClassesAreTheSubmodules() {
         val upstream = File(Fixtures.upstreamDir, "launcher/app/src/main/java/com/gathin/tvhome")
         val vendored = File(Fixtures.repoRoot, "core/spec/src/test/java/com/gathin/tvhome/v30")
@@ -105,6 +106,10 @@ class LookDifferentialTest {
         // Config.load reads every CARRIED_30 key from config.json.
         val reader = File(vendored, "Config.java").readText()
         for (k in ConfigCodecImpl.CARRIED_30) assertTrue("(json, \"$k\"" in reader, "Config.load reads $k from config.json")
+        // And every CARRIED_33 key: clock_format through its constant, seasonal_skin in festivalName.
+        for (k in ConfigCodecImpl.CARRIED_33 - "clock_format" - "seasonal_skin") assertTrue("(json, \"$k\"" in reader, "Config.load reads $k from config.json")
+        assertTrue("string(json, CLOCK_FORMAT_KEY, clockFormat)" in reader && "static final String CLOCK_FORMAT_KEY = \"clock_format\";" in reader)
+        assertTrue("string(o, \"seasonal_skin\", \"\")" in reader && "festivalName(json)" in reader)
     }
 
     // The vendored 2.7 classes are launcher 2.7's own files (v2.7.0, 3e34f40) with only the package

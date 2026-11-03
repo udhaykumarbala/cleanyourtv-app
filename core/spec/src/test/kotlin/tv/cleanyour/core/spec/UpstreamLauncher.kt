@@ -36,6 +36,9 @@ class UpstreamLauncher(val version: Version, private val dir: File) {
     val reads27: Boolean get() = version == Version.V27 || version == Version.V30
     // The launcher reads the 25 keys 3.0 added (UpstreamConfig.v30).
     val reads30: Boolean get() = version == Version.V30
+    // The v30 copy is launcher 3.3 since 0.4.9-beta1: it reads the CARRIED_33 keys, among them
+    // seasonal_skin as the festival's fallback name (Config.festivalName).
+    val reads33: Boolean get() = version == Version.V30
 
     val values: Map<String, Any> = parseConfigXml(
         if (pinned) File(Fixtures.upstreamDir, "launcher/app/src/main/res/values/config.xml")
@@ -259,7 +262,9 @@ object Agreement {
                         null
                     }
                 }
-                val e = LauncherConfigCodec.effective(doc, up.defaults())
+                // effective() follows the bundled launcher's seasonal_skin fallback; older ones ignore the key.
+                val forThis = if (doc == null || up.reads33) doc else doc.copy(unknown = doc.unknown - "seasonal_skin")
+                val e = LauncherConfigCodec.effective(forThis, up.defaults())
                 val keys30 = LauncherKeys.keys30(doc)
                 // Launcher 3.0 moves the top-bar apps out of the grid: Config adds them to the hidden list.
                 val hidden = if (!up.reads30) e.hiddenApps

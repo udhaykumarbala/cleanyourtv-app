@@ -20,8 +20,8 @@ import kotlin.test.fail
 // 10,000 generated files, so the phone's preview can never disagree with the TV. Upstream runs
 // for real: its Config.java (and the classes it calls) compiled unchanged on the JVM against
 // AOSP's own org.json and Color.parseColor (test sources) and stubs for Context, Resources,
-// SharedPreferences, Environment, Log and Cards.cleanLabel. Four launchers: 3.0 (b06ab21, upstream
-// main after v3.0.0), the one the app bundles and the reader the codec is checked against
+// SharedPreferences, Environment, Log and Cards.cleanLabel. Four launchers: the bundled one (3.3 at
+// d7b0d4a5 since 0.4.9-beta1, 3.0 at b06ab21 before; vendored as v30) and the reader the codec is checked against
 // (RFC-UP300-1), compared on every modelled field, every carried look key (LauncherKeys.look) and
 // the 25 keys 3.0 added (LauncherKeys.keys30); 2.7 (v2.7.0, 3e34f40), frozen, a TV updated to 2.7
 // and not since; 2.5 (v2.5.0), kept for the keys it reads, a TV updated once and not since; and 2.0
@@ -98,6 +98,11 @@ class ConfigDifferentialTest {
             "festival grows when lower-cased" to ("{\"festival\": \"" + "\u0130".repeat(21) + "\"}").encodeToByteArray(),
             "festival long greeting" to ("{\"festival\": \"x\", \"greeting\": \"" + "g".repeat(39) + "\uD83D\uDE00 tail\"}").encodeToByteArray(),
             "greeting without festival" to "{\"greeting\": \"hi\", \"accent_color\": \"#123456\"}".encodeToByteArray(),
+            // Launcher 3.3: seasonal_skin names the festival when festival is empty or missing; older ones ignore it.
+            "seasonal skin" to "{\"seasonal_skin\": \" Halloween \", \"festival_until\": \"2026-11-01\"}".encodeToByteArray(),
+            "festival over seasonal skin" to "{\"festival\": \"diwali\", \"seasonal_skin\": \"halloween\"}".encodeToByteArray(),
+            "empty festival and seasonal skin" to "{\"festival\": \"  \", \"seasonal_skin\": \"halloween\", \"greeting\": \"Boo\"}".encodeToByteArray(),
+            "seasonal skin not a string" to "{\"festival\": 5, \"seasonal_skin\": [\"halloween\"]}".encodeToByteArray(),
             "v2.5 keys" to ("{\"launch_actions\": [\" com.telekom.onetv.tv.pl = com.telekom.onetv.tv.pl.action.PROGRAM_GUIDE \", \"=x\", \"a.b=\", \"no equals\"], " +
                 "\"app_labels\": [\"com.telekom.onetv.tv.pl=TV\", \"com.telekom.onetv.tv.pl=Later wins\", 5], \"app_banners\": [\"com.android.tv=banner_tv\", \"a.b=banner_none\"], " +
                 "\"input_key_keycodes\": [192], \"app_keys\": [\"190:com.google.android.youtube.tv\", \"KEYCODE_BUTTON_3 : com.google.android.youtube.tv\", \"0:a.b\", \"x:a.b\", \"191:\", \"1234567:a.b\"], " +

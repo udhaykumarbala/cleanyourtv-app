@@ -8,8 +8,9 @@ import kotlinx.serialization.json.JsonPrimitive
 import tv.cleanyour.core.model.PackageName
 
 // The body of LauncherConfigCodec: the launcher's Config.java read path, key by key. The pinned
-// reader is launcher 3.0 (the submodule at b06ab21, upstream main after v3.0.0, versionCode 9), the
-// launcher this app bundles (RFC-UP300-1); its reading of the modelled keys is unchanged since
+// reader is launcher 3.3 (the submodule at d7b0d4a5, upstream main, versionCode 12; 3.0 at b06ab21
+// until 0.4.8), the launcher this app bundles (RFC-UP300-1); 3.1 to 3.3 added 11 carried keys
+// (CARRIED_33) and the seasonal_skin fallback for the festival; its reading of the modelled keys is unchanged since
 // v2.5.0 (9071ec8). 1bbf0c9 added input_action and module_cards (RFC-W4-1); v2.4.0 added seventeen
 // more keys (RFC-W4-2) and v2.5.0 nine more (RFC-W4-3), which a TV still on an older launcher
 // ignores; 2.7's look keys and 3.0's 25 keys have no field and are carried (CARRIED_27 and
@@ -92,6 +93,23 @@ internal object ConfigCodecImpl {
         "clock_wallpaper", "clock_wallpaper_dim", "clock_glow",
         "single_row", "dock_band_all",
         "glass_style",
+    )
+
+    // The 11 keys launchers 3.1 to 3.3 (upstream main d7b0d4a5, versionCode 12, bundled since
+    // 0.4.9-beta1) added to Config.load, none of them modelled: carried in `unknown` as is with no
+    // warning, like CARRIED_30. The phone neither writes nor previews them, so a theme or a file read
+    // back from the TV keeps them. Every default (config.xml at the pin) keeps the 3.0 home screen:
+    // clock_format "system", open_on_start_network_wait 0, library_excluded_apps and game_day empty,
+    // the rest off. clock_format is read through Config.CLOCK_FORMAT_KEY, and seasonal_skin only as
+    // the festival's fallback name (Config.festivalName; effective() follows it). Not here:
+    // icon_tiles, which 3.3 reads from config.xml alone (AppAdapter), so a config.json one is
+    // ignored and the codec says so. 3.3 also turned tile_menu (CARRIED_READ) on by default.
+    val CARRIED_33: Set<String> = setOf(
+        "open_on_start_network_wait", "open_on_start_on_wake",
+        "icon_only_vpn", "back_opens_clock", "glow_snap",
+        "library_excluded_apps", "game_day",
+        "inputs_connected_only", "inputs_cec_state_only",
+        "clock_format", "seasonal_skin",
     )
 
     // The rest of what launchers 2.7 (3e34f40) and 3.0 (b06ab21) both read from config.json
@@ -326,12 +344,16 @@ internal object ConfigCodecImpl {
         val festivalUntil = string("festival_until")
         val greeting = string("greeting")
         val accent = string("accent_color")
-        when (LauncherFestival.parse(festival.orEmpty(), festivalUntil.orEmpty(), greeting.orEmpty(), accent.orEmpty())) {
+        // Launcher 3.3 (Config.festivalName): an empty or missing festival takes seasonal_skin's name,
+        // which older launchers ignore (a carried key, CARRIED_33).
+        val skin = (o["seasonal_skin"] as? AValue.Str)?.v?.javaTrim()
+        val shown = if (festival.isNullOrEmpty() && !skin.isNullOrEmpty()) skin else festival
+        when (LauncherFestival.parse(shown.orEmpty(), festivalUntil.orEmpty(), greeting.orEmpty(), accent.orEmpty())) {
             null -> when {
-                festival != null && festival.isEmpty() -> w += "festival is empty; the launcher shows no festival"
-                festival != null && LauncherFestival.name(festival).length > LauncherFestival.MAX_NAME ->
+                shown != null && shown.isEmpty() -> w += "festival is empty; the launcher shows no festival"
+                shown != null && LauncherFestival.name(shown).length > LauncherFestival.MAX_NAME ->
                     w += "festival is longer than ${LauncherFestival.MAX_NAME} characters; the launcher shows no festival"
-                festival != null -> w += "festival_until is not a date like 2026-10-21; the launcher shows no festival"
+                shown != null -> w += "festival_until is not a date like 2026-10-21; the launcher shows no festival"
                 else -> listOf("festival_until" to festivalUntil, "greeting" to greeting, "accent_color" to accent)
                     .filter { it.second != null }
                     .forEach { w += "${it.first} has no effect without a festival" }
@@ -347,7 +369,7 @@ internal object ConfigCodecImpl {
         for ((k, v) in o) {
             if (k in MODELLED) continue
             unknown[k] = v.toJsonElement()
-            if (k !in CARRIED_27 && k !in CARRIED_30 && k !in CARRIED_READ) w += "unknown key $k; the launcher ignores it (carried as is)"
+            if (k !in CARRIED_27 && k !in CARRIED_30 && k !in CARRIED_33 && k !in CARRIED_READ) w += "unknown key $k; the launcher ignores it (carried as is)"
         }
         prerequisites30(o, dockRow ?: BUILT_IN.dockRow, appLibrary ?: BUILT_IN.appLibrary, w)
         val doc = LauncherConfigDoc(
@@ -509,6 +531,15 @@ internal object ConfigCodecImpl {
     private fun packageMap(entries: List<String>): Map<String, String> =
         entries.map { it.javaTrim() }.filter { it.isNotEmpty() }.mapNotNull(::packageMapEntry).toMap()
 
+    // Launcher 3.3's Config.festivalName: the festival, or seasonal_skin (carried) when the festival
+    // is empty or missing. A launcher before 3.3 reads the festival alone.
+    fun festivalName(doc: LauncherConfigDoc): String {
+        val name = doc.festival?.javaTrim().orEmpty()
+        if (name.isNotEmpty()) return name
+        val skin = doc.unknown["seasonal_skin"] as? JsonPrimitive
+        return if (skin != null && skin.isString) skin.content.javaTrim() else ""
+    }
+
     // What Config.load would compute from this doc. Values the launcher would ignore (out of
     // range, a colour it cannot parse) fall back to `defaults` here too, so a doc built in code
     // previews the way the TV will show it. The festival is read from the doc alone, as the
@@ -517,7 +548,7 @@ internal object ConfigCodecImpl {
         if (doc == null) return defaults.copy(columns = maxOf(1, defaults.columns), rowsBelowDock = maxOf(0, defaults.rowsBelowDock),
             skyIntensity = defaults.skyIntensity.coerceIn(0, 100))
         fun texts(l: List<String>) = l.map { it.javaTrim() }.filter { it.isNotEmpty() }
-        val fest = LauncherFestival.parse(doc.festival.orEmpty(), doc.festivalUntil.orEmpty(), doc.greeting.orEmpty(), doc.accentColor.orEmpty())
+        val fest = LauncherFestival.parse(festivalName(doc), doc.festivalUntil.orEmpty(), doc.greeting.orEmpty(), doc.accentColor.orEmpty())
         val bg = doc.backgroundColor?.let { (AndroidColor.parseColor(it.javaTrim()) as? AndroidColor.Parse.Ok)?.argb?.or(0xFF000000.toInt()) }
         return EffectiveConfig(
             dockApps = doc.dockApps?.map { it.value } ?: defaults.dockApps,

@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Map;
 import tv.cleanyour.core.spec.upstream.UpstreamConfig;
 
-// Runs launcher 3.0's own Config.load (upstream main b06ab21 after v3.0.0, versionCode 9), the
-// launcher the app bundles (RFC-UP300-1). Config.java and the classes it calls are vendored in this
-// package, the submodule's files with only the package line changed (LookDifferentialTest checks
+// Runs the bundled launcher's own Config.load: launcher 3.3 (upstream main d7b0d4a5, versionCode
+// 12) since 0.4.9-beta1, 3.0 (b06ab21, versionCode 9) before (RFC-UP300-1). The package keeps its
+// v30 name: 3.1 to 3.3 only added keys (CARRIED_33) to the 3.0 reader. Config.java and the
+// classes it calls are vendored in this package, the submodule's files with only the package line changed (LookDifferentialTest checks
 // them). Every resource id in R is answered from config.xml by its name. `privateDir` plays the
 // app's private files dir, where the launcher keeps a copy of the last config.json it read; `prefs`
 // plays launcher_settings (the choices made on the TV), null for an empty one.
