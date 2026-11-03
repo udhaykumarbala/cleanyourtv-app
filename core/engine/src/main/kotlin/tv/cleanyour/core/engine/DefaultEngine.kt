@@ -1175,6 +1175,15 @@ class DefaultEngine(
                 runs[tvId] = run
                 return@withLock scope.launch { abandonFromJournal(run) }
             }
+            // 0.5.0 (issues #5016, #5435): the debugging-off run of Finish, left open when the app was
+            // closed while it ran ("We were in the middle of a change", paused IN_DOUBT at step 0, after
+            // Setup had left the TV as it was). It has nothing to resume or undo (no section, no inverse),
+            // and its next Finish runs it again, so it is closed here instead of asking the person.
+            if (plan.kind == PlanKind.DEBUG_OFF) {
+                journal.append(JournalRecord.End(planId, RunStatus.ABANDONED))
+                flow(tvId).value = RunState.Idle
+                return
+            }
             val run = Run(plan, session)
             Replay.apply(records, run.done, run.openSections, run.closedSections)
             run.undoing = Replay.undoStarted(records)

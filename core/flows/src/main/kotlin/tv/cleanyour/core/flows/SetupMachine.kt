@@ -1819,9 +1819,17 @@ class SetupMachine(
     private suspend fun resumeRun(tvId: TvId, planId: PlanId) {
         val record = deps.tvs.tvs.value.firstOrNull { it.id == tvId } ?: run { send(Ev.ToWelcome); return }
         tv = record
+        val entry = deps.ledger.entry(tvId, planId)
+        // 0.5.0 (issues #5016, #5435): the open run is Finish's debugging-off run, cut off when the app
+        // was closed. Nothing to carry on or undo: it is closed and Manage opens, never the resume card.
+        val engineIdle = deps.engine.runState(tvId).value.let { it is RunState.Idle || it is RunState.Finished }
+        if (entry?.kind == PlanKind.DEBUG_OFF && engineIdle && attempt { deps.ledger.closeOpenDebugOff(tvId, planId) }.getOrDefault(false)) {
+            deps.log.line("setup: the debugging-off run was left open, closed")
+            effect(SetupEffect.Navigate("manage/${tvId.value}"))
+            return
+        }
         currentPlanId = planId
         mutableExtras.update { it.copy(tvName = record.nickname, chip = ChipState.WAITING) }
-        val entry = deps.ledger.entry(tvId, planId)
         val progress = deps.ledger.progress(planId)
         val args = mapOf("tv" to record.nickname, "done" to progress.doneDisables, "total" to (entry?.disables ?: progress.doneDisables))
         val manageKind = entry != null && entry.kind != PlanKind.SETUP
