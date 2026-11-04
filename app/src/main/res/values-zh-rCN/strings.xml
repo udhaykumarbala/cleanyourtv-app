@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources><string name="app_name">Clean Your TV</string><string name="app_channel_setup_name">正在设置电视</string><string name="app_channel_setup_description">设置电视时显示进度，并提示你何时需要看向电视。</string><string name="app_restore_read_failed">读取恢复点时出了问题</string></resources>
