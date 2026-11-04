@@ -158,6 +158,9 @@ object SureSetGenerator {
         "xiaomi-mi-box-3", "xiaomi-mitv-mftr0", "xiaomi-mitv-moeu0", "xiaomi-mitv-mooq2", "xiaomi-mitv-mssp1",
         // The v2.7.0 list curated for a reported TV (#446), held back from the brand sets like the rest.
         "motorola-mt4310",
+        // The list promoted for the Strong LEAP-S3 (#399, #601, #693, #813), held back from the brand sets like the rest:
+        // with it the SkyworthDigital careful set would lose two of the six reviewed packages.
+        "strong-leap-s3",
     ) + PROMOTED_045 + PROMOTED_B06AB21_PART2
 
     // The profiles the brand sets are made of: every shipped one but those still under review.

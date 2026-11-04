@@ -55,7 +55,7 @@ class CandidateSafetyTest {
         val unconverted = ProfileConverter.readUnconverted(File(Fixtures.repoRoot, "core/spec/upstream-feedback/unconverted.txt"))
         val (bundle, problems) = ProfileConverter.convert(
             File(Fixtures.upstreamDir, "examples"), File(Fixtures.repoRoot, "core/spec/src/main/resources/tv/cleanyour/core/spec/profile-meta.json"),
-            "b06ab21", unconverted, File(Fixtures.repoRoot, "core/spec/candidates"), File(Fixtures.repoRoot, "core/spec/candidates/candidate-meta.json"),
+            "0cb195a", unconverted, File(Fixtures.repoRoot, "core/spec/candidates"), File(Fixtures.repoRoot, "core/spec/candidates/candidate-meta.json"),
         )
         assertEquals(emptyList(), problems)
         val candidates = bundle.profiles.filter { it.isCandidate }

@@ -895,12 +895,16 @@ com.vt.ambiencephoto	Ambience photo screensaver	Photo screensaver	screensaver
 com.vt.factory	Hisense factory tools	Factory test and service menu	demo
 com.vt.fte	First-time setup guide	Walkthrough shown at first setup	other
 com.vt.hishow	FamilyMoment	Photo and camera app with a screensaver	preloads
+com.vt.roomcalibration	Hisense room calibration	Room audio calibration prompt	brand
 com.vt.storemode	Hisense store mode	Store demo mode	demo
 com.vt.tv.aiot	Hisense AIoT	Hisense system service, needed to boot	system
 com.vt.tv.b2b	Hisense business mode	Hotel and commercial mode	demo
 com.vt.tv.calmanconnector	Calman connector	Professional picture calibration link	brand
+com.vt.tv.dlna	Hisense DLNA renderer	Lets DLNA apps on the network play media on the TV	casting
 com.vt.tv.evservice	Hisense ACR	Recognizes what is on screen	tracking
 com.vt.tv.interactive	Interactive TV	Interactive broadcast services	other
+com.vt.tv.mediacenter	Hisense Media Center	USB and DLNA file player	preloads
+com.vt.tv.mobiledeviceconnectiontips	Hisense screen mirroring	Miracast screen mirroring; Chromecast and AirPlay are separate	casting
 com.vt.tv.protector	Hisense device assistant	Cleaner and speed-up tool	brand
 com.vt.tv.singlelisten	Vu My Music	Music app	preloads
 com.vt.tv.smartsense.ui	SmartSense screens	Hisense system screens, needed to boot	system
