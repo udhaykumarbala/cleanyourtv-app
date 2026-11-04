@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Clean Your TV, :feature:modules. Traduzione italiana delle stringhe di origine in inglese.
+  Gli argomenti restano identici all'originale (ICU MessageFormat con argomenti nominati).
+  I nomi dei moduli, gli autori e il testo dell'indice sono dati e non finiscono in queste stringhe.
+  Le etichette che compaiono sulla TV (Mostra scheda, Tieni nascosta, Schede modulo) sono quelle del launcher.
+-->
+<resources>
+
+    <!-- Parole dei pulsanti -->
+    <string name="action_back">Indietro</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Fatto</string>
+    <string name="action_undo">Annulla</string>
+
+    <!-- Richiesta delle credenziali (D17), usata da "Aggiungi a {tv}" -->
+    <string name="gate_title">Conferma che sei tu</string>
+    <string name="gate_subtitle">Prima di cambiare qualcosa su {tv}</string>
+    <string name="gate_negative">Annulla</string>
+    <string name="gate_failed">Non siamo riusciti a confermare che sei tu, quindi non è stato cambiato nulla.</string>
+
+    <!-- M3 Schede e moduli -->
+    <string name="modules_title">Schede e moduli</string>
+    <string name="modules_state_shown">Visibile</string>
+    <string name="modules_state_hidden">Nascosta</string>
+    <string name="modules_state_over_limit">Oltre il limite</string>
+    <string name="modules_over_limit_note">La schermata Home mostra fino a otto schede.</string>
+    <string name="modules_remove">Rimuovi dalla TV</string>
+    <string name="modules_show_card">Mostra la sua scheda</string>
+    <string name="modules_cards_off_note">Le schede sono disattivate nella schermata Home di questa TV. Mostrane una e la TV ti chiede di confermare.</string>
+    <string name="modules_update">Aggiorna</string>
+    <string name="modules_add">Aggiungi</string>
+    <string name="modules_update_available">La versione {version} è disponibile</string>
+    <string name="modules_empty">Ancora nessuna scheda. Aggiungine una per metterla nella schermata Home.</string>
+    <string name="modules_normal_app_note">Su questa TV appare come una normale app</string>
+    <string name="modules_remove_title">Rimuovere {name} da {tv}?</string>
+    <string name="modules_remove_body">Questo toglie l\'app dalla TV. La schermata Home e le altre schede restano come sono.</string>
+    <string name="modules_remove_confirm">Rimuovi</string>
+    <string name="modules_removed">{name} è stato rimosso.</string>
+    <string name="modules_state_cd">{name}: {state}</string>
+
+    <!-- Nuovo consenso per un aggiornamento (UX 5.4) -->
+    <string name="modules_update_consent">{name} {version} ora vuole anche: {permissions}. Consentire questa versione?</string>
+    <string name="modules_update_skip">Salta questa versione</string>
+
+    <!-- M3a Aggiungi a {tv} -->
+    <string name="addmodule_title">Aggiungi a {tv}</string>
+    <string name="addmodule_search_hint">Cerca</string>
+    <string name="addmodule_search_cd">Cerca moduli</string>
+    <string name="addmodule_open_source">Open source</string>
+    <string name="addmodule_size">{size, plural, other {# MB}}</string>
+    <string name="addmodule_tier_community">Community</string>
+    <string name="addmodule_tier_verified">Verificato</string>
+    <string name="addmodule_tier_paused">In pausa</string>
+    <string name="addmodule_loading">Caricamento dell\'elenco...</string>
+    <string name="addmodule_empty">Nessun modulo corrisponde alla ricerca.</string>
+    <string name="addmodule_refresh">Aggiorna</string>
+    <string name="addmodule_footer">Tutti i moduli sono fatti da persone della community e controllati automaticamente.</string>
+    <string name="addmodule_footer_link">Chi ha fatto ciascuno</string>
+    <string name="addmodule_tiers_title">Chi ha fatto ciascuno</string>
+    <string name="addmodule_tiers_community">Community: fatto da qualcuno esterno a questa app e controllato automaticamente rispetto a ciò che l\'autore ha pubblicato.</string>
+    <string name="addmodule_tiers_verified">Verificato: una persona con nome e cognome ha esaminato quella versione.</string>
+    <string name="addmodule_tiers_paused">In pausa: i responsabili hanno smesso per ora di offrirlo.</string>
+
+    <!-- M3b Dettaglio del modulo -->
+    <string name="module_what_title">COSA PUÒ FARE SULLA TV</string>
+    <string name="module_who_title">CHI L\'HA FATTO</string>
+    <string name="module_runs_background">Funziona in background: {reason}</string>
+    <string name="module_no_background">Nessun servizio in background</string>
+    <string name="module_perm_can_cd">{statement}. Può farlo.</string>
+    <string name="module_perm_cannot_cd">{statement}. Non lo fa.</string>
+    <string name="module_maker">{handle} su GitHub</string>
+    <string name="module_version_line">Versione {version}, pubblicata il {date}</string>
+    <string name="module_checks">{count, plural, =0 {Controllato automaticamente: il file corrisponde a ciò che l\'autore ha pubblicato e non richiede permessi.} one {Controllato automaticamente: il file corrisponde a ciò che l\'autore ha pubblicato e richiede il # permesso indicato sopra e nient\'altro.} other {Controllato automaticamente: il file corrisponde a ciò che l\'autore ha pubblicato e richiede i # permessi indicati sopra e nient\'altro.}}</string>
+    <string name="module_not_reviewed">Controllato automaticamente. Non ancora esaminato da una persona.</string>
+    <string name="module_key_line">Chiave {key}, la stessa che c\'è sulla TV</string>
+    <string name="module_source">Codice sorgente</string>
+    <string name="module_report">Segnala un problema</string>
+    <string name="module_hero_badge">La sua scheda sulla TV</string>
+    <string name="module_add">Aggiungi a {tv}</string>
+    <!-- Mostrato prima del primo download di un componente aggiuntivo (F-Droid Inclusion Policy, punto 5). -->
+    <string name="module_outside_store">I componenti aggiuntivi vengono scaricati dalle release GitHub dei loro autori, fuori da qualsiasi negozio di app, e non sono compilati né controllati da F-Droid.</string>
+    <string name="module_add_turns_cards_on">Aggiungendolo si attivano le schede nella schermata Home di questa TV; la TV chiede conferma prima di mostrare la scheda.</string>
+    <string name="module_paused_reason">Messo in pausa dai responsabili: {reason}</string>
+    <string name="module_install_adding">Aggiunta di {name}...</string>
+    <string name="module_install_downloading">{size, plural, other {Download in corso (# MB)...}}</string>
+    <string name="module_install_checking">Controllo che corrisponda alla copia dell\'autore...</string>
+    <string name="module_install_installing">Installazione sulla TV...</string>
+    <string name="module_install_asking">Chiedo alla TV di mostrare la sua domanda...</string>
+    <string name="module_install_failed">Non è stato possibile installare {name} sulla TV. Nient\'altro è stato cambiato.</string>
+
+    <!-- M3c Guarda la TV (richiesta della scheda, D1 e D45) -->
+    <string name="cardprompt_title">Guarda la TV</string>
+    <string name="cardprompt_art_keep">Tieni nascosta</string>
+    <string name="cardprompt_art_cd">La TV chiede: {name} vuole una scheda nella schermata Home. Chiave {key}. Le scelte sono Tieni nascosta e Mostra scheda.</string>
+    <string name="cardprompt_body">La TV ti chiede una doppia conferma, così nessuna app può mettersi nella schermata Home senza chiedere.</string>
+    <string name="cardprompt_instruction">Scegli \"Mostra scheda\" con il telecomando. La chiave sulla TV deve essere {key}, la stessa di qui.</string>
+    <string name="cardprompt_waiting">In attesa della tua risposta sulla TV...</string>
+    <string name="cardprompt_later">Fallo dopo: tieni premuto OK su Impostazioni della TV e cerca Schede modulo.</string>
+    <string name="cardprompt_shown">{name} è nella schermata Home.</string>
+    <string name="cardprompt_hidden">{name} è installato e nascosto. Appare comunque come una normale app. Puoi mostrare la scheda in qualsiasi momento da Schede e moduli.</string>
+    <string name="cardprompt_signer_changed">La nuova versione di {name} è firmata con una chiave diversa da prima. È insolito; la TV lo chiede di nuovo di proposito. Se non ti aspettavi un aggiornamento, scegli Tieni nascosta.</string>
+
+    <!-- Errori dell'elenco dei moduli (indice). Con calma, senza dare la colpa a chi usa l'app. -->
+    <string name="index_failure_bad_signature">Non siamo riusciti a confermare che l\'elenco dei moduli sia autentico, quindi non l\'abbiamo usato. Nulla sulla TV è stato toccato.</string>
+    <string name="index_failure_unknown_key">L\'elenco dei moduli è firmato con una chiave che non riconosciamo, quindi non l\'abbiamo usato. Nulla sulla TV è stato toccato.</string>
+    <string name="index_failure_revoked_key">L\'elenco dei moduli è firmato con una chiave che è stata ritirata, quindi non l\'abbiamo usato. Nulla sulla TV è stato toccato.</string>
+    <string name="index_failure_bad_keys_file">L\'elenco delle chiavi attendibili non ha superato i nostri controlli, quindi non abbiamo usato l\'elenco dei moduli. Nulla sulla TV è stato toccato.</string>
+    <string name="index_failure_expired">L\'elenco dei moduli è scaduto. Collegati a internet e aggiornalo.</string>
+    <string name="index_failure_rollback">L\'elenco dei moduli ricevuto è più vecchio di quello che abbiamo già, quindi abbiamo tenuto quello più recente.</string>
+    <string name="index_failure_malformed">Non siamo riusciti a leggere l\'elenco dei moduli. Riprova tra un po\'.</string>
+    <string name="index_stale_warning">L\'elenco dei moduli potrebbe non essere aggiornato; aggiornalo quando sei online</string>
+
+    <!-- Errori di download -->
+    <string name="fetch_failure_offline">Questo telefono non ha una connessione a internet al momento. Collegati e riprova.</string>
+    <string name="fetch_failure_host_not_allowed">Quel download non viene da un posto che usiamo, quindi ci siamo fermati. Non è stato installato nulla.</string>
+    <string name="fetch_failure_http_error">Il sito del download ha risposto con un errore ({code}). Riprova tra un po\'.</string>
+    <string name="fetch_failure_too_large">Quel download è più grande del previsto, quindi ci siamo fermati. Non è stato installato nulla.</string>
+    <string name="fetch_failure_hash_mismatch">Il download non corrisponde alla copia dell\'autore, quindi non l\'abbiamo installato.</string>
+    <string name="fetch_failure_size_mismatch">Il download non ha la dimensione indicata dall\'elenco, quindi ci siamo fermati. Non è stato installato nulla.</string>
+    <string name="fetch_failure_signer_mismatch">L\'app è firmata da qualcuno diverso dall\'autore indicato nell\'elenco, quindi non l\'abbiamo installata.</string>
+    <string name="fetch_failure_try_again">Riprova</string>
+
+</resources>

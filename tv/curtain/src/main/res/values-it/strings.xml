@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traduzione italiana di tutto il testo che mostra la tenda sulla TV (RFC-CURTAIN-1).
+     Il telefono invia solo nomi di fasi e di gruppi e numeri, mai testo. -->
+<resources>
+    <string name="app_name">Clean Your TV</string>
+    <string name="caption">Clean Your TV</string>
+    <string name="hint">Tieni accesa la TV. I dettagli sono sul telefono.</string>
+    <string name="chip">Punto di ripristino</string>
+    <string name="all_clean">Tutto pulito.</string>
+
+    <string name="stage_scan">Salvataggio di un punto di ripristino...</string>
+    <string name="stage_restore_saved">Punto di ripristino salvato</string>
+    <string name="stage_off">Disattivazione in corso: %1$d di %2$d...</string>
+    <string name="stage_off_group">%1$s: %2$d di %3$d...</string>
+    <string name="stage_group_done">%1$d disattivate</string>
+    <string name="stage_group_done_group">%1$s disattivate (%2$d)</string>
+    <string name="stage_install">Installazione della nuova schermata Home</string>
+    <string name="stage_installed">Nuova schermata Home installata</string>
+    <string name="stage_finale">Passaggio alla nuova Home</string>
+
+    <string name="group_adverts">Pubblicità</string>
+    <string name="group_tracking">Tracciamento</string>
+    <string name="group_nobody">App che nessuno ha chiesto</string>
+    <string name="group_brand">Extra di %1$s</string>
+    <string name="group_brand_unknown">Extra del produttore</string>
+    <string name="group_shop">Negozio e modalità demo</string>
+    <string name="group_other">Altre app</string>
+</resources>
