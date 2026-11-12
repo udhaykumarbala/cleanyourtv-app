@@ -138,7 +138,7 @@ private fun InlineCard(extras: SetupExtras, actions: SetupActions) {
 // lives where S1b and UX 4.1 put it (Which TV?, the "No TV found yet" card) and on the door of a TV
 // Start went straight to ("Not this TV?"), not on Welcome (round 3).
 @Composable
-fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onLanguageSelected: (String) -> Unit = {}) {
+fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onLanguageSelected: ((String) -> Unit)? = null) {
     val found = state.found
     val line = when {
         found.size >= 2 -> msg(R.string.welcome_found_many, "count" to found.size)
