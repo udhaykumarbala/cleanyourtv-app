@@ -234,7 +234,7 @@
     <string name="stop_undone_primary">சரி</string>
     <string name="stop_undone_secondary">விவரங்களைக் காட்டு</string>
     <string name="stop_connection_lost_title">டிவி பதிலளிப்பதை நிறுத்திவிட்டது</string>
-    <string name="stop_connection_lost_body">{total, plural, one {# உருப்படியை முடக்கிய பிறகு டிவி பதிலளிப்பதை நிறுத்திவிட்டது. பொதுவாக சில விநாடிகளில் மீண்டும் பதிலளிக்கும்.} other {# உருப்படிகளை முடக்கிய பிறகு டிவி பதிலளிப்பதை நிறுத்திவிட்டது. பொதுவாக சில விநாடிகளில் மீண்டும் பதிலளிக்கும்.}}</string>
+    <string name="stop_connection_lost_body">{total, plural, one {மொத்தம் # உருப்படியில் {done} உருப்படியை முடக்கிய பிறகு டிவி பதிலளிப்பதை நிறுத்திவிட்டது. பொதுவாக சில விநாடிகளில் மீண்டும் பதிலளிக்கும்.} other {மொத்தம் # உருப்படிகளில் {done} உருப்படிகளை முடக்கிய பிறகு டிவி பதிலளிப்பதை நிறுத்திவிட்டது. பொதுவாக சில விநாடிகளில் மீண்டும் பதிலளிக்கும்.}}</string>
     <string name="stop_connection_lost_reconnecting">மீண்டும் இணைக்கிறது...</string>
     <string name="stop_connection_lost_back">மீண்டும் பதிலளிக்கிறது. தொடரலாமா?</string>
     <string name="stop_connection_lost_primary">மீதமுள்ளவற்றைத் தொடரவும்</string>
