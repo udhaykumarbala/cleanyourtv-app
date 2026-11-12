@@ -119,13 +119,13 @@ fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier:
             Text(
                 "English",
                 modifier = Modifier.clickable { onLanguageSelected("en") },
-                color = if (locale.language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textMuted,
+                color = if (locale.language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
                 fontWeight = if (locale.language == "en") FontWeight.SemiBold else FontWeight.Normal,
             )
             Text(
                 "தமிழ்",
                 modifier = Modifier.clickable { onLanguageSelected("ta") },
-                color = if (locale.language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textMuted,
+                color = if (locale.language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
                 fontWeight = if (locale.language == "ta") FontWeight.SemiBold else FontWeight.Normal,
             )
         }
