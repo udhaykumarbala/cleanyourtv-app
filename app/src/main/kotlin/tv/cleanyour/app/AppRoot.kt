@@ -298,7 +298,7 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit, onLanguageSelected
                         m.dispatch(tv.cleanyour.core.flows.ManageIntent.Resumed)
                         onPauseOrDispose { m.dispatch(tv.cleanyour.core.flows.ManageIntent.Paused) }
                     }
-                    ManageScreen(state, m::dispatch)
+                    ManageScreen(state, m::dispatch, onLanguageSelected = onLanguageSelected)
                 }
                 entry<Dest.SwitchedOff> { key ->
                     val m = rememberMachine("off:${key.tvId}") { graph.switchedOff(it, TvId(key.tvId)) }
