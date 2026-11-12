@@ -16,6 +16,10 @@
     <string name="cyt_action_switch_off">முடக்கவும்</string>
     <string name="cyt_why">ஏன்?</string>
     <string name="cyt_close_group">குழுவை மூடவும்</string>
+    <plurals name="cyt_show_more">
+        <item quantity="one">மேலும் %d உருப்படியைக் காட்டு</item>
+        <item quantity="other">மேலும் %d உருப்படிகளைக் காட்டு</item>
+    </plurals>
     <string name="cyt_group_count">%1$s · %2$d / %3$d</string>
     <string name="cyt_count_of">%1$d / %2$d</string>
     <string name="cyt_undo">மாற்றத்தைத் திரும்பப் பெறு</string>
@@ -24,6 +28,10 @@
     <string name="cyt_countdown_30">இன்னும் 30 விநாடிகள் உள்ளன.</string>
     <string name="cyt_countdown_10">இன்னும் 10 விநாடிகள் உள்ளன.</string>
     <string name="cyt_countdown_left">இன்னும் %1$s</string>
+    <plurals name="cyt_earlier_steps">
+        <item quantity="one">%d முந்தைய படி</item>
+        <item quantity="other">%d முந்தைய படிகள்</item>
+    </plurals>
     <string name="cyt_state_done">முடிந்தது</string>
     <string name="cyt_state_doing">செயல்பாட்டில் உள்ளது</string>
     <string name="cyt_state_upcoming">அடுத்து</string>
