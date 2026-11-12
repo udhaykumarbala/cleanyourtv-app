@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_channel_setup_name">டிவி அமைப்பு</string>
-    <string name="app_channel_setup_description">உங்கள் டிவியில் மாற்றங்கள் செய்யப்படும் போது முன்னேற்றத்தைக் காட்டி, டிவியை எப்போது பார்க்க வேண்டும் என்பதையும் தெரிவிக்கும்.</string>
-    <string name="app_restore_read_failed">மீட்டெடுப்பு நிலையைப் படிக்கும்போது பிழை ஏற்பட்டது.</string>
+    <string name="app_channel_setup_description">உங்கள் டிவியில் மாற்றங்கள் செய்யப்படும்போது முன்னேற்றத்தைக் காட்டி, டிவியைப் பார்க்க வேண்டிய நேரத்தையும் தெரிவிக்கும்.</string>
+    <string name="app_restore_read_failed">மீட்டெடுப்பு புள்ளியைப் படிக்கும்போது ஏதோ தவறு ஏற்பட்டது.</string>
 </resources>
