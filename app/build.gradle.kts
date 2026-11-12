@@ -4,6 +4,13 @@ plugins {
 }
 
 android {
+    // Android 13+ reads this generated list for per-app language settings. The list is generated
+    // from the app and its Android library dependencies, so a locale is advertised only when
+    // its resource set is supplied by the modules that use it.
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     // The app's version, in one place for every store flavour and for F-Droid's checkupdates
     // (STORES-PLAN 0 and 3): GitHub, F-Droid and Google Play ship the same versionCode and versionName.
     defaultConfig {
