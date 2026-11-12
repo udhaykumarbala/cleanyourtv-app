@@ -24,6 +24,10 @@
   <img src="docs/images/connect-analyse-clean-hd.gif" width="800" alt="Three steps, phone and TV side by side. 1 Connect: the app finds the TV and the TV asks to allow the phone. 2 Analyse: the phone reads the TV and shows 22 things to switch off while the TV is untouched. 3 Clean: the phone shows Making it clean while the TV shows a lantern scanning the old cards and drawing them into a soft black hole, and the TV ends on its new home screen.">
 </p>
 
+## Languages
+
+The app is available in English and Tamil. On Android 13 and newer, choose Tamil in Android's per-app language settings. On Android 9–12, set the phone's system language to Tamil; the app follows the device language.
+
 ## How it works
 
 | 1. Connect | 2. Analyse | 3. Clean |
