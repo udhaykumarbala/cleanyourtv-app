@@ -104,7 +104,7 @@ private val titleTop = Modifier.padding(top = 20.dp)
 
 // M1 Manage: the app's home once a TV exists. Nothing is more than two taps away.
 @Composable
-fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier: Modifier = Modifier, onLanguageSelected: (String) -> Unit = {}) {
+fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier: Modifier = Modifier, onLanguageSelected: ((String) -> Unit)? = null) {
     val tv = state.current
     val locale = LocalConfiguration.current.locales[0]
     ScreenScaffold(Glow.Tv, modifier, topBar = {
@@ -114,20 +114,22 @@ fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier:
         )
     }) {
         ScreenTitle(stringResource(R.string.manage_title), titleTop)
-        // Keep language switching visible on the restored dashboard, not only in first-run setup.
-        Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-            Text(
-                "English",
-                modifier = Modifier.clickable { onLanguageSelected("en") },
-                color = if (locale.language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
-                fontWeight = if (locale.language == "en") FontWeight.SemiBold else FontWeight.Normal,
-            )
-            Text(
-                "தமிழ்",
-                modifier = Modifier.clickable { onLanguageSelected("ta") },
-                color = if (locale.language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
-                fontWeight = if (locale.language == "ta") FontWeight.SemiBold else FontWeight.Normal,
-            )
+        // Only the real app root supplies this callback; isolated screen previews stay unchanged.
+        if (onLanguageSelected != null) {
+            Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                Text(
+                    "English",
+                    modifier = Modifier.clickable { onLanguageSelected("en") },
+                    color = if (locale.language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                    fontWeight = if (locale.language == "en") FontWeight.SemiBold else FontWeight.Normal,
+                )
+                Text(
+                    "தமிழ்",
+                    modifier = Modifier.clickable { onLanguageSelected("ta") },
+                    color = if (locale.language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                    fontWeight = if (locale.language == "ta") FontWeight.SemiBold else FontWeight.Normal,
+                )
+            }
         }
         if (state.offline) {
             Banner(
