@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hint">டிவியை இயக்கத்திலேயே வைத்திருங்கள். விவரங்களை உங்கள் கைப்பேசியில் பார்க்கலாம்.</string>
+    <string name="chip">மீட்டெடுப்பு நிலை</string>
+    <string name="all_clean">அனைத்தும் சுத்தம்.</string>
+    <string name="stage_scan">மீட்டெடுப்பு நிலையைச் சேமிக்கிறது...</string>
+    <string name="stage_restore_saved">மீட்டெடுப்பு நிலை சேமிக்கப்பட்டது</string>
+    <string name="stage_off">முடக்கப்படுகிறது: %1$d / %2$d...</string>
+    <string name="stage_off_group">%1$s: %2$d / %3$d...</string>
+    <string name="stage_group_done">%1$d முடக்கப்பட்டது</string>
+    <string name="stage_group_done_group">%1$s: %2$d முடக்கப்பட்டது</string>
+    <string name="stage_install">புதிய முகப்புத் திரையை நிறுவுகிறது</string>
+    <string name="stage_installed">புதிய முகப்புத் திரை நிறுவப்பட்டது</string>
+    <string name="stage_finale">முகப்புப் பொத்தானின் செயல்பாட்டை மாற்றுகிறது</string>
+    <string name="group_adverts">விளம்பரங்கள்</string>
+    <string name="group_tracking">கண்காணிப்பு</string>
+    <string name="group_nobody">யாரும் கேட்காத செயலிகள்</string>
+    <string name="group_brand">%1$s கூடுதல் அம்சங்கள்</string>
+    <string name="group_brand_unknown">தயாரிப்பாளரின் கூடுதல் அம்சங்கள்</string>
+    <string name="group_shop">கடை மற்றும் செயல்விளக்கப் பயன்முறை</string>
+    <string name="group_other">மற்ற செயலிகள்</string>
+</resources>
