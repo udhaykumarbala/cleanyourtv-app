@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ColumnScope
@@ -183,13 +184,13 @@ fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: Setup
             ) {
                 Text(
                     "English",
-                    Modifier.clickable(role = Role.Button) { onLanguageSelected("en") }.padding(horizontal = 12.dp, vertical = 8.dp),
+                    Modifier.clickable(role = Role.Button) { onLanguageSelected("en") }.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 8.dp),
                     color = if (language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
                     style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "en") FontWeight.SemiBold else FontWeight.Normal),
                 )
                 Text(
                     "தமிழ்",
-                    Modifier.clickable(role = Role.Button) { onLanguageSelected("ta") }.padding(horizontal = 12.dp, vertical = 8.dp),
+                    Modifier.clickable(role = Role.Button) { onLanguageSelected("ta") }.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 8.dp),
                     color = if (language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
                     style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "ta") FontWeight.SemiBold else FontWeight.Normal),
                 )
