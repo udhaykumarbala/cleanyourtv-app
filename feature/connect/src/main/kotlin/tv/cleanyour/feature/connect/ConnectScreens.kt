@@ -3,8 +3,10 @@
 
 package tv.cleanyour.feature.connect
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +35,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import tv.cleanyour.core.discovery.DiscoverySource
 import tv.cleanyour.core.discovery.FoundTv
 import tv.cleanyour.core.flows.ChipState
@@ -82,6 +87,7 @@ import tv.cleanyour.ui.design.component.addressText
 import tv.cleanyour.ui.design.component.rememberEmphasis
 import tv.cleanyour.ui.design.component.rememberPng
 import tv.cleanyour.ui.design.theme.Glow
+import tv.cleanyour.ui.design.theme.CytTheme
 
 // Screens S1, S1b, S1c, S2a to S2d and S2x (PRODUCT-SPEC 4, UX 2 screen 1 and 2, UX 4.1 to 4.5),
 // built from the :ui:design components. Stateless: they render a SetupState plus its extras and
@@ -92,9 +98,9 @@ fun isConnectState(state: SetupState): Boolean =
 
 
 @Composable
-fun ConnectFlow(state: SetupState, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onCopyError: (String) -> Unit = {}) {
+fun ConnectFlow(state: SetupState, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onCopyError: (String) -> Unit = {}, onLanguageSelected: (String) -> Unit = {}) {
     when (state) {
-        is SetupState.Welcome -> WelcomeScreen(state, extras, actions, onReturning, modifier)
+        is SetupState.Welcome -> WelcomeScreen(state, extras, actions, onReturning, modifier, onLanguageSelected)
         is SetupState.Picker -> PickerScreen(state, extras, actions, modifier)
         is SetupState.OpenDoor -> DoorScreen(state, extras, actions, modifier, onCopyError)
         is SetupState.PairingNeeded -> PairingScreen(state, extras, actions, modifier)
@@ -131,7 +137,7 @@ private fun InlineCard(extras: SetupExtras, actions: SetupActions) {
 // lives where S1b and UX 4.1 put it (Which TV?, the "No TV found yet" card) and on the door of a TV
 // Start went straight to ("Not this TV?"), not on Welcome (round 3).
 @Composable
-fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier) {
+fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onLanguageSelected: (String) -> Unit = {}) {
     val found = state.found
     val line = when {
         found.size >= 2 -> msg(R.string.welcome_found_many, "count" to found.size)
@@ -164,6 +170,30 @@ fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: Setup
             // into view never slides the film under it (R4-W8). Gaps and the 300 dp hero are the
             // mockup's (28, 32, 40).
             Overline(stringResource(R.string.welcome_overline), Modifier.padding(top = if (compact) 12.dp else 28.dp))
+            val language = LocalConfiguration.current.locales[0].language
+            Text(
+                "Language / மொழி",
+                Modifier.padding(start = 4.dp, top = 8.dp),
+                color = CytTheme.colors.textSecondary,
+                style = CytTheme.type.bodySmall,
+            )
+            Row(
+                Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "English",
+                    Modifier.clickable(role = Role.Button) { onLanguageSelected("en") }.padding(horizontal = 12.dp, vertical = 8.dp),
+                    color = if (language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                    style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "en") FontWeight.SemiBold else FontWeight.Normal),
+                )
+                Text(
+                    "தமிழ்",
+                    Modifier.clickable(role = Role.Button) { onLanguageSelected("ta") }.padding(horizontal = 12.dp, vertical = 8.dp),
+                    color = if (language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                    style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "ta") FontWeight.SemiBold else FontWeight.Normal),
+                )
+            }
             WelcomeIllustration(
                 Modifier.padding(top = if (compact) 16.dp else 32.dp).align(Alignment.CenterHorizontally)
                     .widthIn(max = if (compact) 248.dp else 300.dp),
