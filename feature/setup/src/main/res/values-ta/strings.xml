@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_back">பின்செல்</string>
+    <string name="action_cancel">ரத்துசெய்</string>
+    <string name="action_ok">சரி</string>
+    <string name="action_done">முடிந்தது</string>
+    <string name="action_undo">செயல்தவிர்</string>
+    <string name="gate_title">இது நீங்கள்தான் என்பதை உறுதிப்படுத்தவும்</string>
+    <string name="gate_subtitle">{tv} டிவியில் எதையும் மாற்றுவதற்கு முன்</string>
+    <string name="gate_negative">ரத்துசெய்</string>
+    <string name="gate_failed">இது நீங்கள்தான் என்பதை உறுதிப்படுத்த முடியவில்லை. எனவே எதுவும் மாற்றப்படவில்லை.</string>
+    <string name="notify_channel_name">டிவி அமைப்பு</string>
+    <string name="notify_channel_description">உங்கள் டிவியில் மாற்றங்கள் செய்யப்படும்போது முன்னேற்றத்தைக் காட்டி, டிவியைப் பார்க்க வேண்டிய நேரத்தையும் தெரிவிக்கும்.</string>
+    <string name="notify_progress" formatted="false">{tv} அமைக்கப்படுகிறது, {percent}%</string>
+    <string name="notify_look">டிவியைப் பாருங்கள். பதிலளிக்கத் தட்டவும்.</string>
+    <string name="notify_rationale">டிவியைப் பார்க்க வேண்டிய நேரம் வரும்போது உங்களுக்குத் தெரிவிப்போம். கைப்பேசி பையில் இருந்தாலும் அறிவிப்பு வர, அறிவிப்புகளை அனுமதிக்கவும்.</string>
+    <string name="notify_rationale_allow">அறிவிப்புகளை அனுமதி</string>
+    <string name="notify_rationale_skip">இப்போது வேண்டாம்</string>
+    <string name="probing_line">டிவியில் உள்ளவற்றைப் படிக்கிறது...</string>
+    <string name="probing_progress_cd">டிவியில் என்ன இருக்கிறது என்பதைப் படிக்கிறது</string>
+    <string name="stop_probe_failed_title">டிவியில் உள்ளவற்றைப் படிக்க முடியவில்லை</string>
+    <string name="stop_probe_failed_body">படித்துக்கொண்டிருந்தபோது டிவி பதிலளிப்பதை நிறுத்திவிட்டது. எதுவும் மாற்றப்படவில்லை. டிவி இன்னும் இயக்கத்தில் இருப்பதை உறுதிசெய்து மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="stop_probe_failed_primary">மீண்டும் முயற்சி</string>
+    <string name="stop_probe_failed_secondary">பின்செல்</string>
+    <string name="stop_probe_failed_tertiary">விவரங்களைக் காட்டு</string>
+    <string name="stop_plan_refused_title">இந்த டிவிக்குப் பாதுகாப்பான திட்டத்தை உருவாக்க முடியவில்லை</string>
+    <string name="stop_plan_refused_body">டிவி பதிலளித்தது. ஆனால் அதில் கண்டவற்றை நாங்கள் பாதுகாப்பானது என்று உறுதியாகக் கூற முடியாததால், எதையும் செய்வதற்கு முன்பே நிறுத்திவிட்டோம். எதுவும் மாற்றப்படவில்லை. சிக்கலைப் புகாரளித்தால் காரணத்தை எங்களுக்கு அனுப்பலாம்; அதைச் சரிசெய்ய உதவும்.</string>
+    <string name="found_title">{count, plural, =0 {முடக்க வேண்டியவை எதுவுமில்லை. புதிய முகப்புத் திரை வேண்டுமா?} one {முடக்க வேண்டிய ஒன்று கிடைத்தது} other {முடக்க வேண்டிய # உருப்படிகள் கிடைத்தன}}</string>
+    <string name="found_headline">{count, plural, =0 {முடக்க வேண்டியவை எதுவுமில்லை. புதிய முகப்புத் திரை வேண்டுமா?} one {முடக்க வேண்டிய உருப்படி} other {முடக்க வேண்டிய உருப்படிகள்}}</string>
+    <string name="found_overline">கண்டறிந்தவை</string>
+    <string name="found_zero_body">இந்த டிவி ஏற்கெனவே சுத்தமாக உள்ளது.</string>
+    <string name="found_title_zero_kept">முடக்க வேண்டியவை எதுவுமில்லை</string>
+    <string name="found_zero_kept_body">இந்த டிவி ஏற்கெனவே சுத்தமாக உள்ளது. மேலும், அதன் சொந்த முகப்புத் திரையையே வைத்திருக்கிறது. எனவே செய்ய வேண்டியது எதுவுமில்லை.</string>
+    <string name="found_zero_kept_unknown_body">இந்த டிவியில் உள்ள சிலவற்றைப் பற்றி எங்களால் உறுதியாகச் சொல்ல முடியவில்லை. மேலும், இது தனது சொந்த முகப்புத் திரையையே வைத்திருக்கிறது. எனவே இப்போது செய்ய வேண்டியது எதுவுமில்லை. உங்களைப் போன்ற பயனர்களின் அறிக்கைகளின் அடிப்படையில் பட்டியலை உருவாக்குகிறோம். முயற்சிக்க ஏதாவது கிடைத்ததும் உங்கள் சிக்கல் அறிக்கையில் தெரிவிப்போம்.</string>
+    <string name="found_switch_home">முகப்புத் திரையை மாற்று</string>
+    <string name="found_group_ads">விளம்பரங்கள் மற்றும் விளம்பரப்படுத்தப்பட்ட வரிசைகள்</string>
+    <string name="found_group_tracking">கண்காணிப்பு மற்றும் பயன்பாட்டுப் பகுப்பாய்வு</string>
+    <string name="found_group_nobody">யாரும் கேட்காத செயலிகள்</string>
+    <string name="found_group_brand">{brand} கூடுதல் அம்சங்கள்</string>
+    <string name="found_group_shop">கடை மற்றும் விளக்கக் காட்சி முறை</string>
+    <string name="found_group_needed">புதிய முகப்புத் திரைக்குத் தேவையானவை</string>
+    <string name="found_group_count_cd">{group}: {count, plural, one {# உருப்படி} other {# உருப்படிகள்}}</string>
+    <string name="found_see_list">பட்டியலைப் பார்</string>
+    <string name="found_keep_intro">நீங்கள் பயன்படுத்தும் அனைத்தையும் அப்படியே வைத்திருக்கிறோம்:</string>
+    <string name="found_keep_paragraph">நீங்கள் பயன்படுத்தும் அனைத்தையும் அப்படியே வைத்திருக்கிறோம்: {apps}, {fixed}.</string>
+    <string name="found_keep_paragraph_no_apps">நீங்கள் பயன்படுத்தும் அனைத்தையும் அப்படியே வைத்திருக்கிறோம்: {fixed}.</string>
+    <string name="found_keep_fixed">நேரலை டிவி மற்றும் HDMI, ரிமோட், விசைப்பலகை, Chromecast, குரல் உதவியாளர் மற்றும் மென்பொருள் புதுப்பிப்புகள்</string>
+    <string name="found_keep_fixed_fire">நேரலை டிவி மற்றும் HDMI, ரிமோட், விசைப்பலகை, குரல் உதவியாளர் மற்றும் மென்பொருள் புதுப்பிப்புகள்</string>
+    <string name="found_home_row">முகப்புத் திரை: {dock}</string>
+    <string name="found_home_row_rows">முகப்புத் திரை: {dock}, மேலும் கீழே {count, plural, one {# செயலி} other {# செயலிகள்}}</string>
+    <string name="found_home_row_cd">முகப்புத் திரை டாக்: {dock}</string>
+    <string name="found_home_change">மாற்று</string>
+</resources>
