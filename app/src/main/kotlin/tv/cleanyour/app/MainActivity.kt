@@ -31,6 +31,9 @@ class MainActivity : ComponentActivity() {
         val configuration = Configuration(newBase.resources.configuration).apply {
             setLocale(Locale.forLanguageTag(tag))
         }
+        // Flow messages are formatted with the process Application context as well as the Activity.
+        @Suppress("DEPRECATION")
+        newBase.applicationContext.resources.updateConfiguration(configuration, newBase.resources.displayMetrics)
         super.attachBaseContext(newBase.createConfigurationContext(configuration))
     }
 
