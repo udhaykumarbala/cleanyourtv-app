@@ -5,12 +5,15 @@ package tv.cleanyour.feature.manage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,7 +104,7 @@ private val titleTop = Modifier.padding(top = 20.dp)
 
 // M1 Manage: the app's home once a TV exists. Nothing is more than two taps away.
 @Composable
-fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier: Modifier = Modifier) {
+fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier: Modifier = Modifier, onLanguageSelected: ((String) -> Unit)? = null) {
     val tv = state.current
     val locale = LocalConfiguration.current.locales[0]
     ScreenScaffold(Glow.Tv, modifier, topBar = {
@@ -111,6 +114,23 @@ fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier:
         )
     }) {
         ScreenTitle(stringResource(R.string.manage_title), titleTop)
+        // Only the real app root supplies this callback; isolated screen previews stay unchanged.
+        if (onLanguageSelected != null) {
+            Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                Text(
+                    "English",
+                    modifier = Modifier.clickable { onLanguageSelected("en") },
+                    color = if (locale.language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                    fontWeight = if (locale.language == "en") FontWeight.SemiBold else FontWeight.Normal,
+                )
+                Text(
+                    "தமிழ்",
+                    modifier = Modifier.clickable { onLanguageSelected("ta") },
+                    color = if (locale.language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                    fontWeight = if (locale.language == "ta") FontWeight.SemiBold else FontWeight.Normal,
+                )
+            }
+        }
         if (state.offline) {
             Banner(
                 stringResource(R.string.manage_offline_banner), BannerTone.NEUTRAL, Modifier.padding(top = 16.dp), icon = CytIcons.WifiOff,

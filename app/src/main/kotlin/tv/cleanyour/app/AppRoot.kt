@@ -167,7 +167,7 @@ fun SecureWindow(active: Boolean) {
 }
 
 @Composable
-fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
+fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit, onLanguageSelected: (String) -> Unit = {}) {
     val backStack = rememberNavBackStack(start)
     val snack = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -285,7 +285,7 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
                     LaunchedEffect(m) { m.effects.collect { onSetupEffect(it) } }
                     BackHandler { if (!m.back()) { if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) else onExit() } }
                     SecureWindow((state as? SetupState.OpenDoor)?.phase == DoorPhase.ALLOW)
-                    if (isConnectState(state)) ConnectFlow(state, extras, m, onReturning = { go("returning") }, onCopyError = { copyText(context, it, "error") })
+                    if (isConnectState(state)) ConnectFlow(state, extras, m, onReturning = { go("returning") }, onCopyError = { copyText(context, it, "error") }, onLanguageSelected = onLanguageSelected)
                     else SetupFlow(state, extras, m, onCopyCommands = { copyText(context, it) }, onRoute = { go(it) }, photos = photoPicker,
                         onOpenUrl = { url -> scope.launch { onManageEffect(ManageEffect.OpenUrl(url)) } })
                 }
@@ -298,7 +298,7 @@ fun AppRoot(graph: AppGraph, start: Dest, onExit: () -> Unit) {
                         m.dispatch(tv.cleanyour.core.flows.ManageIntent.Resumed)
                         onPauseOrDispose { m.dispatch(tv.cleanyour.core.flows.ManageIntent.Paused) }
                     }
-                    ManageScreen(state, m::dispatch)
+                    ManageScreen(state, m::dispatch, onLanguageSelected = onLanguageSelected)
                 }
                 entry<Dest.SwitchedOff> { key ->
                     val m = rememberMachine("off:${key.tvId}") { graph.switchedOff(it, TvId(key.tvId)) }
