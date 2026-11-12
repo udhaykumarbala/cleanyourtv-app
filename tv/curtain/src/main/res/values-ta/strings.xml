@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Clean Your TV</string>
+    <string name="caption">Clean Your TV</string>
     <string name="hint">டிவியை இயக்கத்திலேயே வைத்திருங்கள். விவரங்களை உங்கள் கைப்பேசியில் பார்க்கலாம்.</string>
     <string name="chip">மீட்டெடுப்பு நிலை</string>
     <string name="all_clean">அனைத்தும் சுத்தம்.</string>
