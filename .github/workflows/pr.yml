@@ -59,6 +59,14 @@ jobs:
           python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
           python3 scripts/check-redaction.py fixtures/
 
+      - name: Upload installable APKs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: android-apks
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Reports
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
