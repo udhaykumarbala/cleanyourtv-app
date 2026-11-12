@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cyt_tv_good_morning">காலை வணக்கம்</string>
+    <string name="cyt_tv_good_afternoon">மதிய வணக்கம்</string>
+    <string name="cyt_tv_good_evening">மாலை வணக்கம்</string>
+    <string name="cyt_tv_good_night">இனிய இரவு</string>
+    <string name="cyt_tv_am">முற்பகல்</string>
+    <string name="cyt_tv_pm">பிற்பகல்</string>
+    <string name="cyt_tv_inputs">உள்ளீடுகள்</string>
+    <string name="cyt_tv_wifi">வீட்டு Wi-Fi</string>
+    <string name="cyt_tv_settings">அமைப்புகள்</string>
+</resources>
