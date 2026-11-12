@@ -99,7 +99,7 @@ fun isConnectState(state: SetupState): Boolean =
 
 
 @Composable
-fun ConnectFlow(state: SetupState, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onCopyError: (String) -> Unit = {}, onLanguageSelected: (String) -> Unit = {}) {
+fun ConnectFlow(state: SetupState, extras: SetupExtras, actions: SetupActions, onReturning: () -> Unit, modifier: Modifier = Modifier, onCopyError: (String) -> Unit = {}, onLanguageSelected: ((String) -> Unit)? = null) {
     when (state) {
         is SetupState.Welcome -> WelcomeScreen(state, extras, actions, onReturning, modifier, onLanguageSelected)
         is SetupState.Picker -> PickerScreen(state, extras, actions, modifier)
@@ -171,29 +171,32 @@ fun WelcomeScreen(state: SetupState.Welcome, extras: SetupExtras, actions: Setup
             // into view never slides the film under it (R4-W8). Gaps and the 300 dp hero are the
             // mockup's (28, 32, 40).
             Overline(stringResource(R.string.welcome_overline), Modifier.padding(top = if (compact) 12.dp else 28.dp))
-            val language = LocalConfiguration.current.locales[0].language
-            Text(
-                "Language / மொழி",
-                Modifier.padding(start = 4.dp, top = 8.dp),
-                color = CytTheme.colors.textSecondary,
-                style = CytTheme.type.bodySmall,
-            )
-            Row(
-                Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            onLanguageSelected?.let { selectLanguage ->
+                val language = LocalConfiguration.current.locales[0].language
                 Text(
-                    "English",
-                    Modifier.clickable(role = Role.Button) { onLanguageSelected("en") }.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 8.dp),
-                    color = if (language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
-                    style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "en") FontWeight.SemiBold else FontWeight.Normal),
+                    "Language / மொழி",
+                    Modifier.padding(start = 4.dp, top = 8.dp),
+                    color = CytTheme.colors.textSecondary,
+                    style = CytTheme.type.bodySmall,
                 )
-                Text(
-                    "தமிழ்",
-                    Modifier.clickable(role = Role.Button) { onLanguageSelected("ta") }.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 8.dp),
-                    color = if (language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
-                    style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "ta") FontWeight.SemiBold else FontWeight.Normal),
-                )
+                Row(
+                    Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        "English",
+                        Modifier.clickable(role = Role.Button) { selectLanguage("en") }.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 8.dp),
+                        color = if (language == "en") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                        style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "en") FontWeight.SemiBold else FontWeight.Normal),
+                    )
+                    Text(
+                        "தமிழ்",
+                        Modifier.clickable(role = Role.Button) { selectLanguage("ta") }.heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 8.dp),
+                        color = if (language == "ta") CytTheme.colors.textPrimary else CytTheme.colors.textSecondary,
+                        style = CytTheme.type.bodySmall.copy(fontWeight = if (language == "ta") FontWeight.SemiBold else FontWeight.Normal),
+                    )
+                }
+    
             }
             WelcomeIllustration(
                 Modifier.padding(top = if (compact) 16.dp else 32.dp).align(Alignment.CenterHorizontally)
