@@ -26,7 +26,7 @@
 
 ## Languages
 
-The app is available in English and Tamil. On Android 13 and newer, choose Tamil in Android's per-app language settings. On Android 9–12, set the phone's system language to Tamil; the app follows the device language.
+The app is available in English and Tamil. Choose **English** or **தமிழ்** directly on the welcome screen; the app remembers your choice on this device. The in-app choice works on Android 9 and newer and does not depend on the phone's system language.
 
 ## How it works
 
