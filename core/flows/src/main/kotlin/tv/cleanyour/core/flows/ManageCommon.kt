@@ -69,7 +69,9 @@ enum class SnackKind { PUT_BACK, SWITCHED_OFF, HOME_SAVED, MODULE_REMOVED, EXPOR
     KEPT_TV_INPUT,    // RF-LAUNCHER-250 F1: a switch-off the live check kept because it runs the TV's inputs
     KEPT_ON,          // issue #10: a switch-off the TV kept on (or the live check refused); nothing changed
     RUN_BUSY,         // Forget this TV refused: setup is still working on this TV
-    RUN_BUSY_ANY }    // Delete everything refused: setup is still working on the TV named
+    RUN_BUSY_ANY,     // Delete everything refused: setup is still working on the TV named
+    PRIVATE_DNS_SAVED,
+    PRIVATE_DNS_OFF }
 
 // What a write in the Manage family is doing, for the narration row and the disabled buttons.
 sealed interface Busy {

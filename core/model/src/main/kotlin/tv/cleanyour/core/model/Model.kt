@@ -13,6 +13,8 @@ val SHA256_RE = Regex("^[0-9a-f]{64}$")
 val RUN_TOKEN_RE = Regex("^[0-9a-f]{16}$")
 val TV_ID_RE = Regex("^[0-9a-f]{16}$")
 val FILE_NAME_RE = Regex("^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+const val ADGUARD_PRIVATE_DNS_HOST = "dns.adguard-dns.com"
+val HOSTNAME_RE = Regex("^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 @JvmInline value class TvId(val value: String) { init { require(TV_ID_RE.matches(value)) } }        // R0: 3; first 16 hex of sha256(serial + device)
 @JvmInline value class PackageName(val value: String) { init { require(value == "android" || (PACKAGE_RE.matches(value) && value.length <= 255)) } }   // RFC-W1-2: also the framework package
@@ -103,7 +105,9 @@ enum class SettingKey(val ns: SettingsNs, val key: String, val valueShape: Regex
     ACCESSIBILITY_ENABLED(SettingsNs.SECURE, "accessibility_enabled", Regex("^[01]$")),
     ADB_ENABLED(SettingsNs.GLOBAL, "adb_enabled", Regex("^0$")),
     ADB_WIFI_ENABLED(SettingsNs.GLOBAL, "adb_wifi_enabled", Regex("^0$")),
-    DEVICE_NAME(SettingsNs.GLOBAL, "device_name", Regex("^[A-Za-z0-9 ._-]{1,32}$")) }
+    DEVICE_NAME(SettingsNs.GLOBAL, "device_name", Regex("^[A-Za-z0-9 ._-]{1,32}$")),
+    PRIVATE_DNS_MODE(SettingsNs.GLOBAL, "private_dns_mode", Regex("^(off|opportunistic|hostname)$")),
+    PRIVATE_DNS_SPECIFIER(SettingsNs.GLOBAL, "private_dns_specifier", HOSTNAME_RE) }
 
 enum class GroupDefault { DISABLE, ASK, KEEP }
 enum class Platform { ANDROID_TV, GOOGLE_TV, FIRE_OS, TCL_CN }

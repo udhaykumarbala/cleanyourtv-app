@@ -4,8 +4,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import tv.cleanyour.core.engine.Engine
 import tv.cleanyour.core.engine.RunState
+import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
 import tv.cleanyour.core.model.Level
+import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.TvId
+import tv.cleanyour.core.planner.PlanRequest
 
 // M7 TV settings: name and room, level (D46: per TV), the address (read-only), "Forget this TV"
 // (credential prompt; deletes the record, the journals and the restore points on this phone).
@@ -17,6 +20,10 @@ data class TvSettingsState(
     val lastSeenAtMs: Long? = null,
     val confirmingForget: Boolean = false,
     val forgetting: Boolean = false,
+    val isAdGuardDnsActive: Boolean = false,
+    val privateDnsMode: String? = null,
+    val privateDnsSpecifier: String? = null,
+    val dnsBusy: Boolean = false,
 )
 
 sealed interface TvSettingsIntent {
@@ -25,6 +32,8 @@ sealed interface TvSettingsIntent {
     data object AskForget : TvSettingsIntent
     data object CancelForget : TvSettingsIntent
     data object Forget : TvSettingsIntent
+    data object SetAdGuardDns : TvSettingsIntent
+    data object TurnOffPrivateDns : TvSettingsIntent
 }
 
 class TvSettingsMachine(
@@ -35,16 +44,53 @@ class TvSettingsMachine(
 
     private data class Loaded(val s: TvSettingsState)
     private data class Forgetting(val on: Boolean)
+    private data class DnsBusy(val busy: Boolean)
+    private data class DnsUpdated(val mode: String?, val specifier: String?, val busy: Boolean = false)
 
-    init { scope.launch { d.tvs.tvs.collect { list -> list.firstOrNull { it.id == tvId }?.let { tv ->
-        send(Loaded(TvSettingsState(tv.nickname, tv.room, tv.level, tv.endpoints.firstOrNull()?.host, tv.lastSeenAt)))
-    } } } }
+    init {
+        scope.launch {
+            d.tvs.tvs.collect { list ->
+                list.firstOrNull { it.id == tvId }?.let { tv ->
+                    val snap = d.snapshots.latest(tvId)
+                    val mode = snap?.settings?.get(SettingKey.PRIVATE_DNS_MODE)
+                    val spec = snap?.settings?.get(SettingKey.PRIVATE_DNS_SPECIFIER)
+                    val adGuard = mode == "hostname" && spec == ADGUARD_PRIVATE_DNS_HOST
+                    send(
+                        Loaded(
+                            TvSettingsState(
+                                name = tv.nickname,
+                                room = tv.room,
+                                level = tv.level,
+                                address = tv.endpoints.firstOrNull()?.host,
+                                lastSeenAtMs = tv.lastSeenAt,
+                                isAdGuardDnsActive = adGuard,
+                                privateDnsMode = mode,
+                                privateDnsSpecifier = spec,
+                            ),
+                        ),
+                    )
+                }
+            }
+        }
+        scope.launch { refreshDnsFromTv() }
+    }
 
     override fun reduce(state: TvSettingsState, event: Any): TvSettingsState = when (event) {
-        is Loaded -> event.s.copy(confirmingForget = state.confirmingForget, forgetting = state.forgetting)
+        is Loaded -> event.s.copy(
+            confirmingForget = state.confirmingForget,
+            forgetting = state.forgetting,
+            dnsBusy = state.dnsBusy,
+        )
         TvSettingsIntent.AskForget -> state.copy(confirmingForget = true)
         TvSettingsIntent.CancelForget -> state.copy(confirmingForget = false)
         is Forgetting -> state.copy(forgetting = event.on, confirmingForget = false)
+        is DnsBusy -> state.copy(dnsBusy = event.busy)
+        is DnsUpdated -> state.copy(
+            dnsBusy = event.busy,
+            privateDnsMode = event.mode,
+            privateDnsSpecifier = event.specifier,
+            isAdGuardDnsActive = event.mode == "hostname" && event.specifier == ADGUARD_PRIVATE_DNS_HOST,
+        )
         else -> state
     }
 
@@ -57,7 +103,41 @@ class TvSettingsMachine(
             // "Back to Simple hides the extra options. Your TV stays as it is." (UX 3)
             is TvSettingsIntent.SetLevel -> scope.launch { d.tv(tvId)?.let { d.tvs.upsert(it.copy(level = event.level)) } }
             TvSettingsIntent.Forget -> if (!before.forgetting) scope.launch { forget() }
+            TvSettingsIntent.SetAdGuardDns -> if (!before.dnsBusy && !before.forgetting) scope.launch {
+                setPrivateDns("hostname", ADGUARD_PRIVATE_DNS_HOST)
+            }
+            TvSettingsIntent.TurnOffPrivateDns -> if (!before.dnsBusy && !before.forgetting) scope.launch {
+                setPrivateDns("off", null)
+            }
             else -> {}
+        }
+    }
+
+    private suspend fun refreshDnsFromTv() {
+        val live = d.access.live(tvId) ?: return
+        val snap = attempt { d.runner.freshSnapshot(live) }.getOrNull() ?: return
+        send(DnsUpdated(snap.settings[SettingKey.PRIVATE_DNS_MODE], snap.settings[SettingKey.PRIVATE_DNS_SPECIFIER], state.value.dnsBusy))
+    }
+
+    private suspend fun setPrivateDns(mode: String, specifier: String?) {
+        val tv = d.tv(tvId) ?: return
+        send(DnsBusy(true))
+        when (TvWriter(d).write(tvId, PlanRequest.SetPrivateDns(mode, specifier), fresh = true)) {
+            is WriteResult.Done -> {
+                val live = d.access.live(tvId)
+                val snap = if (live != null) attempt { d.runner.freshSnapshot(live) }.getOrNull() else null
+                val updatedMode = snap?.settings?.get(SettingKey.PRIVATE_DNS_MODE) ?: mode
+                val updatedSpec = snap?.settings?.get(SettingKey.PRIVATE_DNS_SPECIFIER) ?: specifier
+                d.tv(tvId)?.let { d.tvs.upsert(it.copy(lastSeenAt = d.clock.nowMs())) }
+                send(DnsUpdated(updatedMode, updatedSpec, busy = false))
+                val kind = if (mode == "hostname") SnackKind.PRIVATE_DNS_SAVED else SnackKind.PRIVATE_DNS_OFF
+                effect(ManageEffect.Snackbar(kind, specifier ?: "", undo = false))
+            }
+            WriteResult.GateCancelled, WriteResult.NoTv, is WriteResult.Paused -> send(DnsBusy(false))
+            else -> {
+                send(DnsBusy(false))
+                effect(ManageEffect.Snackbar(SnackKind.FAILED, tv.nickname, undo = false))
+            }
         }
     }
 

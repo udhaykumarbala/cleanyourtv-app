@@ -59,6 +59,10 @@
     <string name="manage_row_restore">Restore point</string>
     <string name="manage_row_restore_sub">{date}. Undo everything from here.</string>
     <string name="manage_row_tvsettings">TV settings</string>
+    <string name="manage_row_private_dns">Private DNS</string>
+    <string name="manage_row_private_dns_on">AdGuard active ({host})</string>
+    <string name="manage_row_private_dns_off">Off (tap to set AdGuard)</string>
+    <string name="manage_row_private_dns_custom">Active ({host})</string>
     <string name="manage_add_tv">+ Set up another TV</string>
     <string name="manage_offline_banner">Lost the TV. Is it still on?</string>
     <string name="manage_reconnect">Reconnect</string>
@@ -192,6 +196,15 @@
     <string name="tvsettings_forget_title">Forget {tv}?</string>
     <string name="tvsettings_forget_confirm">Forget this TV</string>
     <string name="tvsettings_forget_busy">Setup is still working on this TV. Wait for it to finish or stop it first.</string>
+    <string name="tvsettings_dns_title">Private DNS</string>
+    <string name="tvsettings_dns_active">AdGuard Private DNS is active ({host})</string>
+    <string name="tvsettings_dns_inactive">Private DNS is off or default</string>
+    <string name="tvsettings_dns_custom">Custom Private DNS: {host}</string>
+    <string name="tvsettings_dns_btn_set">Set AdGuard Private DNS</string>
+    <string name="tvsettings_dns_btn_off">Turn off Private DNS</string>
+    <string name="tvsettings_dns_explain">Sets Android TV Private DNS to dns.adguard-dns.com to block ads and trackers network-wide. If your Android TV settings hide or lack the Private DNS option, this app injects the setting directly via ADB.</string>
+    <string name="tvsettings_dns_snackbar_on">Private DNS set to {host}</string>
+    <string name="tvsettings_dns_snackbar_off">Private DNS turned off</string>
 
     <!-- M8 App settings -->
     <string name="appsettings_title">App settings</string>

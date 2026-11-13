@@ -33,6 +33,7 @@ import tv.cleanyour.core.engine.PauseReason
 import tv.cleanyour.core.flows.AppConfirm
 import tv.cleanyour.core.flows.AppSettingsIntent
 import tv.cleanyour.core.flows.AppSettingsState
+import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
 import tv.cleanyour.core.flows.LeftoversIntent
 import tv.cleanyour.core.flows.LeftoversState
 import tv.cleanyour.core.flows.ManageIntent
@@ -196,6 +197,16 @@ fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier:
                 ListDivider()
                 ListRow(stringResource(R.string.manage_row_restore), subtitle = tv.restorePointAtMs?.let { msg(R.string.manage_row_restore_sub, "date" to shortDateTime(it, locale)) },
                     onClick = { onIntent(ManageIntent.Open(ManageSection.RESTORE_POINT)) })
+                ListDivider()
+                ListRow(stringResource(R.string.manage_row_private_dns),
+                    subtitle = when {
+                        tv.privateDnsActive && tv.privateDnsHost == ADGUARD_PRIVATE_DNS_HOST ->
+                            msg(R.string.manage_row_private_dns_on, "host" to ADGUARD_PRIVATE_DNS_HOST)
+                        tv.privateDnsActive && !tv.privateDnsHost.isNullOrEmpty() ->
+                            msg(R.string.manage_row_private_dns_custom, "host" to tv.privateDnsHost)
+                        else -> stringResource(R.string.manage_row_private_dns_off)
+                    },
+                    onClick = { onIntent(ManageIntent.Open(ManageSection.TV_SETTINGS)) })
                 ListDivider()
                 ListRow(stringResource(R.string.manage_row_tvsettings), onClick = { onIntent(ManageIntent.Open(ManageSection.TV_SETTINGS)) })
             }
@@ -455,6 +466,30 @@ fun TvSettingsScreen(state: TvSettingsState, onIntent: (TvSettingsIntent) -> Uni
         ListGroup(Modifier.padding(top = 20.dp)) {
             ListRow(stringResource(R.string.tvsettings_address), subtitle = state.lastSeenAtMs?.let { msg(R.string.tvsettings_last_seen, "date" to shortDateTime(it, locale)) },
                 value = state.address)
+        }
+        SectionLabel(stringResource(R.string.tvsettings_dns_title))
+        val dnsStatus = when {
+            state.isAdGuardDnsActive -> msg(R.string.tvsettings_dns_active, "host" to (state.privateDnsSpecifier ?: ADGUARD_PRIVATE_DNS_HOST))
+            state.privateDnsMode == "hostname" && !state.privateDnsSpecifier.isNullOrEmpty() ->
+                msg(R.string.tvsettings_dns_custom, "host" to state.privateDnsSpecifier)
+            else -> stringResource(R.string.tvsettings_dns_inactive)
+        }
+        Body(dnsStatus, Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp))
+        Body(stringResource(R.string.tvsettings_dns_explain), Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp))
+        if (!state.isAdGuardDnsActive) {
+            PrimaryButton(
+                stringResource(R.string.tvsettings_dns_btn_set),
+                { onIntent(TvSettingsIntent.SetAdGuardDns) },
+                Modifier.padding(top = 12.dp),
+                enabled = !state.dnsBusy && !state.forgetting,
+            )
+        } else {
+            SecondaryButton(
+                stringResource(R.string.tvsettings_dns_btn_off),
+                { onIntent(TvSettingsIntent.TurnOffPrivateDns) },
+                Modifier.padding(top = 12.dp),
+                enabled = !state.dnsBusy && !state.forgetting,
+            )
         }
         SecondaryButton(stringResource(R.string.tvsettings_forget), { onIntent(TvSettingsIntent.AskForget) }, Modifier.padding(top = 24.dp), enabled = !state.forgetting)
         Body(stringResource(R.string.tvsettings_forget_explain), Modifier.padding(top = 10.dp, start = 4.dp, end = 4.dp, bottom = 24.dp))
