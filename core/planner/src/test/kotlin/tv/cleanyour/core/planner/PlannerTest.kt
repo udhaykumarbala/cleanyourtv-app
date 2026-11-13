@@ -1,5 +1,6 @@
 package tv.cleanyour.core.planner
 
+import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
 import tv.cleanyour.core.model.ArtifactRef
 import tv.cleanyour.core.model.BlobRef
 import tv.cleanyour.core.model.Component
@@ -570,6 +571,27 @@ class PlannerTest {
             change(2, Op.Disable(stock.pkg), Prior(packageState = EnabledState.ENABLED)), change(3, Op.SetHome(launcher), Prior(home = stock)))
         val p = plan(PlanRequest.UseStockHome(stock), ours, journals)
         assertEquals(listOf(Op.Enable(stock.pkg), Op.SetHome(stock), Op.VerifyHome(stock), Op.PressHome), ops(p))
+    }
+
+    @Test fun setPrivateDnsInjectsAdGuardAndTurnsOff() {
+        val absent = snapshot()
+        val enable = plan(PlanRequest.SetPrivateDns(), absent)
+        val enableOps = ops(enable)
+        assertEquals(2, enableOps.size)
+        assertTrue(Op.SettingsPut(SettingKey.PRIVATE_DNS_SPECIFIER, ADGUARD_PRIVATE_DNS_HOST) in enableOps)
+        assertTrue(Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, "hostname") in enableOps)
+
+        val active = absent.withSettings(
+            mapOf(
+                SettingKey.PRIVATE_DNS_MODE to "hostname",
+                SettingKey.PRIVATE_DNS_SPECIFIER to ADGUARD_PRIVATE_DNS_HOST,
+            ),
+        )
+        val disable = plan(PlanRequest.SetPrivateDns(mode = "off", specifier = null), active)
+        assertTrue(Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, "off") in ops(disable))
+
+        assertTrue(refused(PlanRequest.SetPrivateDns(mode = "bad"), absent).isNotEmpty())
+        assertTrue(refused(PlanRequest.SetPrivateDns(mode = "hostname", specifier = "bad host!"), absent).isNotEmpty())
     }
 }
 

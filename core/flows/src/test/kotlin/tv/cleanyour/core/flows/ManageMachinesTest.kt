@@ -16,7 +16,9 @@ import tv.cleanyour.core.engine.StartRefusal
 import tv.cleanyour.core.engine.StartResult
 import tv.cleanyour.core.model.ArtifactRef
 import tv.cleanyour.core.model.ApkInfo
+import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
 import tv.cleanyour.core.model.LauncherState
+import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.Sha256
 import tv.cleanyour.core.model.SnapshotReason
 import tv.cleanyour.testing.fixtures.FakeLauncherPin
@@ -1171,6 +1173,38 @@ class ManageMachinesTest {
         val d3 = refused.manageDeps()
         assertIs<WriteResult.Paused>(TvWriter(d3).write(tv3.id, PlanRequest.PutBack(stock.pkg)))
         assertNull(assertNotNull(d3.openWrites.current.value).tookHome)
+    }
+
+    @Test fun tvSettingsAppliesAndClearsAdGuardPrivateDns() = runTest(timeout = 30.seconds) {
+        val h = Harness()
+        val tv = h.knownTv()
+        h.respond(
+            PlanKind.SET_PRIVATE_DNS,
+            listOf(
+                Op.SettingsPut(SettingKey.PRIVATE_DNS_SPECIFIER, ADGUARD_PRIVATE_DNS_HOST),
+                Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, "hostname"),
+            ),
+        )
+        h.engine.onStart = { p -> finish(p, RunStatus.COMPLETED) }
+        h.foreground.set(true); settle()
+        h.credential.mode = FakeCredentialGate.Mode.PASS
+        val d = h.manageDeps()
+        val m = TvSettingsMachine(d, backgroundScope, tv.id)
+        settle()
+
+        m.effects.test {
+            m.dispatch(TvSettingsIntent.SetAdGuardDns); settle()
+            assertEquals(ManageEffect.Snackbar(SnackKind.PRIVATE_DNS_SAVED, ADGUARD_PRIVATE_DNS_HOST, false), awaitItem())
+            assertTrue(m.state.value.isAdGuardDnsActive)
+            assertEquals("hostname", m.state.value.privateDnsMode)
+            assertEquals(ADGUARD_PRIVATE_DNS_HOST, m.state.value.privateDnsSpecifier)
+
+            h.respond(PlanKind.SET_PRIVATE_DNS, listOf(Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, "off")))
+            m.dispatch(TvSettingsIntent.TurnOffPrivateDns); settle()
+            assertEquals(ManageEffect.Snackbar(SnackKind.PRIVATE_DNS_OFF, "", false), awaitItem())
+            assertFalse(m.state.value.isAdGuardDnsActive)
+            assertEquals("off", m.state.value.privateDnsMode)
+        }
     }
 }
 
