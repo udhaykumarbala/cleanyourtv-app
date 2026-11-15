@@ -203,7 +203,7 @@ fun ManageScreen(state: ManageState, onIntent: (ManageIntent) -> Unit, modifier:
                         tv.privateDnsActive && tv.privateDnsHost == ADGUARD_PRIVATE_DNS_HOST ->
                             msg(R.string.manage_row_private_dns_on, "host" to ADGUARD_PRIVATE_DNS_HOST)
                         tv.privateDnsActive && !tv.privateDnsHost.isNullOrEmpty() ->
-                            msg(R.string.manage_row_private_dns_custom, "host" to tv.privateDnsHost)
+                            msg(R.string.manage_row_private_dns_custom, "host" to tv.privateDnsHost.orEmpty())
                         else -> stringResource(R.string.manage_row_private_dns_off)
                     },
                     onClick = { onIntent(ManageIntent.Open(ManageSection.TV_SETTINGS)) })
@@ -471,12 +471,13 @@ fun TvSettingsScreen(state: TvSettingsState, onIntent: (TvSettingsIntent) -> Uni
         val dnsStatus = when {
             state.isAdGuardDnsActive -> msg(R.string.tvsettings_dns_active, "host" to (state.privateDnsSpecifier ?: ADGUARD_PRIVATE_DNS_HOST))
             state.privateDnsMode == "hostname" && !state.privateDnsSpecifier.isNullOrEmpty() ->
-                msg(R.string.tvsettings_dns_custom, "host" to state.privateDnsSpecifier)
+                msg(R.string.tvsettings_dns_custom, "host" to state.privateDnsSpecifier.orEmpty())
             else -> stringResource(R.string.tvsettings_dns_inactive)
         }
         Body(dnsStatus, Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp))
         Body(stringResource(R.string.tvsettings_dns_explain), Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp))
-        if (state.sdk != null && state.sdk < 28) {
+        val currentSdk = state.sdk
+        if (currentSdk != null && currentSdk < 28) {
             Body(stringResource(R.string.tvsettings_dns_legacy_note), Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp))
         }
         if (!state.isAdGuardDnsActive) {
