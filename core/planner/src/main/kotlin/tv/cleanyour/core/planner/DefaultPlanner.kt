@@ -1,5 +1,6 @@
 package tv.cleanyour.core.planner
 
+import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
 import tv.cleanyour.core.model.BlobRef
 import tv.cleanyour.core.model.ChangeRecord
 import tv.cleanyour.core.model.Component
