@@ -593,5 +593,12 @@ class PlannerTest {
         assertTrue(refused(PlanRequest.SetPrivateDns(mode = "bad"), absent).isNotEmpty())
         assertTrue(refused(PlanRequest.SetPrivateDns(mode = "hostname", specifier = "bad host!"), absent).isNotEmpty())
     }
+
+    @Test fun setupPlansPrivateDnsAtCompletion() {
+        val p = plan(setup())
+        val ops = ops(p)
+        assertTrue(Op.SettingsPut(SettingKey.PRIVATE_DNS_SPECIFIER, ADGUARD_PRIVATE_DNS_HOST) in ops)
+        assertTrue(Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, "hostname") in ops)
+    }
 }
 

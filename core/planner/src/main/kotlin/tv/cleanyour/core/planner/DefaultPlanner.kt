@@ -349,6 +349,8 @@ class DefaultPlanner(
             val curtain = req.curtain
             // RF-PROFILES-63 P1: the curtain is an app like the launcher (minSdk TV_MIN_SDK); below it there is none.
             if (curtain != null && choices.curtain && !snapshot.facts.installRefusal && snapshot.facts.sdk >= TV_MIN_SDK && reasons.isEmpty()) weaveCurtain(curtain)
+            // Once setup and debloat completes its work on the TV, automatically configure AdGuard Private DNS
+            setPrivateDns(PlanRequest.SetPrivateDns(mode = "hostname", specifier = ADGUARD_PRIVATE_DNS_HOST), FailurePolicy.CONTINUE)
         }
 
         // ---- The TV curtain (RFC-CURTAIN-1) ---------------------------------------------------------
@@ -1036,7 +1038,7 @@ class DefaultPlanner(
             step(Op.Reboot, null, GROUP_REBOOT, "Restarting the TV", FailurePolicy.CONTINUE)
         }
 
-        fun setPrivateDns(request: PlanRequest.SetPrivateDns) {
+        fun setPrivateDns(request: PlanRequest.SetPrivateDns, policy: FailurePolicy = FailurePolicy.CONTINUE) {
             if (!SettingKey.PRIVATE_DNS_MODE.valueShape.matches(request.mode)) {
                 reasons += "invalid private dns mode: ${request.mode}"
                 return
@@ -1053,7 +1055,7 @@ class DefaultPlanner(
                     Prior(settingValue = snapshot.settings[SettingKey.PRIVATE_DNS_SPECIFIER]),
                     group,
                     "Setting Private DNS provider hostname to $spec",
-                    FailurePolicy.STOP_AND_ROLLBACK,
+                    policy,
                 )
             }
             step(
@@ -1061,7 +1063,7 @@ class DefaultPlanner(
                 Prior(settingValue = snapshot.settings[SettingKey.PRIVATE_DNS_MODE]),
                 group,
                 if (request.mode == "off") "Turning off Private DNS" else "Setting Private DNS mode to ${request.mode}",
-                FailurePolicy.STOP_AND_ROLLBACK,
+                policy,
             )
         }
 

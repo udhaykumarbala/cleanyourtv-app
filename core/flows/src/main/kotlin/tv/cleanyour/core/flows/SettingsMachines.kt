@@ -24,6 +24,7 @@ data class TvSettingsState(
     val privateDnsMode: String? = null,
     val privateDnsSpecifier: String? = null,
     val dnsBusy: Boolean = false,
+    val sdk: Int? = null,
 )
 
 sealed interface TvSettingsIntent {
@@ -66,6 +67,7 @@ class TvSettingsMachine(
                                 isAdGuardDnsActive = adGuard,
                                 privateDnsMode = mode,
                                 privateDnsSpecifier = spec,
+                                sdk = tv.facts.sdk,
                             ),
                         ),
                     )

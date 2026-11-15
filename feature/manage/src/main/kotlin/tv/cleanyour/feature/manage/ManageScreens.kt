@@ -476,6 +476,9 @@ fun TvSettingsScreen(state: TvSettingsState, onIntent: (TvSettingsIntent) -> Uni
         }
         Body(dnsStatus, Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp))
         Body(stringResource(R.string.tvsettings_dns_explain), Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp))
+        if (state.sdk != null && state.sdk < 28) {
+            Body(stringResource(R.string.tvsettings_dns_legacy_note), Modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp))
+        }
         if (!state.isAdGuardDnsActive) {
             PrimaryButton(
                 stringResource(R.string.tvsettings_dns_btn_set),

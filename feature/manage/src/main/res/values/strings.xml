@@ -203,6 +203,7 @@
     <string name="tvsettings_dns_btn_set">Set AdGuard Private DNS</string>
     <string name="tvsettings_dns_btn_off">Turn off Private DNS</string>
     <string name="tvsettings_dns_explain">Sets Android TV Private DNS to dns.adguard-dns.com to block ads and trackers network-wide. If your Android TV settings hide or lack the Private DNS option, this app injects the setting directly via ADB.</string>
+    <string name="tvsettings_dns_legacy_note">Notice for Android 8 and older (API &lt; 28): Android 8 lacks native OS-level DNS-over-TLS (DoT). Clean Your TV has injected the AdGuard settings into the TV\'s global table. For full ad-blocking on Android 8, also set your Wi-Fi or router DNS to AdGuard (94.140.14.14).</string>
     <string name="tvsettings_dns_snackbar_on">Private DNS set to {host}</string>
     <string name="tvsettings_dns_snackbar_off">Private DNS turned off</string>
 

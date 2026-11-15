@@ -47,7 +47,7 @@ import tempfile
 import zipfile
 
 PACKAGE = "tv.cleanyour.app"
-MIN_SDK = 28
+MIN_SDK = 26
 TARGET_SDK = 36
 D16 = {
     "android.permission.INTERNET",
