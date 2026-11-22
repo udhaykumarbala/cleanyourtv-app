@@ -1,0 +1,78 @@
+name: Build and Release Clean Your TV APK
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Full Debug APK
+        run: ./gradlew :app:assembleFullDebug --console=plain
+
+      - name: Prepare APK Asset
+        run: |
+          mkdir -p release-artifacts
+          apk_file=$(find app/build/outputs/apk/full/debug/ -name "*.apk" | head -n 1)
+          if [ -z "$apk_file" ]; then
+            echo "Error: APK file not found!"
+            exit 1
+          fi
+          cp "$apk_file" release-artifacts/CleanYourTV-v0.4.8-AdGuard-DNS.apk
+          ls -la release-artifacts/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CleanYourTV-v0.4.8-AdGuard-DNS
+          path: release-artifacts/CleanYourTV-v0.4.8-AdGuard-DNS.apk
+
+      - name: Publish GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat << 'EOF' > release-notes.md
+          ## Clean Your TV with Customizable Private DNS (DoT)
+
+          This APK includes integrated **Customizable Private DNS** (`dns.adguard-dns.com`, `one.one.one.one`, `dns.quad9.net`, `dns.nextdns.io`, or any custom DoT provider) for Android TV devices.
+
+          ### Key Features:
+          - **Custom & Preset Private DNS Support**: Select from top providers (AdGuard, Cloudflare, Quad9, NextDNS) or type your own custom DNS-over-TLS hostname with real-time validation.
+          - **Network-wide Ad & Tracker Blocking**: Block ads, tracking, and telemetry directly at the DNS level on Android TV.
+          - **Self-Inclusion Fallback**: Automatically injects Private DNS settings into the Android TV system settings table (`private_dns_mode` and `private_dns_specifier`) via ADB, ensuring it functions even on TVs where OEM firmware hides the Private DNS settings menu.
+          - **Automatic Setup Execution**: When Clean Your TV finishes its setup and cleanup work on the TV, it automatically applies the AdGuard Private DNS configuration.
+          - **Android 8 and Older (API < 28) Compatibility**:
+            - App minimum SDK supports Android 8.0 (API 26) so it can install directly on older TV hardware.
+            - For Android 8 and older devices lacking OS-level DNS-over-TLS (DoT), settings are safely injected and clear UI guidance is provided for static Wi-Fi/router DNS (`94.140.14.14`).
+
+          ### Download & Install:
+          Download `CleanYourTV-v0.4.8-AdGuard-DNS.apk` below, install/sideload it, and share your feedback!
+          EOF
+
+          TAG="v0.4.8-adguard-dns"
+          gh release edit "$TAG" --title "Clean Your TV v0.4.8 (Custom Private DNS)" --notes-file release-notes.md 2>/dev/null || true
+          gh release create "$TAG" \
+            release-artifacts/CleanYourTV-v0.4.8-AdGuard-DNS.apk \
+            --title "Clean Your TV v0.4.8 (Custom Private DNS)" \
+            --notes-file release-notes.md \
+            || gh release upload "$TAG" release-artifacts/CleanYourTV-v0.4.8-AdGuard-DNS.apk --clobber

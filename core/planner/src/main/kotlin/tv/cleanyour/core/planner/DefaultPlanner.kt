@@ -1,5 +1,6 @@
 package tv.cleanyour.core.planner
 
+import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
 import tv.cleanyour.core.model.BlobRef
 import tv.cleanyour.core.model.ChangeRecord
 import tv.cleanyour.core.model.Component
@@ -110,6 +111,7 @@ class DefaultPlanner(
             PlanRequest.Reboot -> { d.reboot(); PlanKind.REBOOT }
             is PlanRequest.UpdateLauncher -> { d.updateLauncher(request.launcher); PlanKind.UPDATE_LAUNCHER }
             PlanRequest.HomeHelperOff -> { d.helperOff(); PlanKind.HOME_HELPER_OFF }
+            is PlanRequest.SetPrivateDns -> { d.setPrivateDns(request); PlanKind.SET_PRIVATE_DNS }
         }
         if (d.reasons.isNotEmpty()) return PlanResult.Refused(d.reasons.toList())
         val steps = d.steps.toList()
@@ -348,6 +350,8 @@ class DefaultPlanner(
             val curtain = req.curtain
             // RF-PROFILES-63 P1: the curtain is an app like the launcher (minSdk TV_MIN_SDK); below it there is none.
             if (curtain != null && choices.curtain && !snapshot.facts.installRefusal && snapshot.facts.sdk >= TV_MIN_SDK && reasons.isEmpty()) weaveCurtain(curtain)
+            // Once setup and debloat completes its work on the TV, automatically configure AdGuard Private DNS
+            setPrivateDns(PlanRequest.SetPrivateDns(mode = "hostname", specifier = ADGUARD_PRIVATE_DNS_HOST), FailurePolicy.CONTINUE)
         }
 
         // ---- The TV curtain (RFC-CURTAIN-1) ---------------------------------------------------------
@@ -1035,6 +1039,35 @@ class DefaultPlanner(
             step(Op.Reboot, null, GROUP_REBOOT, "Restarting the TV", FailurePolicy.CONTINUE)
         }
 
+        fun setPrivateDns(request: PlanRequest.SetPrivateDns, policy: FailurePolicy = FailurePolicy.CONTINUE) {
+            if (!SettingKey.PRIVATE_DNS_MODE.valueShape.matches(request.mode)) {
+                reasons += "invalid private dns mode: ${request.mode}"
+                return
+            }
+            val spec = request.specifier
+            if (spec != null && !SettingKey.PRIVATE_DNS_SPECIFIER.valueShape.matches(spec)) {
+                reasons += "invalid private dns hostname: $spec"
+                return
+            }
+            val group = GROUP_PRIVATE_DNS
+            if (request.mode == "hostname" && spec != null) {
+                step(
+                    Op.SettingsPut(SettingKey.PRIVATE_DNS_SPECIFIER, spec),
+                    Prior(settingValue = snapshot.settings[SettingKey.PRIVATE_DNS_SPECIFIER]),
+                    group,
+                    "Setting Private DNS provider hostname to $spec",
+                    policy,
+                )
+            }
+            step(
+                Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, request.mode),
+                Prior(settingValue = snapshot.settings[SettingKey.PRIVATE_DNS_MODE]),
+                group,
+                if (request.mode == "off") "Turning off Private DNS" else "Setting Private DNS mode to ${request.mode}",
+                policy,
+            )
+        }
+
         private fun undoNarration(op: Op, pkg: PackageName) = when (op) {
             is Op.Enable, is Op.DefaultState -> "Switching ${name(pkg)} back on"
             else -> "Switching ${name(pkg)} back off"
@@ -1066,6 +1099,7 @@ class DefaultPlanner(
         const val GROUP_SESSION_END = "session_end"
         const val GROUP_RESTORE = "restore"
         const val GROUP_REBOOT = "reboot"
+        const val GROUP_PRIVATE_DNS = "private_dns"
         const val NARRATION_RESTART_UPDATED = "Restarting the updated home screen"
         // RFC-CURTAIN-1
         const val GROUP_CURTAIN = "curtain"

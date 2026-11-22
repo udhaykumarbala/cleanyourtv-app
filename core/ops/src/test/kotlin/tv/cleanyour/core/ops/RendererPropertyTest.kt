@@ -61,6 +61,8 @@ class RendererPropertyTest {
             SettingKey.SCREENSAVER_COMPONENTS, SettingKey.ENABLED_ACCESSIBILITY -> if (rnd.nextInt(4) == 0) null else componentList()
             SettingKey.ADB_ENABLED, SettingKey.ADB_WIFI_ENABLED -> "0"
             SettingKey.DEVICE_NAME -> if (rnd.nextInt(4) == 0) null else deviceName()
+            SettingKey.PRIVATE_DNS_MODE -> listOf("off", "opportunistic", "hostname", null)[rnd.nextInt(4)]
+            SettingKey.PRIVATE_DNS_SPECIFIER -> listOf("dns.adguard-dns.com", "one.one.one.one", null)[rnd.nextInt(3)]
         }
         return Op.SettingsPut(key, value)
     }

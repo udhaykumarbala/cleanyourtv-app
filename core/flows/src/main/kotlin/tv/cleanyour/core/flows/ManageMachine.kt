@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.model.DebugState
 import tv.cleanyour.core.model.Level
+import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.TvId
 import tv.cleanyour.core.planner.HomeHelper
 import tv.cleanyour.core.planner.PutBackAdvice
@@ -56,6 +57,8 @@ data class TvCard(
     // 0.4.8 (Restarts): what this phone counted across the TV's restarts, while the new home screen is on it; null
     // before the first read on a path (a TV never switched has none).
     val restarts: RestartTally? = null,
+    val privateDnsActive: Boolean = false,
+    val privateDnsHost: String? = null,
 )
 
 data class ManageState(
@@ -156,6 +159,8 @@ class ManageMachine(
                         stockHomeBack = d.stockHomeBacks[tv.id],
                         homeHelperOn = d.homeHelper && latest != null && HomeHelper.state(latest) == HomeHelper.State.ON,
                         restarts = attempt { d.restarts.load(tv.id) }.getOrNull()?.takeIf { it.path != null },
+                        privateDnsActive = latest?.settings?.get(SettingKey.PRIVATE_DNS_MODE) == "hostname",
+                        privateDnsHost = latest?.settings?.get(SettingKey.PRIVATE_DNS_SPECIFIER),
                     )
                 }
                 send(Loaded(cards))
