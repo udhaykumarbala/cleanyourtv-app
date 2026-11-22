@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import tv.cleanyour.core.engine.Engine
 import tv.cleanyour.core.engine.RunState
 import tv.cleanyour.core.model.ADGUARD_PRIVATE_DNS_HOST
+import tv.cleanyour.core.model.HOSTNAME_RE
 import tv.cleanyour.core.model.Level
 import tv.cleanyour.core.model.SettingKey
 import tv.cleanyour.core.model.TvId
@@ -34,6 +35,7 @@ sealed interface TvSettingsIntent {
     data object CancelForget : TvSettingsIntent
     data object Forget : TvSettingsIntent
     data object SetAdGuardDns : TvSettingsIntent
+    data class SetCustomPrivateDns(val hostname: String) : TvSettingsIntent
     data object TurnOffPrivateDns : TvSettingsIntent
 }
 
@@ -107,6 +109,12 @@ class TvSettingsMachine(
             TvSettingsIntent.Forget -> if (!before.forgetting) scope.launch { forget() }
             TvSettingsIntent.SetAdGuardDns -> if (!before.dnsBusy && !before.forgetting) scope.launch {
                 setPrivateDns("hostname", ADGUARD_PRIVATE_DNS_HOST)
+            }
+            is TvSettingsIntent.SetCustomPrivateDns -> if (!before.dnsBusy && !before.forgetting) scope.launch {
+                val host = event.hostname.trim()
+                if (host.isNotEmpty() && HOSTNAME_RE.matches(host)) {
+                    setPrivateDns("hostname", host)
+                }
             }
             TvSettingsIntent.TurnOffPrivateDns -> if (!before.dnsBusy && !before.forgetting) scope.launch {
                 setPrivateDns("off", null)

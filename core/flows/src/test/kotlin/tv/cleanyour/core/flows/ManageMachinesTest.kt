@@ -1204,6 +1204,20 @@ class ManageMachinesTest {
             assertEquals(ManageEffect.Snackbar(SnackKind.PRIVATE_DNS_OFF, "", false), awaitItem())
             assertFalse(m.state.value.isAdGuardDnsActive)
             assertEquals("off", m.state.value.privateDnsMode)
+
+            val customHost = "one.one.one.one"
+            h.respond(
+                PlanKind.SET_PRIVATE_DNS,
+                listOf(
+                    Op.SettingsPut(SettingKey.PRIVATE_DNS_SPECIFIER, customHost),
+                    Op.SettingsPut(SettingKey.PRIVATE_DNS_MODE, "hostname"),
+                ),
+            )
+            m.dispatch(TvSettingsIntent.SetCustomPrivateDns(customHost)); settle()
+            assertEquals(ManageEffect.Snackbar(SnackKind.PRIVATE_DNS_SAVED, customHost, false), awaitItem())
+            assertFalse(m.state.value.isAdGuardDnsActive)
+            assertEquals("hostname", m.state.value.privateDnsMode)
+            assertEquals(customHost, m.state.value.privateDnsSpecifier)
         }
     }
 }
