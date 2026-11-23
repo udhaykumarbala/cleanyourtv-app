@@ -1354,6 +1354,33 @@
         "com.android.providers.calendar": { "category": "other", "ask": true }
       }
     },
+    "nvidia-shield-tv-2015": {
+      "match": { "models": [], "devices": ["foster"], "brand": "NVIDIA", "sdkMin": 30, "sdkMax": 30, "fingerprintPrefix": null },
+      "platform": "ANDROID_TV",
+      "stockLaunchers": ["com.google.android.tvlauncher"],
+      "liveTv": null,
+      "setupWraith": null,
+      "quirks": [],
+      "neverDisable": ["com.google.android.tvrecommendations", "com.nvidia.shield.remote.server", "com.nvidia.blakepairing", "com.nvidia.bluetooth.ShieldBluetoothManager", "com.nvidia.shieldtech.accessoryui", "com.nvidia.ControllerMapper", "com.nvidia.remotelocator", "com.nvidia.irtuner", "com.nvidia.NvCPLSvc", "com.nvidia.nvaudiosvc", "com.nvidia.avsync", "com.nvidia.shieldservice", "com.nvidia.packagemanagerservice", "com.nvidia.ota", "com.nvidia.NvCPLUpdater", "com.nvidia.KeyComboOta", "com.nvidia.shield.appselector", "com.nvidia.shield.nas", "com.nvidia.shield.smbauth", "com.nvidia.shield.smbserver", "com.android.tv.settings", "com.android.providers.tv", "com.google.android.tv.remote.service", "com.google.android.tungsten.setupwraith", "com.android.se"],
+      "suggestedDock": [],
+      "tested": { "by": "OUTSIDE2k8", "firmware": "RQ1A.210105.003 (SHIELD Experience 9.2.x)", "daysLivedWith": null, "rebootTested": false },
+      "groups": {
+        "Batch 1: NVIDIA and Google telemetry and feedback": { "category": "tracking", "ask": false },
+        "Batch 2: sponsored rows, promos, auto-installs, gaming leftovers": { "category": "ads", "ask": false },
+        "Batch 3: factory and developer test tools (disabled, never launched)": { "category": "demo", "ask": false },
+        "Batch 4: idle background services": { "category": "other", "ask": false },
+        "Batch 5: apps the owner doesn't use": { "category": "streaming", "ask": true },
+        "Stock Android TV launcher: disabling it is what hands Home to the replacement launcher": { "category": "home", "ask": false }
+      },
+      "packages": {
+        "com.nvidia.shield.registration": { "category": "tracking", "ask": false },
+        "com.nvidia.shield.beta": { "category": "brand", "ask": false },
+        "com.nvidia.shieldbeta": { "category": "brand", "ask": false },
+        "com.nvidia.tegrazone3": { "category": "brand", "ask": false },
+        "com.android.printspooler": { "category": "preloads", "ask": false },
+        "com.google.android.play.games": { "category": "preloads", "ask": false }
+      }
+    },
     "nvidia-shield-tv-2017": {
       "match": { "models": [], "devices": ["darcy"], "brand": "NVIDIA", "sdkMin": 30, "sdkMax": 30, "fingerprintPrefix": null },
       "platform": "ANDROID_TV",
