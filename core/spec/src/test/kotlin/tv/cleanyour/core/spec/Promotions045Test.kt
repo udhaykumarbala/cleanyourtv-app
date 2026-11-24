@@ -76,6 +76,7 @@ class Promotions045Test {
     // Device darcy only: the Pro 2019 also reports the model "SHIELD Android TV" and keeps its own list.
     @Test fun nvidiaShieldTv2017() = check(
         facts("SHIELD Android TV", "darcy", "NVIDIA", 30, "NVIDIA/darcy/darcy:11/RQ1A.210105.003/13961458_4387.0822:user/release-keys") to "nvidia-shield-tv-2017", // #938
+        facts("SHIELD Android TV", "foster", "NVIDIA", 30, "NVIDIA/foster_e/foster:11/RQ1A.210105.003/13961456_4387.0822:user/release-keys") to "nvidia-shield-tv-2015",
         facts("SHIELD Android TV", "mdarcy", "NVIDIA", 30) to "nvidia-shield-tv-pro-2019",
         facts("SHIELD Android TV", "sif", "NVIDIA", 30) to "nvidia-shield-tv-2019",
     )
