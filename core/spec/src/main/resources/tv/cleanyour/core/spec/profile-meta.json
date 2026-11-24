@@ -11,7 +11,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter.plus"],
       "suggestedDock": [],
-      "tested": { "by": "Alefrankie (PR #233)", "firmware": "UKN6.260116.085", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Alefrankie (PR #233)", "firmware": "UKN6.260116.085", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and ad services": { "category": "tracking", "ask": false },
         "Content rows and partner junk": { "category": "ads", "ask": false },
@@ -38,7 +38,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.mediatek.wwtv.setupwizard"],
       "suggestedDock": [],
-      "tested": { "by": "Thiago Damas (PR #226)", "firmware": "UKNV.260603.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Thiago Damas (PR #226)", "firmware": "UKNV.260603.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Content recognition (reports what is on screen)": { "category": "tracking", "ask": false },
         "Ambient screensaver. Mixes recommendations into the backdrop.": { "category": "screensaver", "ask": true },
@@ -65,7 +65,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher"],
       "suggestedDock": [],
-      "tested": { "by": "GaneshVarma1", "firmware": "RS8185.3885N", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "GaneshVarma1", "firmware": "RS8185.3885N", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ads, content recognition, shopping": { "category": "ads", "ask": false },
         "Telemetry and metrics": { "category": "tracking", "ask": false },
@@ -85,7 +85,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.firehomestarter", "com.amazon.tv.ime", "com.amazon.venezia", "com.amazon.tigris", "com.amazon.vizzini", "com.amazon.tv.livetv", "com.amazon.tv.settings.v2", "com.mediatek.tvinput", "com.amazon.cast.sink", "com.apple.airplay.amazon.airplay", "com.amazon.wifilocker"],
       "suggestedDock": [],
-      "tested": { "by": "maxhayim (PR #394)", "firmware": "Fire OS 7.7.1.7 (PS7717.5741N)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "maxhayim (PR #394)", "firmware": "Fire OS 7.7.1.7 (PS7717.5741N)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Content recognition, telemetry and metrics": { "category": "tracking", "ask": false },
         "Ads, shopping, retail demo, tutorials": { "category": "ads", "ask": false },
@@ -120,7 +120,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.tv.ime", "com.amazon.venezia", "com.amazon.tigris", "com.amazon.vizzini", "com.amazon.logan"],
       "suggestedDock": [],
-      "tested": { "by": "IdentityDC (PR #195)", "firmware": "Fire OS 6.7.1.1 (NS6711/5908)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "IdentityDC (PR #195)", "firmware": "Fire OS 6.7.1.1 (NS6711/5908)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Amazon telemetry, metrics, logs, crash and usage reporting": { "category": "tracking", "ask": false },
         "Ads, sponsored rows, recommendations, promos": { "category": "ads", "ask": false },
@@ -158,7 +158,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.firehomestarter", "com.amazon.tv.ime", "com.amazon.venezia", "com.amazon.tigris", "com.amazon.vizzini", "com.amazon.logan", "com.amazon.tv.oobe", "com.amazon.tv.forcedotaupdater.v2", "com.amazon.firebat", "com.amazon.tv.support", "com.amazon.tv.matter", "com.amazon.tv.ottssocompanionapp", "com.amazon.imp", "com.amazon.adep", "com.amazon.platform.fdra", "com.amazon.tv.turnstile", "com.amazon.tv.consents", "com.amazon.ssm", "com.amazon.ssmsys", "com.amazon.tiramisubootsupport", "com.amazon.d3", "com.amazon.ftv.screensaver"],
       "suggestedDock": [],
-      "tested": { "by": "Mateus Lecchi (PR #466)", "firmware": "Fire OS 8.1.8.5 (RS8185.3891N)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Mateus Lecchi (PR #466)", "firmware": "Fire OS 8.1.8.5 (RS8185.3891N)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Amazon telemetry, metrics, logs, usage and location reporting": { "category": "tracking", "ask": false },
         "Ads, sponsored rows, recommendations, promos, shopping": { "category": "ads", "ask": false },
@@ -196,7 +196,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.tv.ime", "com.amazon.venezia", "com.amazon.tigris", "com.amazon.vizzini", "com.amazon.tv.settings.v2", "com.amazon.tv.oobe", "com.amazon.logan", "com.amazon.prism.android.service"],
       "suggestedDock": [],
-      "tested": { "by": "samoralespu (PR #493)", "firmware": "Fire OS 7.7.1.3 (PS7713.5443N)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "samoralespu (PR #493)", "firmware": "Fire OS 7.7.1.3 (PS7713.5443N)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Amazon telemetry, metrics, logs, usage reporting": { "category": "tracking", "ask": false },
         "Ads, sponsored rows, recommendations, promos, shopping": { "category": "ads", "ask": false },
@@ -225,7 +225,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.tv.ime", "com.amazon.venezia", "com.amazon.tigris", "com.amazon.vizzini", "com.amazon.tv.settings.v2", "com.amazon.tv.oobe", "com.amazon.logan", "com.amazon.prism.android.service"],
       "suggestedDock": [],
-      "tested": { "by": "kushc451 (PR #351)", "firmware": "Fire OS 7.7.1.7 (PS7717.5741N)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "kushc451 (PR #351)", "firmware": "Fire OS 7.7.1.7 (PS7717.5741N)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Amazon telemetry, metrics, logs, usage reporting": { "category": "tracking", "ask": false },
         "Ads, sponsored rows, recommendations, promos, shopping": { "category": "ads", "ask": false },
@@ -259,7 +259,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "EXTRA_HOME_CLAIMERS"],
       "neverDisable": ["com.cltv.hybrid", "com.cltv.mal", "com.mediatek.tis", "com.mediatek.dtv.tvinput.dvbtuner", "com.mediatek.tv.agent", "com.mediatek.extservice", "com.google.android.tv.inputplayer", "com.haier.appmanager.dispatcher", "com.haier.hkcfac", "com.haier.tv.hmagicboard", "com.mediatek.autopair", "com.haier.bt_pair_tips", "com.google.android.tv.googletvremotepairer", "com.telink.lt", "com.google.android.tv.remote.service", "mediatek.factorymenu.ui"],
       "suggestedDock": [],
-      "tested": { "by": "Randhi Pratama Putra (PR #1444)", "firmware": "UKN7.260716.049", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Randhi Pratama Putra (PR #1444)", "firmware": "UKN7.260716.049", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Haier content, IoT, cleaner, e-manual": { "category": "brand", "ask": false },
         "Telemetry, partner rows, retail demo, preloads": { "category": "tracking", "ask": false },
@@ -286,7 +286,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.autopair", "com.homwee.synckey"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "UKNV.260506.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "UKNV.260506.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Changhong / Homwee store and help": { "category": "brand", "ask": false },
         "Automatic content recognition (reports what is on screen)": { "category": "tracking", "ask": false },
@@ -307,7 +307,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.autopair", "com.homwee.synckey"],
       "suggestedDock": [],
-      "tested": { "by": "sorosora (PR #252)", "firmware": "RTM8.240401.136", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "sorosora (PR #252)", "firmware": "RTM8.240401.136", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Changhong / Homwee store and help": { "category": "brand", "ask": false },
         "Google TV recommendations and screensaver (set another screensaver first)": { "category": "preloads", "ask": false },
@@ -327,7 +327,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sdt.projector.observer", "com.sdt.customization", "com.sdt.globalkey", "com.mft.rcupair", "com.mft.frontpanelledsservice", "com.dolby.android.audio.service", "com.google.android.apps.mediashell", "com.sdt.ota"],
       "suggestedDock": [],
-      "tested": { "by": "mzet97 (PR #355)", "firmware": "UKG3.260128.001.C3.3.5_20260723", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "mzet97 (PR #355)", "firmware": "UKG3.260128.001.C3.3.5_20260723", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and remote management": { "category": "tracking", "ask": false },
         "Ads and personalization": { "category": "ads", "ask": false },
@@ -350,7 +350,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter"],
       "suggestedDock": [],
-      "tested": { "by": "Gonzalo Alonso Kitayama Pastor (PR #418)", "firmware": "UKNV.260304.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Gonzalo Alonso Kitayama Pastor (PR #418)", "firmware": "UKNV.260304.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Vestel telemetry, logging and \"cleaner\"": { "category": "tracking", "ask": false },
         "Google ads, personalisation and feedback": { "category": "tracking", "ask": false },
@@ -383,7 +383,7 @@
       "quirks": [],
       "neverDisable": ["com.cvte.tv.launcher", "com.cvte.tvservice", "com.cvte.tv.androidsetting", "com.mediatek.tv.agent"],
       "suggestedDock": [],
-      "tested": { "by": "xngxllw (PR #507)", "firmware": "NRD90M 1464 (V8-MT659CO-A18V015)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "xngxllw (PR #507)", "firmware": "NRD90M 1464 (V8-MT659CO-A18V015)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Factory test and diagnostic tools (CVTE & TCL ODM)": { "category": "demo", "ask": true },
         "Bloatware, cleaners, and third-party stores": { "category": "preloads", "ask": false },
@@ -413,7 +413,7 @@
       "quirks": [],
       "neverDisable": ["com.google.android.leanbacklauncher.partnercustomizer", "com.homwee.dmt.upgrade", "com.homwee.synckey", "com.homwee.factory"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "RTO2.250508.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "RTO2.250508.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry, ads and recommendation rows": { "category": "ads", "ask": false },
         "Vendor apps": { "category": "brand", "ask": false },
@@ -441,7 +441,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter.plus"],
       "suggestedDock": [],
-      "tested": { "by": "Mfolio (PR #133)", "firmware": "UKN2.241219.138.A1", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Mfolio (PR #133)", "firmware": "UKN2.241219.138.A1", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and ad services": { "category": "tracking", "ask": false },
         "Changhong / Homwee store and help": { "category": "brand", "ask": false },
@@ -465,7 +465,7 @@
       "quirks": [],
       "neverDisable": ["com.realtek.leanbacklauncher.partnercustomizer", "com.apps.smartkey", "com.apps.virtualkey", "com.apps.bluetoothremote", "com.functions.autopair", "com.apps.puresound", "com.apps.usbmediaplayer", "com.apps.ota", "com.apps.authota"],
       "suggestedDock": [],
-      "tested": { "by": "Ritik Sahni (PR #384)", "firmware": "PTT1.201001.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Ritik Sahni (PR #384)", "firmware": "PTT1.201001.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "SCBC / Google telemetry and feedback": { "category": "tracking", "ask": false },
         "Content rows, promos and auto-installs": { "category": "ads", "ask": false },
@@ -491,7 +491,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "fusion.android.tv.demo", "mediatek.factorymenu.ui"],
       "suggestedDock": [],
-      "tested": { "by": "Francisco Rodrigues (PR #440)", "firmware": "UKNV.260415.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Francisco Rodrigues (PR #440)", "firmware": "UKNV.260415.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: telemetry, ads and partner plumbing": { "category": "tracking", "ask": false },
         "Batch 2: background services and preloads": { "category": "preloads", "ask": false },
@@ -517,7 +517,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED"],
       "neverDisable": ["com.epson", "com.epson.droidsettings", "com.epson.flexiblepicture", "com.epson.installation", "com.epson.visualization", "com.epson.warningui", "com.epson.bizmodeui", "com.epson.logcollection", "com.droidlogic.tv.extras", "com.droidlogic.tvinput", "com.droidlogic.android.tv", "com.droidlogic.tv.settings", "com.epson.fwupdate", "com.droidlogic.updater", "com.askey.autousbota", "com.google.android.youtube.tvmusic", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
-      "tested": { "by": "Adam Hansen (PR #784)", "firmware": "UKG3.250826.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Adam Hansen (PR #784)", "firmware": "UKG3.250826.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: telemetry": { "category": "tracking", "ask": false },
         "Batch 2: ads and content plumbing": { "category": "ads", "ask": false },
@@ -538,7 +538,7 @@
       "quirks": ["SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["com.tcl.cyberui", "com.tcl.tv", "com.tcl.settings", "com.tcl.systemserver", "com.tcl.ttvs", "com.tcl.TFDS.service", "com.sohu.inputmethod.sogou.tv", "com.tcl.appmarket2", "com.tcl.guard", "com.tcl.ui_mediaCenter", "com.tcl.autopair", "com.tcl.tcl_bt_rcu_service", "com.tcl.providers.config", "com.tcl.initsetup", "com.android.packageinstaller"],
       "suggestedDock": [],
-      "tested": { "by": "codertesla (PR #335)", "firmware": "RQ3A.210705.001/2026012200", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "codertesla (PR #335)", "firmware": "RQ3A.210705.001/2026012200", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ad and telemetry reporting (tested on tcl-q10g-pro, same firmware)": { "category": "tracking", "ask": false },
         "Content apps with their own promo surfaces": { "category": "preloads", "ask": false },
@@ -570,7 +570,7 @@
       "quirks": [],
       "neverDisable": ["net.oqee.launcher", "net.oqee.androidtv", "org.dtvkit.inputsource", "fr.freebox.fbxdtvkit", "com.nes.dtvkitdatabackup", "com.nes.blerc", "fr.freebox.bleirlearner", "com.nes.tvglobalkeyhandler", "com.nes.freeboxburnkey", "fr.freebox.fbx8am.externalauth", "fr.freebox.fbxservices", "fr.freebox.fbx8lc.canalsubscriptionservice", "fr.freebox.fbx8lc.fbxcustomization", "fr.freebox.fbxshortcutsettings", "fr.freebox.fbx8lc.fbxupdater", "com.nes.remoteota.one", "com.nes.remoteota.three", "com.google.android.apps.mediashell"],
       "suggestedDock": [],
-      "tested": { "by": "malo-gx (PR #366)", "firmware": "QTT8.201201.002.v10.5.66", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "malo-gx (PR #366)", "firmware": "QTT8.201201.002.v10.5.66", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and log collection": { "category": "tracking", "ask": false },
         "Ads, recommendations and partner auto-installs": { "category": "ads", "ask": false },
@@ -596,7 +596,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.google.android.tv.dfuservice"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "UTTC.250917.004", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "UTTC.250917.004", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry, feedback and ads": { "category": "tracking", "ask": false },
         "The next four are Privacy Sandbox / federated-learning Mainline modules: worked here, re-enable if": { "category": "ads", "ask": false },
@@ -620,7 +620,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.google.android.tv.dfuservice", "com.google.android.tv.axel", "com.netflix.tokenmanager"],
       "suggestedDock": [],
-      "tested": { "by": "timhayford", "firmware": "UTTC.250917.004", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "timhayford", "firmware": "UTTC.250917.004", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry, feedback and ads": { "category": "tracking", "ask": false },
         "The next four are Privacy Sandbox / federated-learning Mainline modules: worked here, re-enable if": { "category": "ads", "ask": false },
@@ -645,7 +645,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.google.android.apps.mediashell", "com.google.android.tv.remote.service", "com.google.android.tv.dfuservice", "com.google.android.tv.overlay.dfuservice"],
       "suggestedDock": [],
-      "tested": { "by": "Pablo (PR #501)", "firmware": "UTTK.260317.003", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Pablo (PR #501)", "firmware": "UTTK.260317.003", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry, feedback and ads": { "category": "tracking", "ask": false },
         "The next four are Privacy Sandbox / federated-learning Mainline modules: worked here, re-enable if": { "category": "ads", "ask": false },
@@ -669,7 +669,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Manjunathan (PR #296)", "firmware": "RTMA.250416.179", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Manjunathan (PR #296)", "firmware": "RTMA.250416.179", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Content recognition and retail demo": { "category": "tracking", "ask": false },
         "Haier telemetry, share, and content apps": { "category": "brand", "ask": true },
@@ -696,7 +696,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "devilnaked (PR #267)", "firmware": "UKNV.260302.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "devilnaked (PR #267)", "firmware": "UKNV.260302.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Haier / partner telemetry and IoT": { "category": "tracking", "ask": false },
         "Haier content and ads on the stock home": { "category": "ads", "ask": false },
@@ -722,7 +722,7 @@
       "quirks": [],
       "neverDisable": ["com.jamdeo.tv.vod", "com.jamdeo.tv.livetv", "com.jamdeo.tv.service", "com.hisense.tv.inputs", "com.hisense.tv.baseservice", "com.hisense.tv.tiletransition", "com.hisense.bluetoothpair", "com.sohu.inputmethod.sogou.tv", "com.hisense.padinputmethod", "com.hisense.raycodereceiver", "com.hisense.uifac", "com.hisense.systeminfo", "com.hisense.hiservice", "com.hisense.aiod", "com.hisense.aiservice", "com.keylab.speech.core.vidaa", "com.vt.mic.service", "com.vt.point.remoteservice", "com.dolby.android.audio.service", "com.dolby.android.audio.calibration", "com.jamdeo.updateservice", "com.hisense.playerupdate", "com.hisense.usbupgrade"],
       "suggestedDock": [],
-      "tested": { "by": "nzjiance2 (PR #358)", "firmware": "02.02.70.01", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "nzjiance2 (PR #358)", "firmware": "02.02.70.01", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Hisense advertising": { "category": "ads", "ask": false },
         "Hisense telemetry and reporting": { "category": "tracking", "ask": false },
@@ -745,7 +745,7 @@
       "quirks": ["REENABLED_AT_BOOT"],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.firehomestarter", "com.amazon.tv.livetv", "com.amazon.tv.settings.v2", "com.amazon.tv.quicksettings", "com.amazon.tv.ime", "com.amazon.tv.inputpreference.service", "com.amazon.ftvads.deeplinking", "com.amazon.device.crashmanager"],
       "suggestedDock": [],
-      "tested": { "by": "Amey Arya (PR #545), Mimoh Solanki (PR #572)", "firmware": "Fire OS 8.0 (RS8180.3734N)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Amey Arya (PR #545), Mimoh Solanki (PR #572)", "firmware": "Fire OS 8.0 (RS8180.3734N)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ads, shopping and content recognition": { "category": "ads", "ask": false },
         "Telemetry and metrics": { "category": "tracking", "ask": false },
@@ -770,7 +770,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.hisense.tv.hitvinput"],
       "suggestedDock": [],
-      "tested": { "by": "Tanner Powell (PR #100)", "firmware": "PTMR.190127.037", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Tanner Powell (PR #100)", "firmware": "PTMR.190127.037", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Hisense telemetry and viewing-data collection": { "category": "tracking", "ask": false },
         "Hisense promos, cleaners, demo, business mode": { "category": "demo", "ask": false },
@@ -806,7 +806,7 @@
       "quirks": ["SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter"],
       "suggestedDock": [],
-      "tested": { "by": "Prateek Jain (PR #184)", "firmware": "PTMR.190127.037 (01.00.00.04)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Prateek Jain (PR #184)", "firmware": "PTMR.190127.037 (01.00.00.04)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Group 1: telemetry": { "category": "tracking", "ask": false },
         "Group 2: recommendation rows, retail demo, silent preload installs": { "category": "ads", "ask": false },
@@ -833,7 +833,7 @@
       "quirks": ["SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter"],
       "suggestedDock": [],
-      "tested": { "by": "vcheckk (PR #262)", "firmware": "RTT2.221108.001 (00.00.00.18)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "vcheckk (PR #262)", "firmware": "RTT2.221108.001 (00.00.00.18)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Group 1: telemetry, ACR and tracking": { "category": "tracking", "ask": false },
         "Group 2: promo content, retail and commercial modes, Hisense preloads": { "category": "ads", "ask": false },
@@ -858,7 +858,7 @@
       "quirks": ["SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["com.hisense.tv.smartsense", "com.vt.tv.smartsense.ui", "com.vt.tv.aiot", "com.mediatek.wwtv.tvcenter", "com.hisense.tv.hitvinput", "com.hisense.tv.smartservice", "com.vidaa.persistent.service", "com.hisense.tv.customerlauncher"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "QTG3.200902.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "QTG3.200902.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Hisense telemetry: ACR (\"Enhanced Viewing\" content recognition and data-sharing consent)": { "category": "tracking", "ask": false },
         "Hisense content, preloads and push messages": { "category": "preloads", "ask": false },
@@ -891,7 +891,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.hisense.tv.smartsense", "com.vt.tv.smartsense.ui", "com.vt.tv.aiot", "com.mediatek.wwtv.tvcenter", "com.hisense.tv.hitvinput", "com.mediatek.tv.service", "com.hisense.tv.smartservice", "com.hisense.tv.customerlauncher", "com.vt.tv.input", "com.hisense.tv.protector"],
       "suggestedDock": [],
-      "tested": { "by": "Ansh Walia", "firmware": "RTT2.220118.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Ansh Walia", "firmware": "RTT2.220118.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Retail / store demo": { "category": "demo", "ask": false },
         "First-time experience (setup already complete)": { "category": "other", "ask": false },
@@ -910,7 +910,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.hisense.tv.smartsense", "com.vt.tv.smartsense.ui", "com.vt.tv.aiot"],
       "suggestedDock": [],
-      "tested": { "by": "Suuuiii", "firmware": "STT2.230929.001.092", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Suuuiii", "firmware": "STT2.230929.001.092", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Hisense telemetry": { "category": "tracking", "ask": false },
         "Google tracking and feedback": { "category": "tracking", "ask": false },
@@ -937,7 +937,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.vt.tv.smartsense", "com.vt.tv.smartsense.ui", "com.vt.tv.ai_sense", "com.vt.tv.aiot", "com.vt.tv.aiotprotocolapp", "com.vt.tv.aiotsystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "Charles Zwicker (PR #235)", "firmware": "STT2.230310.002", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Charles Zwicker (PR #235)", "firmware": "STT2.230310.002", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Hisense ACR: automatic content recognition, the codePath is literally Vtp_ACR": { "category": "tracking", "ask": false },
         "Hisense content, preloads and promo surfaces": { "category": "ads", "ask": false },
@@ -970,7 +970,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "fusion.android.tv.demo"],
       "suggestedDock": [],
-      "tested": { "by": "adrian jurcevic (PR #144)", "firmware": "RTO8.250915.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "adrian jurcevic (PR #144)", "firmware": "RTO8.250915.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: telemetry, ads and recommendation rows": { "category": "ads", "ask": false },
         "Batch 2: background services and preloaded apps": { "category": "preloads", "ask": false },
@@ -1027,7 +1027,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.livetv", "com.amazon.tv.quicksettings", "com.amazon.tv.settings.v2", "com.amazon.tv.launcher", "com.amazon.firehomestarter"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PS7715.5585N", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PS7715.5585N", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Amazon telemetry, ACR & analytics": { "category": "tracking", "ask": false },
         "Sponsored ads, shopping & home screen recommendations": { "category": "ads", "ask": false },
@@ -1079,7 +1079,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.jmgo.hippo", "com.jmgo.autofocus", "com.jmgo.tofautofocus", "com.jmgo.autokeystone", "com.jmgo.dewarping", "com.jmgo.ptz", "com.jmgo.autobrightness", "com.jmgo.a2dpsinkservice", "com.jmgo.android.tv.globalkeyoverlay", "com.jmgo.remotecontrolota", "com.jmgo.factory", "com.jmgo.update", "com.softwinner.tvremoteserver"],
       "suggestedDock": [],
-      "tested": { "by": "spikeganush (PR #284)", "firmware": "UKNV.260401.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "spikeganush (PR #284)", "firmware": "UKNV.260401.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "JMGO telemetry": { "category": "tracking", "ask": false },
         "JMGO extras": { "category": "brand", "ask": true },
@@ -1105,7 +1105,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "fusion.android.tv.demo", "com.mediatek.tvinput", "com.mediatek.autopair", "mediatek.factorymenu.ui", "com.vestel.tv.keycontroller", "com.vestel.tv.backlight", "com.vestel.tv.eib", "com.vestel.tv.rcupdater", "com.vestel.tv.websocketservice", "com.google.android.apps.mediashell", "com.google.android.tts"],
       "suggestedDock": [],
-      "tested": { "by": "Mariano Baldovino (PR #492)", "firmware": "RTM7.230903.063", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Mariano Baldovino (PR #492)", "firmware": "RTM7.230903.063", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Vestel telemetry and \"cleaner\"": { "category": "tracking", "ask": false },
         "Google/partner attribution, feedback, auto-installs, setup leftovers": { "category": "tracking", "ask": false },
@@ -1161,7 +1161,7 @@
       "quirks": [],
       "neverDisable": ["com.android.sdksandbox", "com.apps.ota", "com.apps.authota", "com.realsil.ota", "com.apps.sys", "com.mk.service.tvmidware", "com.apps.android.globalkeyhandler", "com.apps.virtualkey", "com.mk.tv.fivekey", "com.apps.smartkey", "com.realtek.keyinterceptserver", "com.apps.bluetoothremote", "com.realtek.tv", "com.realtek.tv.atv", "com.realtek.dtv", "com.realtek.dtmb"],
       "suggestedDock": [],
-      "tested": { "by": "samoralespu (PR #478)", "firmware": "UKR1.250803 (2501)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "samoralespu (PR #478)", "firmware": "UKR1.250803 (2501)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry": { "category": "tracking", "ask": false },
         "Android ad and personalisation services": { "category": "tracking", "ask": false },
@@ -1183,7 +1183,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "STOCK_LAUNCHER_KEEP_ENABLED"],
       "neverDisable": ["com.realtek.dtv", "com.realtek.tv.atv", "com.realtek.tv", "com.apps.ota", "com.apps.authota", "com.realsil.ota", "com.google.android.apps.tv.launcherx", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
-      "tested": { "by": "Keneth Lallemand (PR #266)", "firmware": "UKR1.260612.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Keneth Lallemand (PR #266)", "firmware": "UKR1.260612.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Google partner setup and store plumbing": { "category": "tracking", "ask": false },
         "Preloaded services": { "category": "other", "ask": true },
@@ -1207,7 +1207,7 @@
       "quirks": [],
       "neverDisable": ["com.smartdevice.livetv", "com.mediatek.tvinput", "com.mediatek.wwtv.setupwizard", "com.smartdevice.duplebluetooth", "com.smartdevice.dtv.icast", "com.smartdevice.tvworkwithalexa", "com.tianci.localmedia", "com.graymatrix.did"],
       "suggestedDock": [],
-      "tested": { "by": "7H-ANKUR", "firmware": "QTG3.200617.002", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "7H-ANKUR", "firmware": "QTG3.200617.002", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth content, ads and preloads": { "category": "ads", "ask": false },
         "India-specific preloads (never asked for)": { "category": "preloads", "ask": false },
@@ -1233,7 +1233,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.homwee.factory", "com.homwee.dynamicbacklight", "com.mediatek.tv.service", "com.mediatek.tvinput", "com.mediatek.wwtv.tvcenter", "com.mediatek.wwtv.tvcenter.plus", "com.gdch.android.tv.inputplayer"],
       "suggestedDock": [],
-      "tested": { "by": "Hans Jakob Emmel (PR #541)", "firmware": "UKN3.250415.047.A1", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Hans Jakob Emmel (PR #541)", "firmware": "UKN3.250415.047.A1", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and ad services": { "category": "tracking", "ask": false },
         "Changhong / Homwee store and help": { "category": "brand", "ask": false },
@@ -1255,7 +1255,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.realtek.tv", "com.realtek.tv.passthrough", "com.realtek.systemservice", "com.kgzn.tvfactory", "com.google.android.apps.mediashell"],
       "suggestedDock": [],
-      "tested": { "by": "Subramanya GB (PR #988)", "firmware": "UKRA.251202.032", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Subramanya GB (PR #988)", "firmware": "UKRA.251202.032", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ad tracking / Privacy Sandbox": { "category": "tracking", "ask": false },
         "Retail demo + regional / unused preloads": { "category": "preloads", "ask": false },
@@ -1312,7 +1312,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.cltv.hybrid", "com.mediatek.tvinput"],
       "suggestedDock": [],
-      "tested": { "by": "mandipkumarkanu (PR #445)", "firmware": "UKN4.250714.138", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "mandipkumarkanu (PR #445)", "firmware": "UKN4.250714.138", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth telemetry and activation": { "category": "tracking", "ask": false },
         "Android ad and personalisation services": { "category": "tracking", "ask": false },
@@ -1337,7 +1337,7 @@
       "quirks": [],
       "neverDisable": ["com.google.android.leanbacklauncher.partnercustomizer"],
       "suggestedDock": [],
-      "tested": { "by": "pkia (PR #341)", "firmware": "RTO8.250807.002", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "pkia (PR #341)", "firmware": "RTO8.250807.002", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Google launcher ad/recommendation services (launcher itself is disabled by build-and-install.sh)": { "category": "ads", "ask": false },
         "Google telemetry and ambient ads": { "category": "tracking", "ask": false },
@@ -1363,7 +1363,7 @@
       "quirks": [],
       "neverDisable": ["com.google.android.tvrecommendations", "com.nvidia.shield.remote.server", "com.nvidia.blakepairing", "com.nvidia.bluetooth.ShieldBluetoothManager", "com.nvidia.shieldtech.accessoryui", "com.nvidia.ControllerMapper", "com.nvidia.remotelocator", "com.nvidia.irtuner", "com.nvidia.NvCPLSvc", "com.nvidia.nvaudiosvc", "com.nvidia.avsync", "com.nvidia.shieldservice", "com.nvidia.packagemanagerservice", "com.nvidia.ota", "com.nvidia.NvCPLUpdater", "com.nvidia.KeyComboOta", "com.nvidia.shield.appselector", "com.nvidia.shield.nas", "com.nvidia.shield.smbauth", "com.nvidia.shield.smbserver", "com.android.tv.settings", "com.android.providers.tv", "com.google.android.tv.remote.service", "com.google.android.tungsten.setupwraith", "com.android.se"],
       "suggestedDock": [],
-      "tested": { "by": "OUTSIDE2k8", "firmware": "RQ1A.210105.003 (SHIELD Experience 9.2.x)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "OUTSIDE2k8", "firmware": "RQ1A.210105.003 (SHIELD Experience 9.2.x)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: NVIDIA and Google telemetry and feedback": { "category": "tracking", "ask": false },
         "Batch 2: sponsored rows, promos, auto-installs, gaming leftovers": { "category": "ads", "ask": false },
@@ -1425,7 +1425,7 @@
       "quirks": [],
       "neverDisable": ["com.nvidia.blakepairing", "com.nvidia.shieldtech.accessoryui", "com.nvidia.ControllerMapper", "com.nvidia.remotelocator", "com.nvidia.irtuner", "com.nvidia.NvCPLSvc", "com.nvidia.nvaudiosvc", "com.nvidia.avsync", "com.dolby.android.audio.service", "com.nvidia.packagemanagerservice", "com.android.tv.settings", "com.android.providers.tv", "com.google.android.tv.remote.service", "com.google.android.tungsten.setupwraith", "com.android.se"],
       "suggestedDock": [],
-      "tested": { "by": "xbsheng (PR #314), reported by geekitup (issue #312)", "firmware": "RQ1A.210105.003 (SHIELD Experience 9.2.4)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "xbsheng (PR #314), reported by geekitup (issue #312)", "firmware": "RQ1A.210105.003 (SHIELD Experience 9.2.4)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "NVIDIA and Google telemetry and feedback": { "category": "tracking", "ask": false },
         "Sponsored rows, promos and auto-installs": { "category": "ads", "ask": false },
@@ -1462,7 +1462,7 @@
       "quirks": [],
       "neverDisable": ["com.nvidia.blakepairing", "com.nvidia.shieldtech.accessoryui", "com.nvidia.ControllerMapper", "com.nvidia.remotelocator", "com.nvidia.irtuner", "com.nvidia.NvCPLSvc", "com.nvidia.nvaudiosvc", "com.nvidia.avsync", "com.dolby.android.audio.service", "com.nvidia.shieldservice", "com.nvidia.packagemanagerservice", "com.nvidia.KeyComboOta", "com.android.tv.settings", "com.android.providers.tv", "com.google.android.tv.remote.service", "com.google.android.tungsten.setupwraith", "com.android.se"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "9.2.4 (33.2.0.400)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "9.2.4 (33.2.0.400)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "NVIDIA and Google telemetry and feedback": { "category": "tracking", "ask": false },
         "Sponsored rows and auto-installs": { "category": "ads", "ask": false },
@@ -1481,7 +1481,7 @@
       "quirks": [],
       "neverDisable": ["com.google.android.leanbacklauncher.partnercustomizer", "com.homwee.dmt.upgrade", "com.homwee.synckey", "com.homwee.factory", "com.mediatek.wwtv.tvcenter", "com.mediatek.tvinput", "com.mediatek.tv.service", "com.mediatek.autopair", "com.mediatek.wwtv.setupwizard", "com.mstar.android.tv.disclaimercustomization"],
       "suggestedDock": [],
-      "tested": { "by": "Stefano Bichicchi", "firmware": "RTO2.250804.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Stefano Bichicchi", "firmware": "RTO2.250804.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: telemetry, ads and recommendation rows": { "category": "tracking", "ask": false },
         "Batch 2: vendor and preloaded apps": { "category": "preloads", "ask": false },
@@ -1512,7 +1512,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.tvinput", "com.mediatek.tv.agent", "com.heytap.tv.support", "com.mediatek.tvinputservice.arbitratorservice", "com.heytap.tvapiservice", "com.heytap.tv.livetv", "com.oneplus.tv.remote", "com.mediatek.hotkey.dispatcher", "com.mstar.netflixobserver", "com.google.android.katniss", "com.oneplus.tv.systemupgrade", "com.heytap.oprcupgradeservice", "com.heytap.optvfactory", "com.oneplus.tv.factory", "com.mediatek.android.leanbacklauncher.partnercustomizer", "com.oneplus.tv.launcher", "com.heytap.tv.remotediagnosing"],
       "suggestedDock": [],
-      "tested": { "by": "Shubham Jain (PR #1043)", "firmware": "QTG3.201207.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Shubham Jain (PR #1043)", "firmware": "QTG3.201207.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and diagnostics": { "category": "tracking", "ask": false },
         "OnePlus content, recommendation rows, auto-installs and preloaded extras": { "category": "ads", "ask": false },
@@ -1547,7 +1547,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.tvinput", "com.mediatek.tv.agent", "com.mediatek.tvinputservice.arbitratorservice", "com.oneplus.tv.android.livetv", "com.oneplus.tv.remote", "com.mediatek.hotkey.dispatcher", "com.android.tv.optvsettingsmanager", "com.oneplus.tv.quicksettings", "com.oneplus.tv.systemupgrade", "com.heytap.oprcupgradeservice", "com.google.android.katniss", "com.google.android.apps.mediashell", "mediatek.factorymenu.ui", "com.mediatek.tv.factory", "com.google.android.leanbacklauncher.partnercustomizer", "com.oneplus.tv.launcher", "com.oneplus.oobe.tv"],
       "suggestedDock": [],
-      "tested": { "by": "Quickfever (PR #1404)", "firmware": "RTM5.220609.299", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Quickfever (PR #1404)", "firmware": "RTM5.220609.299", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and background services": { "category": "tracking", "ask": false },
         "OnePlus content, recommendation rows and auto-installs": { "category": "ads", "ask": false }
@@ -1573,7 +1573,7 @@
       "quirks": [],
       "neverDisable": ["com.heytap.optvfactory", "com.oneplus.tv.factory", "com.heytap.oprcupgradeservice"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "UTT1.240928.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "UTT1.240928.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Google telemetry": { "category": "tracking", "ask": false },
         "OnePlus / HeyTap extras": { "category": "brand", "ask": false },
@@ -1623,7 +1623,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.google.android.tv.remote.service", "com.google.android.katniss", "com.onn.updatenotification", "com.google.android.tv.dfuservice", "com.gretzky.GlobalKey", "com.onn.bluetoothconnect", "com.google.android.tv.axel"],
       "suggestedDock": [],
-      "tested": { "by": "Alightsole (PR #443)", "firmware": "URO4.260304.011.B1.15051976", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Alightsole (PR #443)", "firmware": "URO4.260304.011.B1.15051976", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and feedback": { "category": "tracking", "ask": false },
         "Privacy Sandbox / federated learning. APEX modules here, under com.android.* names (com.google.android.": { "category": "tracking", "ask": false },
@@ -1647,7 +1647,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.gretzky.GlobalKey", "com.gretzky.hwinfo", "com.onn.bluetoothconnect", "com.onn.updatenotification", "com.google.android.tv.dfuservice", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "shuklamrajat (PR #270, PR #393)", "firmware": "URO4.260304.011.B1.15051976", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "shuklamrajat (PR #270, PR #393)", "firmware": "URO4.260304.011.B1.15051976", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and feedback": { "category": "tracking", "ask": false },
         "Preloaded apps": { "category": "preloads", "ask": false },
@@ -1668,7 +1668,7 @@
       "quirks": [],
       "neverDisable": ["com.smartdevice.livetv", "com.mediatek.tvinput", "com.mediatek.tv.agent", "com.mediatek.tv.service", "com.mediatek.network", "com.mediatek.hotkey.dispatcher", "com.mediatek.OledFuctionService", "com.mediatek.partner.netflix", "com.mstar.netflixobserver", "com.smartdevice.duplebluetooth", "com.smartdevice.factory", "com.google.android.tungsten.setupwraith", "com.google.android.tv.remote.service", "com.google.android.leanbacklauncher.partnercustomizer"],
       "suggestedDock": [],
-      "tested": { "by": "Caesar (PR #346)", "firmware": "QTG3.200617.002", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Caesar (PR #346)", "firmware": "QTG3.200617.002", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth retail demo, shop promos, auto-installs and first-run leftovers": { "category": "demo", "ask": false },
         "Skyworth content, ads and telemetry": { "category": "ads", "ask": false },
@@ -1712,7 +1712,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.google.android.leanbacklauncher.partnercustomizer"],
       "suggestedDock": [],
-      "tested": { "by": "KimiWang2046 (PR #142)", "firmware": "4.501 / RTM2.210929.137", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "KimiWang2046 (PR #142)", "firmware": "4.501 / RTM2.210929.137", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Google telemetry / setup leftovers": { "category": "tracking", "ask": false },
         "Recommendation and content services": { "category": "ads", "ask": false },
@@ -1741,7 +1741,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.google.android.leanbacklauncher.partnercustomizer"],
       "suggestedDock": [],
-      "tested": { "by": "Afif Zafri (PR #250)", "firmware": "RTO9.240708.002", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Afif Zafri (PR #250)", "firmware": "RTO9.240708.002", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth auto-installs, shop demo and setup leftovers": { "category": "demo", "ask": false },
         "Telemetry and background services": { "category": "tracking", "ask": false },
@@ -1769,7 +1769,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.mediatek.tvinput", "com.mediatek.tv.service", "org.droidtv.eum", "org.droidtv.nettvregistration", "org.droidtv", "org.droidtv.icp", "com.android.tv.ota", "com.mediatek.wwtv.mediaplayer"],
       "suggestedDock": [],
-      "tested": { "by": "Juan Caceres", "firmware": "RTM2.210929.098", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Juan Caceres", "firmware": "RTM2.210929.098", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TPV / Philips telemetry": { "category": "tracking", "ask": false },
         "Philips content, store and demo": { "category": "ads", "ask": false },
@@ -1797,7 +1797,7 @@
       "quirks": ["SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["org.droidtv.playtv", "org.droidtv.xtv", "org.droidtv.xtvsystem", "org.droidtv.channels", "org.droidtv.hdmiservice", "org.droidtv.tv.tptvservice", "org.droidtv.tvsystemui", "org.droidtv.tvpowermanagerservice", "org.droidtv.GlobalKey", "org.droidtv.settings", "org.droidtv.homeintentresolver", "org.droidtv.eum", "org.droidtv.aurora", "org.droidtv.nettvbrowser", "com.vewd.core.browserui", "org.droidtv.contentexplorer", "org.droidtv.oad", "com.easy.oad", "org.droidtv.networkwizard", "org.droidtv.nettvregistration", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "Artem Veikus (PR #178)", "firmware": "RTT2.211108.001 (21029)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Artem Veikus (PR #178)", "firmware": "RTT2.211108.001 (21029)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TP Vision telemetry. org.droidtv.gel runs inside the candeebug process": { "category": "tracking", "ask": false },
         "Philips content promos and the app gallery": { "category": "ads", "ask": false },
@@ -1839,7 +1839,7 @@
       "quirks": ["SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["org.droidtv.playtv", "org.droidtv.xtv", "org.droidtv.xtvsystem", "org.droidtv.channels", "org.droidtv.hdmiservice", "org.droidtv.tv.tptvservice", "org.droidtv.tvsystemui", "org.droidtv.tvpowermanagerservice", "org.droidtv.GlobalKey", "org.droidtv.settings", "org.droidtv.homeintentresolver", "org.droidtv.eum", "org.droidtv.aurora", "org.droidtv.nettvbrowser", "com.vewd.core.browserui", "org.droidtv.contentexplorer", "org.droidtv.oad", "com.easy.oad", "org.droidtv.networkwizard", "org.droidtv.nettvregistration", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "Oliver Roberts (PR #285)", "firmware": "RTT2.211108.001 (21029)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Oliver Roberts (PR #285)", "firmware": "RTT2.211108.001 (21029)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TP Vision telemetry, as in 50PUS8517. Disable candeebug and gel together.": { "category": "tracking", "ask": false },
         "Philips content promos and the app gallery": { "category": "ads", "ask": false },
@@ -1874,7 +1874,7 @@
       "quirks": [],
       "neverDisable": ["org.droidtv.playtv"],
       "suggestedDock": [],
-      "tested": { "by": "Riku Pirttinokka (PR #295, PR #483)", "firmware": "TPM171E_R.107.001.143.000", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Riku Pirttinokka (PR #295, PR #483)", "firmware": "TPM171E_R.107.001.143.000", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Google feedback, tutorials and recommendation rows (same as philips-55pus7503)": { "category": "ads", "ask": false },
         "Philips promotion and telemetry": { "category": "tracking", "ask": false },
@@ -1905,7 +1905,7 @@
       "quirks": [],
       "neverDisable": ["org.droidtv.playtv", "org.droidtv.xtv", "org.droidtv.channels", "org.droidtv.hdmiservice", "org.droidtv.tv.tptvservice", "org.droidtv.tvsystemui", "org.droidtv.tvpowermanagerservice", "org.droidtv.GlobalKey", "org.droidtv.settings", "org.droidtv.homeintentresolver", "org.droidtv.eum", "org.droidtv.aurora", "org.droidtv.nettvbrowser", "com.vewd.core.browserui", "org.droidtv.contentexplorer", "org.droidtv.oad", "com.easy.oad", "org.droidtv.networkwizard", "org.droidtv.nettvregistration", "com.google.android.tv.remote.service", "org.droidtv.fastip", "org.droidtv.exoplayerservice", "org.droidtv.usbbreakin", "org.droidtv.dlna", "org.droidtv.ambihuecommon", "com.mediatek.backgrounddetection"],
       "suggestedDock": [],
-      "tested": { "by": "Martin Horsk\u00fd (PR #439)", "firmware": "STT2.230526.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Martin Horsk\u00fd (PR #439)", "firmware": "STT2.230526.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TP Vision telemetry. org.droidtv.gel runs inside the candeebug process. 17 TV components bind": { "category": "tracking", "ask": false },
         "Philips content promos and the app gallery. Nothing persistent binds these; nettvrecommender is": { "category": "ads", "ask": false },
@@ -1931,7 +1931,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["org.droidtv.playtv", "org.droidtv.xtv", "org.droidtv.xtvsystem", "org.droidtv.channels", "org.droidtv.hdmiservice", "org.droidtv.tv.tptvservice", "org.droidtv.tvsystemui", "org.droidtv.tvpowermanagerservice", "org.droidtv.GlobalKey", "org.droidtv.homeintentresolver", "org.droidtv.upgradeapp", "com.mediatek.tv.agent", "com.mediatek.tv.systemupdater", "com.google.android.katniss", "com.google.android.apps.mediashell", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "Nefritor (PR #1631)", "firmware": "UKN2.241117.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Nefritor (PR #1631)", "firmware": "UKN2.241117.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: vendor analytics, retail demo, auto-installs and apps the owner does not use.": { "category": "preloads", "ask": true },
         "Batch 2: background services that run all day and that this owner does not use (about 100 MB of RAM back).": { "category": "brand", "ask": true },
@@ -1969,7 +1969,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["org.droidtv", "org.droidtv.icp", "org.droidtv.ambisvc", "org.droidtv.eum", "com.mediatek.tv.service", "com.mediatek.tvinput", "com.mediatek.wwtv.tvcenter", "com.mediatek.wwtv.setupwizard", "com.mediatek.wwtv.mediaplayer", "com.mediatek.autopair", "com.mediatek.tv.factory", "mediatek.factorymenu.ui", "com.mediatek.android.leanbacklauncher.partnercustomizer", "com.android.tv.ota", "com.easy.oad", "com.google.android.katniss"],
       "suggestedDock": [],
-      "tested": { "by": "Wesley Prado (PR #518), second set amachador (PR #1778)", "firmware": "UTT1.250308.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Wesley Prado (PR #518), second set amachador (PR #1778)", "firmware": "UTT1.250308.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: telemetry and attribution": { "category": "tracking", "ask": false },
         "Batch 2: manufacturer content and popups": { "category": "ads", "ask": false },
@@ -1995,7 +1995,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.realtek.tv", "com.realtek.tv.passthrough", "com.realtek.tv.atsc", "com.realtek.tv.atv", "com.realtek.systemservice", "com.realtek.menu", "com.google.android.tv.remote.service", "com.google.android.tv.dfuservice", "com.realtek.rtkvirtualkeyboard", "com.google.android.tv.inputplayer"],
       "suggestedDock": [],
-      "tested": { "by": "maxhayim (PR #212)", "firmware": "UKRE.260524.058", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "maxhayim (PR #212)", "firmware": "UKRE.260524.058", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry": { "category": "tracking", "ask": false },
         "Android ad and personalisation services": { "category": "ads", "ask": false },
@@ -2020,7 +2020,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.cltv.hybrid", "com.cltv.mal", "com.smartdevice.bleconnectservice", "com.smartdevice.global.service", "com.smartdevice.duplebluetooth", "com.smartdevice.factory", "com.smartdevice.dailyshortcut", "com.tianci.localmedia", "org.liskovsoft.androidtv.rukeyboard", "com.google.android.inputmethod.latin", "com.mediatek.tv.agent", "com.google.android.tts"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "UKN5.251016.083", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "UKN5.251016.083", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth recommendations, telemetry and preloads": { "category": "ads", "ask": false },
         "Google extras": { "category": "preloads", "ask": false },
@@ -2046,7 +2046,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.mediatek.android.leanbacklauncher.partnercustomizer", "com.mediatek.wwtv.mediaplayer", "com.android.providers.contacts"],
       "suggestedDock": [],
-      "tested": { "by": "andikatuluspangestu (PR #388)", "firmware": "RTMA.250416.094", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "andikatuluspangestu (PR #388)", "firmware": "RTMA.250416.094", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ads and silent installs": { "category": "ads", "ask": false },
         "Second Home claimant (header). disable.sh checks first that it does not own the saved Wi-Fi network.": { "category": "home", "ask": false },
@@ -2077,7 +2077,7 @@
       "quirks": [],
       "neverDisable": ["com.realtek.dtv", "com.realtek.tv.atv", "com.realtek.dtmb", "com.realtek.tv.atsc", "com.realtek.tv.isdb"],
       "suggestedDock": [],
-      "tested": { "by": "dineshalphaque (PR #238)", "firmware": "UKR1.251010.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "dineshalphaque (PR #238)", "firmware": "UKR1.251010.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Launcher partner customization and Google partner setup": { "category": "ads", "ask": false },
         "Preloaded services": { "category": "other", "ask": true },
@@ -2112,7 +2112,7 @@
       "quirks": [],
       "neverDisable": ["com.homwee.factory", "com.mediatek.wwtv.setupwizard", "com.homwee.synckey", "com.mediatek.wwtv.tvcenter", "com.mediatek.tv.service", "com.mediatek.tvinput"],
       "suggestedDock": [],
-      "tested": { "by": "pranabsarma18 (PR #38)", "firmware": "UKNV.260504.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "pranabsarma18 (PR #38)", "firmware": "UKNV.260504.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Homwee store, ads, installers and media extras": { "category": "brand", "ask": false },
         "Content recognition, FAST channels and Google TV promo rows": { "category": "tracking", "ask": false },
@@ -2146,7 +2146,7 @@
       "quirks": [],
       "neverDisable": ["com.mitv.tvhome", "mitv.service", "com.xiaomi.mitv.tvplayer", "com.xiaomi.mitv.settings", "com.xiaomi.mitv.systemui", "com.mediatek.tvinput", "com.sohu.inputmethod.sogou.tv", "com.xiaomi.mitv.tvpush.tvpushservice", "com.xiaomi.mitv.smartpanel", "com.mitv.codec.update", "com.xiaomi.mitv.appstore", "com.xiaomi.mitv.mediaexplorer", "com.mitv.videoplayer", "com.xiaomi.account"],
       "suggestedDock": [],
-      "tested": { "by": "shaoxyz (PR #631)", "firmware": "23.2.10.6129", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "shaoxyz (PR #631)", "firmware": "23.2.10.6129", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / quality reports / cloud control": { "category": "tracking", "ask": false },
         "Ads / promoted content / shopping": { "category": "ads", "ask": false },
@@ -2166,7 +2166,7 @@
       "quirks": ["EXTRA_HOME_CLAIMERS"],
       "neverDisable": ["com.rtk.engmenu", "com.realtek.factorytools", "com.apps.factory.ui", "com.apps.fivekey", "com.apps.smartkey", "com.apps.virtualkey", "com.realtek.keyinterceptserver", "com.realtek.dtv", "com.apps.sys"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PTT1.201001.001 build 200", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PTT1.201001.001 build 200", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "SCBC / Realtek / Google telemetry and feedback": { "category": "tracking", "ask": false },
         "Content rows, promos and auto-installs": { "category": "ads", "ask": false },
@@ -2230,7 +2230,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "WIRELESS_DEBUG_PAIRING_REQUIRED"],
       "neverDisable": ["com.cltv.hybrid", "com.mediatek.tvinput", "com.smartdevice.global.service", "com.smartdevice.dailyshortcut", "com.tianci.localmedia", "com.google.android.tv.googletvremotepairer", "com.smartdevice.factory", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "ariwisnu (PR #1160)", "firmware": "UKN6.260116.061", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "ariwisnu (PR #1160)", "firmware": "UKN6.260116.061", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth telemetry and activation": { "category": "tracking", "ask": false },
         "Android ad and personalisation services": { "category": "tracking", "ask": false },
@@ -2264,7 +2264,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mediatek.tvinput", "com.mediatek.tv.service", "com.mediatek.wwtv.tvcenter", "com.mediatek.wwtv.setupwizard", "com.mediatek.wwtv.mediaplayer", "com.mediatek.tv.freeviewplay", "com.cvte.hotkey.dispatcher", "com.cvte.automaticbrightnesscontrol", "com.cvte.tv.kmode", "com.cvte.tv.infoprovider", "com.mstar.android.tv.disclaimercustomization", "com.google.android.tts", "com.mediatek.android.leanbacklauncher.partnercustomizer"],
       "suggestedDock": [],
-      "tested": { "by": "AessemOps (PR #465)", "firmware": "UKNV.260623.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "AessemOps (PR #465)", "firmware": "UKNV.260623.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Manufacturer telemetry, recommendation rows and retail/partner plumbing": { "category": "ads", "ask": false },
         "Manufacturer factory / test only apps": { "category": "demo", "ask": true },
@@ -2294,7 +2294,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.smartdevice.factory", "com.smartdevice.dailyshortcut", "com.smartdevice.duplebluetooth", "com.smartdevice.bleconnectservice", "com.smartdevice.livetv", "com.mediatek.tvinput", "com.mediatek.tv.service", "com.mediatek.tv.globalkeyoverlay", "com.dolby.android.audio.service", "com.tianci.localmedia"],
       "suggestedDock": [],
-      "tested": { "by": "FORD79-main", "firmware": "UTT1.250517.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "FORD79-main", "firmware": "UTT1.250517.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth content, ads, demos and preloads": { "category": "ads", "ask": false },
         "Telemetry and after-sale push": { "category": "tracking", "ask": false },
@@ -2325,7 +2325,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter"],
       "suggestedDock": [],
-      "tested": { "by": "fakhri626 (PR #161)", "firmware": "UKNV.260824.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "fakhri626 (PR #161)", "firmware": "UKNV.260824.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth content, ads and preloads": { "category": "ads", "ask": false },
         "Telemetry and feedback": { "category": "tracking", "ask": false },
@@ -2348,7 +2348,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.smartdevice.global.service", "com.skyworth.backligthadjust", "com.smartdevice.bleconnectservice", "com.mediatek.wwtv.tvcenter", "com.smartdevice.dailymanage", "com.smartdevice.dailyshortcut", "com.smartdevice.myapp"],
       "suggestedDock": [],
-      "tested": { "by": "hathechi", "firmware": "UKNV.260211.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "hathechi", "firmware": "UKNV.260211.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth / Coocaa factory test & store demo apps": { "category": "demo", "ask": false },
         "Skyworth telemetry, ads, recommendation rows": { "category": "tracking", "ask": false },
@@ -2377,7 +2377,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.cltv.hybrid", "com.cltv.mal", "com.mediatek.tis", "com.mediatek.dtv.tvinput.atsctuner", "com.mediatek.tv.agent", "com.mediatek.extservice", "com.mediatek.autopair", "com.smartdevice.global.service", "com.smartdevice.dailyshortcut", "com.smartdevice.duplebluetooth", "com.smartdevice.factory", "org.liskovsoft.androidtv.rukeyboard"],
       "suggestedDock": [],
-      "tested": { "by": "maxhayim (PR #213)", "firmware": "UKN6.260116.056", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "maxhayim (PR #213)", "firmware": "UKN6.260116.056", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Skyworth telemetry and trackers": { "category": "tracking", "ask": false },
         "Android ad and personalisation services": { "category": "ads", "ask": false },
@@ -2402,7 +2402,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "jcardonne (PR #154)", "firmware": "PTT1.190515.001.S54", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "jcardonne (PR #154)", "firmware": "PTT1.190515.001.S54", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "Sony and Google content, ads and promos": { "category": "ads", "ask": false },
@@ -2425,7 +2425,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "akirschke15-cmd (PR #256)", "firmware": "PTT1.190515.001.S54", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "akirschke15-cmd (PR #256)", "firmware": "PTT1.190515.001.S54", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "Sony and Google content, ads and promos": { "category": "ads", "ask": false },
@@ -2450,7 +2450,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "QTG3.200305.006.S97", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "QTG3.200305.006.S97", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "tracking / ads / recommendations": { "category": "tracking", "ask": false },
         "demo / shop mode": { "category": "demo", "ask": false },
@@ -2481,7 +2481,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "chilli", "firmware": "QTG3.200305.006.S97", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "chilli", "firmware": "QTG3.200305.006.S97", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "tracking / ads / recommendations": { "category": "tracking", "ask": false },
         "demo / shop mode": { "category": "demo", "ask": false },
@@ -2504,7 +2504,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "Erresedos", "firmware": "STT2.230505.001.S137", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Erresedos", "firmware": "STT2.230505.001.S137", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "telemetry and remote support": { "category": "tracking", "ask": false },
@@ -2537,7 +2537,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "Miroslav Maksimovic (PR #145)", "firmware": "STT2.230505.001.S136", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Miroslav Maksimovic (PR #145)", "firmware": "STT2.230505.001.S136", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "telemetry and remote support": { "category": "tracking", "ask": false },
@@ -2564,7 +2564,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "swordfish6975 (PR #302)", "firmware": "STT2.230505.001.S136", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "swordfish6975 (PR #302)", "firmware": "STT2.230505.001.S136", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "telemetry and remote support": { "category": "tracking", "ask": false },
@@ -2593,7 +2593,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvlin", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "JegoVPN (PR #127)", "firmware": "UKN4.250422.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "JegoVPN (PR #127)", "firmware": "UKN4.250422.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker and telemetry": { "category": "tracking", "ask": false },
         "Sony promos and content feeds": { "category": "ads", "ask": false },
@@ -2612,7 +2612,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice", "com.mediatek.dtv.tvinput.atsctuner", "com.sony.dtv.tvinput.atsc3tuner"],
       "suggestedDock": [],
-      "tested": { "by": "Phil Trinh (PR #171)", "firmware": "UKN4.250422.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Phil Trinh (PR #171)", "firmware": "UKN4.250422.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "tracking / ads / recommendations": { "category": "tracking", "ask": false },
         "demo / shop mode": { "category": "demo", "ask": false },
@@ -2642,7 +2642,7 @@
       "quirks": ["REBOOT_COMMAND", "SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["com.sony.dtv.sonysystemservice", "com.sony.dtv.smartui", "com.sony.dtv.tvinput.dvbtuner"],
       "suggestedDock": [],
-      "tested": { "by": "Eswaramoorthy Karthikeyan (PR #183)", "firmware": "STT2.230811.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Eswaramoorthy Karthikeyan (PR #183)", "firmware": "STT2.230811.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "tracking / ads / promos": { "category": "ads", "ask": false },
         "shop demo mode": { "category": "demo", "ask": false },
@@ -2663,7 +2663,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "org.droidtv.eum"],
       "suggestedDock": [],
-      "tested": { "by": "aidplmraul69 (PR #281)", "firmware": "RTM2.210929.098", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "aidplmraul69 (PR #281)", "firmware": "RTM2.210929.098", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Off by choice (owner does not use them)": { "category": "streaming", "ask": true },
         "Retail demo, partner auto-installs, Google leftovers": { "category": "demo", "ask": false },
@@ -2687,7 +2687,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "SETTLE_BEFORE_REBOOT"],
       "neverDisable": ["com.android.tv", "com.realtek.dtv", "com.realtek.tv.atv", "com.sony.dtv.sonysystemservice", "com.sony.dtv.smartui", "com.sony.dtv.ipcontrol", "com.sony.dtv.remotecontrolsettings", "com.sony.dtv.timers", "com.google.android.apps.mediashell", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "karangupta8 (PR #1532)", "firmware": "RTT7.210105.001 (366.60436)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "karangupta8 (PR #1532)", "firmware": "RTT7.210105.001 (366.60436)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Sony demo and help": { "category": "demo", "ask": false },
         "Google leftovers a TV never needs": { "category": "preloads", "ask": false },
@@ -2717,7 +2717,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "WIRELESS_DEBUG_PAIRING_REQUIRED"],
       "neverDisable": ["com.android.tv", "com.realtek.dtv", "com.realtek.tv.atv", "com.realtek.tv.passthrough", "com.sony.dtv.smartui", "com.realtek.advancesetting"],
       "suggestedDock": [],
-      "tested": { "by": "CMehta-sudo (PR #1433), second unit dhruvkumar1805 (PR #1634)", "firmware": "UKR1.240726.001 (386-60842)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "CMehta-sudo (PR #1433), second unit dhruvkumar1805 (PR #1634)", "firmware": "UKR1.240726.001 (386-60842)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Sony promos, demo content and help": { "category": "ads", "ask": false },
         "Android ad/personalization services": { "category": "ads", "ask": false },
@@ -2747,7 +2747,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.android.tv", "com.realtek.dtv", "com.realtek.tv.atv", "com.realtek.tv.passthrough", "com.sony.dtv.sonysystemservice", "com.sony.dtv.smartui"],
       "suggestedDock": [],
-      "tested": { "by": "ipythonist and Anandha Krishnan (PR #258)", "firmware": "UKR1.240726.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "ipythonist and Anandha Krishnan (PR #258)", "firmware": "UKR1.240726.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Sony promos, store demo and help tiles": { "category": "ads", "ask": false },
         "Ads and on-device ad personalisation (2nd)": { "category": "ads", "ask": false },
@@ -2779,7 +2779,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "Alberto Catania", "firmware": "STT2.230505.001.S136", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Alberto Catania", "firmware": "STT2.230505.001.S136", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker and telemetry": { "category": "tracking", "ask": false },
         "Sony content, ads and recommendations": { "category": "ads", "ask": false },
@@ -2808,7 +2808,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.google.android.leanback.ime"],
       "suggestedDock": [],
-      "tested": { "by": "MarcusElmett (issue #104), xbsheng (PR #282)", "firmware": "NRD91N.S34", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "MarcusElmett (issue #104), xbsheng (PR #282)", "firmware": "NRD91N.S34", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry, remote support, bug reports": { "category": "tracking", "ask": false },
         "Sony and Google content, ads and recommendations": { "category": "ads", "ask": false },
@@ -2831,7 +2831,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "Patricio Manquepillan (PR #198)", "firmware": "STT2.230505.001.S136", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Patricio Manquepillan (PR #198)", "firmware": "STT2.230505.001.S136", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "telemetry and remote support": { "category": "tracking", "ask": false },
@@ -2859,7 +2859,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.sonysystemservice", "com.sony.dtv.youview", "com.sony.dtv.youview.servicehost", "com.vewd.core.integration.dia", "com.sony.dtv.braviasync"],
       "suggestedDock": [],
-      "tested": { "by": "Ben Redmond-Benham (PR #331)", "firmware": "PTT1.190515.001.S52", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Ben Redmond-Benham (PR #331)", "firmware": "PTT1.190515.001.S52", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "Sony and Google content, ads and promos": { "category": "ads", "ask": false },
@@ -2882,7 +2882,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.tvapi", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "Rachit Jain (PR #191)", "firmware": "QTG3.200305.006.S118", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Rachit Jain (PR #191)", "firmware": "QTG3.200305.006.S118", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: tracking and telemetry": { "category": "tracking", "ask": false },
         "Batch 2: home-screen ads and promos": { "category": "ads", "ask": false },
@@ -2915,7 +2915,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx"],
       "suggestedDock": [],
-      "tested": { "by": "waranon (PR #259)", "firmware": "OPR2.170623.027.S16", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "waranon (PR #259)", "firmware": "OPR2.170623.027.S16", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Sony and Google content, ads and promos": { "category": "ads", "ask": false },
         "Telemetry, remote support and feedback": { "category": "tracking", "ask": false },
@@ -2942,7 +2942,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": "whiskeykilo (PR #255)", "firmware": "PTT1.190515.001.S54", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "whiskeykilo (PR #255)", "firmware": "PTT1.190515.001.S54", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "Sony and Google content, ads and promos": { "category": "ads", "ask": false },
@@ -2970,7 +2970,7 @@
       "quirks": [],
       "neverDisable": ["com.sony.dtv.tvx", "com.sony.dtv.sonysystemservice"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PTT1.190515.001.S54", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PTT1.190515.001.S54", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "ACR viewing tracker": { "category": "tracking", "ask": false },
         "Sony and Google content, ads and promos": { "category": "ads", "ask": false },
@@ -2994,7 +2994,7 @@
       "quirks": [],
       "neverDisable": ["com.droidlogic.keystone", "com.droidlogic.android.tv", "com.hysd.client", "com.hysd.hyscreen", "com.droidlogic.appinstall", "com.stellamore.filemanager", "com.zeasn.whale.saas"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "LMY47V/20220912", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "LMY47V/20220912", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Zeasn adware / vendor cloud": { "category": "ads", "ask": false },
         "Stellamore factory / test / guide junk": { "category": "demo", "ask": false },
@@ -3051,7 +3051,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Frane Zunic (PR #279)", "firmware": "PPR1.180610.011 AP04 (V8-R851T02-LF1V378)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Frane Zunic (PR #279)", "firmware": "PPR1.180610.011 AP04 (V8-R851T02-LF1V378)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "1. Telemetry and analytics": { "category": "tracking", "ask": false },
         "2. Content, recommendation rows and promos": { "category": "ads", "ask": false },
@@ -3083,7 +3083,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.tcl.ttvs"],
       "suggestedDock": [],
-      "tested": { "by": "Manas Arora (PR #391)", "firmware": "UKN2.241110.001 AU10", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Manas Arora (PR #391)", "firmware": "UKN2.241110.001 AU10", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: TCL tracking, ads and auto-installs": { "category": "tracking", "ask": false },
         "Batch 2: preloaded apps and extras not used on this unit": { "category": "preloads", "ask": false },
@@ -3108,7 +3108,7 @@
       "quirks": ["REENABLED_AT_BOOT"],
       "neverDisable": ["com.tcl.inputmethod.international", "com.tcl.tv", "com.tcl.tvinput", "com.tcl.tvpassthrough", "com.tcl.sourcemananger", "com.tcl.settings", "com.tcl.autopair", "com.tcl.virtualkey", "com.tcl.factory.view", "com.mediatek.wifi", "com.mediatek.tunerservice", "mtktvapi.agent", "com.google.android.apps.mediashell", "com.google.android.backdrop", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
-      "tested": { "by": "intrak (PR #642), second unit Muhammad Ali Bukhari (PR #1454)", "firmware": "OTT1.180130.001 (V8-T658T01-LF1V602)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "intrak (PR #642), second unit Muhammad Ali Bukhari (PR #1454)", "firmware": "OTT1.180130.001 (V8-T658T01-LF1V602)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Stock launcher and its recommendation rows, replaced by launcher/": { "category": "ads", "ask": false },
         "Google media and voice - this set has no microphone": { "category": "voice", "ask": true },
@@ -3145,7 +3145,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.tv", "com.tcl.tvinput"],
       "suggestedDock": [],
-      "tested": { "by": "Jiri Cermak (PR #181)", "firmware": "PPR1.180610.011 AR05", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Jiri Cermak (PR #181)", "firmware": "PPR1.180610.011 AR05", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL telemetry, promos and content feeds": { "category": "ads", "ask": false },
         "Voice assistant (off by choice)": { "category": "voice", "ask": true },
@@ -3178,7 +3178,7 @@
       "quirks": ["REENABLED_AT_BOOT"],
       "neverDisable": ["com.tcl.videoplayer", "com.tcl.audioplayer", "com.tcl.imageplayer", "com.tcl.UpdatePeripheral", "com.tcl.rc.ota"],
       "suggestedDock": [],
-      "tested": { "by": "bendorneanu (PR #502)", "firmware": "PPR1.180610.011 AP06 (V8-R851T02-LF1V606)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "bendorneanu (PR #502)", "firmware": "PPR1.180610.011 AP06 (V8-R851T02-LF1V606)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "1. Telemetry and analytics": { "category": "tracking", "ask": false },
         "2. Content, recommendation rows and promos": { "category": "ads", "ask": false },
@@ -3212,7 +3212,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.guard", "com.tcl.partnercustomizer", "com.tcl.useragreement", "com.google.android.tungsten.setupwraith", "com.tcl.tv", "com.tcl.tvinput", "com.tcl.autopair", "com.tcl.keycustomfunctionservice", "com.tcl.settings", "com.tcl.inputmethod.international", "com.tcl.initsetup", "com.tcl.factory.view", "com.tcl.providers.config", "com.tcl.systemserver", "com.tcl.micmanager", "com.tcl.usercenter", "com.tcl.xian.StartandroidService", "com.tcl.versionUpdateApp"],
       "suggestedDock": [],
-      "tested": { "by": "Johannesnc (PR #336)", "firmware": "PPR1.180610.011 AR05", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Johannesnc (PR #336)", "firmware": "PPR1.180610.011 AR05", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: telemetry and attribution": { "category": "tracking", "ask": false },
         "Batch 2: TCL content/promo feeds and recommendation rows": { "category": "ads", "ask": false },
@@ -3267,7 +3267,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "REENABLED_AT_BOOT"],
       "neverDisable": ["com.tcl.ttvs"],
       "suggestedDock": [],
-      "tested": { "by": "hayitsjose (PR #265)", "firmware": "STT2.230203.001 AS50", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "hayitsjose (PR #265)", "firmware": "STT2.230203.001 AS50", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1: tracking and analytics": { "category": "tracking", "ask": false },
         "Batch 2: TCL content, ads and promos": { "category": "ads", "ask": false },
@@ -3302,7 +3302,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.providers.config", "com.tcl.initsetup", "com.tcl.factory.view", "com.tcl.system.server", "com.tcl.tcl_bt_rcu_service", "com.tcl.autopair", "com.tcl.tvinput", "com.tcl.settings", "com.tcl.inputmethod.international", "com.tcl.tv"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "RP1A.200622.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "RP1A.200622.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL telemetry, promos and preload plumbing": { "category": "ads", "ask": false },
         "Google recommendation/attribution plumbing": { "category": "tracking", "ask": false },
@@ -3331,7 +3331,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "WhidanB (PR #205)", "firmware": "AR2101", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "WhidanB (PR #205)", "firmware": "AR2101", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Batch 1 - telemetry and analytics": { "category": "tracking", "ask": false },
         "Batch 2 - TCL content, ads and promos": { "category": "ads", "ask": false },
@@ -3366,7 +3366,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.tv", "com.tcl.settings", "com.tcl.guard", "com.tcl.autopair", "com.tcl.providers.config", "com.tcl.TFDS.service", "com.tcl.dashboard.service", "com.tcl.packageinstaller.service.renew", "com.tcl.xian.StartandroidService", "com.sohu.inputmethod.sogou.tv", "com.tcl.ui_mediaCenter", "com.android.packageinstaller", "com.tcl.cyberui"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PPR1.180610.011", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PPR1.180610.011", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL ads, telemetry, logging": { "category": "tracking", "ask": false },
         "Preloaded TCL content and services": { "category": "preloads", "ask": false }
@@ -3393,7 +3393,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.tv", "com.tcl.tvinput"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PPR1.180610.011", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PPR1.180610.011", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL analytics, content and promos": { "category": "ads", "ask": false },
         "Google extras and recommendation rows (only useful with the stock launcher)": { "category": "ads", "ask": false }
@@ -3418,7 +3418,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Aleksander Sandnes (PR #137)", "firmware": "PPR1.180610.011 AP06 (V8-R851T02-LF1V606)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Aleksander Sandnes (PR #137)", "firmware": "PPR1.180610.011 AP06 (V8-R851T02-LF1V606)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "1. Telemetry and analytics": { "category": "tracking", "ask": false },
         "2. Content, recommendation rows and promos": { "category": "ads", "ask": false },
@@ -3446,7 +3446,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Eddy Sangalli (PR #179)", "firmware": "PPR1.180610.011 AP08 (V8-R851T02-LF1V660)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Eddy Sangalli (PR #179)", "firmware": "PPR1.180610.011 AP08 (V8-R851T02-LF1V660)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL analytics (telemetry)": { "category": "tracking", "ask": false },
         "Content pushed to the home screen at boot": { "category": "ads", "ask": false }
@@ -3462,7 +3462,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Samuel Hinton (PR #241)", "firmware": "UTT2.250416.001 AU02", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Samuel Hinton (PR #241)", "firmware": "UTT2.250416.001 AU02", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL tracking and analytics": { "category": "tracking", "ask": false },
         "TCL content, ads and promos": { "category": "ads", "ask": false },
@@ -3538,7 +3538,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "REENABLED_AT_BOOT"],
       "neverDisable": ["com.tcl.tv", "com.tcl.tvinput", "com.tcl.settings", "com.tcl.system.server", "com.tcl.keyhelp", "com.tcl.autopair", "com.tcl.tcl_bt_rcu_service", "com.tcl.providers.config"],
       "suggestedDock": [],
-      "tested": { "by": "damonearl (PR #73)", "firmware": "AR2101", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "damonearl (PR #73)", "firmware": "AR2101", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL content, ads and promos": { "category": "ads", "ask": false },
         "Telemetry and background services": { "category": "tracking", "ask": false },
@@ -3570,7 +3570,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Erick Mwamodo (PR #290), Mateus Zanes (PR #415), Jean-Baptiste (PR #420)", "firmware": "RP1A.200622.001 AR20, AR17", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Erick Mwamodo (PR #290), Mateus Zanes (PR #415), Jean-Baptiste (PR #420)", "firmware": "RP1A.200622.001 AR20, AR17", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "1. Telemetry and analytics": { "category": "tracking", "ask": false },
         "2. Content and ad services": { "category": "ads", "ask": false },
@@ -3608,7 +3608,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.tcl.autopair", "com.tcl.suspension", "com.tcl.interactive", "com.tcl.ttvs", "com.tcl.tv", "com.tcl.tvinput", "com.tcl.globalkeyoverlay", "com.tcl.tv.tclhome_passive", "com.google.android.katniss"],
       "suggestedDock": [],
-      "tested": { "by": "contributor of PR #657, second unit kermes (PR #1610)", "firmware": "STT2.221228.001 AS34", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "contributor of PR #657, second unit kermes (PR #1610)", "firmware": "STT2.221228.001 AS34", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL promo, push messages, help/demo apps and log capture": { "category": "ads", "ask": false },
         "Duplicate webviews on this firmware (com.google.android.webview is the active one)": { "category": "other", "ask": true },
@@ -3643,7 +3643,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Mateus Zanes (PR #413)", "firmware": "STT2.230203.001 AS24", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Mateus Zanes (PR #413)", "firmware": "STT2.230203.001 AS24", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL telemetry and analytics": { "category": "tracking", "ask": false },
         "TCL content, ads and promos": { "category": "ads", "ask": false },
@@ -3687,7 +3687,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.tvinput", "com.tcl.dashboard", "com.tcl.suspension", "com.tcl.autopair", "com.tcl.systemserver", "com.tcl.tv"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "STT2.230203.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "STT2.230203.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL content, ads and promos": { "category": "ads", "ask": false },
         "Retail demo / store mode": { "category": "demo", "ask": false },
@@ -3712,7 +3712,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.cyberui", "com.tcl.tv", "com.tcl.guard", "com.tcl.appmarket2", "com.sohu.inputmethod.sogou.tv", "com.tcl.ui_mediaCenter", "com.tcl.settings", "com.tcl.systemserver", "com.tcl.ttvs", "com.tcl.providers.config", "com.android.packageinstaller"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "RQ3A.210705.001/2026012200", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "RQ3A.210705.001/2026012200", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ad and telemetry reporting": { "category": "tracking", "ask": false },
         "Content apps that carry their own promo surfaces": { "category": "preloads", "ask": false },
@@ -3746,7 +3746,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH", "WIRELESS_DEBUG_PAIRING_REQUIRED"],
       "neverDisable": ["com.tcl.tv", "com.tcl.tvinput", "com.tcl.dashboard", "com.tcl.suspension", "com.tcl.autopair", "com.tcl.systemserver", "com.tcl.providers.config", "com.tcl.initsetup", "com.tcl.useragreement", "com.tcl.globalkeyoverlay", "com.tcl.systemui.plugin", "com.tcl.factory.view"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "UTT2.250416.001 AU16", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "UTT2.250416.001 AU16", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "TCL tracking and analytics": { "category": "tracking", "ask": false },
         "TCL content, ads and promos": { "category": "ads", "ask": false },
@@ -3775,7 +3775,7 @@
       "quirks": [],
       "neverDisable": ["com.tcl.tv", "com.tcl.tvinput", "com.tcl.tvpassthrough", "com.tcl.sourcemananger"],
       "suggestedDock": [],
-      "tested": { "by": "Pedro Seixas (PR #200)", "firmware": "PPR2.180905.006.A1", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Pedro Seixas (PR #200)", "firmware": "PPR2.180905.006.A1", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and feedback": { "category": "tracking", "ask": false },
         "Content rows, promos and auto-installs": { "category": "ads", "ask": false },
@@ -3810,7 +3810,7 @@
       "quirks": [],
       "neverDisable": ["com.sdmc.tv"],
       "suggestedDock": [],
-      "tested": { "by": "Andrea Manzini (PR #430)", "firmware": "20231013 (user/release-keys)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Andrea Manzini (PR #430)", "firmware": "20231013 (user/release-keys)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "SDMC vendor bloat and diagnostics": { "category": "brand", "ask": false },
         "Google TV / Android TV bloat": { "category": "preloads", "ask": false }
@@ -3837,7 +3837,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "MarioParraL (PR #130)", "firmware": "PPR2.180905.006.A1", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "MarioParraL (PR #130)", "firmware": "PPR2.180905.006.A1", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and analytics": { "category": "tracking", "ask": false },
         "Content, ads and promos": { "category": "ads", "ask": false },
@@ -3864,7 +3864,7 @@
       "quirks": [],
       "neverDisable": ["com.realtek.tv", "com.realtek.tv.passthrough", "com.realtek.dtv", "com.realtek.tv.atv", "com.realtek.menu", "com.realtek.globalkeyhandler", "com.realtek.systemservice", "com.realtek.connecteddevices", "com.google.android.tv.googletvremotepairer", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "Manu Sharma (PR #634)", "firmware": "UKRE.260524.055", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Manu Sharma (PR #634)", "firmware": "UKRE.260524.055", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and ad services": { "category": "tracking", "ask": false },
         "Content, promos and partner installs": { "category": "ads", "ask": false },
@@ -3894,7 +3894,7 @@
       "quirks": [],
       "neverDisable": ["com.android.tv", "com.realtek.dtv", "com.realtek.tv", "com.apps.smartkey", "com.apps.bluetoothremote", "com.apps.fivekey", "com.apps.virtualkey", "com.realtek.keyinterceptserver", "com.creative.fastscreen.tv", "com.apps.sys"],
       "suggestedDock": [],
-      "tested": { "by": "hikiasi (PR #509)", "firmware": "PTT1.210114.001 build 337", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "hikiasi (PR #509)", "firmware": "PTT1.210114.001 build 337", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry, analytics, recommendation rows": { "category": "ads", "ask": false },
         "SCBC consent agent for data collection (safe to disable; confirmed on SANYO ATV R2 too)": { "category": "tracking", "ask": false },
@@ -3929,7 +3929,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.google.android.leanbacklauncher.partnercustomizer"],
       "suggestedDock": [],
-      "tested": { "by": "carlosmolados-droid (PR #460)", "firmware": "RTOC.251019.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "carlosmolados-droid (PR #460)", "firmware": "RTOC.251019.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Vestel telemetry and retail junk": { "category": "tracking", "ask": false },
         "Google services nobody asked for": { "category": "preloads", "ask": false },
@@ -3958,7 +3958,7 @@
       "quirks": [],
       "neverDisable": ["com.amazon.tv.launcher", "com.amazon.firehomestarter"],
       "suggestedDock": [],
-      "tested": { "by": "umang350 (PR #4)", "firmware": "PS7717.5741N.0036408028416", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "umang350 (PR #4)", "firmware": "PS7717.5741N.0036408028416", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Ads, shopping, content recognition": { "category": "ads", "ask": false },
         "Telemetry and metrics": { "category": "tracking", "ask": false },
@@ -3981,7 +3981,7 @@
       "quirks": [],
       "neverDisable": ["com.verizon.tv.launcher", "com.google.android.tv", "tv.pluto.android", "com.omni.ota", "com.omni.simplesetup", "com.google.android.tv.remote.service", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
-      "tested": { "by": "Jonathan Julian (PR #517)", "firmware": "SC.v6.6.3-20250328", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Jonathan Julian (PR #517)", "firmware": "SC.v6.6.3-20250328", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry": { "category": "tracking", "ask": false },
         "Off by owner's choice": { "category": "streaming", "ask": true },
@@ -4006,7 +4006,7 @@
       "quirks": [],
       "neverDisable": ["com.jamdeo.tv.vod", "com.jamdeo.tv.livetv", "com.jamdeo.tv.service", "com.hisense.tv.inputs", "com.hisense.tv.baseservice", "com.hisense.tv.tiletransition", "com.hisense.bluetoothpair", "com.sohu.inputmethod.sogou.tv", "com.hisense.padinputmethod", "com.hisense.raycodereceiver", "com.hisense.uifac", "com.hisense.systeminfo", "com.hisense.hiservice", "com.hisense.aiod", "com.hisense.aiservice", "com.keylab.speech.core.vidaa", "com.vt.mic.service", "com.vt.point.remoteservice", "com.dolby.android.audio.service", "com.dolby.android.audio.calibration", "com.jamdeo.updateservice"],
       "suggestedDock": [],
-      "tested": { "by": "HeimaoLST (PR #354)", "firmware": "RP1A.200720.011 (02.02.70.01)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "HeimaoLST (PR #354)", "firmware": "RP1A.200720.011 (02.02.70.01)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Hisense telemetry, reporting and push": { "category": "tracking", "ask": false },
         "Ads, shopping and home operator rows": { "category": "ads", "ask": false },
@@ -4037,7 +4037,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.vt.tv.tvcenter", "com.vt.source.external", "com.vt.tv.input", "com.vt.tvservice", "com.vt.avmiddleware", "com.vt.edv.drmp", "com.vt.tv.commonui", "com.vt.tv.videocolor", "com.vt.eula", "com.vt.udpserver"],
       "suggestedDock": [],
-      "tested": { "by": "harshmandalgi (PR #182)", "firmware": "STT2.230929.001.080", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "harshmandalgi (PR #182)", "firmware": "STT2.230929.001.080", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Vu telemetry: ACR (\"Enhanced Viewing\" content recognition, consent and promotion screens)": { "category": "tracking", "ask": false },
         "Ads, auto-installs, retail demo": { "category": "ads", "ask": false },
@@ -4061,7 +4061,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter"],
       "suggestedDock": [],
-      "tested": { "by": "mano18 (PR #367)", "firmware": "PTO4.200424.001", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "mano18 (PR #367)", "firmware": "PTO4.200424.001", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "": { "category": "ads", "ask": false }
       },
@@ -4080,7 +4080,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.sdt.projector.observer", "com.mft.rcupair", "com.sdt.globalkey", "com.mft.frontpanelledsservice", "com.google.android.tv.dfuservice", "com.dolby.android.audio.service", "com.sdt.customization", "com.android.devicelockcontroller"],
       "suggestedDock": [],
-      "tested": { "by": "swordfish6975 (PR #303)", "firmware": "UKG3.260128.001.C3.3.5_20260723", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "swordfish6975 (PR #303)", "firmware": "UKG3.260128.001.C3.3.5_20260723", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and remote management": { "category": "tracking", "ask": false },
         "Ads and personalization": { "category": "ads", "ask": false },
@@ -4107,7 +4107,7 @@
       "quirks": [],
       "neverDisable": ["com.xgimi.autokst", "com.xgimi.windowsystem", "com.xgimi.tof", "com.xgimi.tvinput", "com.xgimi.xhplayer", "com.xgimi.bluetoothservice", "com.xgimi.misckey", "com.xgimi.uiconfiguration", "com.xgimi.xrmservice", "com.xgimi.soundermodeservice", "com.xgimi.xgimiservice", "com.xgimi.simpservice", "com.xgimi.overseas.xgimiatvbootwizard"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "RT.3.24.329", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "RT.3.24.329", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Store demo, factory and test tools": { "category": "demo", "ask": false },
         "Telemetry, feedback and auto-installs": { "category": "tracking", "ask": false },
@@ -4156,7 +4156,7 @@
       "quirks": ["WIRELESS_DEBUG_PAIRING_REQUIRED", "HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.xgimi.autoinstall", "com.mediatek.tvinput", "com.mediatek.tv.service", "com.google.android.tv.inputplayer", "com.nbcast.wirelessscreen"],
       "suggestedDock": [],
-      "tested": { "by": "Takrim (PR #480)", "firmware": "UKNV.260707.001.15802496", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Takrim (PR #480)", "firmware": "UKNV.260707.001.15802496", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Store demo, factory and test tools": { "category": "demo", "ask": true },
         "Telemetry and feedback": { "category": "tracking", "ask": false },
@@ -4185,7 +4185,7 @@
       "quirks": [],
       "neverDisable": ["com.xiaomi.mitv.updateservice", "com.mitv.download.service", "com.xiaomi.android.tvsetup.partnercustomizer", "mitv.service"],
       "suggestedDock": [],
-      "tested": { "by": "Ferko", "firmware": "PI.3934", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Ferko", "firmware": "PI.3934", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry and ad tracking": { "category": "tracking", "ask": false },
         "PatchWall, content rows, promos, auto-installs": { "category": "ads", "ask": false },
@@ -4212,7 +4212,7 @@
       "quirks": ["USB_POWER_CUT_WHILE_DEBUGGING"],
       "neverDisable": ["com.xiaomi.android.tvsetup.partnercustomizer", "mitv.service", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PI.3933", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PI.3933", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry and ad tracking": { "category": "tracking", "ask": false },
         "PatchWall, content rows, promos, auto-installs": { "category": "ads", "ask": false },
@@ -4240,7 +4240,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["mitv.service", "com.mi.bluetooth", "com.xiaomi.gtv.settings", "com.xiaomi.tvqs.overseas"],
       "suggestedDock": [],
-      "tested": { "by": "Bahriish (PR #169), Lorenzo Ganzella (PR #253)", "firmware": "RTT0.211222.001 (772, 737)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Bahriish (PR #169), Lorenzo Ganzella (PR #253)", "firmware": "RTT0.211222.001 (772, 737)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and attribution": { "category": "tracking", "ask": false },
         "Ad rows, promos and auto-installs": { "category": "ads", "ask": false },
@@ -4280,7 +4280,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "QTG3.200305.006.2591", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "QTG3.200305.006.2591", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry": { "category": "tracking", "ask": false },
         "PatchWall and Mi content rows / promos": { "category": "ads", "ask": false },
@@ -4310,7 +4310,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PI.2055", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PI.2055", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows": { "category": "ads", "ask": false },
@@ -4342,7 +4342,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.xiaomi.android.tvsetup.partnercustomizer", "mitv.service"],
       "suggestedDock": [],
-      "tested": { "by": "dennisblokland (PR #185), hovsep-dc", "firmware": "UKG3.250826.001 / V816.0.11.0.UZFAABX", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "dennisblokland (PR #185), hovsep-dc", "firmware": "UKG3.250826.001 / V816.0.11.0.UZFAABX", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry and feedback": { "category": "tracking", "ask": false },
         "PatchWall, content rows, promos, auto-installs": { "category": "ads", "ask": false },
@@ -4371,7 +4371,7 @@
       "quirks": [],
       "neverDisable": ["com.mitv.tvhome", "mitv.service", "com.xiaomi.mitv.settings", "com.xiaomi.mitv.tvplayer", "com.droidlogic.tvinput", "com.xiaomi.mitv.systemui", "com.xiaomi.mitv.upgrade", "com.xiaomi.mitv.pay", "com.xiaomi.mitv.payment", "com.xiaomi.mitv.smartshare"],
       "suggestedDock": [],
-      "tested": { "by": "ForeverSkys (PR #399)", "firmware": "23.6.5.3226 (PPR1.180610.011)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "ForeverSkys (PR #399)", "firmware": "23.6.5.3226 (PPR1.180610.011)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / push / cloud control": { "category": "tracking", "ask": false },
         "Ads / promoted content": { "category": "ads", "ask": false },
@@ -4397,7 +4397,7 @@
       "quirks": [],
       "neverDisable": ["com.mitv.tvhome", "mitv.service", "com.xiaomi.mitv.settings", "com.xiaomi.mitv.tvplayer", "com.droidlogic.tvinput", "com.xiaomi.mitv.systemui", "com.xiaomi.mitv.smartshare", "com.mitv.videoplayer", "com.xiaomi.mitv.mediaexplorer", "com.xiaomi.mitv.appstore"],
       "suggestedDock": [],
-      "tested": { "by": "Kien (PR #628)", "firmware": "22.12.2.1630", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Kien (PR #628)", "firmware": "22.12.2.1630", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / push / cloud control": { "category": "tracking", "ask": false },
         "Ads / promoted content / shopping": { "category": "ads", "ask": false },
@@ -4431,7 +4431,7 @@
       "quirks": [],
       "neverDisable": ["com.mitv.tvhome", "mitv.service", "com.xiaomi.mitv.settings"],
       "suggestedDock": [],
-      "tested": { "by": "Zebro (PR #128)", "firmware": "2.40.641.0514.cn", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Zebro (PR #128)", "firmware": "2.40.641.0514.cn", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / push / cloud control": { "category": "tracking", "ask": false },
         "Ads / promoted content": { "category": "ads", "ask": false },
@@ -4454,7 +4454,7 @@
       "quirks": [],
       "neverDisable": ["com.android.tv"],
       "suggestedDock": [],
-      "tested": { "by": "tanaypatwa (PR #229)", "firmware": "RTT0.210630.002.485", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "tanaypatwa (PR #229)", "firmware": "RTT0.210630.002.485", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows": { "category": "ads", "ask": false },
@@ -4477,7 +4477,7 @@
       "quirks": ["REENABLED_AT_BOOT", "REBOOT_COMMAND"],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "PI.6036", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "PI.6036", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows": { "category": "ads", "ask": false },
@@ -4502,7 +4502,7 @@
       "quirks": [],
       "neverDisable": [],
       "suggestedDock": [],
-      "tested": { "by": "Alafazam (PR #260)", "firmware": "PI.6432", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Alafazam (PR #260)", "firmware": "PI.6432", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows, partner auto-installs": { "category": "ads", "ask": false },
@@ -4526,7 +4526,7 @@
       "quirks": [],
       "neverDisable": ["mitv.service", "com.mi.bluetooth", "com.xiaomi.tvqs.overseas", "com.xiaomi.android.tvsetup.partnercustomizer", "com.google.android.tv.remote.service", "com.google.android.tungsten.setupwraith"],
       "suggestedDock": [],
-      "tested": { "by": "steepenergy (PR #740)", "firmware": "UKG3.250107.001 (V816.0.26.6.10)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "steepenergy (PR #740)", "firmware": "UKG3.250107.001 (V816.0.26.6.10)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry and attribution": { "category": "tracking", "ask": false },
         "PatchWall, content rows, promos, auto-installs": { "category": "ads", "ask": false },
@@ -4550,7 +4550,7 @@
       "quirks": [],
       "neverDisable": ["com.mitv.tvhome", "mitv.service", "com.xiaomi.mitv.tvplayer", "com.xiaomi.mitv.settings", "com.xiaomi.mitv.smartpanel", "com.mitv.overseaservice", "com.mi.bluetooth", "com.sohu.inputmethod.sogou.tv", "com.xiaomi.account", "com.mitv.codec.update", "com.xiaomi.mitv.mediaexplorer", "com.xiaomi.mitv.tvmanager", "com.xiaomi.mitv.upgrade", "com.mediatek.tvinput", "com.mediatek.tv.service"],
       "suggestedDock": [],
-      "tested": { "by": "fants (PR #463)", "firmware": "OS3.0.115.0.UFFMATV (HyperOS 3)", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "fants (PR #463)", "firmware": "OS3.0.115.0.UFFMATV (HyperOS 3)", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / diagnostics / cloud control": { "category": "tracking", "ask": false },
         "Ads / shopping / promoted content": { "category": "ads", "ask": false },
@@ -4570,7 +4570,7 @@
       "quirks": [],
       "neverDisable": ["com.xiaomi.mitv.smartpanel", "mitv.service"],
       "suggestedDock": [],
-      "tested": { "by": "HG0539xDC860539", "firmware": "OS2.0.23.0.RFTMATV", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "HG0539xDC860539", "firmware": "OS2.0.23.0.RFTMATV", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / ads / push": { "category": "tracking", "ask": false },
         "Preloaded apps": { "category": "preloads", "ask": false },
@@ -4596,7 +4596,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["mitv.service", "com.mitv.overseaservice", "com.mediatek.tv.agent", "com.mediatek.extservice", "com.mitv.livetv", "com.xiaomi.tvqs.overseas.y24", "com.mi.bluetooth", "com.mitv.upgrader", "com.xiaomi.mitv.updateservice", "com.mediatek.tv.systemupdater"],
       "suggestedDock": [],
-      "tested": { "by": "Alexis Rico", "firmware": "UKN1.240806.017.V816.0.25.12.1.ULBMIXM", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Alexis Rico", "firmware": "UKN1.240806.017.V816.0.25.12.1.ULBMIXM", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Telemetry": { "category": "tracking", "ask": false },
         "Content, ads and recommendations": { "category": "ads", "ask": false },
@@ -4620,7 +4620,7 @@
       "quirks": ["EXTRA_HOME_CLAIMERS"],
       "neverDisable": ["com.xiaomi.android.tvsetup.partnercustomizer", "com.mediatek.hotkey.dispatcher", "com.mediatek.tvinput", "com.mediatek.wwtv.setupwizard", "mitv.service", "com.xiaomi.mitv.res", "com.mediatek.wwtv.tvcenter"],
       "suggestedDock": [],
-      "tested": { "by": "mirhnaz (PR #81)", "firmware": "QTG3.200305.006.3270", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "mirhnaz (PR #81)", "firmware": "QTG3.200305.006.3270", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry and analytics": { "category": "tracking", "ask": false },
         "Xiaomi content, ads and recommendation rows": { "category": "ads", "ask": false },
@@ -4652,7 +4652,7 @@
       "quirks": [],
       "neverDisable": ["com.mitv.overseaservice", "com.xiaomi.android.tvsetup.partnercustomizer", "com.xiaomi.tvqs.overseas", "com.mediatek.tvinput", "com.mediatek.wwtv.tvcenter", "mitv.service", "com.mediatek.tv.service", "com.xiaomi.mitv.updateservice"],
       "suggestedDock": [],
-      "tested": { "by": "AlfaRojo", "firmware": "RTM4.220307.164.8238", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "AlfaRojo", "firmware": "RTM4.220307.164.8238", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi and Google telemetry": { "category": "tracking", "ask": false },
         "Xiaomi content, ads and recommendation rows": { "category": "ads", "ask": false },
@@ -4685,7 +4685,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mitv.livetv", "mitv.service", "com.mediatek.network", "com.mitv.overseaservice", "com.mediatek.tvinput", "com.mediatek.tv.service", "com.mi.bluetooth", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "RTM5.220609.003.2674", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "RTM5.220609.003.2674", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry": { "category": "tracking", "ask": false },
         "Ad rows, promos and content providers on the home screen": { "category": "ads", "ask": false },
@@ -4712,7 +4712,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["com.mitv.livetv", "mitv.service", "com.mitv.overseaservice", "com.mediatek.network", "com.mediatek.tvinput", "com.mediatek.tv.service", "com.mi.bluetooth", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "heybyben (PR #177)", "firmware": "RTM5.220609.003.1585", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "heybyben (PR #177)", "firmware": "RTM5.220609.003.1585", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry / attribution": { "category": "tracking", "ask": false },
         "Ad rows, promos and content providers on the home screen (\"Teruskan menonton\", \"Film terlaris\")": { "category": "ads", "ask": false },
@@ -4760,7 +4760,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.mediatek.tvinput", "mitv.service", "com.xiaomi.mitv.updateservice", "com.xiaomi.mitv.mediaexplorer"],
       "suggestedDock": [],
-      "tested": { "by": "Andrey Kozodoy", "firmware": "PI.5925", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Andrey Kozodoy", "firmware": "PI.5925", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi telemetry": { "category": "tracking", "ask": false },
         "PatchWall and Xiaomi content add-ons": { "category": "ads", "ask": false },
@@ -4786,7 +4786,7 @@
       "quirks": [],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "com.mediatek.tvinput", "mitv.service", "com.mediatek.hotkey.dispatcher", "com.xiaomi.android.tvsetup.partnercustomizer", "com.google.android.tv.remote.service", "com.xiaomi.mitv.mediaexplorer", "com.xiaomi.mitv.updateservice"],
       "suggestedDock": [],
-      "tested": { "by": "bart-b-pl (PR #643)", "firmware": "PI.4621", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "bart-b-pl (PR #643)", "firmware": "PI.4621", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows": { "category": "ads", "ask": false },
@@ -4807,7 +4807,7 @@
       "quirks": ["REENABLED_AT_BOOT"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "mitv.service", "com.mi.bluetooth", "com.mediatek.hotkey.dispatcher", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "RTT2.211214.001.1065", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "RTT2.211214.001.1065", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows": { "category": "ads", "ask": false },
@@ -4832,7 +4832,7 @@
       "quirks": ["REENABLED_AT_BOOT"],
       "neverDisable": ["com.mediatek.wwtv.tvcenter", "mitv.service", "com.google.android.tv.remote.service"],
       "suggestedDock": [],
-      "tested": { "by": "Martin Trajkovski (PR #223), alessandrodauria (PR #494)", "firmware": "PI.7524", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": "Martin Trajkovski (PR #223), alessandrodauria (PR #494)", "firmware": "PI.7524", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall, content rows, sponsored rows": { "category": "ads", "ask": false },
@@ -4883,7 +4883,7 @@
       "quirks": ["HOME_TAKEOVER_SETUPWRAITH"],
       "neverDisable": ["mitv.service", "com.mitv.overseaservice", "com.mitv.livetv", "com.mi.bluetooth", "com.mitv.setup", "com.xiaomi.android.tvsetup.partnercustomizer", "com.xiaomi.mitv.scenemode"],
       "suggestedDock": [],
-      "tested": { "by": null, "firmware": "UKN1.240806.017.V816.0.25.3.10.URTMIXM", "daysLivedWith": null, "rebootTested": true },
+      "tested": { "by": null, "firmware": "UKN1.240806.017.V816.0.25.3.10.URTMIXM", "daysLivedWith": 1, "rebootTested": true },
       "groups": {
         "Xiaomi + Google telemetry": { "category": "tracking", "ask": false },
         "PatchWall / \"Mi Home\" tab, content rows, promos": { "category": "ads", "ask": false },
